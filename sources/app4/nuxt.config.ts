@@ -97,7 +97,9 @@ export default defineNuxtConfig({
         'heroicons:qr-code',
         'heroicons:eye-solid',
         'heroicons:map-pin-solid',
-        'heroicons:calendar-solid'
+        'heroicons:calendar-solid',
+        'heroicons:lock-closed-solid',
+        'heroicons:lock-open-solid'
       ]
     }
   },

@@ -71,7 +71,8 @@ sources/app4/
 │   └── statsStore.ts               # État page statistiques
 ├── types/                          # Types TypeScript
 │   ├── index.ts                    # Types généraux (Season, Competition, etc.)
-│   └── competitions.ts             # Types spécifiques compétitions
+│   ├── competitions.ts             # Types spécifiques compétitions
+│   └── teams.ts                    # Types spécifiques équipes
 ├── nuxt.config.ts                  # Configuration Nuxt
 └── tailwind.config.ts              # Configuration Tailwind
 ```
@@ -426,6 +427,73 @@ Placé **au-dessus du titre** de chaque page utilisant le contexte. En mobile, s
 </div>
 ```
 
+### Cellules éditables inline (.editable-cell)
+
+Pour les champs modifiables directement dans un tableau (click-to-edit), utiliser la classe CSS `.editable-cell` définie dans `assets/css/admin.css`. Elle fournit un indicateur visuel subtil et moderne signalant que le champ est cliquable et éditable.
+
+**Style** : fond gris-bleu très clair + bordure inférieure pointillée. Au survol : fond bleu léger + bordure bleue.
+
+```vue
+<!-- Affichage normal (non éditable) -->
+<span>{{ value }}</span>
+
+<!-- Champ éditable inline -->
+<span
+  :class="canEdit ? 'editable-cell' : ''"
+  @click="startEdit(item, 'field')"
+>
+  {{ value }}
+</span>
+
+<!-- Mode édition (input remplace le span) -->
+<template v-if="editingCell?.id === item.id && editingCell.field === 'field'">
+  <input
+    :id="`inline-edit-${item.id}-field`"
+    v-model="editingValue"
+    class="w-14 px-1 py-0.5 border border-blue-400 rounded text-center text-sm focus:ring-2 focus:ring-blue-500"
+    @keydown="handleInlineKeydown"
+    @blur="saveInlineEdit"
+  />
+</template>
+```
+
+**Appliquer systématiquement** sur toutes les pages app4 où des champs sont éditables inline dans un tableau ou une liste (poule, tirage, statut, etc.).
+
+### Dropdown Teleport (overflow-safe)
+
+Pour les menus déroulants à l'intérieur de conteneurs `overflow-hidden` (tables, groupes avec scroll), utiliser `<Teleport to="body">` avec `position: fixed` et calcul de position via `getBoundingClientRect()`.
+
+```vue
+<script setup>
+const openDropdownId = ref(null)
+const dropdownStyle = ref({ top: '0px', left: '0px' })
+
+const toggleDropdown = (id, event) => {
+  if (openDropdownId.value === id) { openDropdownId.value = null; return }
+  const rect = (event.currentTarget as HTMLElement).getBoundingClientRect()
+  dropdownStyle.value = {
+    top: `${rect.bottom + 4}px`,
+    left: `${Math.min(rect.left, window.innerWidth - 200)}px`
+  }
+  openDropdownId.value = id
+}
+</script>
+
+<template>
+  <!-- Trigger -->
+  <button class="dropdown-trigger" @click="toggleDropdown(item.id, $event)">...</button>
+
+  <!-- Menu téléporté -->
+  <Teleport to="body">
+    <div v-if="openDropdownId === item.id" class="dropdown-menu fixed ..." :style="dropdownStyle">
+      ...
+    </div>
+  </Teleport>
+</template>
+```
+
+Ajouter un listener `click` global pour fermer le dropdown lors d'un clic en dehors.
+
 ---
 
 ## 10. Pages Implémentées vs Legacy
@@ -440,7 +508,7 @@ Placé **au-dessus du titre** de chaque page utilisant le contexte. En mobile, s
 | Statistiques | `/stats` | Implémentée (contexte) |
 | Opérations | `/operations` | Implémentée |
 | Matchs | `/games` | Legacy redirect |
-| Équipes | `/teams` | Legacy redirect |
+| Équipes | `/teams` | Implémentée (contexte) |
 | Journées | `/gamedays` | Legacy redirect |
 | Classements | `/rankings` | Legacy redirect |
 | Athlètes | `/athletes` | Legacy redirect |
@@ -450,4 +518,4 @@ Placé **au-dessus du titre** de chaque page utilisant le contexte. En mobile, s
 ---
 
 **Document créé le** : 2026-02-03
-**Dernière mise à jour** : 2026-02-04
+**Dernière mise à jour** : 2026-02-05

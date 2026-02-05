@@ -2,7 +2,7 @@
 
 ## 1. Vue d'ensemble
 
-La page Équipes permet de gérer les équipes inscrites à une compétition : ajout (manuel ou depuis l'historique), édition des propriétés (logo, couleurs), gestion des poules et du tirage au sort, suppression, duplication depuis une autre compétition, et initialisation des titulaires.
+La page Équipes permet de gérer les équipes inscrites à une compétition : ajout (depuis l'historique ou création manuelle), édition des propriétés (logo, couleurs), gestion des poules et du tirage au sort, suppression, duplication depuis une autre compétition, et initialisation des titulaires.
 
 **Route** : `/teams`
 
@@ -10,8 +10,10 @@ La page Équipes permet de gérer les équipes inscrites à une compétition : a
 - Profil ≤ 10 : Lecture seule
 - Profil ≤ 6 : Édition inline (poule/tirage)
 - Profil ≤ 4 : Tirage au sort, initialisation titulaires, verrouillage
-- Profil ≤ 3 : Ajout/Suppression/Duplication
+- Profil ≤ 3 : Ajout/Suppression/Duplication (sauf si compétition verrouillée)
 - Profil ≤ 2 : Édition propriétés (logo/couleurs), mise à jour logos, contrôle
+
+**Verrouillage** : Lorsqu'une compétition est verrouillée (`verrou = true`), l'ajout et la suppression d'équipes sont interdits côté frontend (boutons masqués) ET côté backend (retour HTTP 403).
 
 **Page PHP Legacy** : `GestionEquipe.php` + `GestionEquipe.tpl` + `GestionEquipe.js`
 
@@ -33,27 +35,28 @@ La page Équipes permet de gérer les équipes inscrites à une compétition : a
 | # | Fonctionnalité | Profil | Évaluation | Décision |
 |---|----------------|--------|------------|----------|
 | 1 | Tableau des équipes groupé par poule | ≤ 10 | Essentielle | ✅ Conserver |
-| 2 | Afficher logo équipe | ≤ 10 | Essentielle | ✅ Conserver |
-| 3 | Afficher couleurs équipe (color1/color2/colortext) | ≤ 10 | Essentielle | ✅ Conserver |
-| 4 | Afficher nombre de matchs | ≤ 10 | Utile | ✅ Conserver |
+| 2 | Afficher logo + couleurs dans une colonne fusionnée | ≤ 10 | Essentielle | ✅ Conserver |
+| 3 | Aperçu couleurs : carré unique (fond=color1, bordure épaisse=color2, texte "1"=colortext) | ≤ 10 | Essentielle | ✅ Conserver |
+| 4 | Afficher nombre de matchs (basé sur `kp_match.Validation = 'O'`) | ≤ 10 | Utile | ✅ Conserver |
 | 5 | Afficher club de l'équipe | ≤ 10 | Essentielle | ✅ Conserver |
 | 6 | Édition inline Poule (A-Z) | ≤ 6 | Essentielle | ✅ Conserver |
 | 7 | Édition inline Tirage (0-99) | ≤ 6 | Essentielle | ✅ Conserver |
-| 8 | Sélection multiple (checkboxes) | ≤ 3 | Essentielle | ✅ Conserver |
+| 8 | Sélection multiple (checkboxes) — masqué si compétition verrouillée | ≤ 3 | Essentielle | ✅ Conserver |
 | 9 | Compteur total d'équipes | ≤ 10 | Utile | ✅ Conserver |
 
 ### 2.3 Ajout d'équipes
 
 | # | Fonctionnalité | Profil | Évaluation | Décision |
 |---|----------------|--------|------------|----------|
-| 1 | Création manuelle (nouveau nom + sélection club) | ≤ 3 | Essentielle | ✅ Conserver |
-| 2 | Ajout depuis historique (recherche dans kp_equipe) | ≤ 3 | Essentielle | ✅ Conserver |
+| 1 | Ajout depuis historique (onglet principal, affiché en premier) | ≤ 3 | Essentielle | ✅ Conserver |
+| 2 | Création manuelle (onglet secondaire) | ≤ 3 | Essentielle | ✅ Conserver |
 | 3 | Sélection multiple depuis historique | ≤ 3 | Utile | ✅ Conserver |
 | 4 | Filtres cascadés CR → CD → Club pour sélection club | ≤ 3 | Utile | ✅ Conserver |
 | 5 | Autocomplete recherche club (nom/code) | ≤ 3 | Essentielle | ✅ Conserver (nouveau) |
 | 6 | Copie de composition joueurs (depuis compétition précédente) | ≤ 3 | Spécialisé | ✅ Conserver |
 | 7 | Attribution poule et tirage lors de l'ajout | ≤ 3 | Utile | ✅ Conserver |
 | 8 | Séparation historique France / International | ≤ 3 | Utile | ✅ Conserver |
+| 9 | **Bloqué si compétition verrouillée** (bouton masqué + vérification backend) | ≤ 3 | Essentielle | ✅ Conserver |
 
 ### 2.4 Modification d'équipes
 
@@ -64,13 +67,14 @@ La page Équipes permet de gérer les équipes inscrites à une compétition : a
 | 3 | Propager couleurs aux compétitions suivantes | ≤ 2 | Spécialisé | ✅ Conserver |
 | 4 | Propager couleurs aux compétitions précédentes | ≤ 2 | Spécialisé | ✅ Conserver |
 | 5 | Propager couleurs à toutes les équipes du club | ≤ 2 | Spécialisé | ✅ Conserver |
+| 6 | Clic sur la cellule logo/couleurs ouvre la modal d'édition (pas de bouton crayon séparé) | ≤ 2 | Essentielle | ✅ Conserver |
 
 ### 2.5 Suppression
 
 | # | Fonctionnalité | Profil | Évaluation | Décision |
 |---|----------------|--------|------------|----------|
-| 1 | Suppression individuelle | ≤ 3 | Essentielle | ✅ Conserver |
-| 2 | Suppression en masse (bulk delete) | ≤ 3 | Essentielle | ✅ Conserver |
+| 1 | Suppression individuelle — **bloquée si compétition verrouillée** | ≤ 3 | Essentielle | ✅ Conserver |
+| 2 | Suppression en masse (bulk delete) — **bloquée si compétition verrouillée** | ≤ 3 | Essentielle | ✅ Conserver |
 | 3 | Sélectionner tout / Désélectionner tout | ≤ 3 | Utile | ✅ Conserver |
 
 ### 2.6 Duplication
@@ -94,7 +98,7 @@ La page Équipes permet de gérer les équipes inscrites à une compétition : a
 | # | Fonctionnalité | Profil | Évaluation | Décision |
 |---|----------------|--------|------------|----------|
 | 1 | Lien vers gestion joueurs (par équipe) | ≤ 10 | Essentielle | ✅ Conserver |
-| 2 | Feuille de présence FR (PDF) | ≤ 10 | Essentielle | ✅ Conserver |
+| 2 | Feuille de présence FR (PDF) — via dropdown click-toggle | ≤ 10 | Essentielle | ✅ Conserver |
 | 3 | Feuille de présence EN (PDF) | ≤ 10 | Utile | ✅ Conserver |
 | 4 | Feuille de présence par catégorie (PDF) | ≤ 2 | Spécialisé | ✅ Conserver |
 | 5 | Feuille de présence photo (PDF) | ≤ 10 | Utile | ✅ Conserver |
@@ -103,6 +107,8 @@ La page Équipes permet de gérer les équipes inscrites à une compétition : a
 ---
 
 ## 3. Structure de la Page
+
+### 3.1 Vue Desktop
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -116,30 +122,43 @@ La page Équipes permet de gérer les équipes inscrites à une compétition : a
 │  │ [▼ N1H - Nationale 1 Masculine ...]  NAT  CHPT  🟢ON  🔒Verrouillé ││
 │  └─────────────────────────────────────────────────────────────────────┘│
 │                                                                          │
+│  ⚠️ Compétition verrouillée. Certaines modifications sont restreintes.   │
+│                                                                          │
 │  ┌─ Barre d'outils ───────────────────────────────────────────────────┐│
 │  │ [+ Ajouter] [Dupliquer] [Init titulaires] [MAJ logos]              ││
 │  │ [☑ Tout] [Supprimer sélection (3)]              Total: 12 équipes  ││
 │  └─────────────────────────────────────────────────────────────────────┘│
 │                                                                          │
 │  ── Poule A ──────────────────────────────────────────────────────────  │
-│  ┌───┬──────┬───┬─────┬──────────────────┬──────┬──────┬──────┬───────┐│
-│  │ ☐ │Poule │ # │Logo │ Équipe           │Couls │ Club │Matchs│Actions││
-│  ├───┼──────┼───┼─────┼──────────────────┼──────┼──────┼──────┼───────┤│
-│  │ ☐ │  A   │ 1 │ 🖼  │ Acigné KP        │ ■■   │75001 │  6   │✏️👥🗑️││
-│  │ ☐ │  A   │ 2 │ 🖼  │ Strasbourg ASPTT │ ■■   │67003 │  6   │✏️👥🗑️││
-│  └───┴──────┴───┴─────┴──────────────────┴──────┴──────┴──────┴───────┘│
-│                                                                          │
-│  ── Poule B ──────────────────────────────────────────────────────────  │
-│  ┌───┬──────┬───┬─────┬──────────────────┬──────┬──────┬──────┬───────┐│
-│  │ ☐ │  B   │ 1 │ 🖼  │ Fontenay KP      │ ■■   │94002 │  6   │✏️👥🗑️││
-│  └───┴──────┴───┴─────┴──────────────────┴──────┴──────┴──────┴───────┘│
+│  ┌───┬──────┬───┬───────┬──────────────────┬──────┬──────┬────────────┐│
+│  │ ☐ │Poule │ # │Logo/🟦│ Équipe           │ Club │Matchs│  Actions   ││
+│  ├───┼──────┼───┼───────┼──────────────────┼──────┼──────┼────────────┤│
+│  │ ☐ │  A   │ 1 │ 🖼🟦  │ Acigné KP        │75001 │  6   │ 👥 📄      ││
+│  │ ☐ │  A   │ 2 │ 🖼🟦  │ Strasbourg ASPTT │67003 │  6   │ 👥 📄 🗑️   ││
+│  └───┴──────┴───┴───────┴──────────────────┴──────┴──────┴────────────┘│
 │                                                                          │
 │  TOTAL = 12 Équipes                                                      │
 │                                                                          │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 3.1 Sélecteur de compétition
+### 3.2 Vue Mobile
+
+```
+┌─────────────────────────────────────────────────┐
+│  [☐] [🖼]  Acigné KP                   👥 🗑️   │
+│       [🟦] Poule: A | #1 | 75001 | 6 Matchs    │
+├─────────────────────────────────────────────────┤
+│  [☐] [🖼]  Strasbourg ASPTT            👥 🗑️   │
+│       [🟦] Poule: B | #2 | 67003 | 6 Matchs    │
+└─────────────────────────────────────────────────┘
+```
+
+- Logo et aperçu couleurs empilés verticalement, cliquables pour ouvrir la modal d'édition
+- Poule et Tirage éditables inline (clic sur le texte)
+- Checkbox et actions compactes
+
+### 3.3 Sélecteur de compétition
 
 Même pattern que la page Documents : dropdown `<select>` rempli depuis `workContext.contextCompetitions`, groupé par section. Affiche des badges à droite :
 - Badge niveau (INT/NAT/REG) coloré
@@ -147,42 +166,53 @@ Même pattern que la page Documents : dropdown `<select>` rempli depuis `workCon
 - Badge statut (ATT/ON/END) cliquable (profil ≤ 4)
 - Indicateur verrouillage 🔒/🔓 cliquable (profil ≤ 4)
 
-### 3.2 Barre d'outils
+Lorsque la compétition est verrouillée, un bandeau d'alerte jaune s'affiche sous le sélecteur.
 
-Boutons conditionnels selon profil :
-- **[+ Ajouter]** (profil ≤ 3) → ouvre modal d'ajout
+### 3.4 Barre d'outils
+
+Boutons conditionnels selon profil ET état de verrouillage :
+- **[+ Ajouter]** (profil ≤ 3 ET non verrouillé) → ouvre modal d'ajout
 - **[Dupliquer]** (profil ≤ 3) → ouvre modal de duplication
 - **[Init titulaires]** (profil ≤ 4) → confirmation puis action
 - **[MAJ logos]** (profil ≤ 2) → confirmation puis action
-- **[☑ Tout / ☐ Rien]** (profil ≤ 3) → sélection/désélection
-- **[🗑️ Supprimer sélection (N)]** (profil ≤ 3) → suppression en masse
+- **[☑ Tout / ☐ Rien]** (profil ≤ 3 ET non verrouillé) → sélection/désélection
+- **[🗑️ Supprimer sélection (N)]** (profil ≤ 3 ET non verrouillé) → suppression en masse
 - **Total : N équipes** (lecture seule)
 
-### 3.3 Colonnes du tableau
+### 3.5 Colonnes du tableau
 
 | Colonne | Description | Éditable | Profil |
 |---------|-------------|----------|--------|
-| ☐ | Checkbox sélection | - | ≤ 3 |
+| ☐ | Checkbox sélection (masqué si verrouillé) | - | ≤ 3 |
 | Poule | Lettre de poule (A-Z) | Inline | ≤ 6 |
 | # Tirage | Numéro d'ordre (0-99) | Inline | ≤ 6 |
-| Logo | Image 25px du logo équipe | - | - |
+| Logo/Couleurs | Logo (25px) + aperçu couleurs côte à côte, cliquable | Clic → modal | ≤ 2 |
 | Équipe | Libellé de l'équipe | - | - |
-| Couleurs | Aperçu color1/color2/colortext | - | - |
 | Club | Code club | - | - |
-| Matchs | Nombre de matchs joués | - | - |
+| Matchs | Nombre de matchs joués (`Validation = 'O'`) | - | - |
 | Actions | Boutons d'action | - | Variable |
 
-### 3.4 Actions par ligne
+### 3.6 Actions par ligne
 
 | Action | Icône | Description | Profil |
 |--------|-------|-------------|--------|
-| Éditer propriétés | ✏️ | Ouvre modal édition (logo, couleurs) | ≤ 2 |
-| Voir joueurs | 👥 | Navigue vers page gestion joueurs | ≤ 10 |
-| PDF Présence | 📄 | Génère feuille de présence (legacy PDF) | ≤ 10 |
-| PDF Contrôle | 🛡️ | Génère fiche contrôle (legacy PDF) | ≤ 2 |
-| Supprimer | 🗑️ | Supprime l'équipe (confirmation requise) | ≤ 3 |
+| Voir joueurs | 👥 | Navigue vers page gestion joueurs (legacy) | ≤ 10 |
+| Feuille de présence | 📄 | Dropdown click-toggle (Teleport to body) avec liens PDF | ≤ 10 |
+| Supprimer | 🗑️ | Supprime l'équipe (confirmation requise), masqué si verrouillé ou matchs > 0 | ≤ 3 |
 
-### 3.5 Groupement par poule
+**Note** : Le bouton "Modifier" (crayon) a été supprimé du tableau. L'édition des propriétés (logo/couleurs) se fait par clic sur la cellule logo/couleurs.
+
+### 3.7 Dropdown feuille de présence
+
+Le dropdown de la feuille de présence utilise un pattern **click-toggle avec Teleport** pour éviter les problèmes de clipping dans les conteneurs `overflow-hidden` :
+
+1. Clic sur l'icône 📄 → toggle du dropdown
+2. Le dropdown est téléporté dans `<body>` avec `position: fixed`
+3. La position est calculée dynamiquement via `getBoundingClientRect()` du bouton
+4. Fermeture : clic en dehors (event listener global) ou clic sur un lien
+5. Contenu : Présence FR, Présence EN, Présence photo, Fiche contrôle (profil ≤ 2)
+
+### 3.8 Groupement par poule
 
 Les équipes sont groupées visuellement par poule avec un en-tête de séparation pour chaque poule (A, B, C...). Les équipes sans poule sont listées sous un en-tête "Sans poule". Tri au sein de chaque poule par Tirage puis Libelle.
 
@@ -192,9 +222,24 @@ Les équipes sont groupées visuellement par poule avec un en-tête de séparati
 
 ### 4.1 Modal Ajout d'équipe
 
-Deux onglets/modes dans la même modal :
+Deux onglets/modes dans la même modal, **l'historique est l'onglet par défaut** :
 
-#### Mode 1 : Création manuelle
+#### Onglet 1 (principal) : Depuis historique
+
+| Champ | Type | Requis | Validation |
+|-------|------|--------|------------|
+| Recherche équipe | autocomplete | Oui | Équipe existante dans kp_equipe |
+| Poule | text(1) | Non | A-Z majuscule |
+| Tirage | number | Non | 0-99 |
+| Copier composition | checkbox + select | Non | Sélection compétition source |
+
+**Liste historique** :
+- Deux sections : 🇫🇷 France (code région ≠ 98) et 🌍 International (code région = 98)
+- Recherche en temps réel (filtre texte)
+- Sélection multiple autorisée (checkboxes)
+- Non affiché pour compétitions de type POOL
+
+#### Onglet 2 (secondaire) : Création manuelle
 
 | Champ | Type | Requis | Validation |
 |-------|------|--------|------------|
@@ -210,22 +255,9 @@ Deux onglets/modes dans la même modal :
 | Comité départemental | select | Cascadé depuis CR, filtre les clubs |
 | Club | select / autocomplete | Cascadé depuis CD, ou recherche libre |
 
-#### Mode 2 : Depuis historique
-
-| Champ | Type | Requis | Validation |
-|-------|------|--------|------------|
-| Recherche équipe | autocomplete | Oui | Équipe existante dans kp_equipe |
-| Poule | text(1) | Non | A-Z majuscule |
-| Tirage | number | Non | 0-99 |
-| Copier composition | checkbox + select | Non | Sélection compétition source |
-
-**Liste historique** :
-- Deux sections : 🇫🇷 France (code région ≠ 98) et 🌍 International (code région = 98)
-- Recherche en temps réel (filtre texte)
-- Sélection multiple autorisée (checkboxes)
-- Non affiché pour compétitions de type POOL
-
 ### 4.2 Modal Édition propriétés équipe
+
+Ouverte par clic sur la cellule logo/couleurs dans le tableau (pas de bouton séparé).
 
 | Champ | Type | Requis | Validation |
 |-------|------|--------|------------|
@@ -234,14 +266,19 @@ Deux onglets/modes dans la même modal :
 | Couleur principale (color1) | color picker | Non | Format hex |
 | Couleur secondaire (color2) | color picker | Non | Format hex |
 | Couleur texte (colortext) | color picker | Non | Format hex |
-| Aperçu | preview | - | Rendu visuel des couleurs |
+| Aperçu | preview carré 56px | - | Rendu visuel des couleurs + nom équipe |
+
+**Aperçu couleurs** :
+- Carré unique `w-14 h-14` : fond = color1, bordure = color2 (6px), texte "1" = colortext
+- Nom de l'équipe affiché à côté du carré
+- Labels des sélecteurs de couleur en `text-xs` pour éviter le retour à la ligne
 
 **Options de propagation** (checkboxes) :
 | Option | Description |
 |--------|-------------|
 | Compétitions suivantes | Appliquer aux prochaines compétitions de cette équipe |
 | Compétitions précédentes | Appliquer aux compétitions passées de cette équipe |
-| Toutes les équipes du club | Appliquer à toutes les équipes du même club (⚠️ dangereux) |
+| Toutes les équipes du club | Appliquer à toutes les équipes du même club |
 
 ### 4.3 Modal Duplication
 
@@ -262,9 +299,25 @@ Modals de confirmation standard (AdminConfirmModal) pour :
 
 ---
 
-## 5. Endpoints API2
+## 5. Aperçu des couleurs
 
-### 5.1 Lecture
+L'aperçu des couleurs d'une équipe est un **carré unique** avec :
+
+| Propriété | Tableau desktop | Tableau mobile | Modal édition |
+|-----------|----------------|----------------|---------------|
+| Taille | `w-7 h-7` | `w-6 h-6` | `w-14 h-14` |
+| Bordure | 4px | 3px | 6px |
+| Fond | color1 | color1 | color1 |
+| Bordure | color2 | color2 | color2 |
+| Texte | "1" en colortext | "1" en colortext | "1" en colortext |
+
+Dans le tableau, le logo et l'aperçu couleurs sont côte à côte (desktop) ou empilés (mobile), dans une cellule unique cliquable (ouvre la modal d'édition, profil ≤ 2).
+
+---
+
+## 6. Endpoints API2
+
+### 6.1 Lecture
 
 | Méthode | Endpoint | Description | Profil |
 |---------|----------|-------------|--------|
@@ -276,21 +329,21 @@ Modals de confirmation standard (AdminConfirmModal) pour :
 | GET | `/admin/departmental-committees` | Liste des comités départementaux | ≤ 3 |
 | GET | `/admin/clubs` | Liste des clubs (filtrée par CR/CD) | ≤ 3 |
 
-### 5.2 Écriture
+### 6.2 Écriture
 
-| Méthode | Endpoint | Description | Profil |
-|---------|----------|-------------|--------|
-| POST | `/admin/competition-teams` | Ajouter équipe(s) à une compétition | ≤ 3 |
-| PUT | `/admin/competition-teams/{id}` | Modifier une équipe (libellé) | ≤ 3 |
-| DELETE | `/admin/competition-teams/{id}` | Supprimer une équipe | ≤ 3 |
-| POST | `/admin/competition-teams/bulk-delete` | Suppression en masse | ≤ 3 |
-| PATCH | `/admin/competition-teams/{id}/pool-draw` | Modifier poule et tirage | ≤ 6 |
-| PATCH | `/admin/competition-teams/{id}/colors` | Modifier logo et couleurs | ≤ 2 |
-| POST | `/admin/competition-teams/duplicate` | Dupliquer depuis compétition source | ≤ 3 |
-| POST | `/admin/competition-teams/update-logos` | Mise à jour automatique des logos | ≤ 2 |
-| POST | `/admin/competition-teams/init-starters` | Initialiser les titulaires | ≤ 4 |
+| Méthode | Endpoint | Description | Profil | Verrouillage |
+|---------|----------|-------------|--------|--------------|
+| POST | `/admin/competition-teams` | Ajouter équipe(s) | ≤ 3 | ❌ Bloqué si verrouillé |
+| DELETE | `/admin/competition-teams/{id}` | Supprimer une équipe | ≤ 3 | ❌ Bloqué si verrouillé |
+| POST | `/admin/competition-teams/bulk-delete` | Suppression en masse | ≤ 3 | ❌ Bloqué si verrouillé |
+| PATCH | `/admin/competition-teams/{id}/pool-draw` | Modifier poule et tirage | ≤ 6 | - |
+| PATCH | `/admin/competition-teams/{id}/colors` | Modifier logo et couleurs | ≤ 2 | - |
+| POST | `/admin/competition-teams/duplicate` | Dupliquer depuis compétition source | ≤ 3 | - |
+| POST | `/admin/competition-teams/update-logos` | Mise à jour automatique des logos | ≤ 2 | - |
+| POST | `/admin/competition-teams/init-starters` | Initialiser les titulaires | ≤ 4 | - |
+| PATCH | `/admin/competition-teams/toggle-lock` | Basculer le verrouillage | ≤ 4 | - |
 
-### 5.3 Paramètres de requête
+### 6.3 Paramètres de requête
 
 **GET /admin/competition-teams**
 
@@ -311,7 +364,7 @@ Réponse :
       "numero": 456,
       "poule": "A",
       "tirage": 1,
-      "logo": "logo-acigne.png",
+      "logo": "KIP/logo/3512-logo.png",
       "color1": "#FF0000",
       "color2": "#0000FF",
       "colortext": "#FFFFFF",
@@ -370,6 +423,24 @@ Réponse :
 
 **POST /admin/competition-teams**
 
+⚠️ Retourne HTTP 403 si la compétition est verrouillée.
+
+Body (depuis historique — mode par défaut) :
+```json
+{
+  "season": "2026",
+  "competition": "N1H",
+  "mode": "history",
+  "teamNumbers": [456, 789],
+  "poule": "A",
+  "tirage": 0,
+  "copyComposition": {
+    "season": "2025",
+    "competition": "N1H"
+  }
+}
+```
+
 Body (création manuelle) :
 ```json
 {
@@ -383,19 +454,21 @@ Body (création manuelle) :
 }
 ```
 
-Body (depuis historique) :
+**DELETE /admin/competition-teams/{id}**
+
+⚠️ Retourne HTTP 403 si la compétition est verrouillée.
+⚠️ Retourne HTTP 409 si l'équipe a des matchs validés.
+
+**POST /admin/competition-teams/bulk-delete**
+
+⚠️ Retourne HTTP 403 si la compétition est verrouillée.
+
+Body :
 ```json
 {
+  "ids": [123, 456],
   "season": "2026",
-  "competition": "N1H",
-  "mode": "history",
-  "teamNumbers": [456, 789],
-  "poule": "A",
-  "tirage": 0,
-  "copyComposition": {
-    "season": "2025",
-    "competition": "N1H"
-  }
+  "competition": "N1H"
 }
 ```
 
@@ -428,7 +501,7 @@ Body :
 Body :
 ```json
 {
-  "logo": "logo-acigne.png",
+  "logo": "KIP/logo/3512-logo.png",
   "color1": "#FF0000",
   "color2": "#0000FF",
   "colortext": "#FFFFFF",
@@ -438,11 +511,28 @@ Body :
 }
 ```
 
+**PATCH /admin/competition-teams/toggle-lock**
+
+Body :
+```json
+{
+  "season": "2026",
+  "competition": "N1H"
+}
+```
+
+Réponse :
+```json
+{
+  "verrou": true
+}
+```
+
 ---
 
-## 6. Schéma de données
+## 7. Schéma de données
 
-### 6.1 Table kp_equipe (équipes historiques)
+### 7.1 Table kp_equipe (équipes historiques)
 
 | Colonne | Type | Description |
 |---------|------|-------------|
@@ -454,7 +544,7 @@ Body :
 | colortext | varchar(30) | Couleur texte (hex) |
 | logo | varchar(50) | Chemin du logo |
 
-### 6.2 Table kp_competition_equipe (équipes par compétition)
+### 7.2 Table kp_competition_equipe (équipes par compétition)
 
 | Colonne | Type | Description |
 |---------|------|-------------|
@@ -466,7 +556,7 @@ Body :
 | Numero | smallint(6) | FK → kp_equipe(Numero) |
 | Poule | varchar(3) | Lettre de poule (A, B, etc.) |
 | Tirage | tinyint(4) | Numéro tirage au sort |
-| logo | varchar(50) | Logo de l'équipe |
+| logo | varchar(50) | Logo de l'équipe (chemin relatif dans `img/`) |
 | color1 | varchar(30) | Couleur principale |
 | color2 | varchar(30) | Couleur secondaire |
 | colortext | varchar(30) | Couleur texte |
@@ -475,7 +565,7 @@ Body :
 | PtsNiveau, CltNiveau | double/smallint | Classement ajusté |
 | *_publi | smallint/double | Stats publiées (miroir des stats) |
 
-### 6.3 Table kp_competition_equipe_joueur (joueurs par équipe)
+### 7.3 Table kp_competition_equipe_joueur (joueurs par équipe)
 
 | Colonne | Type | Description |
 |---------|------|-------------|
@@ -488,7 +578,7 @@ Body :
 | Numero | smallint(6) | Numéro de maillot |
 | Capitaine | char(1) | Capitaine ('-' = non) |
 
-### 6.4 Table kp_club (clubs)
+### 7.4 Table kp_club (clubs)
 
 | Colonne | Type | Description |
 |---------|------|-------------|
@@ -501,7 +591,17 @@ Body :
 | www | varchar(60) | Site web |
 | email | varchar(60) | Email |
 
-### 6.5 Tables auxiliaires
+### 7.5 Table kp_match (matchs — colonnes clés)
+
+| Colonne | Type | Description |
+|---------|------|-------------|
+| Id_equipeA | int(10) unsigned | FK → kp_competition_equipe(Id) |
+| Id_equipeB | int(10) unsigned | FK → kp_competition_equipe(Id) |
+| Validation | char(1) | `'O'` = validé, `'N'` = non validé |
+
+**Note** : Le décompte des matchs joués utilise `WHERE m.Validation = 'O'` (pas `Statut`).
+
+### 7.6 Tables auxiliaires
 
 - **kp_cr** : Comités régionaux (Code PK, Libelle, Region)
 - **kp_cd** : Comités départementaux (Code PK, Libelle, Code_comite_reg FK → kp_cr)
@@ -510,13 +610,13 @@ Body :
 
 ---
 
-## 7. Composants Vue
+## 8. Composants Vue
 
-### 7.1 Structure des fichiers
+### 8.1 Structure des fichiers
 
 ```
 sources/app4/pages/teams/
-├── index.vue                        # Page principale (remplace LegacyRedirect)
+├── index.vue                        # Page principale (~1700 lignes)
 
 sources/app4/types/
 ├── teams.ts                         # Types TypeScript pour les équipes
@@ -524,7 +624,7 @@ sources/app4/types/
 
 **Note** : La page est auto-suffisante dans `index.vue` (comme les autres pages app4 existantes). Des composants enfants pourront être extraits si la complexité le justifie.
 
-### 7.2 Types TypeScript
+### 8.2 Types TypeScript
 
 ```typescript
 // types/teams.ts
@@ -574,7 +674,7 @@ export interface TeamComposition {
   playerCount: number
 }
 
-export interface TeamFormData {
+export interface TeamAddFormData {
   mode: 'manual' | 'history'
   // Manual mode
   libelle: string
@@ -626,26 +726,28 @@ export interface Club {
 }
 ```
 
-### 7.3 Traductions i18n
+### 8.3 Traductions i18n
 
-Clés à ajouter dans `fr.json` et `en.json` sous la section `teams` :
+Les clés i18n sont dans la section `teams_page` (et non `teams`) des fichiers de localisation :
 
 ```json
 {
-  "teams": {
+  "teams_page": {
     "title": "Gestion des équipes",
     "select_competition": "Sélectionner une compétition",
     "total": "Total : {count} équipe(s)",
     "pool_header": "Poule {letter}",
     "no_pool": "Sans poule",
     "empty": "Aucune équipe inscrite dans cette compétition",
-    "add": "Ajouter une équipe",
-    "add_manual": "Création manuelle",
-    "add_history": "Depuis l'historique",
+    "no_competition": "Veuillez sélectionner une compétition",
+    "add": "Ajouter",
     "duplicate": "Dupliquer",
     "init_starters": "Init. titulaires",
     "update_logos": "MAJ logos",
     "delete_selected": "Supprimer la sélection",
+    "select_all": "Tout sélectionner",
+    "deselect_all": "Tout désélectionner",
+    "draw": "Tirage au sort",
     "columns": {
       "poule": "Poule",
       "tirage": "Tirage",
@@ -656,25 +758,34 @@ Clés à ajouter dans `fr.json` et `en.json` sous la section `teams` :
       "matchs": "Matchs",
       "actions": "Actions"
     },
-    "form": {
+    "add_modal": {
+      "title": "Ajouter une équipe",
+      "tab_history": "Depuis l'historique",
+      "tab_manual": "Création manuelle",
       "libelle": "Nom de l'équipe",
+      "libelle_placeholder": "Ex: Mon Équipe KP",
       "club": "Club",
       "poule": "Poule",
+      "poule_placeholder": "A-Z",
       "tirage": "Tirage",
       "search_team": "Rechercher une équipe...",
       "search_club": "Rechercher un club...",
       "france": "France",
       "international": "International",
       "copy_composition": "Copier la composition joueurs",
-      "select_source": "Sélectionner la compétition source",
+      "select_source": "Depuis la compétition",
+      "no_compositions": "Aucune composition disponible",
       "filter_cr": "Comité régional",
       "filter_cd": "Comité départemental",
       "filter_club": "Club",
-      "all": "Tous"
+      "all": "Tous",
+      "selected_teams": "{count} équipe(s) sélectionnée(s)",
+      "players": "{count} joueur(s)"
     },
-    "edit": {
+    "edit_modal": {
       "title": "Propriétés de l'équipe",
       "logo": "Logo (chemin fichier)",
+      "logo_placeholder": "Ex: 75001-logo.png",
       "color1": "Couleur principale",
       "color2": "Couleur secondaire",
       "colortext": "Couleur texte",
@@ -686,6 +797,7 @@ Clés à ajouter dans `fr.json` et `en.json` sous la section `teams` :
     "duplicate_modal": {
       "title": "Dupliquer les équipes",
       "source_competition": "Compétition source",
+      "source_competition_placeholder": "Sélectionner une compétition",
       "mode_append": "Ajouter aux équipes existantes",
       "mode_replace": "Vider et remplacer",
       "copy_players": "Copier aussi les compositions joueurs",
@@ -706,32 +818,68 @@ Clés à ajouter dans `fr.json` et `en.json` sous la section `teams` :
     "error_delete": "Erreur lors de la suppression",
     "players": "Joueurs",
     "presence_sheet": "Feuille de présence",
+    "presence_sheet_en": "Feuille de présence (EN)",
+    "presence_sheet_cat": "Présence par catégorie",
+    "presence_sheet_photo": "Présence avec photo",
     "control_sheet": "Fiche contrôle",
     "locked": "Compétition verrouillée",
-    "unlocked": "Compétition déverrouillée"
+    "unlocked": "Compétition déverrouillée",
+    "competition_locked_notice": "Cette compétition est verrouillée. Certaines modifications sont restreintes.",
+    "cannot_delete_has_matches": "Impossible de supprimer : l'équipe a des matchs joués"
   }
 }
 ```
 
 ---
 
-## 8. Édition inline
+## 9. Édition inline
 
-L'édition inline des champs Poule et Tirage directement dans le tableau est une fonctionnalité clé de cette page. Implémentation :
+L'édition inline des champs Poule et Tirage directement dans le tableau (desktop et mobile) :
 
 1. **Click** sur la cellule Poule ou Tirage → la cellule passe en mode édition (input)
-2. **Validation** :
+2. **Mobile** : le texte "Poule: A | #1" est aussi cliquable pour passer en mode édition
+3. **Validation** :
    - Poule : une lettre majuscule A-Z, ou vide
    - Tirage : nombre entier 0-99
-3. **Sauvegarde** : `PATCH /admin/competition-teams/{id}/pool-draw` sur blur ou Enter
-4. **Annulation** : Escape restaure la valeur précédente
-5. **Feedback** : toast success/error après sauvegarde
+4. **Sauvegarde** : `PATCH /admin/competition-teams/{id}/pool-draw` sur blur ou Enter
+5. **Annulation** : Escape restaure la valeur précédente
+6. **Feedback** : toast success/error après sauvegarde
+7. **Focus** : utilise `nextTick` + `document.getElementById()` pour trouver l'input (desktop ou mobile)
 
 ---
 
-## 9. Documents PDF (liens legacy)
+## 10. Logos
 
-Les documents PDF sont générés par le backend legacy. La page app4 fournit des liens vers ces fichiers :
+### 10.1 Construction du chemin
+
+Le frontend construit l'URL du logo avec une double stratégie de fallback :
+
+```javascript
+const getLogoUrl = (team) => {
+  // 1. Si le champ logo est renseigné en base → chemin relatif dans img/
+  if (team.logo) return `${legacyBase}/img/${team.logo}`
+  // 2. Sinon, convention legacy : img/KIP/logo/{Code_club}-logo.png
+  if (team.codeClub) return `${legacyBase}/img/KIP/logo/${team.codeClub}-logo.png`
+  // 3. Pas de logo
+  return null
+}
+```
+
+**Note** : Le champ `logo` en base contient un chemin relatif (ex: `KIP/logo/3512-logo.png`), ne pas ajouter le préfixe `KIP/logo/` lors de la construction de l'URL.
+
+### 10.2 Fichiers de logo
+
+Les logos sont stockés dans :
+- `img/KIP/logo/{code}-logo.png` (clubs français)
+- `img/Nations/{code}.png` (équipes nationales)
+
+La fonctionnalité "MAJ logos" scanne ces répertoires et met à jour les chemins en base. Les fichiers de cache JSON sont générés dans `live/cache/logos/`.
+
+---
+
+## 11. Documents PDF (liens legacy)
+
+Les documents PDF sont générés par le backend legacy. La page app4 fournit des liens vers ces fichiers via un dropdown click-toggle :
 
 | Document | URL Legacy | Paramètres |
 |----------|-----------|------------|
@@ -746,19 +894,20 @@ Les URLs sont construites avec `legacyBase` (config.public.legacyBaseUrl) comme 
 
 ---
 
-## 10. Sécurité
+## 12. Sécurité
 
-### 10.1 Validation côté serveur
+### 12.1 Validation côté serveur
 
 - Vérification que la compétition appartient à la saison demandée
+- **Vérification du verrouillage** : ajout et suppression bloqués si `Verrou = 1` (HTTP 403)
 - Vérification que l'utilisateur a accès à cette compétition (filtres)
 - Code club doit exister dans kp_club
 - Numéro d'équipe historique doit exister dans kp_equipe
 - Poule : 1 caractère A-Z ou vide
 - Tirage : entier 0-99
-- Suppression impossible si l'équipe a des matchs joués (nbMatchs > 0)
+- Suppression impossible si l'équipe a des matchs validés (`Validation = 'O'`, nbMatchs > 0)
 
-### 10.2 Audit
+### 12.2 Audit
 
 Toutes les actions sont journalisées dans kp_journal :
 - "Ajout equipe" (création)
@@ -770,29 +919,40 @@ Toutes les actions sont journalisées dans kp_journal :
 
 ---
 
-## 11. Notes de migration
+## 13. Notes techniques
 
-### 11.1 Page joueurs (GestionEquipeJoueur.php)
+### 13.1 MariaDB LIMIT
+
+Avec Doctrine DBAL sur MariaDB, les paramètres `LIMIT` ne peuvent pas être bindés via `?`. Le driver MariaDB traite les paramètres LIMIT bindés comme des chaînes, provoquant des erreurs SQL. Solution :
+
+```php
+// INCORRECT — provoque une erreur SQL
+$sql = "SELECT ... LIMIT ?";
+$stmt->executeQuery([$limit]);
+
+// CORRECT — cast et interpolation directe
+$sql = "SELECT ... LIMIT " . (int) $limit;
+$stmt->executeQuery([]);
+```
+
+### 13.2 Décompte des matchs
+
+La colonne `kp_match.Validation` (valeurs `'O'` / `'N'`) détermine si un match est validé. **Ne pas utiliser** la colonne `Statut` qui a une sémantique différente.
+
+### 13.3 Page joueurs (GestionEquipeJoueur.php)
 
 Le lien "Voir joueurs" naviguera vers la future page `/players?team={id}` quand elle sera migrée. En attendant, le lien pointera vers la page legacy `GestionEquipeJoueur.php?idEquipe={id}`.
 
-### 11.2 Compétition POOL
+### 13.4 Compétition POOL
 
 Le legacy supporte une compétition spéciale "POOL" pour les arbitres. L'historique des équipes n'est pas affiché pour ce type. Ce comportement est à conserver.
 
-### 11.3 Fichiers de logo
-
-Les logos sont stockés dans :
-- `img/KIP/logo/{code}-logo.png` (clubs français)
-- `img/Nations/{code}.png` (équipes nationales)
-
-La fonctionnalité "MAJ logos" scanne ces répertoires et met à jour les chemins en base. Les fichiers de cache JSON sont générés dans `live/cache/logos/`.
-
-### 11.4 Catégories joueurs
+### 13.5 Catégories joueurs
 
 Lors de la copie de composition, les catégories des joueurs sont recalculées en fonction de l'année de naissance et des tranches définies dans kp_categorie. Le backend gère ce recalcul automatiquement.
 
 ---
 
 **Document créé le** : 2026-02-04
-**Statut** : 📝 Spécification prête pour implémentation
+**Dernière mise à jour** : 2026-02-05
+**Statut** : ✅ Implémenté — frontend (app4) + backend (api2)
