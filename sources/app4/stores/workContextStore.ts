@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import type { Season, Competition, CompetitionGroup, FilterEvent } from '~/types'
 
 // Selection type for work context
-export type SelectionType = 'section' | 'group' | 'competition' | 'event' | null
+export type SelectionType = 'all' | 'selection' | 'section' | 'group' | 'event' | null
 
 // Section info
 export interface Section {
@@ -29,7 +29,7 @@ interface WorkContextState {
   // Selection values (one filled based on type)
   sectionId: number | null
   groupCode: string | null
-  competitionCode: string | null
+  selectedCompetitionCodes: string[] // multi-select competitions
   eventId: number | null
 
   // Computed competition codes (result of selection)
@@ -53,7 +53,7 @@ const STORAGE_KEYS = {
   selectionType: 'kpi_admin_work_type',
   sectionId: 'kpi_admin_work_section',
   groupCode: 'kpi_admin_work_group',
-  competitionCode: 'kpi_admin_work_competition',
+  selectedCompetitionCodes: 'kpi_admin_work_selections',
   eventId: 'kpi_admin_work_event',
 }
 
@@ -73,7 +73,7 @@ export const useWorkContextStore = defineStore('workContext', {
     selectionType: null,
     sectionId: null,
     groupCode: null,
-    competitionCode: null,
+    selectedCompetitionCodes: [],
     eventId: null,
     competitionCodes: [],
     seasons: [],
@@ -88,7 +88,10 @@ export const useWorkContextStore = defineStore('workContext', {
   getters: {
     // Check if context is valid
     hasValidContext(): boolean {
-      return this.season !== '' && this.selectionType !== null && this.competitionCodes.length > 0
+      if (this.season === '' || this.selectionType === null) return false
+      // 'all' is always valid if there are competitions
+      if (this.selectionType === 'all') return this.competitions.length > 0
+      return this.competitionCodes.length > 0
     },
 
     // Get active season object
@@ -162,15 +165,18 @@ export const useWorkContextStore = defineStore('workContext', {
       if (!this.selectionType) return ''
 
       switch (this.selectionType) {
+        case 'all':
+          return 'context.type_all'
+        case 'selection':
+          return `${this.selectedCompetitionCodes.length} compétition(s)`
         case 'section':
           return `Section ${this.sectionId}`
         case 'group':
           return `Groupe ${this.groupCode}`
-        case 'competition':
-          return this.competitionCode || ''
-        case 'event':
+        case 'event': {
           const event = this.events.find(e => e.id === this.eventId)
           return event?.libelle || ''
+        }
         default:
           return ''
       }
@@ -211,40 +217,68 @@ export const useWorkContextStore = defineStore('workContext', {
         await this.loadEvents(api)
 
         // Restore selection from localStorage
-        const storedType = localStorage.getItem(STORAGE_KEYS.selectionType) as SelectionType
+        let storedType = localStorage.getItem(STORAGE_KEYS.selectionType) as SelectionType
+        // Migrate old 'competition' type to 'selection'
+        if (storedType === 'competition' as string) {
+          storedType = 'selection'
+          const oldCode = localStorage.getItem('kpi_admin_work_competition')
+          if (oldCode) {
+            localStorage.setItem(STORAGE_KEYS.selectedCompetitionCodes, JSON.stringify([oldCode]))
+            localStorage.removeItem('kpi_admin_work_competition')
+          }
+          localStorage.setItem(STORAGE_KEYS.selectionType, 'selection')
+        }
         if (storedType) {
           this.selectionType = storedType
 
           switch (storedType) {
-            case 'section':
+            case 'all':
+              this.computeCompetitionCodes()
+              break
+            case 'selection': {
+              const stored = localStorage.getItem(STORAGE_KEYS.selectedCompetitionCodes)
+              if (stored) {
+                try {
+                  this.selectedCompetitionCodes = JSON.parse(stored)
+                }
+                catch {
+                  this.selectedCompetitionCodes = []
+                }
+                this.computeCompetitionCodes()
+              }
+              break
+            }
+            case 'section': {
               const sectionId = localStorage.getItem(STORAGE_KEYS.sectionId)
               if (sectionId) {
                 this.sectionId = parseInt(sectionId, 10)
                 this.computeCompetitionCodes()
               }
               break
-            case 'group':
+            }
+            case 'group': {
               const groupCode = localStorage.getItem(STORAGE_KEYS.groupCode)
               if (groupCode) {
                 this.groupCode = groupCode
                 this.computeCompetitionCodes()
               }
               break
-            case 'competition':
-              const competitionCode = localStorage.getItem(STORAGE_KEYS.competitionCode)
-              if (competitionCode) {
-                this.competitionCode = competitionCode
-                this.computeCompetitionCodes()
-              }
-              break
-            case 'event':
+            }
+            case 'event': {
               const eventId = localStorage.getItem(STORAGE_KEYS.eventId)
               if (eventId) {
                 this.eventId = parseInt(eventId, 10)
                 await this.loadEventCompetitions(api)
               }
               break
+            }
           }
+        }
+        else {
+          // Default to 'all' when no stored type
+          this.selectionType = 'all'
+          this.computeCompetitionCodes()
+          this.saveToStorage()
         }
 
         this.initialized = true
@@ -283,12 +317,16 @@ export const useWorkContextStore = defineStore('workContext', {
       }
     },
 
-    // Load events
+    // Load events (filtered by season)
     async loadEvents(apiInstance?: ReturnType<typeof useApi>) {
       const api = apiInstance ?? useApi()
 
       try {
-        const response = await api.get<{ events: FilterEvent[] }>('/admin/filters/events')
+        const params: Record<string, string> = {}
+        if (this.season) {
+          params.season = this.season
+        }
+        const response = await api.get<{ events: FilterEvent[] }>('/admin/filters/events', params)
         if (response) {
           this.events = response.events
         }
@@ -325,14 +363,45 @@ export const useWorkContextStore = defineStore('workContext', {
       // Clear current selection
       this.clearSelection()
 
-      // Reload season data
+      // Reload season data and events
       this.loading = true
       try {
-        await this.loadSeasonData(apiInstance)
+        await Promise.all([
+          this.loadSeasonData(apiInstance),
+          this.loadEvents(apiInstance),
+        ])
+        // Default to 'all' after season change
+        this.selectionType = 'all'
+        this.computeCompetitionCodes()
+        this.saveToStorage()
       }
       finally {
         this.loading = false
       }
+    },
+
+    // Select all competitions
+    selectAll() {
+      this.selectionType = 'all'
+      this.sectionId = null
+      this.groupCode = null
+      this.selectedCompetitionCodes = []
+      this.eventId = null
+
+      this.saveToStorage()
+      this.computeCompetitionCodes()
+    },
+
+    // Select multiple competitions
+    selectCompetitions(codes: string[]) {
+      this.selectionType = 'selection'
+      this.sectionId = null
+      this.groupCode = null
+      this.selectedCompetitionCodes = codes
+      this.eventId = null
+
+      this.saveToStorage()
+      this.computeCompetitionCodes()
     },
 
     // Select by section
@@ -340,7 +409,7 @@ export const useWorkContextStore = defineStore('workContext', {
       this.selectionType = 'section'
       this.sectionId = sectionId
       this.groupCode = null
-      this.competitionCode = null
+      this.selectedCompetitionCodes = []
       this.eventId = null
 
       this.saveToStorage()
@@ -352,19 +421,7 @@ export const useWorkContextStore = defineStore('workContext', {
       this.selectionType = 'group'
       this.sectionId = null
       this.groupCode = groupCode
-      this.competitionCode = null
-      this.eventId = null
-
-      this.saveToStorage()
-      this.computeCompetitionCodes()
-    },
-
-    // Select single competition
-    selectCompetition(code: string) {
-      this.selectionType = 'competition'
-      this.sectionId = null
-      this.groupCode = null
-      this.competitionCode = code
+      this.selectedCompetitionCodes = []
       this.eventId = null
 
       this.saveToStorage()
@@ -376,7 +433,7 @@ export const useWorkContextStore = defineStore('workContext', {
       this.selectionType = 'event'
       this.sectionId = null
       this.groupCode = null
-      this.competitionCode = null
+      this.selectedCompetitionCodes = []
       this.eventId = eventId
 
       this.saveToStorage()
@@ -386,6 +443,18 @@ export const useWorkContextStore = defineStore('workContext', {
     // Compute competition codes based on selection type
     computeCompetitionCodes() {
       switch (this.selectionType) {
+        case 'all':
+          // All competitions the user has access to
+          this.competitionCodes = this.competitions.map(c => c.code)
+          break
+
+        case 'selection':
+          // Multi-select competitions
+          this.competitionCodes = this.selectedCompetitionCodes.filter(code =>
+            this.competitions.some(c => c.code === code),
+          )
+          break
+
         case 'section':
           // All competitions from the section
           this.competitionCodes = this.competitions
@@ -403,11 +472,6 @@ export const useWorkContextStore = defineStore('workContext', {
             .map(c => c.code)
           break
 
-        case 'competition':
-          // Single competition
-          this.competitionCodes = this.competitionCode ? [this.competitionCode] : []
-          break
-
         case 'event':
           // Already loaded via loadEventCompetitions()
           break
@@ -422,14 +486,14 @@ export const useWorkContextStore = defineStore('workContext', {
       this.selectionType = null
       this.sectionId = null
       this.groupCode = null
-      this.competitionCode = null
+      this.selectedCompetitionCodes = []
       this.eventId = null
       this.competitionCodes = []
 
       localStorage.removeItem(STORAGE_KEYS.selectionType)
       localStorage.removeItem(STORAGE_KEYS.sectionId)
       localStorage.removeItem(STORAGE_KEYS.groupCode)
-      localStorage.removeItem(STORAGE_KEYS.competitionCode)
+      localStorage.removeItem(STORAGE_KEYS.selectedCompetitionCodes)
       localStorage.removeItem(STORAGE_KEYS.eventId)
     },
 
@@ -457,11 +521,11 @@ export const useWorkContextStore = defineStore('workContext', {
       else {
         localStorage.removeItem(STORAGE_KEYS.groupCode)
       }
-      if (this.competitionCode) {
-        localStorage.setItem(STORAGE_KEYS.competitionCode, this.competitionCode)
+      if (this.selectedCompetitionCodes.length > 0) {
+        localStorage.setItem(STORAGE_KEYS.selectedCompetitionCodes, JSON.stringify(this.selectedCompetitionCodes))
       }
       else {
-        localStorage.removeItem(STORAGE_KEYS.competitionCode)
+        localStorage.removeItem(STORAGE_KEYS.selectedCompetitionCodes)
       }
       if (this.eventId !== null) {
         localStorage.setItem(STORAGE_KEYS.eventId, String(this.eventId))

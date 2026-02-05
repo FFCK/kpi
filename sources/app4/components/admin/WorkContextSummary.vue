@@ -1,6 +1,25 @@
 <script setup lang="ts">
 const { t } = useI18n()
 const workContext = useWorkContextStore()
+
+const scopeLabel = computed(() => {
+  switch (workContext.selectionType) {
+    case 'all':
+      return t('context.type_all')
+    case 'selection':
+      return `${t('context.type_selection')} (${workContext.selectedCompetitionCodes.length})`
+    case 'section':
+      return `${t('context.type_section')} ${workContext.sectionId}`
+    case 'group':
+      return `${t('context.type_group')} ${workContext.groupCode}`
+    case 'event': {
+      const event = workContext.events.find(e => e.id === workContext.eventId)
+      return event?.libelle || t('context.type_event')
+    }
+    default:
+      return ''
+  }
+})
 </script>
 
 <template>
@@ -14,7 +33,7 @@ const workContext = useWorkContextStore()
       <div v-if="workContext.hasValidContext" class="flex items-center gap-2">
         <UIcon name="i-heroicons-funnel" class="w-5 h-5 text-blue-600 shrink-0" />
         <span class="text-sm text-gray-600">{{ t('context.scope') }}:</span>
-        <span class="font-semibold text-gray-900">{{ workContext.contextLabel }}</span>
+        <span class="font-semibold text-gray-900">{{ scopeLabel }}</span>
         <span class="text-sm text-gray-500">({{ t('context.competitions_count', { count: workContext.competitionCount }) }})</span>
       </div>
       <div v-else class="flex items-center gap-2 text-sm text-amber-600">

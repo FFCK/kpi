@@ -146,6 +146,7 @@ class AdminFiltersController extends AbstractController
 
     /**
      * Get events for a season (filtered by user restrictions)
+     * Only returns events that have competitions the user has access to in the given season
      */
     #[Route('/events', name: 'admin_filters_events', methods: ['GET'])]
     public function getEvents(Request $request): JsonResponse
@@ -155,22 +156,48 @@ class AdminFiltersController extends AbstractController
 
         $season = $request->query->get('season');
 
-        $sql = "SELECT Id, Libelle, Date_debut, Date_fin, Publication
-                FROM kp_evenement
-                ORDER BY Date_debut DESC, Libelle";
-
-        $result = $this->connection->executeQuery($sql);
-        $rows = $result->fetchAllAssociative();
-
         $allowedEvents = $user->getAllowedEvents();
+        $allowedCompetitions = $user->getAllowedCompetitions();
+
+        // Build query: only events that have competitions in the given season
+        // linked through journée-événement relationships
+        $params = [];
+        $sql = "SELECT DISTINCT e.Id, e.Libelle, e.Date_debut, e.Date_fin, e.Publication
+                FROM kp_evenement e
+                INNER JOIN kp_evenement_journee ej ON ej.Id_evenement = e.Id
+                INNER JOIN kp_journee j ON j.Id = ej.Id_journee";
+
+        $where = [];
+        if ($season) {
+            $where[] = 'j.Code_saison = ?';
+            $params[] = $season;
+        }
+
+        // Filter by user competition restrictions
+        if ($allowedCompetitions !== null) {
+            $placeholders = implode(',', array_fill(0, count($allowedCompetitions), '?'));
+            $where[] = "j.Code_competition IN ($placeholders)";
+            $params = array_merge($params, $allowedCompetitions);
+        }
+
+        // Filter by user event restrictions
+        if ($allowedEvents !== null) {
+            $placeholders = implode(',', array_fill(0, count($allowedEvents), '?'));
+            $where[] = "e.Id IN ($placeholders)";
+            $params = array_merge($params, $allowedEvents);
+        }
+
+        if (!empty($where)) {
+            $sql .= ' WHERE ' . implode(' AND ', $where);
+        }
+
+        $sql .= ' ORDER BY e.Date_debut DESC, e.Libelle';
+
+        $result = $this->connection->executeQuery($sql, $params);
+        $rows = $result->fetchAllAssociative();
 
         $events = [];
         foreach ($rows as $row) {
-            // Filter by user restrictions
-            if ($allowedEvents !== null && !in_array((int) $row['Id'], $allowedEvents)) {
-                continue;
-            }
-
             $events[] = [
                 'id' => (int) $row['Id'],
                 'libelle' => $row['Libelle'],
