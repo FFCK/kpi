@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Competition, FilterEvent } from '~/types'
+import type { FilterEvent } from '~/types'
 
 definePageMeta({
   layout: 'admin',
@@ -18,8 +18,6 @@ const legacyBase = config.public.legacyBaseUrl as string
 
 // State
 const loading = ref(true)
-const selectedCompetition = ref<Competition | null>(null)
-const selectedCompetitionCode = ref('')
 const events = ref<FilterEvent[]>([])
 const selectedEventId = ref<number | null>(null)
 const matchIds = ref<number[]>([])
@@ -29,10 +27,7 @@ const loadingMatchIds = ref(false)
 const profile = computed(() => authStore.user?.profile ?? 99)
 
 // Computed: competition type for ranking documents
-const competitionType = computed(() => selectedCompetition.value?.codeTypeclt ?? null)
-
-// Computed: competitions from context
-const contextCompetitions = computed(() => workContext.contextCompetitions)
+const competitionType = computed(() => workContext.pageCompetition?.codeTypeclt ?? null)
 
 // Load events
 const loadEvents = async () => {
@@ -51,7 +46,7 @@ const loadEvents = async () => {
 
 // Load match IDs for selected competition
 const loadMatchIds = async () => {
-  if (!workContext.season || !selectedCompetitionCode.value) {
+  if (!workContext.season || !workContext.pageCompetitionCode) {
     matchIds.value = []
     return
   }
@@ -59,7 +54,7 @@ const loadMatchIds = async () => {
   try {
     const response = await api.get<{ matchIds: number[] }>('/admin/filters/match-ids', {
       season: workContext.season,
-      competition: selectedCompetitionCode.value
+      competition: workContext.pageCompetitionCode
     })
     matchIds.value = response.matchIds
   } catch {
@@ -69,34 +64,22 @@ const loadMatchIds = async () => {
   }
 }
 
-// Select a competition by code
-const selectCompetition = (code: string) => {
-  selectedCompetitionCode.value = code
-  selectedCompetition.value = contextCompetitions.value.find(c => c.code === code) ?? null
+// Competition change handler from selector component
+function onCompetitionChange() {
   loadMatchIds()
 }
 
-// Auto-select first competition from context
-const autoSelectFirstCompetition = () => {
-  const comps = contextCompetitions.value
-  if (comps.length > 0 && !selectedCompetitionCode.value) {
-    selectCompetition(comps[0].code)
-  }
-}
-
-// Watch for context changes (resets competition selection)
+// Watch page competition changes to reload match IDs
 watch(
-  () => workContext.competitionCodes,
-  () => {
-    // If current selection is no longer in context, reset
-    if (selectedCompetitionCode.value && !workContext.competitionCodes.includes(selectedCompetitionCode.value)) {
-      selectedCompetitionCode.value = ''
-      selectedCompetition.value = null
+  () => workContext.pageCompetitionCode,
+  (code) => {
+    if (code) {
+      loadMatchIds()
+    }
+    else {
       matchIds.value = []
     }
-    autoSelectFirstCompetition()
   },
-  { deep: true }
 )
 
 // Build legacy PDF URL with season + competition params
@@ -104,7 +87,7 @@ watch(
 const pdfUrl = (file: string, extra?: Record<string, string | number>): string => {
   const params = new URLSearchParams()
   params.set('S', workContext.season)
-  params.set('Compet', selectedCompetitionCode.value)
+  params.set('Compet', workContext.pageCompetitionCode)
   if (extra) {
     Object.entries(extra).forEach(([k, v]) => params.set(k, String(v)))
   }
@@ -125,7 +108,7 @@ const eventPdfUrl = (file: string, paramName: string): string => {
 
 // Build app4 stats route
 const statsRoute = (type: string): string => {
-  return `/stats/${type}/${workContext.season}/${selectedCompetitionCode.value}`
+  return `/stats/${type}/${workContext.season}/${workContext.pageCompetitionCode}`
 }
 
 // Match sheets URL (using match IDs)
@@ -141,7 +124,7 @@ const cardsUrl = computed(() => {
 })
 
 // Has valid competition selected
-const hasCompetition = computed(() => !!selectedCompetitionCode.value && !!workContext.season)
+const hasCompetition = computed(() => !!workContext.pageCompetitionCode && !!workContext.season)
 
 // Has valid event selected
 const hasEvent = computed(() => !!selectedEventId.value)
@@ -150,7 +133,6 @@ const hasEvent = computed(() => !!selectedEventId.value)
 onMounted(async () => {
   loading.value = true
   await workContext.initContext()
-  autoSelectFirstCompetition()
   if (profile.value <= 2) {
     await loadEvents()
   }
@@ -174,39 +156,22 @@ onMounted(async () => {
     <div class="bg-white rounded-lg shadow p-4 mb-6">
       <div class="flex flex-wrap items-end gap-4">
         <div class="w-full sm:w-auto flex-1 min-w-0">
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            {{ t('context.competition_from_context') }}
-          </label>
-          <select
-            v-model="selectedCompetitionCode"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            @change="selectCompetition(selectedCompetitionCode)"
-          >
-            <option value="" disabled>{{ t('context.select_competition') }}</option>
-            <option
-              v-for="comp in contextCompetitions"
-              :key="comp.code"
-              :value="comp.code"
-            >
-              {{ comp.code }} - {{ comp.libelle }}
-              <template v-if="comp.soustitre"> ({{ comp.soustitre }})</template>
-            </option>
-          </select>
+          <AdminCompetitionSingleSelect @change="onCompetitionChange" />
         </div>
 
         <!-- Competition info badges -->
-        <div v-if="selectedCompetition" class="flex items-center gap-2">
+        <div v-if="workContext.pageCompetition" class="flex items-center gap-2">
           <span
-            v-if="selectedCompetition.enActif"
+            v-if="workContext.pageCompetition.enActif"
             class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-blue-100 text-blue-800"
           >
             EN
           </span>
           <span
-            v-if="selectedCompetition.codeTypeclt"
+            v-if="workContext.pageCompetition.codeTypeclt"
             class="inline-flex items-center px-2 py-1 rounded text-xs font-medium bg-gray-100 text-gray-700"
           >
-            {{ selectedCompetition.codeTypeclt }}
+            {{ workContext.pageCompetition.codeTypeclt }}
           </span>
         </div>
       </div>

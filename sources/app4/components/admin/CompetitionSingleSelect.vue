@@ -2,12 +2,8 @@
 const { t } = useI18n()
 const workContext = useWorkContextStore()
 
-const props = defineProps<{
-  modelValue: string
-}>()
-
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: string): void
+  (e: 'change', code: string): void
 }>()
 
 // Available competitions from context
@@ -17,11 +13,33 @@ const availableCompetitions = computed(() =>
   ),
 )
 
-// Selected code with v-model binding
-const selectedCode = computed({
-  get: () => props.modelValue,
-  set: val => emit('update:modelValue', val),
-})
+// Handle selection change
+function onSelect(code: string) {
+  workContext.setPageCompetition(code)
+  emit('change', code)
+}
+
+// Auto-select: when competitions change, ensure we have a valid selection
+watch(
+  () => workContext.competitionCodes,
+  (codes) => {
+    if (!codes.length) {
+      if (workContext.pageCompetitionCode) {
+        workContext.setPageCompetition('')
+        emit('change', '')
+      }
+      return
+    }
+    // If current selection is still valid, keep it
+    if (workContext.pageCompetitionCode && codes.includes(workContext.pageCompetitionCode)) {
+      return
+    }
+    // Auto-select first
+    workContext.setPageCompetition(codes[0])
+    emit('change', codes[0])
+  },
+  { immediate: true },
+)
 
 // Format competition label
 function formatCompetitionLabel(comp: { code: string; libelle: string; soustitre?: string | null }): string {
@@ -41,10 +59,10 @@ function formatCompetitionLabel(comp: { code: string; libelle: string; soustitre
 
     <select
       v-else
-      v-model="selectedCode"
-      class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+      :value="workContext.pageCompetitionCode"
+      class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+      @change="onSelect(($event.target as HTMLSelectElement).value)"
     >
-      <option value="" disabled>{{ t('context.select_competition') }}</option>
       <option
         v-for="comp in availableCompetitions"
         :key="comp.code"

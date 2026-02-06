@@ -23,7 +23,7 @@ const scopeLabel = computed(() => {
 </script>
 
 <template>
-  <div class="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+  <div class="mb-4 px-4 py-1 bg-blue-50 border border-blue-200 rounded-lg">
     <div class="flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between gap-2 sm:gap-4">
       <div class="flex items-center gap-2">
         <UIcon name="i-heroicons-calendar" class="w-5 h-5 text-blue-600 shrink-0" />

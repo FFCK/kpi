@@ -35,6 +35,9 @@ interface WorkContextState {
   // Computed competition codes (result of selection)
   competitionCodes: string[]
 
+  // Page-level single competition selection (persisted, shared across pages)
+  pageCompetitionCode: string
+
   // Reference data (loaded from API)
   seasons: Season[]
   groups: CompetitionGroup[]
@@ -55,6 +58,7 @@ const STORAGE_KEYS = {
   groupCode: 'kpi_admin_work_group',
   selectedCompetitionCodes: 'kpi_admin_work_selections',
   eventId: 'kpi_admin_work_event',
+  pageCompetitionCode: 'kpi_admin_work_page_competition',
 }
 
 // Sections definition
@@ -76,6 +80,7 @@ export const useWorkContextStore = defineStore('workContext', {
     selectedCompetitionCodes: [],
     eventId: null,
     competitionCodes: [],
+    pageCompetitionCode: '',
     seasons: [],
     groups: [],
     competitions: [],
@@ -158,6 +163,12 @@ export const useWorkContextStore = defineStore('workContext', {
     // Get competitions from context
     contextCompetitions(): Competition[] {
       return this.competitions.filter(c => this.competitionCodes.includes(c.code))
+    },
+
+    // Get active page competition object
+    pageCompetition(): Competition | undefined {
+      if (!this.pageCompetitionCode) return undefined
+      return this.competitions.find(c => c.code === this.pageCompetitionCode)
     },
 
     // Get context label for display
@@ -281,6 +292,12 @@ export const useWorkContextStore = defineStore('workContext', {
           this.saveToStorage()
         }
 
+        // Restore page-level competition selection
+        const storedPageCompetition = localStorage.getItem(STORAGE_KEYS.pageCompetitionCode)
+        if (storedPageCompetition && this.competitionCodes.includes(storedPageCompetition)) {
+          this.pageCompetitionCode = storedPageCompetition
+        }
+
         this.initialized = true
       }
       catch (error) {
@@ -380,6 +397,12 @@ export const useWorkContextStore = defineStore('workContext', {
       }
     },
 
+    // Reset page competition (called on any scope change)
+    resetPageCompetition() {
+      this.pageCompetitionCode = ''
+      localStorage.removeItem(STORAGE_KEYS.pageCompetitionCode)
+    },
+
     // Select all competitions
     selectAll() {
       this.selectionType = 'all'
@@ -388,6 +411,7 @@ export const useWorkContextStore = defineStore('workContext', {
       this.selectedCompetitionCodes = []
       this.eventId = null
 
+      this.resetPageCompetition()
       this.saveToStorage()
       this.computeCompetitionCodes()
     },
@@ -400,6 +424,7 @@ export const useWorkContextStore = defineStore('workContext', {
       this.selectedCompetitionCodes = codes
       this.eventId = null
 
+      this.resetPageCompetition()
       this.saveToStorage()
       this.computeCompetitionCodes()
     },
@@ -412,6 +437,7 @@ export const useWorkContextStore = defineStore('workContext', {
       this.selectedCompetitionCodes = []
       this.eventId = null
 
+      this.resetPageCompetition()
       this.saveToStorage()
       this.computeCompetitionCodes()
     },
@@ -424,6 +450,7 @@ export const useWorkContextStore = defineStore('workContext', {
       this.selectedCompetitionCodes = []
       this.eventId = null
 
+      this.resetPageCompetition()
       this.saveToStorage()
       this.computeCompetitionCodes()
     },
@@ -436,8 +463,20 @@ export const useWorkContextStore = defineStore('workContext', {
       this.selectedCompetitionCodes = []
       this.eventId = eventId
 
+      this.resetPageCompetition()
       this.saveToStorage()
       await this.loadEventCompetitions(apiInstance)
+    },
+
+    // Set page-level competition (persisted across pages)
+    setPageCompetition(code: string) {
+      this.pageCompetitionCode = code
+      if (code) {
+        localStorage.setItem(STORAGE_KEYS.pageCompetitionCode, code)
+      }
+      else {
+        localStorage.removeItem(STORAGE_KEYS.pageCompetitionCode)
+      }
     },
 
     // Compute competition codes based on selection type
@@ -489,12 +528,14 @@ export const useWorkContextStore = defineStore('workContext', {
       this.selectedCompetitionCodes = []
       this.eventId = null
       this.competitionCodes = []
+      this.pageCompetitionCode = ''
 
       localStorage.removeItem(STORAGE_KEYS.selectionType)
       localStorage.removeItem(STORAGE_KEYS.sectionId)
       localStorage.removeItem(STORAGE_KEYS.groupCode)
       localStorage.removeItem(STORAGE_KEYS.selectedCompetitionCodes)
       localStorage.removeItem(STORAGE_KEYS.eventId)
+      localStorage.removeItem(STORAGE_KEYS.pageCompetitionCode)
     },
 
     // Clear everything

@@ -30,7 +30,6 @@ const loading = ref(false)
 const teams = ref<CompetitionTeam[]>([])
 const total = ref(0)
 const competitionInfo = ref<CompetitionTeamInfo | null>(null)
-const selectedCompetition = ref('')
 
 // Selection state
 const selectedIds = ref<number[]>([])
@@ -182,16 +181,10 @@ const teamsByPool = computed(() => {
   }))
 })
 
-// Computed: competitions list for selector
-const competitionOptions = computed(() => {
-  if (!workContext.contextCompetitions) return []
-  return workContext.contextCompetitions
-})
-
 // Computed: competition options for duplicate source
 const duplicateSourceOptions = computed(() => {
   if (!workContext.contextCompetitions) return []
-  return workContext.contextCompetitions.filter(c => c.code !== selectedCompetition.value)
+  return workContext.contextCompetitions.filter(c => c.code !== workContext.pageCompetitionCode)
 })
 
 // Legacy base URL for PDF links
@@ -233,13 +226,13 @@ function getDefaultDuplicateFormData(): DuplicateFormData {
 
 // Load teams for selected competition
 const loadTeams = async () => {
-  if (!workContext.initialized || !workContext.season || !selectedCompetition.value) return
+  if (!workContext.initialized || !workContext.season || !workContext.pageCompetitionCode) return
 
   loading.value = true
   try {
     const response = await api.get<CompetitionTeamsResponse>('/admin/competition-teams', {
       season: workContext.season,
-      competition: selectedCompetition.value
+      competition: workContext.pageCompetitionCode
     })
     teams.value = response.teams
     competitionInfo.value = response.competition
@@ -254,39 +247,29 @@ const loadTeams = async () => {
   }
 }
 
-// Watch competition selection
-watch(selectedCompetition, () => {
-  if (selectedCompetition.value) {
-    loadTeams()
-  } else {
-    teams.value = []
-    competitionInfo.value = null
-    total.value = 0
-  }
-})
-
-// Watch context changes
+// Watch page competition changes (triggered by CompetitionSingleSelect component)
 watch(
-  () => [workContext.initialized, workContext.season, workContext.competitionCodes],
-  () => {
-    if (workContext.initialized && workContext.season) {
-      // Auto-select first competition if only one
-      if (workContext.competitionCodes.length === 1) {
-        selectedCompetition.value = workContext.competitionCodes[0]
-      } else if (selectedCompetition.value && !workContext.competitionCodes.includes(selectedCompetition.value)) {
-        selectedCompetition.value = ''
-      }
+  () => workContext.pageCompetitionCode,
+  (code) => {
+    if (code) {
+      loadTeams()
+    }
+    else {
+      teams.value = []
+      competitionInfo.value = null
+      total.value = 0
     }
   },
-  { deep: true }
 )
+
+// Competition change handler from selector component
+function onCompetitionChange() {
+  // Watch above handles the reload
+}
 
 // Load on mount
 onMounted(async () => {
   await workContext.initContext()
-  if (workContext.competitionCodes.length === 1) {
-    selectedCompetition.value = workContext.competitionCodes[0]
-  }
 })
 
 // Selection handlers
@@ -506,7 +489,7 @@ const saveAddForm = async () => {
   try {
     const body: Record<string, unknown> = {
       season: workContext.season,
-      competition: selectedCompetition.value,
+      competition: workContext.pageCompetitionCode,
       mode: addFormData.value.mode,
       poule: addFormData.value.poule,
       tirage: addFormData.value.tirage
@@ -584,7 +567,7 @@ const saveDuplicateForm = async () => {
   try {
     await api.post('/admin/competition-teams/duplicate', {
       season: workContext.season,
-      targetCompetition: selectedCompetition.value,
+      targetCompetition: workContext.pageCompetitionCode,
       sourceCompetition: duplicateFormData.value.sourceCompetition,
       sourceSeason: duplicateFormData.value.sourceSeason || workContext.season,
       mode: duplicateFormData.value.mode,
@@ -656,7 +639,7 @@ const confirmInitStarters = async () => {
   try {
     await api.post('/admin/competition-teams/init-starters', {
       season: workContext.season,
-      competition: selectedCompetition.value
+      competition: workContext.pageCompetitionCode
     })
     toast.add({ title: t('common.success'), description: t('teams_page.success_init_starters'), color: 'success', duration: 3000 })
     initStartersModalOpen.value = false
@@ -673,7 +656,7 @@ const confirmUpdateLogos = async () => {
   try {
     await api.post('/admin/competition-teams/update-logos', {
       season: workContext.season,
-      competition: selectedCompetition.value
+      competition: workContext.pageCompetitionCode
     })
     toast.add({ title: t('common.success'), description: t('teams_page.success_update_logos'), color: 'success', duration: 3000 })
     updateLogosModalOpen.value = false
@@ -691,7 +674,7 @@ const toggleLock = async () => {
   try {
     const response = await api.patch<{ verrou: boolean }>('/admin/competition-teams/toggle-lock', {
       season: workContext.season,
-      competition: selectedCompetition.value
+      competition: workContext.pageCompetitionCode
     })
     competitionInfo.value.verrou = response.verrou
     toast.add({
@@ -788,20 +771,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
     <div class="mb-6 bg-white rounded-lg shadow p-4">
       <div class="flex flex-wrap items-center gap-4">
         <div class="flex-1 min-w-[250px]">
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            {{ t('teams_page.select_competition') }}
-          </label>
-          <select
-            v-model="selectedCompetition"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          >
-            <option value="">
-              -- {{ t('teams_page.select_competition') }} --
-            </option>
-            <option v-for="comp in competitionOptions" :key="comp.code" :value="comp.code">
-              {{ comp.code }} - {{ comp.libelle }}
-            </option>
-          </select>
+          <AdminCompetitionSingleSelect @change="onCompetitionChange" />
         </div>
 
         <!-- Competition badges -->
@@ -854,12 +824,12 @@ const getLogoUrl = (team: CompetitionTeam) => {
     </div>
 
     <!-- No competition selected -->
-    <div v-if="!selectedCompetition" class="bg-white rounded-lg shadow p-8 text-center text-gray-500">
+    <div v-if="!workContext.pageCompetitionCode" class="bg-white rounded-lg shadow p-8 text-center text-gray-500">
       {{ t('teams_page.no_competition') }}
     </div>
 
     <!-- Teams content -->
-    <template v-if="selectedCompetition">
+    <template v-if="workContext.pageCompetitionCode">
       <!-- Toolbar -->
       <div class="mb-4 bg-white rounded-lg shadow p-4">
         <div class="flex flex-wrap items-center gap-2">
