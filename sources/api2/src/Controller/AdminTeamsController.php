@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Trait\AdminLoggableTrait;
 use Doctrine\DBAL\Connection;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,6 +24,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[OA\Tag(name: '26. App4 - Teams')]
 class AdminTeamsController extends AbstractController
 {
+    use AdminLoggableTrait;
+
     public function __construct(
         private readonly Connection $connection
     ) {
@@ -450,7 +453,7 @@ class AdminTeamsController extends AbstractController
             }
 
             $this->connection->commit();
-            $this->logAction('Ajout equipe', $season, "$competition: $addedCount équipe(s)");
+            $this->logActionForSeason('Ajout equipe', $season, "$competition: $addedCount équipe(s)");
 
             return $this->json([
                 'message' => "$addedCount team(s) added successfully",
@@ -515,7 +518,7 @@ class AdminTeamsController extends AbstractController
             $stmt->executeStatement([$id]);
 
             $this->connection->commit();
-            $this->logAction('Suppression equipes', $team['Code_saison'], "{$team['Code_compet']}: {$team['Libelle']}");
+            $this->logActionForSeason('Suppression equipes', $team['Code_saison'], "{$team['Code_compet']}: {$team['Libelle']}");
 
             return $this->json(['message' => 'Team deleted successfully']);
         } catch (\Exception $e) {
@@ -601,7 +604,7 @@ class AdminTeamsController extends AbstractController
             }
 
             $this->connection->commit();
-            $this->logAction('Suppression equipes', $season, "$deletedCount équipe(s) supprimée(s)");
+            $this->logActionForSeason('Suppression equipes', $season, "$deletedCount équipe(s) supprimée(s)");
 
             return $this->json([
                 'message' => "$deletedCount team(s) deleted" . ($skippedCount > 0 ? ", $skippedCount skipped (have matches)" : ''),
@@ -655,7 +658,7 @@ class AdminTeamsController extends AbstractController
         $stmt = $this->connection->prepare($sql);
         $stmt->executeStatement([$poule, $tirage, $id]);
 
-        $this->logAction('Tirage au sort', $team['Code_saison'], "{$team['Code_compet']}: id=$id poule=$poule tirage=$tirage");
+        $this->logActionForSeason('Tirage au sort', $team['Code_saison'], "{$team['Code_compet']}: id=$id poule=$poule tirage=$tirage");
 
         return $this->json([
             'id' => $id,
@@ -745,7 +748,7 @@ class AdminTeamsController extends AbstractController
             }
 
             $this->connection->commit();
-            $this->logAction('Update couleurs equipe', $team['Code_saison'], "{$team['Code_compet']}: id=$id");
+            $this->logActionForSeason('Update couleurs equipe', $team['Code_saison'], "{$team['Code_compet']}: id=$id");
 
             return $this->json([
                 'id' => $id,
@@ -850,7 +853,7 @@ class AdminTeamsController extends AbstractController
             }
 
             $this->connection->commit();
-            $this->logAction('Duplication equipes', $season, "$sourceCompetition -> $targetCompetition: $addedCount équipe(s)");
+            $this->logActionForSeason('Duplication equipes', $season, "$sourceCompetition -> $targetCompetition: $addedCount équipe(s)");
 
             return $this->json([
                 'message' => "$addedCount team(s) duplicated successfully",
@@ -927,7 +930,7 @@ class AdminTeamsController extends AbstractController
             }
         }
 
-        $this->logAction('Update logo equipes', $season, "$competition: $updatedCount logo(s)");
+        $this->logActionForSeason('Update logo equipes', $season, "$competition: $updatedCount logo(s)");
 
         return $this->json([
             'message' => "$updatedCount logo(s) updated",
@@ -1011,7 +1014,7 @@ class AdminTeamsController extends AbstractController
             }
 
             $this->connection->commit();
-            $this->logAction('Init titulaires', $season, "$competition: $teamsInitialized équipe(s)");
+            $this->logActionForSeason('Init titulaires', $season, "$competition: $teamsInitialized équipe(s)");
 
             return $this->json([
                 'message' => "Starters initialized for $teamsInitialized team(s). Competition locked.",
@@ -1088,22 +1091,4 @@ class AdminTeamsController extends AbstractController
         $stmt->executeStatement([$targetTeamId, $sourceTeamId]);
     }
 
-    /**
-     * Log admin action to journal table
-     */
-    private function logAction(string $action, ?string $season = null, ?string $details = null): void
-    {
-        try {
-            $user = $this->getUser();
-            $userId = $user?->getUserIdentifier() ?? 'system';
-
-            $sql = "INSERT INTO kp_journal (Date, Heure, User, Action, Code_saison, Details)
-                    VALUES (CURDATE(), CURTIME(), ?, ?, ?, ?)";
-
-            $stmt = $this->connection->prepare($sql);
-            $stmt->executeStatement([$userId, $action, $season, $details]);
-        } catch (\Exception) {
-            // Log silently fails - don't break the main operation
-        }
-    }
 }

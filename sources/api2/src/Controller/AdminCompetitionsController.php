@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Trait\AdminLoggableTrait;
 use Doctrine\DBAL\Connection;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,6 +24,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[OA\Tag(name: '25. App4 - Competitions')]
 class AdminCompetitionsController extends AbstractController
 {
+    use AdminLoggableTrait;
+
     private const SECTION_LABELS = [
         1 => 'Championnat National',
         2 => 'Coupe de France',
@@ -43,16 +46,9 @@ class AdminCompetitionsController extends AbstractController
     #[Route('', name: 'admin_competitions_list', methods: ['GET'])]
     public function list(Request $request): JsonResponse
     {
-        $season = $request->query->get('season', '');
-        if (empty($season)) {
-            // Get active season
-            $sql = "SELECT Code FROM kp_saison WHERE Etat = 'A' LIMIT 1";
-            $stmt = $this->connection->prepare($sql);
-            $result = $stmt->executeQuery();
-            $season = $result->fetchOne();
-            if (!$season) {
-                return $this->json(['message' => 'No active season found'], Response::HTTP_BAD_REQUEST);
-            }
+        $season = $this->getSeasonOrActive($request);
+        if (!$season) {
+            return $this->json(['message' => 'No active season found'], Response::HTTP_BAD_REQUEST);
         }
 
         // Apply user filters
@@ -223,13 +219,7 @@ class AdminCompetitionsController extends AbstractController
     #[Route('/{code}', name: 'admin_competitions_get', methods: ['GET'])]
     public function get(string $code, Request $request): JsonResponse
     {
-        $season = $request->query->get('season', '');
-        if (empty($season)) {
-            $sql = "SELECT Code FROM kp_saison WHERE Etat = 'A' LIMIT 1";
-            $stmt = $this->connection->prepare($sql);
-            $result = $stmt->executeQuery();
-            $season = $result->fetchOne();
-        }
+        $season = $this->getSeasonOrActive($request);
 
         $sql = "SELECT c.*, g.section, g.ordre,
                        (SELECT COUNT(*) FROM kp_competition_equipe ce WHERE ce.Code_compet = c.Code AND ce.Code_saison = c.Code_saison) as nbEquipes,
@@ -325,11 +315,8 @@ class AdminCompetitionsController extends AbstractController
             return $this->json(['message' => 'Libelle must be 80 characters or less'], Response::HTTP_BAD_REQUEST);
         }
 
-        // Get active season
-        $sql = "SELECT Code FROM kp_saison WHERE Etat = 'A' LIMIT 1";
-        $stmt = $this->connection->prepare($sql);
-        $result = $stmt->executeQuery();
-        $season = $result->fetchOne();
+        // Get season from request body or fallback to active season
+        $season = $this->getSeasonOrActive($request, $data);
         if (!$season) {
             return $this->json(['message' => 'No active season found'], Response::HTTP_BAD_REQUEST);
         }
@@ -385,7 +372,7 @@ class AdminCompetitionsController extends AbstractController
         ]);
 
         // Log action
-        $this->logAction('Ajout Compet', $season, $code);
+        $this->logActionForSeason('Ajout Compet', $season, $code);
 
         return $this->json([
             'code' => $code,
@@ -406,11 +393,10 @@ class AdminCompetitionsController extends AbstractController
             return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
         }
 
-        // Get active season
-        $sql = "SELECT Code FROM kp_saison WHERE Etat = 'A' LIMIT 1";
-        $stmt = $this->connection->prepare($sql);
-        $result = $stmt->executeQuery();
-        $season = $result->fetchOne();
+        $data = json_decode($request->getContent(), true);
+
+        // Get season from request or fallback to active season
+        $season = $this->getSeasonOrActive($request, $data);
 
         // Check if competition exists
         $checkSql = "SELECT Code FROM kp_competition WHERE Code = ? AND Code_saison = ?";
@@ -419,8 +405,6 @@ class AdminCompetitionsController extends AbstractController
         if (!$result->fetchOne()) {
             return $this->json(['message' => 'Competition not found'], Response::HTTP_NOT_FOUND);
         }
-
-        $data = json_decode($request->getContent(), true);
 
         // Validate
         $libelle = trim($data['libelle'] ?? '');
@@ -476,7 +460,7 @@ class AdminCompetitionsController extends AbstractController
         ]);
 
         // Log action
-        $this->logAction('Modif Competition', $season, $code);
+        $this->logActionForSeason('Modif Competition', $season, $code);
 
         return $this->json([
             'code' => $code,
@@ -490,7 +474,7 @@ class AdminCompetitionsController extends AbstractController
      */
     #[Route('/{code}', name: 'admin_competitions_delete', methods: ['DELETE'])]
     #[IsGranted('ROLE_SUPER_ADMIN')]
-    public function delete(string $code): JsonResponse
+    public function delete(string $code, Request $request): JsonResponse
     {
         /** @var User|null $user */
         $user = $this->getUser();
@@ -498,11 +482,8 @@ class AdminCompetitionsController extends AbstractController
             return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
         }
 
-        // Get active season
-        $sql = "SELECT Code FROM kp_saison WHERE Etat = 'A' LIMIT 1";
-        $stmt = $this->connection->prepare($sql);
-        $result = $stmt->executeQuery();
-        $season = $result->fetchOne();
+        // Get season from request or fallback to active season
+        $season = $this->getSeasonOrActive($request);
 
         // Check if competition exists
         $checkSql = "SELECT Code FROM kp_competition WHERE Code = ? AND Code_saison = ?";
@@ -544,7 +525,7 @@ class AdminCompetitionsController extends AbstractController
             $stmt->executeStatement([$code, $season]);
 
             // Log action
-            $this->logAction('Suppression Compet', $season, $code);
+            $this->logActionForSeason('Suppression Compet', $season, $code);
 
             return $this->json(null, Response::HTTP_NO_CONTENT);
         } catch (\Exception) {
@@ -574,11 +555,8 @@ class AdminCompetitionsController extends AbstractController
             return $this->json(['message' => 'No competition codes provided'], Response::HTTP_BAD_REQUEST);
         }
 
-        // Get active season
-        $sql = "SELECT Code FROM kp_saison WHERE Etat = 'A' LIMIT 1";
-        $stmt = $this->connection->prepare($sql);
-        $result = $stmt->executeQuery();
-        $season = $result->fetchOne();
+        // Get season from request body or fallback to active season
+        $season = $this->getSeasonOrActive($request, $data);
 
         $placeholders = implode(',', array_fill(0, count($codes), '?'));
         $params = array_merge($codes, [$season]);
@@ -630,7 +608,7 @@ class AdminCompetitionsController extends AbstractController
             $stmt->executeStatement($params);
 
             // Log action
-            $this->logAction('Suppression Compets', $season, implode(',', $codes));
+            $this->logActionForSeason('Suppression Compets', $season, implode(',', $codes));
 
             return $this->json(['deleted' => count($codes)]);
         } catch (\Exception) {
@@ -644,7 +622,7 @@ class AdminCompetitionsController extends AbstractController
      * Toggle competition publication status (profile <= 4)
      */
     #[Route('/{code}/publish', name: 'admin_competitions_toggle_publish', methods: ['PATCH'])]
-    public function togglePublish(string $code): JsonResponse
+    public function togglePublish(string $code, Request $request): JsonResponse
     {
         /** @var User|null $user */
         $user = $this->getUser();
@@ -652,11 +630,8 @@ class AdminCompetitionsController extends AbstractController
             return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
         }
 
-        // Get active season
-        $sql = "SELECT Code FROM kp_saison WHERE Etat = 'A' LIMIT 1";
-        $stmt = $this->connection->prepare($sql);
-        $result = $stmt->executeQuery();
-        $season = $result->fetchOne();
+        // Get season from request or fallback to active season
+        $season = $this->getSeasonOrActive($request);
 
         // Get current value
         $sql = "SELECT Publication FROM kp_competition WHERE Code = ? AND Code_saison = ?";
@@ -675,7 +650,7 @@ class AdminCompetitionsController extends AbstractController
         $stmt->executeStatement([$newValue, $code, $season]);
 
         // Log action
-        $this->logAction('Publication competition', $season, "$code: $newValue");
+        $this->logActionForSeason('Publication competition', $season, "$code: $newValue");
 
         return $this->json([
             'code' => $code,
@@ -687,7 +662,7 @@ class AdminCompetitionsController extends AbstractController
      * Toggle competition lock status (profile <= 3)
      */
     #[Route('/{code}/lock', name: 'admin_competitions_toggle_lock', methods: ['PATCH'])]
-    public function toggleLock(string $code): JsonResponse
+    public function toggleLock(string $code, Request $request): JsonResponse
     {
         /** @var User|null $user */
         $user = $this->getUser();
@@ -695,11 +670,8 @@ class AdminCompetitionsController extends AbstractController
             return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
         }
 
-        // Get active season
-        $sql = "SELECT Code FROM kp_saison WHERE Etat = 'A' LIMIT 1";
-        $stmt = $this->connection->prepare($sql);
-        $result = $stmt->executeQuery();
-        $season = $result->fetchOne();
+        // Get season from request or fallback to active season
+        $season = $this->getSeasonOrActive($request);
 
         // Get current value
         $sql = "SELECT Verrou FROM kp_competition WHERE Code = ? AND Code_saison = ?";
@@ -718,7 +690,7 @@ class AdminCompetitionsController extends AbstractController
         $stmt->executeStatement([$newValue, $code, $season]);
 
         // Log action
-        $this->logAction('Verrou Compet', $season, "$code: $newValue");
+        $this->logActionForSeason('Verrou Compet', $season, "$code: $newValue");
 
         return $this->json([
             'code' => $code,
@@ -745,11 +717,8 @@ class AdminCompetitionsController extends AbstractController
             return $this->json(['message' => 'Invalid status. Must be ATT, ON or END'], Response::HTTP_BAD_REQUEST);
         }
 
-        // Get active season
-        $sql = "SELECT Code FROM kp_saison WHERE Etat = 'A' LIMIT 1";
-        $stmt = $this->connection->prepare($sql);
-        $result = $stmt->executeQuery();
-        $season = $result->fetchOne();
+        // Get season from request or fallback to active season
+        $season = $this->getSeasonOrActive($request, $data);
 
         // Check if competition exists
         $sql = "SELECT Code FROM kp_competition WHERE Code = ? AND Code_saison = ?";
@@ -764,7 +733,7 @@ class AdminCompetitionsController extends AbstractController
         $stmt->executeStatement([$newStatus, $code, $season]);
 
         // Log action
-        $this->logAction('Statut Competition', $season, "$code: $newStatus");
+        $this->logActionForSeason('Statut Competition', $season, "$code: $newStatus");
 
         return $this->json([
             'code' => $code,
@@ -807,13 +776,7 @@ class AdminCompetitionsController extends AbstractController
     #[Route('-for-multi', name: 'admin_competitions_for_multi', methods: ['GET'])]
     public function listForMulti(Request $request): JsonResponse
     {
-        $season = $request->query->get('season', '');
-        if (empty($season)) {
-            $sql = "SELECT Code FROM kp_saison WHERE Etat = 'A' LIMIT 1";
-            $stmt = $this->connection->prepare($sql);
-            $result = $stmt->executeQuery();
-            $season = $result->fetchOne();
-        }
+        $season = $this->getSeasonOrActive($request);
 
         $sql = "SELECT c.Code, c.Libelle, c.Code_typeclt, c.Code_tour, c.GroupOrder,
                        g.section, g.ordre, g.Groupe as GroupeLibelle
@@ -863,6 +826,31 @@ class AdminCompetitionsController extends AbstractController
     }
 
     /**
+     * Get season from request (query param or body) with active season fallback.
+     * Returns the season code or null if no season could be determined.
+     */
+    private function getSeasonOrActive(Request $request, ?array $data = null): ?string
+    {
+        // Try query parameter first
+        $season = $request->query->get('season', '');
+
+        // Try request body if available
+        if (empty($season) && $data !== null) {
+            $season = $data['season'] ?? '';
+        }
+
+        // Fallback to active season
+        if (empty($season)) {
+            $sql = "SELECT Code FROM kp_saison WHERE Etat = 'A' LIMIT 1";
+            $stmt = $this->connection->prepare($sql);
+            $result = $stmt->executeQuery();
+            $season = $result->fetchOne() ?: null;
+        }
+
+        return $season ?: null;
+    }
+
+    /**
      * Build image path for competition
      */
     private function buildImagePath(string $type, ?string $codeRef, string $season): ?string
@@ -873,22 +861,4 @@ class AdminCompetitionsController extends AbstractController
         return "/img/logo/{$type}-{$codeRef}-{$season}.jpg";
     }
 
-    /**
-     * Log admin action to journal table
-     */
-    private function logAction(string $action, ?string $season = null, ?string $details = null): void
-    {
-        try {
-            $user = $this->getUser();
-            $userId = $user?->getUserIdentifier() ?? 'system';
-
-            $sql = "INSERT INTO kp_journal (Date, Heure, User, Action, Code_saison, Details)
-                    VALUES (CURDATE(), CURTIME(), ?, ?, ?, ?)";
-
-            $stmt = $this->connection->prepare($sql);
-            $stmt->executeStatement([$userId, $action, $season, $details]);
-        } catch (\Exception) {
-            // Log silently fails - don't break the main operation
-        }
-    }
 }

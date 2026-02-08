@@ -290,7 +290,7 @@ const saveCompetition = async () => {
   try {
     if (editingCompetition.value) {
       // Update
-      await api.put(`/admin/competitions/${editingCompetition.value.code}`, formData.value)
+      await api.put(`/admin/competitions/${editingCompetition.value.code}?season=${workContext.season}`, formData.value)
       toast.add({
         title: t('common.success'),
         description: t('competitions.success_updated'),
@@ -299,7 +299,7 @@ const saveCompetition = async () => {
       })
     } else {
       // Create
-      await api.post('/admin/competitions', formData.value)
+      await api.post('/admin/competitions', { ...formData.value, season: workContext.season })
       toast.add({
         title: t('common.success'),
         description: t('competitions.success_created'),
@@ -319,7 +319,7 @@ const saveCompetition = async () => {
 // Toggle publication
 const togglePublication = async (competition: AdminCompetition) => {
   try {
-    const response = await api.patch<{ publication: boolean }>(`/admin/competitions/${competition.code}/publish`)
+    const response = await api.patch<{ publication: boolean }>(`/admin/competitions/${competition.code}/publish?season=${workContext.season}`)
     competition.publication = response.publication
     toast.add({
       title: t('common.success'),
@@ -340,7 +340,7 @@ const togglePublication = async (competition: AdminCompetition) => {
 // Toggle lock
 const toggleLock = async (competition: AdminCompetition) => {
   try {
-    const response = await api.patch<{ verrou: boolean }>(`/admin/competitions/${competition.code}/lock`)
+    const response = await api.patch<{ verrou: boolean }>(`/admin/competitions/${competition.code}/lock?season=${workContext.season}`)
     competition.verrou = response.verrou
     toast.add({
       title: t('common.success'),
@@ -370,7 +370,7 @@ const cycleStatus = async (competition: AdminCompetition) => {
   const nextStatus = statusMap[competition.statut]
 
   try {
-    await api.patch(`/admin/competitions/${competition.code}/status`, { statut: nextStatus })
+    await api.patch(`/admin/competitions/${competition.code}/status?season=${workContext.season}`, { statut: nextStatus })
     competition.statut = nextStatus
     toast.add({
       title: t('common.success'),
@@ -399,7 +399,7 @@ const confirmDelete = async () => {
 
   isDeleting.value = true
   try {
-    await api.del(`/admin/competitions/${competitionToDelete.value.code}`)
+    await api.del(`/admin/competitions/${competitionToDelete.value.code}?season=${workContext.season}`)
     toast.add({
       title: t('common.success'),
       description: t('competitions.success_deleted'),
@@ -433,7 +433,7 @@ const confirmBulkDelete = async () => {
 
   isDeleting.value = true
   try {
-    await api.post('/admin/competitions/bulk-delete', { codes: selectedCodes.value })
+    await api.post('/admin/competitions/bulk-delete', { codes: selectedCodes.value, season: workContext.season })
     toast.add({
       title: t('common.success'),
       description: `${selectedCodes.value.length} compétition(s) supprimée(s)`,

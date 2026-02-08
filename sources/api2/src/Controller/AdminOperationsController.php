@@ -7,6 +7,7 @@ use App\Service\ImageOperationsService;
 use App\Service\PlayerMergeService;
 use App\Service\SeasonOperationsService;
 use App\Service\TeamOperationsService;
+use App\Trait\AdminLoggableTrait;
 use Doctrine\DBAL\Connection;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,6 +29,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[OA\Tag(name: '24. App4 - Operations')]
 class AdminOperationsController extends AbstractController
 {
+    use AdminLoggableTrait;
+
     public function __construct(
         private readonly Connection $connection,
         private readonly SeasonOperationsService $seasonService,
@@ -71,7 +74,7 @@ class AdminOperationsController extends AbstractController
 
         try {
             $this->seasonService->addSeason($code, $natDebut, $natFin, $interDebut, $interFin);
-            $this->logAction('Ajout Saison', null, $code);
+            $this->logActionForEvent('Ajout Saison', null, $code);
             return $this->json(['message' => 'Season added successfully', 'code' => $code], Response::HTTP_CREATED);
         } catch (\Exception $e) {
             return $this->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
@@ -87,7 +90,7 @@ class AdminOperationsController extends AbstractController
     {
         try {
             $this->seasonService->activateSeason($code);
-            $this->logAction('Change Saison Active', null, $code);
+            $this->logActionForEvent('Change Saison Active', null, $code);
             return $this->json(['message' => 'Season activated', 'code' => $code]);
         } catch (\Exception $e) {
             return $this->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
@@ -112,7 +115,7 @@ class AdminOperationsController extends AbstractController
 
         try {
             $result = $this->seasonService->copyRc($sourceCode, $targetCode);
-            $this->logAction('Copie RC', null, "De $sourceCode vers $targetCode: {$result['copied']} copiés, {$result['skipped']} ignorés");
+            $this->logActionForEvent('Copie RC', null, "De $sourceCode vers $targetCode: {$result['copied']} copiés, {$result['skipped']} ignorés");
             return $this->json($result);
         } catch (\Exception $e) {
             return $this->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
@@ -138,7 +141,7 @@ class AdminOperationsController extends AbstractController
 
         try {
             $result = $this->seasonService->copyCompetitions($sourceCode, $targetCode, $competitionCodes, $copyMatches);
-            $this->logAction('Copie Compétitions', null, "Vers saison $targetCode: {$result['copied']} copiées");
+            $this->logActionForEvent('Copie Compétitions', null, "Vers saison $targetCode: {$result['copied']} copiées");
             return $this->json($result);
         } catch (\Exception $e) {
             return $this->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
@@ -190,7 +193,7 @@ class AdminOperationsController extends AbstractController
 
         try {
             $result = $this->imageService->uploadImage($imageType, $file, $params);
-            $this->logAction('Upload Image', null, $result['filename']);
+            $this->logActionForEvent('Upload Image', null, $result['filename']);
             return $this->json($result);
         } catch (\Exception $e) {
             return $this->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
@@ -215,7 +218,7 @@ class AdminOperationsController extends AbstractController
 
         try {
             $this->imageService->renameImage($imageType, $currentName, $newName);
-            $this->logAction('Rename Image', null, "$currentName -> $newName");
+            $this->logActionForEvent('Rename Image', null, "$currentName -> $newName");
             return $this->json(['message' => 'Image renamed successfully']);
         } catch (\Exception $e) {
             return $this->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
@@ -245,7 +248,7 @@ class AdminOperationsController extends AbstractController
 
         try {
             $this->playerService->mergePlayers($sourceMatric, $targetMatric);
-            $this->logAction('Fusion Joueurs', null, "$sourceMatric => $targetMatric");
+            $this->logActionForEvent('Fusion Joueurs', null, "$sourceMatric => $targetMatric");
             return $this->json(['message' => 'Players merged successfully']);
         } catch (\Exception $e) {
             return $this->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
@@ -260,7 +263,7 @@ class AdminOperationsController extends AbstractController
     {
         try {
             $result = $this->playerService->autoMergeNonFederalPlayers();
-            $this->logAction('Fusion Auto Licenciés Non Fédéraux', null, "{$result['count']} fusions effectuées");
+            $this->logActionForEvent('Fusion Auto Licenciés Non Fédéraux', null, "{$result['count']} fusions effectuées");
             return $this->json($result);
         } catch (\Exception $e) {
             return $this->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
@@ -325,7 +328,7 @@ class AdminOperationsController extends AbstractController
 
         try {
             $this->teamService->renameTeam($teamId, $newName);
-            $this->logAction('Rename Equipe', null, "ID $teamId => $newName");
+            $this->logActionForEvent('Rename Equipe', null, "ID $teamId => $newName");
             return $this->json(['message' => 'Team renamed successfully']);
         } catch (\Exception $e) {
             return $this->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
@@ -353,7 +356,7 @@ class AdminOperationsController extends AbstractController
 
         try {
             $this->teamService->mergeTeams($sourceId, $targetId);
-            $this->logAction('Fusion Equipes', null, "$sourceId => $targetId");
+            $this->logActionForEvent('Fusion Equipes', null, "$sourceId => $targetId");
             return $this->json(['message' => 'Teams merged successfully']);
         } catch (\Exception $e) {
             return $this->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
@@ -377,7 +380,7 @@ class AdminOperationsController extends AbstractController
 
         try {
             $this->teamService->moveTeamToClub($teamId, $clubCode);
-            $this->logAction('Déplacement Equipe', null, "ID $teamId => Club $clubCode");
+            $this->logActionForEvent('Déplacement Equipe', null, "ID $teamId => Club $clubCode");
             return $this->json(['message' => 'Team moved successfully']);
         } catch (\Exception $e) {
             return $this->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
@@ -482,7 +485,7 @@ class AdminOperationsController extends AbstractController
         try {
             $this->changeCodeInternal($sourceCode, $targetCode, $allSeasons, $targetExists);
             $mode = $allSeasons ? 'All seasons' : 'Current season';
-            $this->logAction('Change code', null, "$mode: $sourceCode => $targetCode");
+            $this->logActionForEvent('Change code', null, "$mode: $sourceCode => $targetCode");
             return $this->json(['message' => 'Code changed successfully']);
         } catch (\Exception $e) {
             return $this->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
@@ -531,7 +534,7 @@ class AdminOperationsController extends AbstractController
             }
 
             $this->eventService->importEvent($id, $data);
-            $this->logAction('Import Evenement', $id);
+            $this->logActionForEvent('Import Evenement', $id);
             return $this->json(['message' => 'Event imported successfully']);
         } catch (\Exception $e) {
             return $this->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
@@ -613,7 +616,7 @@ class AdminOperationsController extends AbstractController
             }
         }
 
-        $this->logAction('Purge Cache', null, "Match: $deletedMatchFiles, Event: $deletedEventFiles");
+        $this->logActionForEvent('Purge Cache', null, "Match: $deletedMatchFiles, Event: $deletedEventFiles");
 
         return $this->json([
             'message' => 'Cache purged successfully',
@@ -744,22 +747,4 @@ class AdminOperationsController extends AbstractController
         }
     }
 
-    /**
-     * Log admin action to journal table
-     */
-    private function logAction(string $action, ?int $eventId = null, ?string $details = null): void
-    {
-        try {
-            $user = $this->getUser();
-            $userId = $user?->getUserIdentifier() ?? 'system';
-
-            $sql = "INSERT INTO kp_journal (Date, Heure, User, Action, Code_evenement, Details)
-                    VALUES (CURDATE(), CURTIME(), ?, ?, ?, ?)";
-
-            $stmt = $this->connection->prepare($sql);
-            $stmt->executeStatement([$userId, $action, $eventId, $details]);
-        } catch (\Exception) {
-            // Log silently fails - don't break the main operation
-        }
-    }
 }
