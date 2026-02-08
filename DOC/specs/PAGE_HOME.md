@@ -28,10 +28,13 @@ Saison
 
 | Type | Description | Exemple | Compétitions résultantes |
 |------|-------------|---------|--------------------------|
-| `section` | Toute une section | Section 2 (Nationales) | N1H, NPOH, N1F, NPOF, N2H, N2F, etc. |
+| `all` | Toutes les compétitions (auxquelles l'utilisateur a droit) | Toutes | Toutes les compétitions autorisées pour la saison |
+| `selection` | Sélection multiple de compétitions | Choix de N1H, N1F, N2H | N1H, N1F, N2H |
+| `section` | Toute une section complète | Section 2 (Nationales) | N1H, NPOH, N1F, NPOF, N2H, N2F, etc. |
 | `group` | Tout un groupe | Groupe "N1H" | N1H, NPOH |
-| `competition` | Une seule compétition | "N1H" | N1H |
 | `event` | Un événement | Événement 123 | Toutes les compétitions dont les journées sont liées à cet événement |
+
+**Ordre d'affichage** : Toutes les compétitions → Sélection → Section complète → Groupe → Événement
 
 ### 2.3 Structure de Données du Contexte
 
@@ -40,16 +43,19 @@ interface WorkContext {
   season: string              // Code saison (ex: "2026")
 
   // Type de sélection
-  selectionType: 'section' | 'group' | 'competition' | 'event'
+  selectionType: 'all' | 'selection' | 'section' | 'group' | 'event' | null
 
   // Valeur selon le type
-  sectionId?: number          // ID de section (1, 2, 3...)
-  groupCode?: string          // Code groupe (ex: "N1H")
-  competitionCode?: string    // Code compétition unique
-  eventId?: number            // ID événement
+  sectionId: number | null            // ID de section (1, 2, 3...)
+  groupCode: string | null            // Code groupe (ex: "N1H")
+  selectedCompetitionCodes: string[]  // Sélection multiple de compétitions
+  eventId: number | null              // ID événement
 
   // Compétitions effectives (calculées)
   competitionCodes: string[]  // Liste des codes compétitions résultants
+
+  // Sélection page-level (persistée, partagée entre pages)
+  pageCompetitionCode: string // Compétition unique pour pages Documents/Équipes/Classements
 }
 ```
 
@@ -123,6 +129,8 @@ Ces pages ne peuvent travailler qu'avec une seule compétition à la fois :
 
 ## 4. Structure de la Page d'Accueil
 
+### 4.1 Vue Desktop (2 colonnes)
+
 ```
 ┌─────────────────────────────────────────────────────────────────┐
 │  Tableau de bord                                                │
@@ -132,32 +140,29 @@ Ces pages ne peuvent travailler qu'avec une seule compétition à la fois :
 │  ┌─────────────────────────────────────────────────────────────┐│
 │  │  ⚙️  Contexte de travail                                    ││
 │  │                                                             ││
-│  │  ┌──────────────────────┐                                   ││
-│  │  │ Saison               │                                   ││
-│  │  │ ▼ 2026 *             │                                   ││
-│  │  └──────────────────────┘                                   ││
+│  │  ┌───────────────────────┬────────────────────────────────┐ ││
+│  │  │ Saison                │ Périmètre                      │ ││
+│  │  ├───────────────────────┼────────────────────────────────┤ ││
+│  │  │ ▼ 2026 *              │ ● Toutes les compétitions      │ ││
+│  │  │                       │                                │ ││
+│  │  │                       │ ○ Sélection                    │ ││
+│  │  │                       │   [Checkbox list multi-select] │ ││
+│  │  │                       │                                │ ││
+│  │  │                       │ ○ Section complète             │ ││
+│  │  │                       │   [▼ Compétitions Nationales]  │ ││
+│  │  │                       │                                │ ││
+│  │  │                       │ ○ Groupe                       │ ││
+│  │  │                       │   [▼ — Comp. Int. —]           │ ││
+│  │  │                       │   [    ECCM (2) / N1H (2) ...] │ ││
+│  │  │                       │                                │ ││
+│  │  │                       │ ○ Événement                    │ ││
+│  │  │                       │   [▼ Championnat de France]    │ ││
+│  │  └───────────────────────┴────────────────────────────────┘ ││
 │  │                                                             ││
-│  │  ┌──────────────────────────────────────────────────────┐   ││
-│  │  │ Périmètre de travail                                 │   ││
-│  │  │                                                      │   ││
-│  │  │ ○ Section entière                                    │   ││
-│  │  │   [▼ Compétitions Nationales         ]               │   ││
-│  │  │                                                      │   ││
-│  │  │ ○ Groupe entier (optgroups par section)               │   ││
-│  │  │   [▼ — Comp. Internationales —       ]               │   ││
-│  │  │   [    ECCM (2) / N1H (2) / ...      ]               │   ││
-│  │  │                                                      │   ││
-│  │  │ ● Compétition unique (optgroups par section)         │   ││
-│  │  │   [▼ — Comp. Internationales —       ]               │   ││
-│  │  │   [    ECCM / ECCW / N1H / ...       ]               │   ││
-│  │  │                                                      │   ││
-│  │  │ ○ Événement                                          │   ││
-│  │  │   [▼ Championnat de France 2026      ]               │   ││
-│  │  └──────────────────────────────────────────────────────┘   ││
-│  │                                                             ││
-│  │  ✅ Contexte : 2026 / Groupe N1H (2 compétitions)          ││
+│  │  ✅ Contexte : 2026 / Toutes les compétitions (12 compét.) ││
 │  │     → N1H - Nationale 1 Hommes                              ││
 │  │     → NPOH - Play-offs N1 Hommes                            ││
+│  │     → ... (10 autres)                                       ││
 │  └─────────────────────────────────────────────────────────────┘│
 │                                                                 │
 │  ┌──────────────┐ ┌──────────────┐ ┌──────────────┐ ┌──────────┐│
@@ -169,6 +174,33 @@ Ces pages ne peuvent travailler qu'avec une seule compétition à la fois :
 │                                                                 │
 │  ⚠️ Version Beta                                                │
 └─────────────────────────────────────────────────────────────────┘
+```
+
+### 4.2 Vue Mobile (1 colonne)
+
+```
+┌─────────────────────────────────────────────────┐
+│  Tableau de bord                                │
+│  Bienvenue, {prénom}                            │
+├─────────────────────────────────────────────────┤
+│                                                 │
+│  ⚙️  Contexte de travail                        │
+│                                                 │
+│  Saison                                         │
+│  ▼ 2026 *                                       │
+│                                                 │
+│  Périmètre                                      │
+│  ● Toutes les compétitions                      │
+│  ○ Sélection (checkbox list)                    │
+│  ○ Section complète                             │
+│  ○ Groupe                                       │
+│  ○ Événement                                    │
+│                                                 │
+│  ✅ 2026 / Toutes (12 compétitions)             │
+│                                                 │
+│  [Cartes de navigation empilées]                │
+│                                                 │
+└─────────────────────────────────────────────────┘
 ```
 
 ---
@@ -183,26 +215,29 @@ interface WorkContextState {
   season: string
 
   // Type de sélection
-  selectionType: 'section' | 'group' | 'competition' | 'event' | null
+  selectionType: 'all' | 'selection' | 'section' | 'group' | 'event' | null
 
   // Valeurs de sélection (une seule remplie selon le type)
   sectionId: number | null
   groupCode: string | null
-  competitionCode: string | null
+  selectedCompetitionCodes: string[]  // Sélection multiple (mode "Sélection")
   eventId: number | null
 
   // Compétitions résultantes (calculées lors de la sélection)
   competitionCodes: string[]
 
+  // Page-level single competition selection (persisté, partagé entre pages)
+  pageCompetitionCode: string
+
   // Données de référence (chargées depuis API)
   seasons: Season[]
-  sections: Section[]
-  groups: Group[]
+  groups: CompetitionGroup[]  // Groupé par section
   competitions: Competition[]
   events: FilterEvent[]
 
   // État
   initialized: boolean
+  initializing: boolean  // Garde contre concurrent initialization
   loading: boolean
 }
 
@@ -233,27 +268,39 @@ interface Competition {
 
 | Getter | Type | Description |
 |--------|------|-------------|
-| `hasValidContext` | boolean | true si saison + au moins une sélection |
+| `hasValidContext` | boolean | true si saison + sélectionType défini |
 | `activeSeason` | Season \| undefined | La saison active |
+| `sections` | Section[] | Liste des sections (hardcodée) |
+| `availableSections` | Section[] | Sections qui ont des compétitions |
+| `uniqueGroups` | Group[] | Groupes uniques (par codeRef) |
+| `groupsBySection(id)` | (id: number) => Group[] | Groupes filtrés par section |
 | `contextLabel` | string | Description du contexte (ex: "Groupe N1H") |
 | `competitionCount` | number | Nombre de compétitions sélectionnées |
 | `isSingleCompetition` | boolean | true si une seule compétition |
 | `firstCompetition` | Competition \| undefined | Première compétition (pour pages mono) |
-| `competitionsBySection` | Map<number, Competition[]> | Compétitions groupées par section |
+| `contextCompetitions` | Competition[] | Compétitions du contexte (objets complets) |
+| `pageCompetition` | Competition \| undefined | Compétition sélectionnée pour pages mono |
 
 ### 5.3 Actions
 
 | Action | Description |
 |--------|-------------|
-| `initContext()` | Charge depuis localStorage |
-| `setSeason(code)` | Change la saison, recharge les données |
-| `selectSection(sectionId)` | Sélectionne toute une section |
+| `initContext()` | Charge depuis localStorage et API, migration de l'ancien type 'competition' |
+| `setSeason(code)` | Change la saison, recharge les données, défaut à 'all' |
+| `selectAll()` | Sélectionne toutes les compétitions (défaut) |
+| `selectCompetitions(codes)` | Sélection multiple de compétitions (mode "Sélection") |
+| `selectSection(sectionId)` | Sélectionne toute une section complète |
 | `selectGroup(groupCode)` | Sélectionne tout un groupe |
-| `selectCompetition(code)` | Sélectionne une compétition unique |
-| `selectEvent(eventId)` | Sélectionne un événement |
-| `clearContext()` | Réinitialise |
-| `loadSeasonData(season)` | Charge sections, groupes, compétitions |
-| `loadEvents()` | Charge la liste des événements |
+| `selectEvent(eventId)` | Sélectionne un événement (charge les compétitions via API) |
+| `setPageCompetition(code)` | Définit la compétition page-level (persisté) |
+| `resetPageCompetition()` | Réinitialise la sélection page-level (appelé lors du changement de contexte) |
+| `clearSelection()` | Réinitialise la sélection (garde la saison) |
+| `clearContext()` | Réinitialise tout |
+| `loadSeasonData(api?)` | Charge groupes et compétitions pour la saison |
+| `loadEvents(api?)` | Charge la liste des événements (filtrés par saison et droits) |
+| `loadEventCompetitions(api?)` | Charge les compétitions d'un événement |
+| `computeCompetitionCodes()` | Calcule competitionCodes selon selectionType |
+| `saveToStorage()` | Sauvegarde en localStorage |
 
 ### 5.4 Persistance localStorage
 
@@ -264,10 +311,13 @@ const STORAGE_KEYS = {
   selectionType: 'kpi_admin_work_type',
   sectionId: 'kpi_admin_work_section',
   groupCode: 'kpi_admin_work_group',
-  competitionCode: 'kpi_admin_work_competition',
+  selectedCompetitionCodes: 'kpi_admin_work_selections',  // Multi-select (mode "Sélection")
   eventId: 'kpi_admin_work_event',
+  pageCompetitionCode: 'kpi_admin_work_page_competition',  // Page-level single competition
 }
 ```
+
+**Migration** : Lors de l'initialisation, l'ancien type `'competition'` est migré vers `'selection'` avec la compétition stockée dans `selectedCompetitionCodes`.
 
 ---
 
@@ -281,12 +331,14 @@ GET /api2/admin/filters/seasons
 
 GET /api2/admin/filters/competitions?season=2026
 → { season: "2026", groups: [...] }
+# groups = CompetitionGroup[] avec { section: number, competitions: Competition[] }
 
-GET /api2/admin/filters/events
+GET /api2/admin/filters/events?season=2026
 → { events: [...] }
+# Filtre les événements par saison ET par compétitions auxquelles l'utilisateur a accès
 ```
 
-### 6.2 Nouvel Endpoint : Compétitions par Événement
+### 6.2 Endpoint : Compétitions par Événement
 
 ```
 GET /api2/admin/filters/event-competitions?eventId=123
@@ -319,8 +371,11 @@ FROM kp_competition c
 INNER JOIN kp_journee j ON j.Code_competition = c.Code AND j.Code_saison = c.Code_saison
 INNER JOIN kp_evenement_journee ej ON ej.Id_journee = j.Id
 WHERE ej.Id_evenement = ?
+AND c.Code IN (...)  -- Filtre par compétitions accessibles à l'utilisateur
 ORDER BY c.Code
 ```
+
+**Note** : Cet endpoint est utilisé par `selectEvent()` dans le store pour charger les compétitions d'un événement.
 
 ---
 
@@ -343,7 +398,17 @@ pages/
 
 ### 7.2 WorkContextSelector.vue
 
-Composant pour la page d'accueil avec les 4 modes de sélection (section, groupe, compétition, événement).
+Composant pour la page d'accueil avec les 5 modes de sélection :
+1. **Toutes les compétitions** (défaut) : radio button simple
+2. **Sélection** : radio button + checkbox list multi-select (groupé par section)
+3. **Section complète** : radio button + dropdown des sections disponibles
+4. **Groupe** : radio button + dropdown des groupes (optgroups par section)
+5. **Événement** : radio button + dropdown des événements (filtrés par saison)
+
+**Layout Desktop** : 2 colonnes (Saison à gauche | Périmètre à droite)
+**Layout Mobile** : 1 colonne (Saison puis Périmètre empilés)
+
+Le composant affiche également un résumé du contexte sélectionné avec la liste des compétitions résultantes.
 
 ### 7.3 CompetitionMultiSelect.vue
 
@@ -434,26 +499,87 @@ Composant select simple pour les pages Documents, Équipes, Classements :
 
 ```vue
 <template>
-  <div class="mb-4">
+  <div>
     <label class="block text-sm font-medium text-gray-700 mb-1">
       {{ t('context.competition_from_context') }}
     </label>
+
+    <div v-if="availableCompetitions.length === 0" class="text-sm text-gray-500 italic">
+      {{ t('context.no_competitions') }}
+    </div>
+
     <select
-      v-model="selectedCode"
-      class="w-full rounded-md border-gray-300 shadow-sm"
+      v-else
+      :value="workContext.pageCompetitionCode"
+      class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+      @change="onSelect(($event.target as HTMLSelectElement).value)"
     >
-      <option value="" disabled>{{ t('context.select_competition') }}</option>
       <option
         v-for="comp in availableCompetitions"
         :key="comp.code"
         :value="comp.code"
       >
-        {{ comp.code }} - {{ comp.libelle }}
+        {{ formatCompetitionLabel(comp) }}
       </option>
     </select>
   </div>
 </template>
+
+<script setup lang="ts">
+const { t } = useI18n()
+const workContext = useWorkContextStore()
+
+const emit = defineEmits<{
+  (e: 'change', code: string): void
+}>()
+
+// Available competitions from context
+const availableCompetitions = computed(() =>
+  workContext.competitions.filter(c =>
+    workContext.competitionCodes.includes(c.code),
+  ),
+)
+
+// Handle selection change
+function onSelect(code: string) {
+  workContext.setPageCompetition(code)
+  emit('change', code)
+}
+
+// Auto-select: when competitions change, ensure we have a valid selection
+watch(
+  () => workContext.competitionCodes,
+  (codes) => {
+    if (!codes.length) {
+      if (workContext.pageCompetitionCode) {
+        workContext.setPageCompetition('')
+        emit('change', '')
+      }
+      return
+    }
+    // If current selection is still valid, keep it
+    if (workContext.pageCompetitionCode && codes.includes(workContext.pageCompetitionCode)) {
+      return
+    }
+    // Auto-select first
+    workContext.setPageCompetition(codes[0])
+    emit('change', codes[0])
+  },
+  { immediate: true },
+)
+
+// Format competition label
+function formatCompetitionLabel(comp: { code: string; libelle: string; soustitre?: string | null }): string {
+  return comp.soustitre ? `${comp.code} - ${comp.libelle} (${comp.soustitre})` : `${comp.code} - ${comp.libelle}`
+}
+</script>
 ```
+
+**Fonctionnalités** :
+- Auto-sélectionne automatiquement la première compétition disponible
+- Persiste la sélection via `workContext.setPageCompetition(code)`
+- Émet un événement `@change` lors de la sélection
+- Partage la sélection avec Documents et Classements via le store
 
 ---
 
@@ -513,26 +639,46 @@ const filteredData = computed(() =>
 ### 8.3 Pages avec Single-Select (Documents, Équipes, Classements)
 
 ```typescript
-// pages/documents/index.vue, pages/teams/index.vue, etc.
+// pages/documents/index.vue, pages/teams/index.vue, pages/rankings/index.vue
 const workContext = useWorkContextStore()
-
-// UNE seule compétition sélectionnée
-const selectedCompetition = ref<string>('')
 
 onMounted(() => {
   workContext.initContext()
   if (workContext.hasValidContext) {
-    selectedSeason.value = workContext.season
-    // Pré-sélectionner la première compétition du périmètre
-    if (workContext.competitionCodes.length > 0) {
-      selectedCompetition.value = workContext.competitionCodes[0]
-    }
+    loadData()
   }
 })
 
+// Watch page competition changes
+watch(
+  () => workContext.pageCompetitionCode,
+  (code) => {
+    if (code) {
+      loadData()
+    }
+    else {
+      // Clear data when no competition selected
+      clearData()
+    }
+  },
+)
+
 // Template
-<CompetitionSingleSelect v-model="selectedCompetition" />
+<AdminCompetitionSingleSelect @change="onCompetitionChange" />
+
+// Handler (optionnel si le watch suffit)
+function onCompetitionChange(code: string) {
+  // Optionnel : actions supplémentaires lors du changement
+  console.log('Competition changed:', code)
+}
 ```
+
+**Notes** :
+- La sélection est automatiquement persistée par le composant `AdminCompetitionSingleSelect`
+- Utiliser `workContext.pageCompetitionCode` pour lire la compétition sélectionnée
+- Utiliser `workContext.pageCompetition` pour l'objet complet de la compétition
+- Le composant auto-sélectionne la première compétition disponible
+- La sélection est partagée entre Documents, Équipes et Classements
 
 ### 8.4 Comportement de la Saison
 
@@ -567,10 +713,11 @@ Sur les autres pages :
   "context": {
     "title": "Contexte de travail",
     "season": "Saison",
-    "scope": "Périmètre de travail",
-    "type_section": "Section entière",
-    "type_group": "Groupe entier",
-    "type_competition": "Compétition unique",
+    "scope": "Périmètre",
+    "type_all": "Toutes les compétitions",
+    "type_selection": "Sélection",
+    "type_section": "Section complète",
+    "type_group": "Groupe",
     "type_event": "Événement",
     "select_season": "Sélectionnez une saison",
     "select_section": "Sélectionnez une section",
@@ -583,6 +730,7 @@ Sur les autres pages :
     "current": "Contexte",
     "competitions_count": "{count} compétition(s)",
     "no_context": "Aucun contexte sélectionné",
+    "no_competitions": "Aucune compétition disponible",
     "active_season": "Saison active",
     "change": "Modifier",
     "sections": {
@@ -604,10 +752,11 @@ Sur les autres pages :
   "context": {
     "title": "Working Context",
     "season": "Season",
-    "scope": "Working Scope",
+    "scope": "Scope",
+    "type_all": "All competitions",
+    "type_selection": "Selection",
     "type_section": "Entire Section",
-    "type_group": "Entire Group",
-    "type_competition": "Single Competition",
+    "type_group": "Group",
     "type_event": "Event",
     "select_season": "Select a season",
     "select_section": "Select a section",
@@ -620,6 +769,7 @@ Sur les autres pages :
     "current": "Context",
     "competitions_count": "{count} competition(s)",
     "no_context": "No context selected",
+    "no_competitions": "No competitions available",
     "active_season": "Active season",
     "change": "Change",
     "sections": {
@@ -643,33 +793,80 @@ Sur les autres pages :
 ```typescript
 function computeCompetitionCodes(): string[] {
   switch (selectionType) {
+    case 'all':
+      // Toutes les compétitions de la saison auxquelles l'utilisateur a accès
+      return competitions.map(c => c.code)
+
+    case 'selection':
+      // Multi-select : compétitions cochées
+      return selectedCompetitionCodes.filter(code =>
+        competitions.some(c => c.code === code)
+      )
+
     case 'section':
       // Toutes les compétitions de la section
       return competitions
-        .filter(c => c.section === sectionId)
+        .filter(c => {
+          const group = groups.find(g => g.competitions.some(gc => gc.code === c.code))
+          return group?.section === sectionId
+        })
         .map(c => c.code)
 
     case 'group':
       // Toutes les compétitions du groupe (même codeRef)
       return competitions
-        .filter(c => c.codeRef === groupCode)
+        .filter(c => (c.codeRef || c.code) === groupCode)
         .map(c => c.code)
 
-    case 'competition':
-      return [competitionCode]
-
     case 'event':
-      // Chargé depuis l'API /event-competitions
-      return eventCompetitionCodes
+      // Chargé depuis l'API /admin/filters/event-competitions
+      // Déjà stocké dans competitionCodes lors de loadEventCompetitions()
+      break
+
+    default:
+      return []
   }
 }
 ```
 
 ### 10.2 Changement de Saison
 
-1. Vider la sélection courante
-2. Recharger sections, groupes, compétitions pour la nouvelle saison
-3. Conserver le type de sélection si possible
+Lors du changement de saison via `setSeason(seasonCode)` :
+
+1. Vider la sélection courante (`clearSelection()`)
+2. Recharger les groupes et compétitions pour la nouvelle saison (`loadSeasonData()`)
+3. Recharger les événements filtrés par la nouvelle saison (`loadEvents()`)
+4. Réinitialiser automatiquement le type de sélection à `'all'` (toutes les compétitions)
+5. Calculer les codes de compétitions résultants
+6. Sauvegarder en localStorage
+
+```typescript
+async setSeason(seasonCode: string, apiInstance?: ReturnType<typeof useApi>) {
+  if (this.season === seasonCode) return
+
+  this.season = seasonCode
+  localStorage.setItem(STORAGE_KEYS.season, seasonCode)
+
+  // Clear current selection
+  this.clearSelection()
+
+  // Reload season data and events
+  this.loading = true
+  try {
+    await Promise.all([
+      this.loadSeasonData(apiInstance),
+      this.loadEvents(apiInstance),
+    ])
+    // Default to 'all' after season change
+    this.selectionType = 'all'
+    this.computeCompetitionCodes()
+    this.saveToStorage()
+  }
+  finally {
+    this.loading = false
+  }
+}
+```
 
 ### 10.3 Permissions
 
@@ -690,16 +887,32 @@ function computeCompetitionCodes(): string[] {
 ### Phase 2 : Store
 
 - [x] Créer `stores/workContextStore.ts`
-- [x] Implémenter les 4 modes de sélection
+- [x] Implémenter les 5 modes de sélection (all, selection, section, group, event)
 - [x] Gérer la persistance localStorage
 - [x] Calculer les compétitions résultantes
+- [x] Migration de l'ancien type 'competition' vers 'selection'
+- [x] Ajouter pageCompetitionCode pour persistance cross-pages
+- [x] Ajouter resetPageCompetition() appelé lors du changement de contexte
 
 ### Phase 3 : Composants
 
 - [x] Créer `WorkContextSelector.vue` avec radio buttons et dropdowns (optgroups par section)
+  - [x] Layout 2 colonnes (desktop) : Saison | Périmètre
+  - [x] Layout 1 colonne (mobile) : Saison puis Périmètre
+  - [x] Type "Toutes les compétitions" (par défaut)
+  - [x] Type "Sélection" avec checkbox list multi-select
+  - [x] Type "Section complète" avec dropdown des sections
+  - [x] Type "Groupe" avec dropdown des groupes
+  - [x] Type "Événement" avec dropdown des événements
+  - [x] Résumé du contexte avec liste des compétitions résultantes
+- [x] Créer `CompetitionSingleSelect.vue` pour pages mono-compétition (dropdown simple)
+  - [x] Auto-sélection de la première compétition
+  - [x] Persistance via workContext.pageCompetitionCode
+  - [x] Émission d'événement @change
+  - [x] Watcher pour maintenir une sélection valide
+- [x] Créer `WorkContextSummary.vue` pour afficher le contexte en haut des autres pages
 - [ ] Créer `CompetitionMultiSelect.vue` pour pages multi-compétition (checkbox list avec "Toutes")
-- [ ] Créer `CompetitionSingleSelect.vue` pour pages mono-compétition (dropdown simple)
-- [x] Ajouter traductions i18n
+- [x] Ajouter traductions i18n (type_all, type_selection, etc.)
 
 ### Phase 4 : Page d'Accueil
 
@@ -714,14 +927,24 @@ function computeCompetitionCodes(): string[] {
 - [ ] `pages/gamedays/index.vue` - legacy redirect (à migrer)
 - [x] `pages/games/index.vue` - legacy redirect (renommé depuis /matches)
 - [x] `pages/stats/index.vue` - contexte de travail (barre de contexte, compétitions filtrées dans modale, saison modifiable)
-- [x] `pages/documents/index.vue` - contexte de travail (barre de contexte, mono-select filtré)
-- [ ] `pages/teams/index.vue` - legacy redirect (à migrer)
-- [ ] `pages/rankings/index.vue` - legacy redirect (à migrer)
+- [x] `pages/documents/index.vue` - contexte de travail (barre de contexte, mono-select persisté)
+- [x] `pages/teams/index.vue` - contexte de travail (barre de contexte, mono-select persisté)
+- [x] `pages/rankings/index.vue` - legacy redirect (à migrer avec mono-select persisté)
 
 ### Phase 6 : Tests
 
-- [ ] Tester chaque type de sélection
+- [ ] Tester chaque type de sélection (all, selection, section, group, event)
 - [ ] Tester persistance localStorage
-- [ ] Tester changement de saison
+- [ ] Tester changement de saison (doit réinitialiser à 'all')
 - [ ] Tester navigation entre pages
+- [ ] Tester persistance de pageCompetitionCode entre Documents/Équipes/Classements
+- [ ] Tester auto-sélection de la première compétition
+- [ ] Tester réinitialisation de pageCompetitionCode lors du changement de contexte
 - [ ] Tester avec différents profils utilisateur
+- [ ] Tester migration de l'ancien type 'competition'
+
+---
+
+**Document créé le** : 2026-01-15
+**Dernière mise à jour** : 2026-02-08
+**Statut** : ✅ Implémenté — Layout 2 colonnes, 5 types de sélection (all, selection, section, group, event), sélection persistée cross-pages

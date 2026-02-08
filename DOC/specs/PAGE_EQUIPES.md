@@ -25,10 +25,12 @@ La page Équipes permet de gérer les équipes inscrites à une compétition : a
 
 | # | Fonctionnalité | Profil | Évaluation | Décision |
 |---|----------------|--------|------------|----------|
-| 1 | Sélecteur de compétition (filtré par contexte de travail) | ≤ 10 | Essentielle | ✅ Conserver |
+| 1 | Sélecteur de compétition (filtré par contexte de travail, persisté) | ≤ 10 | Essentielle | ✅ Conserver |
 | 2 | Badges info compétition (type, niveau, statut) | ≤ 10 | Utile | ✅ Conserver |
 | 3 | Indicateur verrouillage compétition | ≤ 10 | Essentielle | ✅ Conserver |
 | 4 | Toggle verrouillage compétition | ≤ 4 | Essentielle | ✅ Conserver |
+| 5 | Auto-sélection première compétition disponible | ≤ 10 | Essentielle | ✅ Conserver |
+| 6 | Persistance de la sélection entre pages (Documents, Classements) | ≤ 10 | Essentielle | ✅ Conserver |
 
 ### 2.2 Liste des équipes
 
@@ -160,7 +162,16 @@ La page Équipes permet de gérer les équipes inscrites à une compétition : a
 
 ### 3.3 Sélecteur de compétition
 
-Même pattern que la page Documents : dropdown `<select>` rempli depuis `workContext.contextCompetitions`, groupé par section. Affiche des badges à droite :
+**Composant** : `<AdminCompetitionSingleSelect />` (partagé avec Documents et Classements)
+
+Le sélecteur :
+- Affiche les compétitions disponibles depuis le contexte de travail (`workContext.competitionCodes`)
+- Auto-sélectionne automatiquement la première compétition si aucune sélection
+- Persiste la sélection en localStorage (`kpi_admin_work_page_competition`)
+- La sélection est partagée entre les pages Équipes, Documents et Classements
+- La sélection est réinitialisée automatiquement lors d'un changement du contexte de travail
+
+Affiche des badges à droite :
 - Badge niveau (INT/NAT/REG) coloré
 - Badge type (CHPT/CP/MULTI)
 - Badge statut (ATT/ON/END) cliquable (profil ≤ 4)
@@ -618,11 +629,14 @@ Réponse :
 sources/app4/pages/teams/
 ├── index.vue                        # Page principale (~1700 lignes)
 
+sources/app4/components/admin/
+├── CompetitionSingleSelect.vue      # Sélecteur partagé avec Documents et Classements
+
 sources/app4/types/
 ├── teams.ts                         # Types TypeScript pour les équipes
 ```
 
-**Note** : La page est auto-suffisante dans `index.vue` (comme les autres pages app4 existantes). Des composants enfants pourront être extraits si la complexité le justifie.
+**Note** : La page est auto-suffisante dans `index.vue` (comme les autres pages app4 existantes). Le composant `CompetitionSingleSelect` est extrait et partagé entre les pages Équipes, Documents et Classements pour garantir la cohérence et la persistance de la sélection.
 
 ### 8.2 Types TypeScript
 
@@ -953,6 +967,91 @@ Lors de la copie de composition, les catégories des joueurs sont recalculées e
 
 ---
 
+## 14. Persistance de la Sélection de Compétition
+
+### 14.1 Mécanisme
+
+La sélection de compétition sur cette page est **persistée en localStorage** et **partagée** avec les pages Documents et Classements via le store `workContextStore`.
+
+**Clé localStorage** : `kpi_admin_work_page_competition`
+
+**State store** :
+```typescript
+// stores/workContextStore.ts
+interface WorkContextState {
+  // ... autres propriétés
+  pageCompetitionCode: string  // Compétition sélectionnée pour pages mono-compétition
+}
+```
+
+**Getter store** :
+```typescript
+pageCompetition(): Competition | undefined {
+  if (!this.pageCompetitionCode) return undefined
+  return this.competitions.find(c => c.code === this.pageCompetitionCode)
+}
+```
+
+### 14.2 Auto-sélection
+
+Le composant `AdminCompetitionSingleSelect` :
+- Auto-sélectionne automatiquement la première compétition disponible si aucune sélection
+- Utilise un watcher avec `immediate: true` pour garantir qu'une compétition est toujours sélectionnée
+- Réinitialise la sélection si la compétition choisie n'est plus disponible dans le nouveau contexte
+
+```typescript
+watch(
+  () => workContext.competitionCodes,
+  (codes) => {
+    if (!codes.length) {
+      if (workContext.pageCompetitionCode) {
+        workContext.setPageCompetition('')
+        emit('change', '')
+      }
+      return
+    }
+    // Si la sélection actuelle est toujours valide, la conserver
+    if (workContext.pageCompetitionCode && codes.includes(workContext.pageCompetitionCode)) {
+      return
+    }
+    // Sinon, auto-sélectionner la première compétition
+    workContext.setPageCompetition(codes[0])
+    emit('change', codes[0])
+  },
+  { immediate: true },
+)
+```
+
+### 14.3 Réinitialisation
+
+La sélection de compétition est automatiquement réinitialisée lors d'un **changement du contexte de travail** (saison ou périmètre).
+
+Toutes les actions du store qui modifient le périmètre appellent `resetPageCompetition()` :
+- `selectAll()`
+- `selectCompetitions(codes)`
+- `selectSection(sectionId)`
+- `selectGroup(groupCode)`
+- `selectEvent(eventId)`
+
+```typescript
+// Action store
+resetPageCompetition() {
+  this.pageCompetitionCode = ''
+  localStorage.removeItem(STORAGE_KEYS.pageCompetitionCode)
+}
+```
+
+### 14.4 Pages concernées
+
+Les pages suivantes partagent cette sélection persistée :
+1. **Équipes** (`/teams`)
+2. **Documents** (`/documents`)
+3. **Classements** (`/rankings`)
+
+Toutes utilisent le même composant `<AdminCompetitionSingleSelect />` et lisent/écrivent `workContext.pageCompetitionCode`.
+
+---
+
 **Document créé le** : 2026-02-04
-**Dernière mise à jour** : 2026-02-05
-**Statut** : ✅ Implémenté — frontend (app4) + backend (api2)
+**Dernière mise à jour** : 2026-02-08
+**Statut** : ✅ Implémenté — frontend (app4) + backend (api2) + sélection persistée
