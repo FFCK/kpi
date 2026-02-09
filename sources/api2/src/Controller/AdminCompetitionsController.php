@@ -27,12 +27,12 @@ class AdminCompetitionsController extends AbstractController
     use AdminLoggableTrait;
 
     private const SECTION_LABELS = [
-        1 => 'Championnat National',
-        2 => 'Coupe de France',
-        3 => 'Championnat Régional',
-        4 => 'Championnat Départemental',
-        5 => 'Autres compétitions',
-        6 => 'International',
+        1 => 'International',
+        2 => 'National',
+        3 => 'Régional',
+        4 => 'Tournoi',
+        5 => 'Continental',
+        100 => 'Divers',
     ];
 
     public function __construct(
@@ -63,7 +63,7 @@ class AdminCompetitionsController extends AbstractController
         }
 
         $page = max(1, (int) $request->query->get('page', 1));
-        $limit = min(100, max(1, (int) $request->query->get('limit', 50)));
+        $limit = min(500, max(1, (int) $request->query->get('limit', 50)));
         $offset = ($page - 1) * $limit;
 
         // Optional filters
@@ -161,7 +161,7 @@ class AdminCompetitionsController extends AbstractController
 
         // Format competitions
         $items = array_map(function ($row) use ($season) {
-            $section = (int) ($row['section'] ?? 5);
+            $section = (int) ($row['section'] ?? 100);
             return [
                 'code' => $row['Code'],
                 'codeSaison' => $row['Code_saison'],
@@ -307,7 +307,7 @@ class AdminCompetitionsController extends AbstractController
             return $this->json(['message' => 'Competition not found in specified season'], Response::HTTP_NOT_FOUND);
         }
 
-        $section = (int) ($row['section'] ?? 5);
+        $section = (int) ($row['section'] ?? 100);
 
         // Return full competition data, but force Publication = 'N' (non-public by default)
         // and omit Code_saison (will be set by frontend to current season)
@@ -369,7 +369,7 @@ class AdminCompetitionsController extends AbstractController
             return $this->json(['message' => 'Competition not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $section = (int) ($row['section'] ?? 5);
+        $section = (int) ($row['section'] ?? 100);
         return $this->json([
             'code' => $row['Code'],
             'codeSaison' => $row['Code_saison'],
@@ -927,7 +927,7 @@ class AdminCompetitionsController extends AbstractController
         // Group by section
         $bySection = [];
         foreach ($competitions as $row) {
-            $section = (int) ($row['section'] ?? 5);
+            $section = (int) ($row['section'] ?? 100);
             $sectionLabel = self::SECTION_LABELS[$section] ?? 'Autres';
 
             if (!isset($bySection[$section])) {

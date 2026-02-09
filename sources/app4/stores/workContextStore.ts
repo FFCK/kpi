@@ -63,12 +63,12 @@ const STORAGE_KEYS = {
 
 // Sections definition
 const SECTIONS: Section[] = [
-  { id: 1, labelKey: 'context.sections.1' },
-  { id: 2, labelKey: 'context.sections.2' },
-  { id: 3, labelKey: 'context.sections.3' },
-  { id: 4, labelKey: 'context.sections.4' },
-  { id: 5, labelKey: 'context.sections.5' },
-  { id: 100, labelKey: 'context.sections.100' },
+  { id: 1, labelKey: 'groups.sections.1' },
+  { id: 2, labelKey: 'groups.sections.2' },
+  { id: 3, labelKey: 'groups.sections.3' },
+  { id: 4, labelKey: 'groups.sections.4' },
+  { id: 5, labelKey: 'groups.sections.5' },
+  { id: 100, labelKey: 'groups.sections.100' },
 ]
 
 export const useWorkContextStore = defineStore('workContext', {

@@ -762,10 +762,7 @@
     "error_has_gamedays": "Impossible de supprimer : la compétition contient des journées",
     "error_has_matches": "Impossible de supprimer : la compétition contient des matchs",
     "empty": "Aucune compétition trouvée",
-    "pagination": {
-      "showing": "Affichage de {from} à {to} sur {total} compétitions",
-      "items_per_page": "Éléments par page"
-    }
+    "total_competitions": "Total : {count} compétition(s)"
   },
   "context": {
     "title": "Contexte de travail",
@@ -790,15 +787,7 @@
     "active_season": "Saison active",
     "change": "Modifier",
     "summary": "Résumé",
-    "no_competitions": "Aucune compétition dans ce périmètre",
-    "sections": {
-      "1": "Compétitions Internationales",
-      "2": "Compétitions Nationales",
-      "3": "Compétitions Régionales",
-      "4": "Tournois Internationaux",
-      "5": "Continents",
-      "100": "Divers"
-    }
+    "no_competitions": "Aucune compétition dans ce périmètre"
   },
   "teams_page": {
     "title": "Gestion des équipes",

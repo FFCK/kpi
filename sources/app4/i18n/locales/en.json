@@ -748,10 +748,7 @@
     "error_has_gamedays": "Cannot delete: competition has gamedays",
     "error_has_matches": "Cannot delete: competition has matches",
     "empty": "No competitions found",
-    "pagination": {
-      "showing": "Showing {from} to {to} of {total} competitions",
-      "items_per_page": "Items per page"
-    }
+    "total_competitions": "Total: {count} competition(s)"
   },
   "context": {
     "title": "Working Context",
@@ -776,15 +773,7 @@
     "active_season": "Active season",
     "change": "Change",
     "summary": "Summary",
-    "no_competitions": "No competitions in this scope",
-    "sections": {
-      "1": "International Competitions",
-      "2": "National Competitions",
-      "3": "Regional Competitions",
-      "4": "International Tournaments",
-      "5": "Continents",
-      "100": "Other"
-    }
+    "no_competitions": "No competitions in this scope"
   },
   "teams_page": {
     "title": "Team Management",

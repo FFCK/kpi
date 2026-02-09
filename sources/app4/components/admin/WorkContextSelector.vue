@@ -163,7 +163,7 @@ function formatEventLabel(event: { id: number; libelle: string; dateDebut: strin
                 >
                   <template v-for="group in workContext.groups" :key="group.section">
                     <div class="text-xs font-semibold text-gray-500 mt-1 first:mt-0 px-1">
-                      {{ t(`context.sections.${group.section}`) }}
+                      {{ t(`groups.sections.${group.section}`) }}
                     </div>
                     <label
                       v-for="comp in group.competitions"

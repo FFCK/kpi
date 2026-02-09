@@ -96,7 +96,7 @@ const filterCompetitionsByContext = (groups: CompetitionGroup[]): CompetitionGro
       if (contextCodes.has(comp.code) && optionsByCode.has(comp.code)) {
         if (!sectionGroups.has(wcGroup.section)) {
           sectionGroups.set(wcGroup.section, {
-            labelKey: `context.sections.${wcGroup.section}`,
+            labelKey: `groups.sections.${wcGroup.section}`,
             options: []
           })
         }

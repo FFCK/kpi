@@ -9,12 +9,16 @@ import type {
   CompetitionImportMode,
   CompetitionSearchResult
 } from '~/types/competitions'
-import type { PaginatedResponse } from '~/types'
-
 definePageMeta({
   layout: 'admin',
   middleware: 'auth'
 })
+
+interface CompetitionsBySection {
+  section: number
+  sectionLabel: string
+  competitions: AdminCompetition[]
+}
 
 const { t } = useI18n()
 const api = useApi()
@@ -25,13 +29,10 @@ const workContext = useWorkContextStore()
 // State
 const loading = ref(false)
 const competitions = ref<AdminCompetition[]>([])
-const total = ref(0)
-const page = ref(1)
-const limit = ref(50)
-const totalPages = ref(0)
 const search = ref('')
-const sortBy = ref('section')
-const sortOrder = ref<'ASC' | 'DESC'>('ASC')
+
+// Accordion state: collapsed sections (all expanded by default)
+const collapsedSections = ref<Set<number>>(new Set())
 
 // Filters - only groups for multi type (level/type removed - use context)
 const groups = ref<CompetitionGroup[]>([])
@@ -119,6 +120,49 @@ const loadCompetitionsForMulti = async () => {
   }
 }
 
+// Accordion helpers
+const toggleSection = (sectionId: number) => {
+  const newSet = new Set(collapsedSections.value)
+  if (newSet.has(sectionId)) {
+    newSet.delete(sectionId)
+  } else {
+    newSet.add(sectionId)
+  }
+  collapsedSections.value = newSet
+}
+
+const isSectionCollapsed = (sectionId: number) => collapsedSections.value.has(sectionId)
+
+// Competitions grouped by section (with search filtering)
+const competitionsBySection = computed<CompetitionsBySection[]>(() => {
+  const filtered = competitions.value.filter(c => {
+    if (search.value) {
+      const s = search.value.toLowerCase()
+      return c.code.toLowerCase().includes(s) ||
+             c.libelle.toLowerCase().includes(s) ||
+             (c.soustitre && c.soustitre.toLowerCase().includes(s)) ||
+             (c.codeRef && c.codeRef.toLowerCase().includes(s))
+    }
+    return true
+  })
+
+  const bySection = new Map<number, CompetitionsBySection>()
+  for (const c of filtered) {
+    if (!bySection.has(c.section)) {
+      bySection.set(c.section, {
+        section: c.section,
+        sectionLabel: t(`groups.sections.${c.section}`),
+        competitions: []
+      })
+    }
+    bySection.get(c.section)!.competitions.push(c)
+  }
+
+  return Array.from(bySection.values()).sort((a, b) => a.section - b.section)
+})
+
+const totalCompetitions = computed(() => competitions.value.length)
+
 // Load competitions
 const loadCompetitions = async () => {
   // Wait for context to be initialized
@@ -126,27 +170,21 @@ const loadCompetitions = async () => {
 
   loading.value = true
   try {
-    const params: Record<string, string | number | string[]> = {
+    const params: Record<string, string | number> = {
       season: workContext.season,
-      page: page.value,
-      limit: limit.value,
-      sortBy: sortBy.value,
-      sortOrder: sortOrder.value
-    }
-    if (search.value) {
-      params.search = search.value
+      limit: 500,
+      sortBy: 'section',
+      sortOrder: 'ASC'
     }
     // Filter by competitions from context if available
     if (workContext.hasValidContext && workContext.competitionCodes.length > 0) {
       params.codes = workContext.competitionCodes.join(',')
     }
 
-    const response = await api.get<PaginatedResponse<AdminCompetition> & { season: string }>('/admin/competitions', params)
+    const response = await api.get<{ items: AdminCompetition[], total: number }>('/admin/competitions', params)
     competitions.value = response.items
-    total.value = response.total
-    totalPages.value = response.totalPages
 
-    // Clear selection on page change
+    // Clear selection
     selectedCodes.value = []
     selectAll.value = false
   } catch (error: unknown) {
@@ -162,17 +200,11 @@ const loadCompetitions = async () => {
   }
 }
 
-// Watch for changes that require reload
-watch([page, limit, sortBy, sortOrder], () => {
-  loadCompetitions()
-})
-
 // Watch for context changes
 watch(
   () => [workContext.initialized, workContext.season, workContext.competitionCodes],
   () => {
     if (workContext.initialized) {
-      page.value = 1
       loadCompetitions()
       loadCompetitionsForMulti()
     }
@@ -180,13 +212,14 @@ watch(
   { deep: true }
 )
 
-// Debounced search
+// Debounced search (client-side filtering, no reload needed)
 let searchTimeout: ReturnType<typeof setTimeout> | null = null
 watch(search, () => {
   if (searchTimeout) clearTimeout(searchTimeout)
   searchTimeout = setTimeout(() => {
-    page.value = 1
-    loadCompetitions()
+    // Clear selection when search changes
+    selectedCodes.value = []
+    selectAll.value = false
   }, 300)
 })
 
@@ -564,33 +597,6 @@ const confirmBulkDelete = async () => {
   }
 }
 
-// Sorting
-const DEFAULT_SORT_BY = 'section'
-const DEFAULT_SORT_ORDER: 'ASC' | 'DESC' = 'ASC'
-
-const handleSort = (column: string) => {
-  if (sortBy.value === column) {
-    sortOrder.value = sortOrder.value === 'ASC' ? 'DESC' : 'ASC'
-  } else {
-    sortBy.value = column
-    sortOrder.value = 'ASC'
-  }
-}
-
-const resetSort = () => {
-  sortBy.value = DEFAULT_SORT_BY
-  sortOrder.value = DEFAULT_SORT_ORDER
-}
-
-const isDefaultSort = computed(() => {
-  return sortBy.value === DEFAULT_SORT_BY && sortOrder.value === DEFAULT_SORT_ORDER
-})
-
-const getSortIcon = (column: string) => {
-  if (sortBy.value !== column) return 'heroicons:arrows-up-down'
-  return sortOrder.value === 'ASC' ? 'heroicons:arrow-up' : 'heroicons:arrow-down'
-}
-
 // Status badge color
 const getStatusColor = (status: CompetitionStatus) => {
   // Colors matching legacy GestionStyle.css (.statutCompetATT, .statutCompetON, .statutCompetEND)
@@ -659,416 +665,383 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
       :selected-count="selectedCodes.length"
       @add="openAddModal"
       @bulk-delete="openBulkDeleteModal"
-    >
-      <template #after-search>
-        <button
-          v-if="!isDefaultSort"
-          class="inline-flex items-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium text-sm hover:bg-gray-200 transition-colors"
-          @click="resetSort"
-        >
-          <UIcon name="heroicons:arrow-path" class="w-4 h-4" />
-          {{ t('competitions.reset_sort') }}
-        </button>
-      </template>
-    </AdminToolbar>
+    />
 
     <!-- Desktop Table -->
     <div class="hidden lg:block bg-white rounded-lg shadow overflow-hidden">
-      <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
-            <tr>
-              <!-- Checkbox column -->
-              <th v-if="canDelete" class="px-3 py-3 w-10">
-                <input
-                  v-model="selectAll"
-                  type="checkbox"
-                  class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
-                  @change="toggleSelectAll"
-                />
-              </th>
-
-              <!-- Code -->
-              <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" @click="handleSort('Code')">
-                <div class="flex items-center gap-1">
-                  {{ t('competitions.columns.code') }}
-                  <UIcon :name="getSortIcon('Code')" class="w-4 h-4" />
-                </div>
-              </th>
-
-              <!-- Level -->
-              <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" @click="handleSort('Code_niveau')">
-                <div class="flex items-center gap-1">
-                  {{ t('competitions.columns.niveau') }}
-                  <UIcon :name="getSortIcon('Code_niveau')" class="w-4 h-4" />
-                </div>
-              </th>
-
-              <!-- Libelle -->
-              <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" @click="handleSort('Libelle')">
-                <div class="flex items-center gap-1">
-                  {{ t('competitions.columns.libelle') }}
-                  <UIcon :name="getSortIcon('Libelle')" class="w-4 h-4" />
-                </div>
-              </th>
-
-              <!-- Groupe -->
-              <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {{ t('competitions.columns.groupe') }}
-              </th>
-
-              <!-- Type -->
-              <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" @click="handleSort('Code_typeclt')">
-                <div class="flex items-center gap-1">
-                  {{ t('competitions.columns.type') }}
-                  <UIcon :name="getSortIcon('Code_typeclt')" class="w-4 h-4" />
-                </div>
-              </th>
-
-              <!-- Status -->
-              <th class="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" @click="handleSort('Statut')">
-                <div class="flex items-center justify-center gap-1">
-                  {{ t('competitions.columns.statut') }}
-                  <UIcon :name="getSortIcon('Statut')" class="w-4 h-4" />
-                </div>
-              </th>
-
-              <!-- Publication -->
-              <th class="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {{ t('competitions.columns.publication') }}
-              </th>
-
-              <!-- Verrou -->
-              <th class="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {{ t('competitions.columns.verrou') }}
-              </th>
-
-              <!-- Teams -->
-              <th class="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {{ t('competitions.columns.equipes') }}
-              </th>
-
-              <!-- Journées/Phases -->
-              <th class="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {{ t('competitions.columns.journees') }}
-              </th>
-
-              <!-- Matches -->
-              <th class="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {{ t('competitions.columns.matchs') }}
-              </th>
-
-              <!-- Actions -->
-              <th class="px-3 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                {{ t('competitions.columns.actions') }}
-              </th>
-            </tr>
-          </thead>
-
-          <tbody class="bg-white divide-y divide-gray-200">
-            <!-- Loading state -->
-            <tr v-if="loading && competitions.length === 0">
-              <td :colspan="canDelete ? 13 : 12" class="px-4 py-8 text-center text-gray-500">
-                <UIcon name="heroicons:arrow-path" class="w-6 h-6 animate-spin mx-auto mb-2" />
-                {{ t('common.loading') }}
-              </td>
-            </tr>
-
-            <!-- Empty state -->
-            <tr v-else-if="competitions.length === 0">
-              <td :colspan="canDelete ? 12 : 11" class="px-4 py-8 text-center text-gray-500">
-                {{ t('competitions.empty') }}
-              </td>
-            </tr>
-
-            <!-- Competition rows -->
-            <tr
-              v-for="competition in competitions"
-              :key="competition.code"
-              class="hover:bg-gray-50"
-              :class="{ 'bg-blue-50': isSelected(competition.code) }"
-            >
-              <!-- Checkbox -->
-              <td v-if="canDelete" class="px-3 py-3">
-                <input
-                  :checked="isSelected(competition.code)"
-                  type="checkbox"
-                  class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
-                  @change="toggleSelect(competition.code)"
-                />
-              </td>
-
-              <!-- Code with link to documents -->
-              <td class="px-3 py-3 text-sm">
-                <a
-                  :href="getDocumentsUrl(competition)"
-                  class="text-blue-600 hover:text-blue-800 hover:underline font-medium"
-                  :title="t('competitions.documents')"
-                >
-                  {{ competition.code }}
-                </a>
-              </td>
-
-              <!-- Level badge -->
-              <td class="px-3 py-3 text-sm">
-                <span
-                  class="px-2 py-1 text-xs font-medium rounded"
-                  :class="getLevelColor(competition.codeNiveau)"
-                >
-                  {{ competition.codeNiveau }}
-                </span>
-              </td>
-
-              <!-- Libelle -->
-              <td class="px-3 py-3 text-sm text-gray-900">
-                <div class="font-medium">{{ competition.libelle }}</div>
-                <div v-if="competition.soustitre" class="text-xs text-gray-500">{{ competition.soustitre }}</div>
-              </td>
-
-              <!-- Groupe -->
-              <td class="px-3 py-3 text-sm text-gray-500">
-                {{ competition.codeRef || '-' }}
-              </td>
-
-              <!-- Type -->
-              <td class="px-3 py-3 text-sm text-gray-500">
-                {{ competition.codeTypeclt }}
-              </td>
-
-              <!-- Status (clickable to cycle ATT -> ON -> END -> ATT) -->
-              <td class="px-3 py-3 text-center">
-                <span
-                  class="px-2 py-1 text-xs font-medium rounded uppercase"
-                  :class="[
-                    getStatusColor(competition.statut),
-                    canToggleLock ? 'cursor-pointer' : ''
-                  ]"
-                  :title="canToggleLock ? t('competitions.click_to_change_status') : ''"
-                  @click="cycleStatus(competition)"
-                >
-                  {{ t(`competitions.status.${competition.statut}`) }}
-                </span>
-              </td>
-
-              <!-- Publication toggle -->
-              <td class="px-3 py-3 text-center">
-                <AdminToggleButton
-                  v-if="canTogglePublish"
-                  :active="competition.publication"
-                  active-icon="heroicons:eye-solid"
-                  inactive-icon="heroicons:eye-slash-solid"
-                  active-color="green"
-                  :active-title="t('competitions.published')"
-                  :inactive-title="t('competitions.unpublished')"
-                  size="lg"
-                  @toggle="togglePublication(competition)"
-                />
-                <UIcon
-                  v-else
-                  :name="competition.publication ? 'heroicons:eye-solid' : 'heroicons:eye-slash-solid'"
-                  class="w-5 h-5"
-                  :class="competition.publication ? 'text-green-600' : 'text-gray-400'"
-                />
-              </td>
-
-              <!-- Lock toggle -->
-              <td class="px-3 py-3 text-center">
-                <AdminToggleButton
-                  v-if="canToggleLock"
-                  :active="competition.verrou"
-                  active-icon="heroicons:lock-closed-solid"
-                  inactive-icon="heroicons:lock-open-solid"
-                  active-color="red"
-                  :active-title="t('competitions.locked')"
-                  :inactive-title="t('competitions.unlocked')"
-                  size="lg"
-                  @toggle="toggleLock(competition)"
-                />
-                <UIcon
-                  v-else
-                  :name="competition.verrou ? 'heroicons:lock-closed-solid' : 'heroicons:lock-open-solid'"
-                  class="w-5 h-5"
-                  :class="competition.verrou ? 'text-red-600' : 'text-gray-400'"
-                />
-              </td>
-
-              <!-- Teams count -->
-              <td class="px-3 py-3 text-sm text-center text-gray-500">
-                {{ competition.nbEquipes }}
-              </td>
-
-              <!-- Journées/Phases count -->
-              <td class="px-3 py-3 text-sm text-center text-gray-500">
-                {{ competition.nbJournees }}
-              </td>
-
-              <!-- Matches count -->
-              <td class="px-3 py-3 text-sm text-center text-gray-500">
-                {{ competition.nbMatchs }}
-              </td>
-
-              <!-- Actions -->
-              <td class="px-3 py-3">
-                <div class="flex items-center justify-end gap-1">
-                  <!-- RC link -->
-                  <a
-                    v-if="competition.hasRc"
-                    :href="getRcUrl(competition)"
-                    class="p-1.5 text-purple-600"
-                    :title="t('competitions.rc')"
-                  >
-                    <UIcon name="heroicons:users-solid" class="w-6 h-6" />
-                  </a>
-                  <!-- Edit -->
-                  <button
-                    v-if="canEdit"
-                    class="p-1.5 text-blue-600"
-                    :title="t('common.edit')"
-                    @click="openEditModal(competition)"
-                  >
-                    <UIcon name="heroicons:pencil-solid" class="w-6 h-6" />
-                  </button>
-                  <!-- Delete -->
-                  <button
-                    v-if="canDelete && competition.nbEquipes === 0 && competition.nbJournees === 0 && competition.nbMatchs === 0"
-                    class="p-1.5 text-red-600"
-                    :title="t('common.delete')"
-                    @click="openDeleteModal(competition)"
-                  >
-                    <UIcon name="heroicons:trash-solid" class="w-6 h-6" />
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <!-- Loading state -->
+      <div v-if="loading && competitions.length === 0" class="px-4 py-8 text-center text-gray-500">
+        <UIcon name="heroicons:arrow-path" class="w-6 h-6 animate-spin mx-auto mb-2" />
+        {{ t('common.loading') }}
       </div>
 
-      <!-- Desktop Pagination -->
-      <AdminPagination
-        v-model:page="page"
-        v-model:limit="limit"
-        :total="total"
-        :total-pages="totalPages"
-        :showing-text="t('competitions.pagination.showing', { from: '{from}', to: '{to}', total: '{total}' })"
-        :items-per-page-text="t('competitions.pagination.items_per_page')"
-      />
+      <!-- Empty state -->
+      <div v-else-if="competitionsBySection.length === 0" class="px-4 py-8 text-center text-gray-500">
+        {{ t('competitions.empty') }}
+      </div>
+
+      <!-- Competitions by section -->
+      <div v-else>
+        <div v-for="section in competitionsBySection" :key="section.section" class="border-b border-gray-200 last:border-b-0">
+          <!-- Section header (accordion toggle) -->
+          <button
+            class="w-full bg-gray-100 hover:bg-gray-200 px-4 py-2 flex items-center gap-2 transition-colors cursor-pointer"
+            @click="toggleSection(section.section)"
+          >
+            <UIcon
+              name="heroicons:chevron-right"
+              class="w-4 h-4 text-gray-500 transition-transform"
+              :class="{ 'rotate-90': !isSectionCollapsed(section.section) }"
+            />
+            <span class="text-sm font-semibold text-gray-700">{{ section.sectionLabel }}</span>
+            <span class="text-xs text-gray-500">({{ section.competitions.length }})</span>
+          </button>
+
+          <!-- Table for this section -->
+          <div v-show="!isSectionCollapsed(section.section)" class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <!-- Checkbox column -->
+                  <th v-if="canDelete" class="px-3 py-2 w-10">
+                    <input
+                      type="checkbox"
+                      class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                      :checked="section.competitions.every(c => isSelected(c.code))"
+                      @change="section.competitions.forEach(c => { if (($event.target as HTMLInputElement).checked !== isSelected(c.code)) toggleSelect(c.code) })"
+                    />
+                  </th>
+                  <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {{ t('competitions.columns.code') }}
+                  </th>
+                  <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {{ t('competitions.columns.niveau') }}
+                  </th>
+                  <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {{ t('competitions.columns.libelle') }}
+                  </th>
+                  <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {{ t('competitions.columns.groupe') }}
+                  </th>
+                  <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {{ t('competitions.columns.type') }}
+                  </th>
+                  <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {{ t('competitions.columns.statut') }}
+                  </th>
+                  <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {{ t('competitions.columns.publication') }}
+                  </th>
+                  <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {{ t('competitions.columns.verrou') }}
+                  </th>
+                  <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {{ t('competitions.columns.equipes') }}
+                  </th>
+                  <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {{ t('competitions.columns.journees') }}
+                  </th>
+                  <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {{ t('competitions.columns.matchs') }}
+                  </th>
+                  <th class="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {{ t('competitions.columns.actions') }}
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr
+                  v-for="competition in section.competitions"
+                  :key="competition.code"
+                  class="hover:bg-gray-50"
+                  :class="{ 'bg-blue-50': isSelected(competition.code) }"
+                >
+                  <!-- Checkbox -->
+                  <td v-if="canDelete" class="px-3 py-3">
+                    <input
+                      :checked="isSelected(competition.code)"
+                      type="checkbox"
+                      class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                      @change="toggleSelect(competition.code)"
+                    />
+                  </td>
+
+                  <!-- Code with link to documents -->
+                  <td class="px-3 py-3 text-sm">
+                    <a
+                      :href="getDocumentsUrl(competition)"
+                      class="text-blue-600 hover:text-blue-800 hover:underline font-medium"
+                      :title="t('competitions.documents')"
+                    >
+                      {{ competition.code }}
+                    </a>
+                  </td>
+
+                  <!-- Level badge -->
+                  <td class="px-3 py-3 text-sm">
+                    <span
+                      class="px-2 py-1 text-xs font-medium rounded"
+                      :class="getLevelColor(competition.codeNiveau)"
+                    >
+                      {{ competition.codeNiveau }}
+                    </span>
+                  </td>
+
+                  <!-- Libelle -->
+                  <td class="px-3 py-3 text-sm text-gray-900">
+                    <div class="font-medium">{{ competition.libelle }}</div>
+                    <div v-if="competition.soustitre" class="text-xs text-gray-500">{{ competition.soustitre }}</div>
+                  </td>
+
+                  <!-- Groupe -->
+                  <td class="px-3 py-3 text-sm text-gray-500">
+                    {{ competition.codeRef || '-' }}
+                  </td>
+
+                  <!-- Type -->
+                  <td class="px-3 py-3 text-sm text-gray-500">
+                    {{ competition.codeTypeclt }}
+                  </td>
+
+                  <!-- Status -->
+                  <td class="px-3 py-3 text-center">
+                    <span
+                      class="px-2 py-1 text-xs font-medium rounded uppercase"
+                      :class="[
+                        getStatusColor(competition.statut),
+                        canToggleLock ? 'cursor-pointer' : ''
+                      ]"
+                      :title="canToggleLock ? t('competitions.click_to_change_status') : ''"
+                      @click="cycleStatus(competition)"
+                    >
+                      {{ t(`competitions.status.${competition.statut}`) }}
+                    </span>
+                  </td>
+
+                  <!-- Publication toggle -->
+                  <td class="px-3 py-3 text-center">
+                    <AdminToggleButton
+                      v-if="canTogglePublish"
+                      :active="competition.publication"
+                      active-icon="heroicons:eye-solid"
+                      inactive-icon="heroicons:eye-slash-solid"
+                      active-color="green"
+                      :active-title="t('competitions.published')"
+                      :inactive-title="t('competitions.unpublished')"
+                      size="lg"
+                      @toggle="togglePublication(competition)"
+                    />
+                    <UIcon
+                      v-else
+                      :name="competition.publication ? 'heroicons:eye-solid' : 'heroicons:eye-slash-solid'"
+                      class="w-5 h-5"
+                      :class="competition.publication ? 'text-green-600' : 'text-gray-400'"
+                    />
+                  </td>
+
+                  <!-- Lock toggle -->
+                  <td class="px-3 py-3 text-center">
+                    <AdminToggleButton
+                      v-if="canToggleLock"
+                      :active="competition.verrou"
+                      active-icon="heroicons:lock-closed-solid"
+                      inactive-icon="heroicons:lock-open-solid"
+                      active-color="red"
+                      :active-title="t('competitions.locked')"
+                      :inactive-title="t('competitions.unlocked')"
+                      size="lg"
+                      @toggle="toggleLock(competition)"
+                    />
+                    <UIcon
+                      v-else
+                      :name="competition.verrou ? 'heroicons:lock-closed-solid' : 'heroicons:lock-open-solid'"
+                      class="w-5 h-5"
+                      :class="competition.verrou ? 'text-red-600' : 'text-gray-400'"
+                    />
+                  </td>
+
+                  <!-- Teams count -->
+                  <td class="px-3 py-3 text-sm text-center text-gray-500">
+                    {{ competition.nbEquipes }}
+                  </td>
+
+                  <!-- Journées/Phases count -->
+                  <td class="px-3 py-3 text-sm text-center text-gray-500">
+                    {{ competition.nbJournees }}
+                  </td>
+
+                  <!-- Matches count -->
+                  <td class="px-3 py-3 text-sm text-center text-gray-500">
+                    {{ competition.nbMatchs }}
+                  </td>
+
+                  <!-- Actions -->
+                  <td class="px-3 py-3">
+                    <div class="flex items-center justify-end gap-1">
+                      <a
+                        v-if="competition.hasRc"
+                        :href="getRcUrl(competition)"
+                        class="p-1.5 text-purple-600"
+                        :title="t('competitions.rc')"
+                      >
+                        <UIcon name="heroicons:users-solid" class="w-6 h-6" />
+                      </a>
+                      <button
+                        v-if="canEdit"
+                        class="p-1.5 text-blue-600"
+                        :title="t('common.edit')"
+                        @click="openEditModal(competition)"
+                      >
+                        <UIcon name="heroicons:pencil-solid" class="w-6 h-6" />
+                      </button>
+                      <button
+                        v-if="canDelete && competition.nbEquipes === 0 && competition.nbJournees === 0 && competition.nbMatchs === 0"
+                        class="p-1.5 text-red-600"
+                        :title="t('common.delete')"
+                        @click="openDeleteModal(competition)"
+                      >
+                        <UIcon name="heroicons:trash-solid" class="w-6 h-6" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Total -->
+        <div class="px-4 py-3 bg-gray-50 text-sm text-gray-600">
+          {{ t('competitions.total_competitions', { count: totalCompetitions }) }}
+        </div>
+      </div>
     </div>
 
     <!-- Mobile Cards -->
     <AdminCardList
       :loading="loading && competitions.length === 0"
-      :empty="competitions.length === 0"
+      :empty="competitionsBySection.length === 0"
       :loading-text="t('common.loading')"
       :empty-text="t('competitions.empty')"
     >
-      <AdminCard
-        v-for="competition in competitions"
-        :key="competition.code"
-        :selected="isSelected(competition.code)"
-        :show-checkbox="canDelete"
-        :checked="isSelected(competition.code)"
-        @toggle-select="toggleSelect(competition.code)"
-      >
-        <!-- Header -->
-        <template #header>
-          <div class="flex items-center gap-2">
-            <span
-              class="px-2 py-0.5 text-xs font-medium rounded"
-              :class="getLevelColor(competition.codeNiveau)"
-            >
-              {{ competition.codeNiveau }}
-            </span>
-            <a
-              :href="getDocumentsUrl(competition)"
-              class="font-semibold text-blue-600 hover:underline"
-            >
-              {{ competition.code }}
-            </a>
-          </div>
-        </template>
-        <template #header-right>
-          <span
-            class="px-2 py-0.5 text-xs font-medium rounded uppercase"
-            :class="[
-              getStatusColor(competition.statut),
-              canToggleLock ? 'cursor-pointer' : ''
-            ]"
-            :title="canToggleLock ? t('competitions.click_to_change_status') : ''"
-            @click="cycleStatus(competition)"
-          >
-            {{ t(`competitions.status.${competition.statut}`) }}
-          </span>
-        </template>
-
-        <!-- Content -->
-        <div class="space-y-2">
-          <div class="font-medium text-gray-900">{{ competition.libelle }}</div>
-          <div v-if="competition.soustitre" class="text-sm text-gray-500">{{ competition.soustitre }}</div>
-          <div class="flex flex-wrap gap-2 text-sm text-gray-500">
-            <span>{{ competition.codeTypeclt }}</span>
-            <span v-if="competition.codeRef">| {{ competition.codeRef }}</span>
-            <span>| {{ competition.nbEquipes }} {{ t('competitions.columns.equipes') }}</span>
-            <span>| {{ competition.nbJournees }} {{ competition.codeTypeclt === 'CP' ? t('competitions.columns.phases') : t('competitions.columns.journees') }}</span>
-            <span>| {{ competition.nbMatchs }} {{ t('competitions.columns.matchs') }}</span>
-          </div>
-        </div>
-
-        <!-- Footer left: toggles -->
-        <template #footer-left>
-          <AdminToggleButton
-            v-if="canTogglePublish"
-            :active="competition.publication"
-            active-icon="heroicons:eye-solid"
-            inactive-icon="heroicons:eye-slash-solid"
-            active-color="green"
-            :active-title="t('competitions.published')"
-            :inactive-title="t('competitions.unpublished')"
-            @toggle="togglePublication(competition)"
+      <template v-for="section in competitionsBySection" :key="section.section">
+        <!-- Section header mobile (accordion toggle) -->
+        <button
+          class="w-full flex items-center gap-2 px-1 py-2 mt-2 first:mt-0 cursor-pointer"
+          @click="toggleSection(section.section)"
+        >
+          <UIcon
+            name="heroicons:chevron-right"
+            class="w-4 h-4 text-gray-500 transition-transform"
+            :class="{ 'rotate-90': !isSectionCollapsed(section.section) }"
           />
-          <AdminToggleButton
-            v-if="canToggleLock"
-            :active="competition.verrou"
-            active-icon="heroicons:lock-closed-solid"
-            inactive-icon="heroicons:lock-open-solid"
-            active-color="red"
-            :active-title="t('competitions.locked')"
-            :inactive-title="t('competitions.unlocked')"
-            @toggle="toggleLock(competition)"
-          />
-        </template>
+          <span class="text-sm font-semibold text-gray-700">{{ section.sectionLabel }}</span>
+          <span class="text-xs text-gray-500">({{ section.competitions.length }})</span>
+        </button>
 
-        <!-- Footer right: actions -->
-        <template #footer-right>
-          <AdminActionButton
-            v-if="canEdit"
-            icon="heroicons:pencil-solid"
-            @click="openEditModal(competition)"
+        <template v-if="!isSectionCollapsed(section.section)">
+          <AdminCard
+            v-for="competition in section.competitions"
+            :key="competition.code"
+            :selected="isSelected(competition.code)"
+            :show-checkbox="canDelete"
+            :checked="isSelected(competition.code)"
+            @toggle-select="toggleSelect(competition.code)"
           >
-            {{ t('common.edit') }}
-          </AdminActionButton>
-          <AdminActionButton
-            v-if="canDelete && competition.nbEquipes === 0 && competition.nbJournees === 0 && competition.nbMatchs === 0"
-            variant="danger"
-            icon="heroicons:trash-solid"
-            @click="openDeleteModal(competition)"
-          >
-            {{ t('common.delete') }}
-          </AdminActionButton>
-        </template>
-      </AdminCard>
+            <!-- Header -->
+            <template #header>
+              <div class="flex items-center gap-2">
+                <span
+                  class="px-2 py-0.5 text-xs font-medium rounded"
+                  :class="getLevelColor(competition.codeNiveau)"
+                >
+                  {{ competition.codeNiveau }}
+                </span>
+                <a
+                  :href="getDocumentsUrl(competition)"
+                  class="font-semibold text-blue-600 hover:underline"
+                >
+                  {{ competition.code }}
+                </a>
+              </div>
+            </template>
+            <template #header-right>
+              <span
+                class="px-2 py-0.5 text-xs font-medium rounded uppercase"
+                :class="[
+                  getStatusColor(competition.statut),
+                  canToggleLock ? 'cursor-pointer' : ''
+                ]"
+                :title="canToggleLock ? t('competitions.click_to_change_status') : ''"
+                @click="cycleStatus(competition)"
+              >
+                {{ t(`competitions.status.${competition.statut}`) }}
+              </span>
+            </template>
 
-      <!-- Mobile Pagination -->
-      <AdminPagination
-        v-if="competitions.length > 0"
-        v-model:page="page"
-        v-model:limit="limit"
-        :total="total"
-        :total-pages="totalPages"
-        :showing-text="t('competitions.pagination.showing', { from: '{from}', to: '{to}', total: '{total}' })"
-        :items-per-page-text="t('competitions.pagination.items_per_page')"
-        class="mt-4 rounded-lg shadow"
-      />
+            <!-- Content -->
+            <div class="space-y-2">
+              <div class="font-medium text-gray-900">{{ competition.libelle }}</div>
+              <div v-if="competition.soustitre" class="text-sm text-gray-500">{{ competition.soustitre }}</div>
+              <div class="flex flex-wrap gap-2 text-sm text-gray-500">
+                <span>{{ competition.codeTypeclt }}</span>
+                <span v-if="competition.codeRef">| {{ competition.codeRef }}</span>
+                <span>| {{ competition.nbEquipes }} {{ t('competitions.columns.equipes') }}</span>
+                <span>| {{ competition.nbJournees }} {{ competition.codeTypeclt === 'CP' ? t('competitions.columns.phases') : t('competitions.columns.journees') }}</span>
+                <span>| {{ competition.nbMatchs }} {{ t('competitions.columns.matchs') }}</span>
+              </div>
+            </div>
+
+            <!-- Footer left: toggles -->
+            <template #footer-left>
+              <AdminToggleButton
+                v-if="canTogglePublish"
+                :active="competition.publication"
+                active-icon="heroicons:eye-solid"
+                inactive-icon="heroicons:eye-slash-solid"
+                active-color="green"
+                :active-title="t('competitions.published')"
+                :inactive-title="t('competitions.unpublished')"
+                @toggle="togglePublication(competition)"
+              />
+              <AdminToggleButton
+                v-if="canToggleLock"
+                :active="competition.verrou"
+                active-icon="heroicons:lock-closed-solid"
+                inactive-icon="heroicons:lock-open-solid"
+                active-color="red"
+                :active-title="t('competitions.locked')"
+                :inactive-title="t('competitions.unlocked')"
+                @toggle="toggleLock(competition)"
+              />
+            </template>
+
+            <!-- Footer right: actions -->
+            <template #footer-right>
+              <AdminActionButton
+                v-if="canEdit"
+                icon="heroicons:pencil-solid"
+                @click="openEditModal(competition)"
+              >
+                {{ t('common.edit') }}
+              </AdminActionButton>
+              <AdminActionButton
+                v-if="canDelete && competition.nbEquipes === 0 && competition.nbJournees === 0 && competition.nbMatchs === 0"
+                variant="danger"
+                icon="heroicons:trash-solid"
+                @click="openDeleteModal(competition)"
+              >
+                {{ t('common.delete') }}
+              </AdminActionButton>
+            </template>
+          </AdminCard>
+        </template>
+      </template>
+
+      <!-- Total mobile -->
+      <div v-if="competitionsBySection.length > 0" class="px-1 py-2 text-sm text-gray-600">
+        {{ t('competitions.total_competitions', { count: totalCompetitions }) }}
+      </div>
     </AdminCardList>
 
     <!-- Add/Edit Modal -->
