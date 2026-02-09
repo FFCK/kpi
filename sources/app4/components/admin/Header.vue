@@ -170,7 +170,7 @@ const handleLogout = async () => {
 }
 
 const switchLanguage = (code: string) => {
-  setLocale(code)
+  setLocale(code as 'en' | 'fr')
 }
 
 const isActive = (path: string) => route.path.startsWith(path)
@@ -393,7 +393,7 @@ onMounted(() => {
       <!-- Mobile menu (vertical dropdown) -->
       <nav
         v-if="mobileMenuOpen"
-        class="lg:hidden py-4 border-t border-gray-800"
+        class="lg:hidden py-4 border-t border-gray-800 relative z-50"
       >
         <div class="px-4 pb-2 space-y-1">
           <!-- Section: Competition Management -->
@@ -418,11 +418,12 @@ onMounted(() => {
           <!-- Section: Administration (accordion) -->
           <div v-if="adminMenuItems.length > 0">
             <button
+              type="button"
               :class="[
                 'w-full flex items-center justify-between py-2 text-sm font-medium transition-colors',
                 mobileExpanded === 'admin' ? 'text-blue-400' : 'text-gray-200 hover:text-white'
               ]"
-              @click="toggleMobileExpanded('admin')"
+              @click.stop="toggleMobileExpanded('admin')"
             >
               <span class="flex items-center gap-2">
                 <UIcon name="heroicons:cog-6-tooth" class="w-5 h-5" />
