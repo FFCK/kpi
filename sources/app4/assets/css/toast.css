@@ -1,5 +1,6 @@
 /* Nuxt UI Toast Styles - Force visibility and positioning */
 /* Toast container positioning - bottom right */
+/* IMPORTANT: z-index must be higher than modal (9999) and modal backdrop to avoid blur effect */
 [data-sonner-toaster],
 ol[data-sonner-toaster],
 div[data-sonner-toaster] {
@@ -9,7 +10,7 @@ div[data-sonner-toaster] {
   top: auto !important;
   left: auto !important;
   transform: none !important;
-  z-index: 99999 !important;
+  z-index: 100000 !important;
   max-width: calc(100vw - 2rem) !important;
   pointer-events: auto !important;
 }

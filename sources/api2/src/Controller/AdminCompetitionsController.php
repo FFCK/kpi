@@ -214,6 +214,135 @@ class AdminCompetitionsController extends AbstractController
     }
 
     /**
+     * Search competitions from previous seasons for autocomplete
+     * Returns distinct competitions with their latest season code
+     */
+    #[Route('/-search-previous-seasons', name: 'admin_competitions_search_previous', methods: ['GET'])]
+    public function searchPreviousSeasons(Request $request): JsonResponse
+    {
+        $query = trim($request->query->get('query', ''));
+        $currentSeasonCode = trim($request->query->get('currentSeasonCode', ''));
+        $limit = min(20, max(1, (int) $request->query->get('limit', 10)));
+
+        // Validate required parameters
+        if (strlen($query) < 2) {
+            return $this->json(['message' => 'Query must be at least 2 characters'], Response::HTTP_BAD_REQUEST);
+        }
+
+        if (empty($currentSeasonCode) || !preg_match('/^\d{4}$/', $currentSeasonCode)) {
+            return $this->json(['message' => 'Valid currentSeasonCode (YYYY format) is required'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Note: Using direct interpolation for LIMIT as per MEMORY.md - Doctrine DBAL + MariaDB
+        // Use subquery to get latest season per competition code, then join to get data from that season
+            $sql = "SELECT
+                        c.Code,
+                        c.Libelle,
+                        c.Soustitre,
+                        c.Soustitre2,
+                        c.Code_saison as latestSeasonCode
+                    FROM kp_competition c
+                    INNER JOIN (
+                        SELECT Code, MAX(Code_saison) as MaxSeason
+                        FROM kp_competition
+                        WHERE Code_saison < ?
+                            AND (
+                                Code LIKE ?
+                                OR Libelle LIKE ?
+                                OR Soustitre LIKE ?
+                                OR Soustitre2 LIKE ?
+                            )
+                        GROUP BY Code
+                    ) latest ON c.Code = latest.Code AND c.Code_saison = latest.MaxSeason
+                    ORDER BY c.Code_saison DESC, c.Libelle ASC
+                    LIMIT " . (int) $limit;
+
+        $searchPattern = "%$query%";
+        $stmt = $this->connection->prepare($sql);
+        $result = $stmt->executeQuery([
+            $currentSeasonCode,
+            $searchPattern,
+            $searchPattern,
+            $searchPattern,
+            $searchPattern
+        ]);
+
+        $competitions = $result->fetchAllAssociative();
+
+        $items = array_map(function ($row) {
+            return [
+                'code' => $row['Code'],
+                'libelle' => $row['Libelle'],
+                'soustitre' => $row['Soustitre'],
+                'soustitre2' => $row['Soustitre2'],
+                'latestSeasonCode' => $row['latestSeasonCode'],
+            ];
+        }, $competitions);
+
+        return $this->json($items);
+    }
+
+    /**
+     * Get complete competition data from a previous season
+     * Used to pre-fill form when importing from previous season
+     */
+    #[Route('/-from-previous-season/{code}/{seasonCode}', name: 'admin_competitions_from_previous', methods: ['GET'])]
+    public function getFromPreviousSeason(string $code, string $seasonCode): JsonResponse
+    {
+        // Validate season code format
+        if (!preg_match('/^\d{4}$/', $seasonCode)) {
+            return $this->json(['message' => 'Invalid season code format (expected YYYY)'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $sql = "SELECT c.*, g.section, g.ordre
+                FROM kp_competition c
+                LEFT JOIN kp_groupe g ON c.Code_ref = g.Groupe
+                WHERE c.Code = ? AND c.Code_saison = ?";
+
+        $stmt = $this->connection->prepare($sql);
+        $result = $stmt->executeQuery([$code, $seasonCode]);
+        $row = $result->fetchAssociative();
+
+        if (!$row) {
+            return $this->json(['message' => 'Competition not found in specified season'], Response::HTTP_NOT_FOUND);
+        }
+
+        $section = (int) ($row['section'] ?? 5);
+
+        // Return full competition data, but force Publication = 'N' (non-public by default)
+        // and omit Code_saison (will be set by frontend to current season)
+        return $this->json([
+            'code' => $row['Code'],
+            'niveau' => $row['Code_niveau'],
+            'type' => $row['Code_typeclt'],
+            'libelle' => $row['Libelle'],
+            'soustitre' => $row['Soustitre'],
+            'soustitre2' => $row['Soustitre2'],
+            'groupe' => $row['Code_ref'],
+            'groupOrder' => $row['GroupOrder'] ? (int) $row['GroupOrder'] : null,
+            'tour' => (int) $row['Code_tour'],
+            'statut' => $row['Statut'],
+            'qualifies' => (int) $row['Qualifies'],
+            'elimines' => (int) $row['Elimines'],
+            'points' => $row['Points'],
+            'goalaverage' => $row['goalaverage'],
+            'lienWeb' => $row['Web'],
+            'enActif' => $row['En_actif'] === 'O',
+            'titreActif' => $row['Titre_actif'] === 'O',
+            'bandeauActif' => $row['Bandeau_actif'] === 'O',
+            'logoActif' => $row['Logo_actif'] === 'O',
+            'sponsorActif' => $row['Sponsor_actif'] === 'O',
+            'kpiFfckActif' => $row['Kpi_ffck_actif'] === 'O',
+            'commentaires' => $row['commentairesCompet'],
+            'pointsGrid' => $row['points_grid'] ? json_decode($row['points_grid'], true) : null,
+            'multiCompetitions' => $row['multi_competitions'] ? json_decode($row['multi_competitions'], true) : null,
+            'rankingStructureType' => $row['ranking_structure_type'],
+            'publication' => false, // Force non-public by default
+            'importedFromSeason' => $seasonCode, // Extra metadata for UI
+        ]);
+    }
+
+    /**
      * Get a single competition by code
      */
     #[Route('/{code}', name: 'admin_competitions_get', methods: ['GET'])]

@@ -110,3 +110,49 @@ export interface CompetitionSectionForMulti {
   sectionLabel: string
   competitions: CompetitionForMulti[]
 }
+
+// Search result for autocomplete from previous seasons
+export interface CompetitionSearchResult {
+  code: string
+  libelle: string
+  soustitre: string | null
+  soustitre2: string | null
+  latestSeasonCode: string
+}
+
+// Import mode for competition creation
+export interface CompetitionImportMode {
+  mode: 'new' | 'import' // 'new' = manual creation, 'import' = from previous season
+  selectedCompetition: CompetitionSearchResult | null
+}
+
+// Competition data from previous season (for import)
+export interface CompetitionFromPreviousSeason {
+  code: string
+  niveau: CompetitionLevel
+  type: CompetitionType
+  libelle: string
+  soustitre: string | null
+  soustitre2: string | null
+  groupe: string | null
+  groupOrder: number | null
+  tour: number
+  statut: CompetitionStatus
+  qualifies: number
+  elimines: number
+  points: string
+  goalaverage: string
+  lienWeb: string | null
+  enActif: boolean
+  titreActif: boolean
+  bandeauActif: boolean
+  logoActif: boolean
+  sponsorActif: boolean
+  kpiFfckActif: boolean
+  commentaires: string | null
+  pointsGrid: Record<string, number> | null
+  multiCompetitions: string[] | null
+  rankingStructureType: RankingStructureType | null
+  publication: boolean
+  importedFromSeason: string
+}

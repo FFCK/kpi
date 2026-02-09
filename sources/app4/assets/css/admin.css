@@ -352,8 +352,9 @@ form button[type="submit"] {
 
 /* ===== Toast/Notification Styles ===== */
 /* Ensure toasts are visible and properly positioned */
+/* IMPORTANT: z-index must be higher than modal (9999) and modal backdrop to avoid blur effect */
 [data-sonner-toaster] {
-  z-index: 99999 !important;
+  z-index: 100000 !important;
   position: fixed !important;
 }
 

@@ -5,7 +5,9 @@ import type {
   CompetitionGroup,
   CompetitionLevel,
   CompetitionStatus,
-  CompetitionSectionForMulti
+  CompetitionSectionForMulti,
+  CompetitionImportMode,
+  CompetitionSearchResult
 } from '~/types/competitions'
 import type { PaginatedResponse } from '~/types'
 
@@ -16,6 +18,7 @@ definePageMeta({
 
 const { t } = useI18n()
 const api = useApi()
+const competitionsApi = useCompetitionsApi()
 const authStore = useAuthStore()
 const workContext = useWorkContextStore()
 
@@ -44,6 +47,15 @@ const isDeleting = ref(false)
 const editingCompetition = ref<AdminCompetition | null>(null)
 const formData = ref<CompetitionFormData>(getDefaultFormData())
 const formError = ref('')
+
+// Import mode state (for creating from previous season)
+const importMode = ref<CompetitionImportMode>({
+  mode: 'import',
+  selectedCompetition: null
+})
+const isCodeEditable = ref(false) // For profiles 1-2 when importing
+const importedFromSeason = ref<string | null>(null)
+const autocompleteRef = ref<{ focusInput: () => void } | null>(null)
 
 // Delete confirmation modal
 const deleteModalOpen = ref(false)
@@ -219,8 +231,92 @@ const openAddModal = () => {
   editingCompetition.value = null
   formData.value = getDefaultFormData()
   formError.value = ''
+  importMode.value = { mode: 'import', selectedCompetition: null }
+  isCodeEditable.value = false
+  importedFromSeason.value = null
   isModalOpen.value = true
+
+  // Focus autocomplete input after modal opens
+  nextTick(() => {
+    autocompleteRef.value?.focusInput()
+  })
 }
+
+// Handle competition selection from autocomplete
+const onCompetitionSelected = async (competition: CompetitionSearchResult) => {
+  loading.value = true
+  try {
+    // Fetch complete competition data from previous season
+    const fullCompetition = await competitionsApi.getCompetitionFromPreviousSeason(
+      competition.code,
+      competition.latestSeasonCode
+    )
+
+    // Pre-fill all form fields
+    formData.value = {
+      code: fullCompetition.code,
+      codeNiveau: fullCompetition.niveau,
+      codeTypeclt: fullCompetition.type,
+      libelle: fullCompetition.libelle,
+      soustitre: fullCompetition.soustitre || '',
+      soustitre2: fullCompetition.soustitre2 || '',
+      codeRef: fullCompetition.groupe || 'AUTRES',
+      groupOrder: fullCompetition.groupOrder,
+      codeTour: fullCompetition.tour,
+      statut: 'ATT', // Always set to ATT (pending) for new competitions
+      qualifies: fullCompetition.qualifies,
+      elimines: fullCompetition.elimines,
+      points: fullCompetition.points,
+      goalaverage: fullCompetition.goalaverage,
+      web: fullCompetition.lienWeb || '',
+      enActif: fullCompetition.enActif,
+      titreActif: fullCompetition.titreActif,
+      bandeauActif: fullCompetition.bandeauActif,
+      logoActif: fullCompetition.logoActif,
+      sponsorActif: fullCompetition.sponsorActif,
+      kpiFfckActif: fullCompetition.kpiFfckActif,
+      pointsGrid: fullCompetition.pointsGrid,
+      multiCompetitions: fullCompetition.multiCompetitions || [],
+      rankingStructureType: fullCompetition.rankingStructureType || 'team',
+      commentairesCompet: fullCompetition.commentaires || ''
+    }
+
+    // Store imported season for display
+    importedFromSeason.value = fullCompetition.importedFromSeason
+
+    // Code is initially not editable (only for profiles 1-2 with explicit action)
+    isCodeEditable.value = false
+
+    toast.add({
+      title: t('common.success'),
+      description: t('competitions.success_imported', { season: competition.latestSeasonCode }),
+      color: 'success',
+      duration: 3000
+    })
+  } catch (error) {
+    console.error('Error importing competition:', error)
+    formError.value = (error as { message?: string })?.message || t('competitions.error_import')
+  } finally {
+    loading.value = false
+  }
+}
+
+// Toggle code editability (for profiles 1-2 only)
+const toggleCodeEdit = () => {
+  isCodeEditable.value = !isCodeEditable.value
+}
+
+// Check if code is editable
+const canEditCode = computed(() => {
+  // If no imported competition, always editable (manual input)
+  if (!importedFromSeason.value) return true
+
+  // If imported and user toggled edit (profile 1-2 only), allow it
+  return isCodeEditable.value
+})
+
+// Check if user can change code (profile <= 2)
+const canChangeImportedCode = computed(() => authStore.profile <= 2)
 
 const openEditModal = (competition: AdminCompetition) => {
   editingCompetition.value = competition
@@ -299,7 +395,19 @@ const saveCompetition = async () => {
       })
     } else {
       // Create
+      const createdCode = formData.value.code
       await api.post('/admin/competitions', { ...formData.value, season: workContext.season })
+
+      // Reload work context to include new competition
+      await workContext.loadSeasonData(api)
+
+      // If in selection mode, add the new competition to selection
+      if (workContext.selectionType === 'selection' && !workContext.selectedCompetitionCodes.includes(createdCode)) {
+        workContext.selectedCompetitionCodes.push(createdCode)
+        workContext.computeCompetitionCodes()
+        workContext.saveToStorage()
+      }
+
       toast.add({
         title: t('common.success'),
         description: t('competitions.success_created'),
@@ -943,19 +1051,42 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
     <!-- Add/Edit Modal -->
     <AdminModal
       :open="isModalOpen"
-      :title="editingCompetition ? t('competitions.form.edit_title') : t('competitions.form.add_title')"
       max-width="xl"
       @close="closeModal"
     >
-      <form @submit.prevent="saveCompetition">
-        <div class="space-y-4 max-h-[70vh] overflow-y-auto px-1">
-          <!-- Error message -->
+      <template #header>
+        <div class="flex-1 pr-8">
+          <h3 class="text-lg font-semibold text-gray-900">
+            {{ editingCompetition ? t('competitions.form.edit_title') : t('competitions.form.add_title') }}
+          </h3>
+          <!-- Error message in header -->
           <div
             v-if="formError"
-            class="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800"
+            class="flex items-start gap-2 mt-3 p-3 bg-red-50 border border-red-200 rounded-lg text-red-800"
           >
             <UIcon name="heroicons:exclamation-triangle" class="w-5 h-5 shrink-0 mt-0.5" />
             <span class="text-sm">{{ formError }}</span>
+          </div>
+        </div>
+      </template>
+
+      <form @submit.prevent="saveCompetition">
+        <div class="space-y-4 max-h-[70vh] overflow-y-auto px-1">
+          <!-- Autocomplete (only when creating) -->
+          <div v-if="!editingCompetition" class="border-b border-gray-200 pb-4">
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              {{ t('competitions.form.search_competition') }}
+            </label>
+            <AdminCompetitionAutocomplete
+              v-if="workContext.season"
+              ref="autocompleteRef"
+              v-model="importMode.selectedCompetition"
+              :current-season-code="workContext.season"
+              @selected="onCompetitionSelected"
+            />
+            <div v-else class="text-sm text-gray-500 italic">
+              Chargement...
+            </div>
           </div>
 
           <!-- Code (only for create) -->
@@ -963,13 +1094,30 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
             <label class="block text-sm font-medium text-gray-700 mb-1">
               {{ t('competitions.form.code') }} <span class="text-red-500">*</span>
             </label>
+
+            <!-- Imported code indicator and edit button -->
+            <div v-if="importedFromSeason" class="flex items-center gap-2 mb-2">
+              <span class="inline-flex items-center px-2 py-1 rounded-md bg-blue-50 text-blue-700 text-xs font-medium">
+                {{ t('competitions.form.imported_from') }} {{ importedFromSeason }}
+              </span>
+              <button
+                v-if="canChangeImportedCode"
+                type="button"
+                @click="toggleCodeEdit"
+                class="text-xs text-blue-600 hover:text-blue-800 font-medium"
+              >
+                {{ isCodeEditable ? '🔓 ' : '🔒 ' }}{{ t('competitions.form.edit_code') }}
+              </button>
+            </div>
+
             <input
               v-model="formData.code"
               type="text"
               :placeholder="t('competitions.form.code_placeholder')"
+              :disabled="!canEditCode"
               maxlength="12"
               required
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 uppercase"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 uppercase disabled:bg-gray-100 disabled:cursor-not-allowed"
             />
             <p class="mt-1 text-xs text-gray-500">{{ t('competitions.form.code_hint') }}</p>
           </div>
