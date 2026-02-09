@@ -53,6 +53,7 @@ sources/app4/
 │   ├── events/index.vue            # Événements (/events)
 │   ├── games/index.vue             # Matchs (/games)
 │   ├── gamedays/index.vue          # Journées/Phases (/gamedays)
+│   ├── groups/index.vue            # Groupes (/groups)
 │   ├── operations/index.vue        # Opérations système (/operations)
 │   ├── rankings/
 │   │   ├── index.vue               # Classements (/rankings)
@@ -507,6 +508,7 @@ Ajouter un listener `click` global pour fermer le dropdown lors d'un clic en deh
 | Événements | `/events` | Implémentée |
 | Statistiques | `/stats` | Implémentée (contexte) |
 | Opérations | `/operations` | Implémentée |
+| Groupes | `/groups` | Implémentée |
 | Matchs | `/games` | Legacy redirect |
 | Équipes | `/teams` | Implémentée (contexte) |
 | Journées | `/gamedays` | Legacy redirect |
@@ -518,4 +520,4 @@ Ajouter un listener `click` global pour fermer le dropdown lors d'un clic en deh
 ---
 
 **Document créé le** : 2026-02-03
-**Dernière mise à jour** : 2026-02-05
+**Dernière mise à jour** : 2026-02-09

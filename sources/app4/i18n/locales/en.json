@@ -25,7 +25,8 @@
     "administration": "Administration",
     "clubs": "Clubs",
     "users": "Users",
-    "operations": "Operations"
+    "operations": "Operations",
+    "groups": "Groups"
   },
   "profile": "Profile",
   "logout": "Logout",
@@ -105,6 +106,66 @@
       "showing": "Showing {from} to {to} of {total} events",
       "items_per_page": "Items per page"
     }
+  },
+  "groups": {
+    "title": "Groups Management",
+    "add": "Add",
+    "edit": "Edit",
+    "delete": "Delete",
+    "columns": {
+      "ordre": "Order",
+      "niveau": "Level",
+      "code": "Code",
+      "libelle": "Label FR",
+      "libelle_en": "Label EN",
+      "competitions": "Comp.",
+      "codes_total_hint": "Distinct codes / Total competitions",
+      "actions": "Actions"
+    },
+    "form": {
+      "add_title": "Add a group",
+      "edit_title": "Edit group",
+      "section": "Section",
+      "code_niveau": "Level",
+      "ordre": "Order",
+      "groupe": "Group code",
+      "groupe_placeholder": "e.g. N1H",
+      "libelle": "Label FR",
+      "libelle_placeholder": "Group name",
+      "libelle_en": "Label EN",
+      "libelle_en_placeholder": "English translation (optional)",
+      "cancel": "Cancel",
+      "save": "Save"
+    },
+    "sections": {
+      "1": "International",
+      "2": "National",
+      "3": "Regional",
+      "4": "Tournament",
+      "5": "Continental",
+      "100": "Miscellaneous"
+    },
+    "niveaux": {
+      "REG": "Regional",
+      "NAT": "National",
+      "INT": "International"
+    },
+    "all_sections": "All sections",
+    "competition_count": "{count} competition(s)",
+    "codes_count": "{count} code(s)",
+    "total_groups": "Total: {count} group(s)",
+    "code_change_warning": "Changing the group code will automatically update all competitions referencing the current code \"{oldCode}\" to the new code \"{newCode}\".",
+    "confirm_delete": "Are you sure you want to delete this group?",
+    "confirm_code_change": "Confirm code change?",
+    "success_created": "Group created successfully",
+    "success_updated": "Group updated successfully",
+    "success_deleted": "Group deleted successfully",
+    "success_reordered": "Order updated",
+    "error_ordre_duplicate": "Order {ordre} is already used in this section",
+    "error_load": "Error loading groups",
+    "error_save": "Error saving group",
+    "error_delete": "Error deleting group",
+    "empty": "No groups found"
   },
   "common": {
     "yes": "Yes",

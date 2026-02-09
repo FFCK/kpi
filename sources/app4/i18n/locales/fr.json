@@ -25,7 +25,8 @@
     "administration": "Administration",
     "clubs": "Clubs",
     "users": "Utilisateurs",
-    "operations": "Opérations"
+    "operations": "Opérations",
+    "groups": "Groupes"
   },
   "profile": "Profil",
   "logout": "Déconnexion",
@@ -105,6 +106,66 @@
       "showing": "Affichage de {from} à {to} sur {total} événements",
       "items_per_page": "Éléments par page"
     }
+  },
+  "groups": {
+    "title": "Gestion des groupes",
+    "add": "Ajouter",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "columns": {
+      "ordre": "Ordre",
+      "niveau": "Niveau",
+      "code": "Code",
+      "libelle": "Libellé FR",
+      "libelle_en": "Libellé EN",
+      "competitions": "Comp.",
+      "codes_total_hint": "Codes distincts / Total compétitions",
+      "actions": "Actions"
+    },
+    "form": {
+      "add_title": "Ajouter un groupe",
+      "edit_title": "Modifier le groupe",
+      "section": "Section",
+      "code_niveau": "Niveau",
+      "ordre": "Ordre",
+      "groupe": "Code groupe",
+      "groupe_placeholder": "Ex: N1H",
+      "libelle": "Libellé FR",
+      "libelle_placeholder": "Nom du groupe",
+      "libelle_en": "Libellé EN",
+      "libelle_en_placeholder": "Traduction anglaise (optionnel)",
+      "cancel": "Annuler",
+      "save": "Enregistrer"
+    },
+    "sections": {
+      "1": "International",
+      "2": "National",
+      "3": "Régional",
+      "4": "Tournoi",
+      "5": "Continental",
+      "100": "Divers"
+    },
+    "niveaux": {
+      "REG": "Régional",
+      "NAT": "National",
+      "INT": "International"
+    },
+    "all_sections": "Toutes les sections",
+    "codes_count": "{count} code(s)",
+    "competition_count": "{count} compétition(s)",
+    "total_groups": "Total : {count} groupe(s)",
+    "code_change_warning": "Le changement du code groupe mettra à jour automatiquement toutes les compétitions référençant le code actuel « {oldCode} » vers le nouveau code « {newCode} ».",
+    "confirm_delete": "Êtes-vous sûr de vouloir supprimer ce groupe ?",
+    "confirm_code_change": "Confirmer le changement de code ?",
+    "success_created": "Groupe créé avec succès",
+    "success_updated": "Groupe modifié avec succès",
+    "success_deleted": "Groupe supprimé avec succès",
+    "success_reordered": "Ordre modifié",
+    "error_ordre_duplicate": "L'ordre {ordre} est déjà utilisé dans cette section",
+    "error_load": "Erreur lors du chargement des groupes",
+    "error_save": "Erreur lors de l'enregistrement",
+    "error_delete": "Erreur lors de la suppression",
+    "empty": "Aucun groupe trouvé"
   },
   "common": {
     "yes": "Oui",

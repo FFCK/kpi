@@ -37,6 +37,7 @@ Pages **globales** non liées à une compétition particulière.
 | Événements | `/events` | ≤ 2 | `heroicons:calendar-days` | Gestion des événements |
 | Athlètes | `/athletes` | ≤ 8 | `heroicons:user` | Statistiques individuelles |
 | Clubs | `/clubs` | ≤ 9 | `heroicons:building-office-2` | Gestion des clubs |
+| Groupes | `/groups` | ≤ 2 | `heroicons:rectangle-group` | Gestion des groupes de compétitions |
 | Utilisateurs | `/users` | ≤ 3 | `heroicons:users` | Gestion des utilisateurs |
 | Opérations | `/operations` | = 1 | `heroicons:wrench-screwdriver` | Opérations système |
 

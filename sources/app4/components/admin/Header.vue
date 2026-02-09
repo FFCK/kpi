@@ -133,6 +133,15 @@ const adminMenuItems = computed<MenuItem[]>(() => {
     })
   }
 
+  // Groupes - profile <= 2
+  if (profile <= 2) {
+    items.push({
+      to: '/groups',
+      icon: 'heroicons:rectangle-group',
+      label: t('menu.groups')
+    })
+  }
+
   // Utilisateurs - profile <= 3
   if (profile <= 3) {
     items.push({
