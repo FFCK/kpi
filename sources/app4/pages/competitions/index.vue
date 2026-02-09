@@ -565,6 +565,9 @@ const confirmBulkDelete = async () => {
 }
 
 // Sorting
+const DEFAULT_SORT_BY = 'section'
+const DEFAULT_SORT_ORDER: 'ASC' | 'DESC' = 'ASC'
+
 const handleSort = (column: string) => {
   if (sortBy.value === column) {
     sortOrder.value = sortOrder.value === 'ASC' ? 'DESC' : 'ASC'
@@ -573,6 +576,15 @@ const handleSort = (column: string) => {
     sortOrder.value = 'ASC'
   }
 }
+
+const resetSort = () => {
+  sortBy.value = DEFAULT_SORT_BY
+  sortOrder.value = DEFAULT_SORT_ORDER
+}
+
+const isDefaultSort = computed(() => {
+  return sortBy.value === DEFAULT_SORT_BY && sortOrder.value === DEFAULT_SORT_ORDER
+})
 
 const getSortIcon = (column: string) => {
   if (sortBy.value !== column) return 'heroicons:arrows-up-down'
@@ -647,7 +659,18 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
       :selected-count="selectedCodes.length"
       @add="openAddModal"
       @bulk-delete="openBulkDeleteModal"
-    />
+    >
+      <template #after-search>
+        <button
+          v-if="!isDefaultSort"
+          class="inline-flex items-center gap-2 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium text-sm hover:bg-gray-200 transition-colors"
+          @click="resetSort"
+        >
+          <UIcon name="heroicons:arrow-path" class="w-4 h-4" />
+          {{ t('competitions.reset_sort') }}
+        </button>
+      </template>
+    </AdminToolbar>
 
     <!-- Desktop Table -->
     <div class="hidden lg:block bg-white rounded-lg shadow overflow-hidden">

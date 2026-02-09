@@ -544,6 +544,7 @@
     "delete": "Supprimer",
     "delete_selected": "Supprimer la sélection",
     "select_all": "Tout sélectionner",
+    "reset_sort": "Tri par défaut",
     "documents": "Documents",
     "rc": "RC",
     "copy": "Copier",
