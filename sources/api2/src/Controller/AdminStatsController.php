@@ -1713,29 +1713,71 @@ class AdminStatsController extends AbstractController
     private function getStatTypes(): array
     {
         return [
-            ['value' => 'Buteurs', 'labelKey' => 'stats.types.buteurs', 'restricted' => false],
-            ['value' => 'Attaque', 'labelKey' => 'stats.types.attaque', 'restricted' => false],
-            ['value' => 'Defense', 'labelKey' => 'stats.types.defense', 'restricted' => false],
-            ['value' => 'Cartons', 'labelKey' => 'stats.types.cartons_joueurs', 'restricted' => false],
-            ['value' => 'CartonsEquipe', 'labelKey' => 'stats.types.cartons_equipes', 'restricted' => false],
-            ['value' => 'CartonsCompetition', 'labelKey' => 'stats.types.cartons_competitions', 'restricted' => false],
-            ['value' => 'Fairplay', 'labelKey' => 'stats.types.fairplay_joueurs', 'restricted' => false],
-            ['value' => 'FairplayEquipe', 'labelKey' => 'stats.types.fairplay_equipes', 'restricted' => false],
-            ['value' => 'Arbitrage', 'labelKey' => 'stats.types.arbitrage_arbitres', 'restricted' => false],
-            ['value' => 'ArbitrageEquipe', 'labelKey' => 'stats.types.arbitrage_equipes', 'restricted' => false],
-            ['value' => 'CJouees', 'labelKey' => 'stats.types.competitions_jouees_clubs', 'restricted' => false],
-            ['value' => 'CJouees2', 'labelKey' => 'stats.types.competitions_jouees_equipes', 'restricted' => false],
-            ['value' => 'CJoueesN', 'labelKey' => 'stats.types.competitions_nationales', 'restricted' => false],
-            ['value' => 'CJoueesCF', 'labelKey' => 'stats.types.coupe_france', 'restricted' => false],
-            ['value' => 'OfficielsJournees', 'labelKey' => 'stats.types.officiels_journees', 'restricted' => false],
-            ['value' => 'OfficielsMatchs', 'labelKey' => 'stats.types.officiels_matchs', 'restricted' => false],
-            ['value' => 'CJouees3', 'labelKey' => 'stats.types.irregularites', 'restricted' => true],
-            ['value' => 'ListeArbitres', 'labelKey' => 'stats.types.liste_arbitres', 'restricted' => false],
-            ['value' => 'ListeEquipes', 'labelKey' => 'stats.types.liste_equipes', 'restricted' => false],
-            ['value' => 'ListeJoueurs', 'labelKey' => 'stats.types.liste_joueurs', 'restricted' => false],
-            ['value' => 'ListeJoueurs2', 'labelKey' => 'stats.types.liste_joueurs_coachs', 'restricted' => false],
-            ['value' => 'LicenciesNationaux', 'labelKey' => 'stats.types.licencies_nationaux', 'restricted' => true],
-            ['value' => 'CoherenceMatchs', 'labelKey' => 'stats.types.coherence_matchs', 'restricted' => true],
+            [
+                'category' => 'performance',
+                'categoryLabelKey' => 'stats.categories.performance',
+                'types' => [
+                    ['value' => 'Buteurs', 'labelKey' => 'stats.types.buteurs', 'restricted' => false],
+                    ['value' => 'Attaque', 'labelKey' => 'stats.types.attaque', 'restricted' => false],
+                    ['value' => 'Defense', 'labelKey' => 'stats.types.defense', 'restricted' => false],
+                ],
+            ],
+            [
+                'category' => 'discipline',
+                'categoryLabelKey' => 'stats.categories.discipline',
+                'types' => [
+                    ['value' => 'Cartons', 'labelKey' => 'stats.types.cartons_joueurs', 'restricted' => false],
+                    ['value' => 'CartonsEquipe', 'labelKey' => 'stats.types.cartons_equipes', 'restricted' => false],
+                    ['value' => 'CartonsCompetition', 'labelKey' => 'stats.types.cartons_competitions', 'restricted' => false],
+                    ['value' => 'Fairplay', 'labelKey' => 'stats.types.fairplay_joueurs', 'restricted' => false],
+                    ['value' => 'FairplayEquipe', 'labelKey' => 'stats.types.fairplay_equipes', 'restricted' => false],
+                ],
+            ],
+            [
+                'category' => 'arbitrage',
+                'categoryLabelKey' => 'stats.categories.arbitrage',
+                'types' => [
+                    ['value' => 'Arbitrage', 'labelKey' => 'stats.types.arbitrage_arbitres', 'restricted' => false],
+                    ['value' => 'ArbitrageEquipe', 'labelKey' => 'stats.types.arbitrage_equipes', 'restricted' => false],
+                ],
+            ],
+            [
+                'category' => 'competitions_jouees',
+                'categoryLabelKey' => 'stats.categories.competitions_jouees',
+                'types' => [
+                    ['value' => 'CJouees', 'labelKey' => 'stats.types.competitions_jouees_clubs', 'restricted' => false],
+                    ['value' => 'CJouees2', 'labelKey' => 'stats.types.competitions_jouees_equipes', 'restricted' => false],
+                    ['value' => 'CJoueesN', 'labelKey' => 'stats.types.competitions_nationales', 'restricted' => false],
+                    ['value' => 'CJoueesCF', 'labelKey' => 'stats.types.coupe_france', 'restricted' => false],
+                ],
+            ],
+            [
+                'category' => 'officiels',
+                'categoryLabelKey' => 'stats.categories.officiels',
+                'types' => [
+                    ['value' => 'OfficielsJournees', 'labelKey' => 'stats.types.officiels_journees', 'restricted' => false],
+                    ['value' => 'OfficielsMatchs', 'labelKey' => 'stats.types.officiels_matchs', 'restricted' => false],
+                ],
+            ],
+            [
+                'category' => 'listes',
+                'categoryLabelKey' => 'stats.categories.listes',
+                'types' => [
+                    ['value' => 'ListeArbitres', 'labelKey' => 'stats.types.liste_arbitres', 'restricted' => false],
+                    ['value' => 'ListeEquipes', 'labelKey' => 'stats.types.liste_equipes', 'restricted' => false],
+                    ['value' => 'ListeJoueurs', 'labelKey' => 'stats.types.liste_joueurs', 'restricted' => false],
+                    ['value' => 'ListeJoueurs2', 'labelKey' => 'stats.types.liste_joueurs_coachs', 'restricted' => false],
+                ],
+            ],
+            [
+                'category' => 'analyses',
+                'categoryLabelKey' => 'stats.categories.analyses',
+                'types' => [
+                    ['value' => 'CJouees3', 'labelKey' => 'stats.types.irregularites', 'restricted' => true],
+                    ['value' => 'LicenciesNationaux', 'labelKey' => 'stats.types.licencies_nationaux', 'restricted' => true],
+                    ['value' => 'CoherenceMatchs', 'labelKey' => 'stats.types.coherence_matchs', 'restricted' => true],
+                ],
+            ],
         ];
     }
 

@@ -17,6 +17,12 @@ interface StatType {
   restricted: boolean
 }
 
+interface StatTypeCategory {
+  category: string
+  categoryLabelKey: string
+  types: StatType[]
+}
+
 interface CompetitionGroup {
   labelKey: string
   options: { code: string; libelle: string }[]
@@ -26,7 +32,7 @@ interface FiltersResponse {
   seasons: string[]
   activeSeason: string
   competitions: CompetitionGroup[]
-  statTypes: StatType[]
+  statTypes: StatTypeCategory[]
 }
 
 interface StatsResponse {
@@ -54,7 +60,7 @@ const seasons = ref<string[]>([])
 const selectedSeason = ref('')
 const competitionGroups = ref<CompetitionGroup[]>([])
 const selectedCompetitions = ref<string[]>([])
-const statTypes = ref<StatType[]>([])
+const statTypeCategories = ref<StatTypeCategory[]>([])
 const selectedStatType = ref('Buteurs')
 const limit = ref(30)
 
@@ -114,11 +120,16 @@ const loadFilters = async () => {
     seasons.value = response.seasons
     competitionGroups.value = filterCompetitionsByContext(response.competitions)
 
-    // Filter stat types based on user profile
-    statTypes.value = response.statTypes.filter(st => {
-      if (st.restricted && authStore.profile > 6) return false
-      return true
-    })
+    // Filter stat type categories based on user profile - remove restricted types if profile > 6
+    statTypeCategories.value = response.statTypes
+      .map(category => ({
+        ...category,
+        types: category.types.filter(st => {
+          if (st.restricted && authStore.profile > 6) return false
+          return true
+        })
+      }))
+      .filter(category => category.types.length > 0) // Remove empty categories
 
     // Restore from store if initialized, otherwise use defaults
     if (statsStore.initialized) {
@@ -344,8 +355,11 @@ const mobileColumns = computed(() => columns.value.filter(c => c !== 'nom' && c 
 
 // Get stat type label
 const getStatTypeLabel = computed(() => {
-  const st = statTypes.value.find(s => s.value === selectedStatType.value)
-  return st ? t(st.labelKey) : selectedStatType.value
+  for (const category of statTypeCategories.value) {
+    const st = category.types.find(s => s.value === selectedStatType.value)
+    if (st) return t(st.labelKey)
+  }
+  return selectedStatType.value
 })
 
 // Get stat type description
@@ -667,9 +681,15 @@ const exportPdf = async () => {
             v-model="tempStatType"
             class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
-            <option v-for="st in statTypes" :key="st.value" :value="st.value">
-              {{ t(st.labelKey) }}
-            </option>
+            <optgroup
+              v-for="category in statTypeCategories"
+              :key="category.category"
+              :label="t(category.categoryLabelKey)"
+            >
+              <option v-for="st in category.types" :key="st.value" :value="st.value">
+                {{ t(st.labelKey) }}
+              </option>
+            </optgroup>
           </select>
           <p v-if="getTempStatTypeDescription" class="mt-1 text-xs text-gray-500 italic">
             {{ getTempStatTypeDescription }}
