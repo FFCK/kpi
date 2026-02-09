@@ -18,7 +18,7 @@ export const useCompetitionsApi = () => {
   const searchPreviousSeasons = async (
     query: string,
     currentSeasonCode: string,
-    limit = 10
+    limit = 20
   ): Promise<CompetitionSearchResult[]> => {
     try {
       console.log('[API] Searching previous seasons:', { query, currentSeasonCode, limit })

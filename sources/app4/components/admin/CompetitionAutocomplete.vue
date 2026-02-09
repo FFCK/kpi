@@ -57,7 +57,7 @@ async function performSearch() {
     results.value = await competitionsApi.searchPreviousSeasons(
       searchQuery.value,
       props.currentSeasonCode,
-      10
+      20
     )
     isOpen.value = true
   } catch (error) {
