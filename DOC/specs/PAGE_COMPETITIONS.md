@@ -186,9 +186,49 @@ Format JSON définissant les points par classement :
 {"1":10, "2":6, "3":4, "4":3, "5":2, "6":1, "default":0}
 ```
 
-Interface d'édition :
-- Éditeur visuel avec ligne par position
-- Valeur "default" pour positions non listées
+**Composant** : `AdminPointsGridEditor` (v-model sur `formData.pointsGrid: Record<string, number> | null`)
+
+**Profil** : ≤ 2
+
+#### État inactif (pointsGrid = null)
+
+Affiche un bouton "Configurer la grille de points" qui active l'éditeur avec des valeurs par défaut (10 positions vides, default=0).
+
+#### État actif (éditeur ouvert)
+
+```
+┌─────────────────────────────────────────────────┐
+│ Grille de points                                │
+│ Points attribués par position                   │
+│                                                 │
+│ Nombre de positions : [10 ▲▼]  (1-50)          │
+│                                                 │
+│ ┌─────────────────────────────────────────────┐ │
+│ │ 1re place    [___]                          │ │
+│ │ 2e place     [___]                          │ │
+│ │ 3e place     [___]                          │ │
+│ │ ...          [___]                          │ │
+│ │ 10e place    [___]                          │ │
+│ └─────────────────────────────── (scroll) ────┘ │
+│                                                 │
+│ Points par défaut : [0 ▲▼]                      │
+│ (Appliqué aux positions non listées)            │
+│                                                 │
+│ ▸ Aperçu JSON                                   │
+│   {"1":10,"2":6,"3":4,"default":0}              │
+│                                                 │
+│ [Effacer la grille]                             │
+└─────────────────────────────────────────────────┘
+```
+
+**Comportement** :
+- Grille de positions dans un conteneur scrollable (`max-h-64`)
+- Layout 2 colonnes : label ordinal + input number (min=0)
+- Positions vides/null sont exclues du JSON émis
+- Modification du nombre de positions : étend ou tronque le tableau (les valeurs existantes sont conservées)
+- Aperçu JSON en temps réel (toggle collapsible, police monospace)
+- Bouton "Effacer" remet `pointsGrid` à `null` (retour à l'état inactif)
+- Chargement automatique d'une grille existante en mode édition/import
 
 ### 5.2 Compétitions sources
 

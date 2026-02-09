@@ -1318,6 +1318,11 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
               </select>
             </div>
 
+            <!-- Points grid -->
+            <div class="mb-4">
+              <AdminPointsGridEditor v-model="formData.pointsGrid" />
+            </div>
+
             <!-- Source competitions -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">

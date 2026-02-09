@@ -728,6 +728,17 @@
       "title": "Configuration multi-compétition",
       "points_grid": "Grille de points",
       "points_grid_hint": "Points attribués par position (1er, 2ème, etc.)",
+      "points_grid_editor": {
+        "num_positions": "Nombre de positions",
+        "num_positions_hint": "De 1 à 50",
+        "position_label": "{n}e place",
+        "position_label_first": "1re place",
+        "default_points": "Points par défaut",
+        "default_points_hint": "Appliqué aux positions non listées",
+        "json_preview": "Aperçu JSON",
+        "configure": "Configurer la grille de points",
+        "clear": "Effacer la grille"
+      },
       "source_competitions": "Compétitions sources",
       "source_competitions_hint": "Compétitions à agréger",
       "ranking_type": "Type de classement",
