@@ -173,6 +173,7 @@
     "cancel": "Cancel",
     "save": "Save",
     "delete": "Delete",
+    "delete_selected": "Delete selection",
     "edit": "Edit",
     "add": "Add",
     "search": "Search",
@@ -181,7 +182,10 @@
     "success": "Success",
     "confirm": "Confirm",
     "actions": "Actions",
-    "scroll_to_top": "Back to top"
+    "scroll_to_top": "Back to top",
+    "last_name": "Last name",
+    "first_name": "First name",
+    "load_error": "Error loading data"
   },
   "legacy_redirect": {
     "message": "Redirecting to classic interface...",
@@ -921,5 +925,42 @@
         "description": "The server encountered an error"
       }
     }
+  },
+  "rc": {
+    "title": "Competition Officials",
+    "add": "Add an official",
+    "edit": "Edit official",
+    "no_national_competition": "National (no competition)",
+    "field": {
+      "competition": "Competition",
+      "ordre": "Order",
+      "search_person": "Search a person",
+      "search_placeholder": "Name, first name or licence #",
+      "licence": "Licence #",
+      "name": "Name",
+      "email": "Email",
+      "season": "Season"
+    },
+    "filter_competitions": "Filter by competitions",
+    "delete_confirm_title": "Delete officials",
+    "delete_confirm_message": "Are you sure you want to delete {count} competition official(s)?",
+    "copy_title": "Copy officials",
+    "copy_source": "Source season",
+    "copy_target": "Target season",
+    "copy_button": "Copy officials",
+    "copy_help": "This operation copies all officials from the source season to the target season (duplicates are skipped).",
+    "copy_confirm_message": "Copy all officials from season {source} to season {target}?",
+    "copy_success": "{copied} officials copied ({skipped} skipped)",
+    "copy_error": "Error copying officials",
+    "added": "Official added.",
+    "updated": "Official updated.",
+    "deleted": "{count} official(s) deleted.",
+    "duplicate_error": "This official already exists for this competition and season.",
+    "total": "Total: {count} officials",
+    "no_results": "No competition officials found.",
+    "search": "Search by name, first name or licence",
+    "error_no_player": "Please select a person",
+    "error_copy_seasons": "Please select source and target seasons",
+    "error_copy_same_season": "Source and target seasons must be different"
   }
 }

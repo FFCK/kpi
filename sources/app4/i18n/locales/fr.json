@@ -173,6 +173,7 @@
     "cancel": "Annuler",
     "save": "Enregistrer",
     "delete": "Supprimer",
+    "delete_selected": "Supprimer la sélection",
     "edit": "Modifier",
     "add": "Ajouter",
     "search": "Rechercher",
@@ -181,7 +182,10 @@
     "success": "Succès",
     "confirm": "Confirmer",
     "actions": "Actions",
-    "scroll_to_top": "Retour en haut"
+    "scroll_to_top": "Retour en haut",
+    "last_name": "Nom",
+    "first_name": "Prénom",
+    "load_error": "Erreur lors du chargement des données"
   },
   "legacy_redirect": {
     "message": "Redirection vers l'interface classique en cours...",
@@ -933,5 +937,42 @@
         "description": "Le serveur a rencontré une erreur"
       }
     }
+  },
+  "rc": {
+    "title": "Responsables de Compétition",
+    "add": "Ajouter un RC",
+    "edit": "Modifier le RC",
+    "no_national_competition": "National (sans compétition)",
+    "field": {
+      "competition": "Compétition",
+      "ordre": "Ordre",
+      "search_person": "Rechercher une personne",
+      "search_placeholder": "Nom, prénom ou n° licence",
+      "licence": "N° Licence",
+      "name": "Nom",
+      "email": "Email",
+      "season": "Saison"
+    },
+    "filter_competitions": "Filtrer par compétitions",
+    "delete_confirm_title": "Supprimer les RC",
+    "delete_confirm_message": "Êtes-vous sûr de vouloir supprimer {count} responsable(s) de compétition ?",
+    "copy_title": "Copier les RC",
+    "copy_source": "Saison source",
+    "copy_target": "Saison cible",
+    "copy_button": "Copier les RC",
+    "copy_help": "Cette opération copie tous les RC de la saison source vers la saison cible (les doublons sont ignorés).",
+    "copy_confirm_message": "Copier tous les RC de la saison {source} vers la saison {target} ?",
+    "copy_success": "{copied} RC copiés ({skipped} ignorés)",
+    "copy_error": "Erreur lors de la copie des RC",
+    "added": "RC ajouté.",
+    "updated": "RC modifié.",
+    "deleted": "{count} RC supprimé(s).",
+    "duplicate_error": "Ce RC existe déjà pour cette compétition et cette saison.",
+    "total": "Total : {count} RC",
+    "no_results": "Aucun responsable de compétition trouvé.",
+    "search": "Rechercher par nom, prénom ou licence",
+    "error_no_player": "Veuillez sélectionner une personne",
+    "error_copy_seasons": "Veuillez sélectionner les saisons source et cible",
+    "error_copy_same_season": "Les saisons source et cible doivent être différentes"
   }
 }

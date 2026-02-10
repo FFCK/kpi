@@ -106,7 +106,8 @@ class GestionRc extends MyPageSecure
                 $row['Selected'] = 'Selected';
                 $Identite = $row['Prenom'] . ' ' . $row['Nom'];
 			}
-			if (in_array($row['Code_competition'], $arrayCompetitionList) || $row['Code_competition'] == '- CNA -') {
+			// Inclure RC national (NULL) ou compétitions filtrées
+			if (in_array($row['Code_competition'], $arrayCompetitionList) || $row['Code_competition'] === null) {
 				array_push($arrayRc, $row);
 			}
 		}

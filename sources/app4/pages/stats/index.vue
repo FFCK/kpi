@@ -642,7 +642,7 @@ const exportPdf = async () => {
             <template v-if="!row['nom'] && !row['equipe'] && row['competition']">{{ row['competition'] }}</template>
           </h3>
         </template>
-        <template #header-right>Toto</template>
+        <template #header-right>*</template>
 
         <!-- Content: show all columns -->
         <div class="space-y-1 text-sm">

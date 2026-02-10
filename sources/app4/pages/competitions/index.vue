@@ -623,10 +623,6 @@ const getDocumentsUrl = (competition: AdminCompetition) => {
   return `/admin/GestionDocuments.php?competition=${competition.code}`
 }
 
-const getRcUrl = (competition: AdminCompetition) => {
-  return `/admin/GestionRC.php?competition=${competition.code}`
-}
-
 // Tour options
 const tourOptions = [
   { value: 1, label: t('competitions.tour_options.1') },
@@ -878,14 +874,13 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
                   <!-- Actions -->
                   <td class="px-3 py-3">
                     <div class="flex items-center justify-end gap-1">
-                      <a
-                        v-if="competition.hasRc"
-                        :href="getRcUrl(competition)"
-                        class="p-1.5 text-purple-600"
+                      <NuxtLink
+                        :to="`/rc?competition=${competition.code}`"
+                        class="p-1.5 text-purple-600 hover:text-purple-800"
                         :title="t('competitions.rc')"
                       >
                         <UIcon name="heroicons:users-solid" class="w-6 h-6" />
-                      </a>
+                      </NuxtLink>
                       <button
                         v-if="canEdit"
                         class="p-1.5 text-blue-600"

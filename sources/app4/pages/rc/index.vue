@@ -1,0 +1,680 @@
+<script setup lang="ts">
+import { ref, computed, watch, onMounted } from 'vue'
+import type { Rc, RcFormData, PlayerAutocomplete, RcCopyFormData } from '~/types/rc'
+
+definePageMeta({
+  layout: 'admin',
+  middleware: 'auth',
+})
+
+const { t } = useI18n()
+const route = useRoute()
+const api = useApi()
+const toast = useToast()
+const workContext = useWorkContextStore()
+const authStore = useAuthStore()
+
+// State
+const rcList = ref<Rc[]>([])
+const loading = ref(false)
+const searchQuery = ref('')
+const selectedCompetitions = ref<string[]>([])
+const selectedIds = ref<number[]>([])
+
+// Modals
+const addModalOpen = ref(false)
+const editModalOpen = ref(false)
+const copyModalOpen = ref(false)
+const deleteConfirmOpen = ref(false)
+
+// Form data
+const formData = ref<RcFormData>({
+  season: '',
+  competitionCode: null,
+  matric: 0,
+  ordre: 1,
+})
+const editingRc = ref<Rc | null>(null)
+const formError = ref('')
+const formSaving = ref(false)
+
+// Player search
+const playerSearch = ref('')
+const searchResults = ref<PlayerAutocomplete[]>([])
+const selectedPlayer = ref<PlayerAutocomplete | null>(null)
+const searchingPlayers = ref(false)
+
+// Copy RC
+const copyFormData = ref<RcCopyFormData>({
+  sourceCode: '',
+  targetCode: '',
+})
+const availableSeasons = ref<string[]>([])
+
+// Computed
+const canEdit = computed(() => authStore.profile <= 2)
+const canDelete = computed(() => authStore.profile <= 1)
+const canCopy = computed(() => authStore.profile <= 2)
+
+const filteredRc = computed(() => {
+  let filtered = rcList.value
+
+  // Filter by selected competitions
+  if (selectedCompetitions.value.length > 0) {
+    filtered = filtered.filter(rc =>
+      selectedCompetitions.value.includes(rc.competitionCode || '')
+    )
+  }
+
+  // Search filter
+  if (searchQuery.value.trim()) {
+    const query = searchQuery.value.toLowerCase()
+    filtered = filtered.filter(rc =>
+      rc.nom.toLowerCase().includes(query) ||
+      rc.prenom.toLowerCase().includes(query) ||
+      rc.matric.toString().includes(query)
+    )
+  }
+
+  return filtered
+})
+
+// Load RC list
+const loadRc = async () => {
+  if (!workContext.season) return
+
+  loading.value = true
+  try {
+    const params: Record<string, string> = {
+      season: workContext.season,
+    }
+
+    if (selectedCompetitions.value.length > 0) {
+      params.competitions = selectedCompetitions.value.join(',')
+    }
+
+    const data = await api.get<{ items: Rc[]; total: number }>('/admin/rc', params)
+    rcList.value = data.items || []
+  } catch (error) {
+    console.error('Error loading RC:', error)
+  } finally {
+    loading.value = false
+  }
+}
+
+// Search players (autocomplete)
+let searchTimeout: ReturnType<typeof setTimeout> | null = null
+const searchPlayers = async () => {
+  if (playerSearch.value.length < 2) {
+    searchResults.value = []
+    searchingPlayers.value = false
+    return
+  }
+
+  if (searchTimeout) clearTimeout(searchTimeout)
+
+  searchTimeout = setTimeout(async () => {
+    searchingPlayers.value = true
+    try {
+      const data = await api.get<PlayerAutocomplete[]>(
+        '/admin/operations/autocomplete/players',
+        { q: playerSearch.value }
+      )
+      searchResults.value = data || []
+    } catch (error) {
+      console.error('Error searching players:', error)
+    } finally {
+      searchingPlayers.value = false
+    }
+  }, 300)
+}
+
+// Select player from search
+const selectPlayer = (player: PlayerAutocomplete) => {
+  selectedPlayer.value = player
+  formData.value.matric = player.matric
+  playerSearch.value = `${player.nom} ${player.prenom}`
+  searchResults.value = []
+}
+
+// Open add modal
+const openAddModal = () => {
+  formData.value = {
+    season: workContext.season || '',
+    competitionCode: null,
+    matric: 0,
+    ordre: 1,
+  }
+  selectedPlayer.value = null
+  playerSearch.value = ''
+  formError.value = ''
+  addModalOpen.value = true
+}
+
+// Open edit modal
+const openEditModal = (rc: Rc) => {
+  editingRc.value = rc
+  formData.value = {
+    season: rc.season,
+    competitionCode: rc.competitionCode,
+    matric: rc.matric,
+    ordre: rc.ordre,
+  }
+  playerSearch.value = `${rc.nom} ${rc.prenom}`
+  selectedPlayer.value = {
+    matric: rc.matric,
+    nom: rc.nom,
+    prenom: rc.prenom,
+    naissance: null,
+    numeroClub: rc.club,
+    club: null,
+    label: `${rc.matric} - ${rc.nom} ${rc.prenom}`,
+  }
+  formError.value = ''
+  editModalOpen.value = true
+}
+
+// Submit add/edit form
+const submitForm = async () => {
+  formError.value = ''
+
+  if (!selectedPlayer.value) {
+    formError.value = t('rc.error_no_player')
+    return
+  }
+
+  formSaving.value = true
+  try {
+    if (editingRc.value) {
+      await api.put(`/admin/rc/${editingRc.value.id}`, formData.value)
+    } else {
+      await api.post('/admin/rc', formData.value)
+    }
+
+    toast.add({
+      title: t('common.success'),
+      description: editingRc.value ? t('rc.updated') : t('rc.added'),
+      color: 'success',
+    })
+
+    addModalOpen.value = false
+    editModalOpen.value = false
+    await loadRc()
+  } catch (error: any) {
+    formError.value = error.message || t('common.error')
+  } finally {
+    formSaving.value = false
+  }
+}
+
+// Confirm delete
+const confirmDelete = () => {
+  if (selectedIds.value.length === 0) return
+  deleteConfirmOpen.value = true
+}
+
+// Delete RC
+const deleteRc = async () => {
+  formSaving.value = true
+  try {
+    const data = await api.post<{ deleted: number; message: string }>('/admin/rc/bulk-delete', {
+      ids: selectedIds.value,
+    })
+
+    toast.add({
+      title: t('common.success'),
+      description: t('rc.deleted', { count: data.deleted }),
+      color: 'success',
+    })
+
+    selectedIds.value = []
+    deleteConfirmOpen.value = false
+    await loadRc()
+  } catch (error) {
+    console.error('Error deleting RC:', error)
+  } finally {
+    formSaving.value = false
+  }
+}
+
+// Copy RC
+const openCopyModal = () => {
+  // Generate list of seasons (current + 2 previous)
+  const currentSeason = parseInt(workContext.season || new Date().getFullYear().toString())
+  availableSeasons.value = [
+    currentSeason.toString(),
+    (currentSeason - 1).toString(),
+    (currentSeason - 2).toString(),
+  ]
+
+  copyFormData.value = {
+    sourceCode: '',
+    targetCode: workContext.season || '',
+  }
+
+  copyModalOpen.value = true
+}
+
+const copyRc = async () => {
+  if (!copyFormData.value.sourceCode || !copyFormData.value.targetCode) {
+    formError.value = t('rc.error_copy_seasons')
+    return
+  }
+
+  if (copyFormData.value.sourceCode === copyFormData.value.targetCode) {
+    formError.value = t('rc.error_copy_same_season')
+    return
+  }
+
+  formSaving.value = true
+  try {
+    const data = await api.post<{ copied: number; skipped: number }>(
+      '/admin/operations/seasons/copy-rc',
+      copyFormData.value
+    )
+
+    toast.add({
+      title: t('common.success'),
+      description: t('rc.copy_success', { copied: data.copied, skipped: data.skipped }),
+      color: 'success',
+    })
+
+    copyModalOpen.value = false
+    await loadRc()
+  } catch (error) {
+    console.error('Error copying RC:', error)
+  } finally {
+    formSaving.value = false
+  }
+}
+
+// Initialize from URL parameter
+onMounted(() => {
+  const competitionParam = route.query.competition as string
+  if (competitionParam) {
+    selectedCompetitions.value = [competitionParam]
+  }
+})
+
+// Watch context changes
+watch(() => [workContext.initialized, workContext.season], () => {
+  if (workContext.initialized && workContext.season) {
+    loadRc()
+  }
+}, { immediate: true })
+
+// Watch competition filter
+watch(selectedCompetitions, () => {
+  loadRc()
+})
+</script>
+
+<template>
+  <div class="p-6 space-y-6">
+    <!-- Work Context Summary -->
+    <AdminWorkContextSummary />
+
+    <!-- Title -->
+    <div class="flex items-center justify-between">
+      <h1 class="text-2xl font-bold text-gray-900">
+        {{ t('rc.title') }}
+      </h1>
+    </div>
+
+    <!-- Toolbar -->
+    <AdminToolbar
+      v-model:search="searchQuery"
+      :search-placeholder="t('rc.search')"
+      :add-label="t('rc.add')"
+      :show-add="canEdit"
+      :show-bulk-delete="canDelete"
+      :bulk-delete-label="t('common.delete_selected')"
+      :selected-count="selectedIds.length"
+      @add="openAddModal"
+      @bulk-delete="confirmDelete"
+    />
+
+    <!-- Competition Filter -->
+    <div class="bg-white rounded-lg shadow p-4">
+      <label class="block text-sm font-medium text-gray-700 mb-2">
+        {{ t('rc.filter_competitions') }}
+      </label>
+      <AdminCompetitionMultiSelect
+        v-model="selectedCompetitions"
+        :competitions="workContext.competitions || []"
+      />
+    </div>
+
+    <!-- RC Table (Desktop) -->
+    <div class="hidden lg:block bg-white rounded-lg shadow overflow-hidden">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th v-if="canDelete" class="w-10 px-3 py-3">
+              <input
+                type="checkbox"
+                class="rounded border-gray-300"
+                :checked="selectedIds.length === filteredRc.length && filteredRc.length > 0"
+                @change="selectedIds = selectedIds.length === filteredRc.length ? [] : filteredRc.map(r => r.id)"
+              >
+            </th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              {{ t('rc.field.competition') }}
+            </th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              {{ t('rc.field.ordre') }}
+            </th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              {{ t('common.last_name') }}
+            </th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              {{ t('common.first_name') }}
+            </th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              {{ t('rc.field.licence') }}
+            </th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              {{ t('rc.field.email') }}
+            </th>
+            <th v-if="canEdit" class="w-16 px-3 py-3" />
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <tr
+            v-for="rc in filteredRc"
+            :key="rc.id"
+            class="hover:bg-gray-50 cursor-pointer"
+            @click="canEdit && openEditModal(rc)"
+          >
+            <td v-if="canDelete" class="px-3 py-4" @click.stop>
+              <input
+                v-model="selectedIds"
+                type="checkbox"
+                :value="rc.id"
+                class="rounded border-gray-300"
+              >
+            </td>
+            <td class="px-3 py-4 text-sm text-gray-900">
+              {{ rc.competitionLabel }}
+            </td>
+            <td class="px-3 py-4 text-sm text-gray-900">
+              {{ rc.ordre }}
+            </td>
+            <td class="px-3 py-4 text-sm font-medium text-gray-900">
+              {{ rc.nom }}
+            </td>
+            <td class="px-3 py-4 text-sm text-gray-900">
+              {{ rc.prenom }}
+            </td>
+            <td class="px-3 py-4 text-sm text-gray-500 font-mono">
+              {{ rc.matric }}
+            </td>
+            <td class="px-3 py-4 text-sm text-gray-500">
+              {{ rc.email || '-' }}
+            </td>
+            <td v-if="canEdit" class="px-3 py-4" @click.stop>
+              <UIcon
+                name="i-heroicons-pencil"
+                class="w-5 h-5 text-blue-600 hover:text-blue-800 cursor-pointer"
+                @click="openEditModal(rc)"
+              />
+            </td>
+          </tr>
+          <tr v-if="filteredRc.length === 0">
+            <td :colspan="canDelete ? 8 : 7" class="px-3 py-8 text-center text-sm text-gray-500">
+              {{ loading ? t('common.loading') : t('rc.no_results') }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Footer -->
+      <div class="px-4 py-3 bg-gray-50 border-t border-gray-200 text-sm text-gray-600">
+        {{ t('rc.total', { count: filteredRc.length }) }}
+      </div>
+    </div>
+
+    <!-- RC Cards (Mobile) -->
+    <AdminCardList class="lg:hidden" :loading="loading" :empty="filteredRc.length === 0">
+      <AdminCard
+        v-for="rc in filteredRc"
+        :key="rc.id"
+        :selected="selectedIds.includes(rc.id)"
+        :show-checkbox="canDelete"
+        @toggle-select="selectedIds.includes(rc.id) ? selectedIds = selectedIds.filter(id => id !== rc.id) : selectedIds.push(rc.id)"
+        @click="canEdit && openEditModal(rc)"
+      >
+        <template #header>
+          <div>
+            <div class="font-bold">{{ rc.nom }} {{ rc.prenom }}</div>
+            <div class="text-sm text-gray-500">{{ rc.competitionLabel }}</div>
+          </div>
+        </template>
+
+        <div class="space-y-1 text-sm">
+          <div><span class="text-gray-500">{{ t('rc.field.ordre') }}:</span> {{ rc.ordre }}</div>
+          <div><span class="text-gray-500">{{ t('rc.field.licence') }}:</span> {{ rc.matric }}</div>
+          <div v-if="rc.email"><span class="text-gray-500">{{ t('rc.field.email') }}:</span> {{ rc.email }}</div>
+        </div>
+      </AdminCard>
+    </AdminCardList>
+
+    <!-- Copy RC Section (Profil ≤ 2) -->
+    <div v-if="canCopy" class="bg-white rounded-lg shadow p-6">
+      <h2 class="text-lg font-semibold text-gray-900 mb-4">
+        {{ t('rc.copy_title') }}
+      </h2>
+      <p class="text-sm text-gray-600 mb-4">
+        {{ t('rc.copy_help') }}
+      </p>
+      <button
+        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+        @click="openCopyModal"
+      >
+        {{ t('rc.copy_button') }}
+      </button>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <AdminModal
+      :open="addModalOpen || editModalOpen"
+      :title="editingRc ? t('rc.edit') : t('rc.add')"
+      max-width="lg"
+      @close="addModalOpen = false; editModalOpen = false"
+    >
+      <form @submit.prevent="submitForm" class="space-y-4">
+        <!-- Error -->
+        <div v-if="formError" class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">
+          <UIcon name="i-heroicons-exclamation-triangle" class="w-5 h-5 inline mr-2" />
+          {{ formError }}
+        </div>
+
+        <!-- Player search -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            {{ t('rc.field.search_person') }} *
+          </label>
+          <input
+            v-model="playerSearch"
+            type="text"
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            :placeholder="t('rc.field.search_placeholder')"
+            @input="searchPlayers"
+          >
+
+          <!-- Search loading -->
+          <div v-if="searchingPlayers" class="mt-1 p-3 text-sm text-gray-500 text-center border border-gray-200 rounded-lg bg-white">
+            <UIcon name="i-heroicons-arrow-path" class="w-5 h-5 animate-spin inline mr-2" />
+            {{ t('common.loading') }}
+          </div>
+
+          <!-- Search results -->
+          <div v-else-if="searchResults.length > 0" class="mt-1 max-h-60 overflow-y-auto border border-gray-200 rounded-lg bg-white shadow-lg">
+            <button
+              v-for="result in searchResults"
+              :key="result.matric"
+              type="button"
+              class="w-full px-3 py-2 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+              @click="selectPlayer(result)"
+            >
+              <div class="font-medium">{{ result.nom }} {{ result.prenom }}</div>
+              <div class="text-sm text-gray-500">{{ result.label }}</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- Selected player info -->
+        <div v-if="selectedPlayer" class="p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm">
+          <div><strong>{{ t('rc.field.licence') }}:</strong> {{ selectedPlayer.matric }}</div>
+          <div><strong>{{ t('common.name') }}:</strong> {{ selectedPlayer.nom }} {{ selectedPlayer.prenom }}</div>
+        </div>
+
+        <!-- Season (readonly) -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            {{ t('rc.field.season') }}
+          </label>
+          <input
+            v-model="formData.season"
+            type="text"
+            readonly
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100"
+          >
+        </div>
+
+        <!-- Competition -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            {{ t('rc.field.competition') }}
+          </label>
+          <AdminCompetitionGroupedSelect
+            v-model="formData.competitionCode"
+            :show-national-option="true"
+          />
+        </div>
+
+        <!-- Ordre -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            {{ t('rc.field.ordre') }} *
+          </label>
+          <input
+            v-model.number="formData.ordre"
+            type="number"
+            min="1"
+            max="99"
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+          >
+        </div>
+
+        <!-- Actions -->
+        <div class="flex justify-end gap-2 pt-4 border-t">
+          <button
+            type="button"
+            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+            @click="addModalOpen = false; editModalOpen = false"
+          >
+            {{ t('common.cancel') }}
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+            :disabled="!selectedPlayer || formSaving"
+          >
+            {{ editingRc ? t('common.save') : t('common.add') }}
+          </button>
+        </div>
+      </form>
+    </AdminModal>
+
+    <!-- Copy RC Modal -->
+    <AdminModal
+      :open="copyModalOpen"
+      :title="t('rc.copy_title')"
+      max-width="md"
+      @close="copyModalOpen = false"
+    >
+      <form @submit.prevent="copyRc" class="space-y-4">
+        <!-- Error -->
+        <div v-if="formError" class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">
+          {{ formError }}
+        </div>
+
+        <!-- Source season -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            {{ t('rc.copy_source') }}
+          </label>
+          <select
+            v-model="copyFormData.sourceCode"
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">{{ t('common.select') }}</option>
+            <option v-for="season in availableSeasons" :key="season" :value="season">
+              {{ season }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Target season -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">
+            {{ t('rc.copy_target') }}
+          </label>
+          <select
+            v-model="copyFormData.targetCode"
+            required
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">{{ t('common.select') }}</option>
+            <option
+              v-for="season in availableSeasons"
+              :key="season"
+              :value="season"
+              :disabled="season === copyFormData.sourceCode"
+            >
+              {{ season }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Warning -->
+        <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-sm">
+          <UIcon name="i-heroicons-exclamation-triangle" class="w-4 h-4 inline mr-1" />
+          {{ t('rc.copy_help') }}
+        </div>
+
+        <!-- Actions -->
+        <div class="flex justify-end gap-2 pt-4 border-t">
+          <button
+            type="button"
+            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+            @click="copyModalOpen = false"
+          >
+            {{ t('common.cancel') }}
+          </button>
+          <button
+            type="submit"
+            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+            :disabled="!copyFormData.sourceCode || !copyFormData.targetCode || formSaving"
+          >
+            {{ t('common.copy') }}
+          </button>
+        </div>
+      </form>
+    </AdminModal>
+
+    <!-- Delete Confirm Modal -->
+    <AdminConfirmModal
+      :open="deleteConfirmOpen"
+      :title="t('rc.delete_confirm_title')"
+      :message="t('rc.delete_confirm_message', { count: selectedIds.length })"
+      :confirming="formSaving"
+      @confirm="deleteRc"
+      @cancel="deleteConfirmOpen = false"
+    />
+  </div>
+</template>
