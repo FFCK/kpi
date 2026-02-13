@@ -26,7 +26,8 @@
     "clubs": "Clubs",
     "users": "Users",
     "operations": "Operations",
-    "groups": "Groups"
+    "groups": "Groups",
+    "rc": "Officials"
   },
   "profile": "Profile",
   "logout": "Logout",
@@ -165,7 +166,9 @@
     "error_load": "Error loading groups",
     "error_save": "Error saving group",
     "error_delete": "Error deleting group",
-    "empty": "No groups found"
+    "empty": "No groups found",
+    "collapse_all": "Collapse all",
+    "expand_all": "Expand all"
   },
   "common": {
     "yes": "Yes",

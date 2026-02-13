@@ -20,6 +20,7 @@ const loading = ref(false)
 const searchQuery = ref('')
 const selectedCompetitions = ref<string[]>([])
 const selectedIds = ref<number[]>([])
+const filterOpen = ref(false)
 
 // Modals
 const addModalOpen = ref(false)
@@ -302,15 +303,36 @@ watch(selectedCompetitions, () => {
       @bulk-delete="confirmDelete"
     />
 
-    <!-- Competition Filter -->
-    <div class="bg-white rounded-lg shadow p-4">
-      <label class="block text-sm font-medium text-gray-700 mb-2">
-        {{ t('rc.filter_competitions') }}
-      </label>
-      <AdminCompetitionMultiSelect
-        v-model="selectedCompetitions"
-        :competitions="workContext.competitions || []"
-      />
+    <!-- Competition Filter (collapsible) -->
+    <div class="bg-white rounded-lg shadow">
+      <button
+        class="w-full flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors"
+        @click="filterOpen = !filterOpen"
+      >
+        <div class="flex items-center gap-2">
+          <UIcon
+            name="heroicons:funnel"
+            class="w-4 h-4 text-gray-500"
+          />
+          <span class="text-sm font-medium text-gray-700">
+            {{ t('rc.filter_competitions') }}
+          </span>
+          <span v-if="selectedCompetitions.length > 0" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+            {{ selectedCompetitions.length }}
+          </span>
+        </div>
+        <UIcon
+          name="heroicons:chevron-down"
+          class="w-4 h-4 text-gray-400 transition-transform"
+          :class="{ 'rotate-180': filterOpen }"
+        />
+      </button>
+      <div v-show="filterOpen" class="px-4 pb-4 border-t border-gray-100">
+        <AdminCompetitionMultiSelect
+          v-model="selectedCompetitions"
+          :competitions="workContext.competitions || []"
+        />
+      </div>
     </div>
 
     <!-- RC Table (Desktop) -->

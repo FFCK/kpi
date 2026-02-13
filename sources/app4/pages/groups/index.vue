@@ -93,6 +93,19 @@ const toggleSection = (sectionId: number) => {
 
 const isSectionCollapsed = (sectionId: number) => collapsedSections.value.has(sectionId)
 
+const allCollapsed = computed(() =>
+  groupsBySection.value.length > 0
+  && collapsedSections.value.size === groupsBySection.value.length,
+)
+
+const expandAll = () => {
+  collapsedSections.value = new Set()
+}
+
+const collapseAll = () => {
+  collapsedSections.value = new Set(groupsBySection.value.map(s => s.section))
+}
+
 // Groups organized by section
 const groupsBySection = computed<GroupsBySection[]>(() => {
   const filtered = groups.value.filter(g => {
@@ -337,6 +350,26 @@ const isLastInSection = (group: Group, sectionGroups: Group[]) => {
       :add-label="t('groups.add')"
       @add="openAddModal"
     />
+
+    <!-- Expand/Collapse all -->
+    <div v-if="groupsBySection.length > 1" class="flex justify-end gap-2">
+      <button
+        class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-default"
+        :disabled="allCollapsed"
+        @click="collapseAll"
+      >
+        <UIcon name="heroicons:chevron-double-up" class="w-3.5 h-3.5" />
+        {{ t('groups.collapse_all') }}
+      </button>
+      <button
+        class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-default"
+        :disabled="collapsedSections.size === 0"
+        @click="expandAll"
+      >
+        <UIcon name="heroicons:chevron-double-down" class="w-3.5 h-3.5" />
+        {{ t('groups.expand_all') }}
+      </button>
+    </div>
 
     <!-- Desktop Table -->
     <div class="hidden lg:block bg-white rounded-lg shadow overflow-hidden">

@@ -26,7 +26,8 @@
     "clubs": "Clubs",
     "users": "Utilisateurs",
     "operations": "Opérations",
-    "groups": "Groupes"
+    "groups": "Groupes",
+    "rc": "RC"
   },
   "profile": "Profil",
   "logout": "Déconnexion",
@@ -165,7 +166,9 @@
     "error_load": "Erreur lors du chargement des groupes",
     "error_save": "Erreur lors de l'enregistrement",
     "error_delete": "Erreur lors de la suppression",
-    "empty": "Aucun groupe trouvé"
+    "empty": "Aucun groupe trouvé",
+    "collapse_all": "Tout replier",
+    "expand_all": "Tout déplier"
   },
   "common": {
     "yes": "Oui",

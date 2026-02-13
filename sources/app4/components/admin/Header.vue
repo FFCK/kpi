@@ -133,6 +133,15 @@ const adminMenuItems = computed<MenuItem[]>(() => {
     })
   }
 
+  // RC - profile <= 2
+  if (profile <= 2) {
+    items.push({
+      to: '/rc',
+      icon: 'heroicons:identification',
+      label: t('menu.rc')
+    })
+  }
+
   // Groupes - profile <= 2
   if (profile <= 2) {
     items.push({
