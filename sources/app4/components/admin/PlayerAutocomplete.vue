@@ -24,6 +24,7 @@ const inputRef = ref<HTMLInputElement>()
 
 // Debounce timeout
 let debounceTimeout: ReturnType<typeof setTimeout> | null = null
+let skipNextSearch = false
 
 // Search function
 async function performSearch() {
@@ -57,12 +58,17 @@ function debouncedSearch() {
 
 // Watch search query
 watch(searchQuery, () => {
+  if (skipNextSearch) {
+    skipNextSearch = false
+    return
+  }
   debouncedSearch()
 })
 
 // Handle selection
 function selectPlayer(player: PlayerAutocomplete) {
   emit('update:modelValue', player)
+  skipNextSearch = true
   searchQuery.value = `${player.nom} ${player.prenom}`
   results.value = []
   isOpen.value = false

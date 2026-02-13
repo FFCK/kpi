@@ -132,11 +132,12 @@ interface PresencePageState {
 | 2 | Édition inline Numero (0-99) | ≤ 8 | ❌ | GestionEquipeJoueur.js:75-104 |
 | 3 | Édition inline Capitaine (-, C, E, A, X) | ≤ 8 | ❌ | GestionEquipeJoueur.js:108-156 |
 | 4 | Ajouter joueur depuis recherche licence | ≤ 8 | ❌ | GestionEquipeJoueur.php:269-276 |
-| 5 | Créer nouveau joueur non-licencié | ≤ 4 | ❌ | GestionEquipeJoueur.php:280-341 |
+| 5 | Créer nouveau joueur (licence, arbitre, ICF) | ≤ 4 | ❌ | GestionEquipeJoueur.php:280-341 |
 | 6 | Ajouter joueur existant (autocomplete) | ≤ 8 | ❌ | GestionEquipeJoueur.tpl:197-235 |
 | 7 | Sélection multiple + suppression en masse | ≤ 8 | ❌ | GestionEquipeJoueur.php:416-420 |
 | 8 | Copier composition depuis autre compét. | ≤ 4 | ❌ | CopyTeamComposition.php |
-| 9 | Afficher info licence | ≤ 10 | - | GestionEquipeJoueur.php:156-170 |
+| 9 | Afficher info licence (ICF si dispo, sinon Matric) | ≤ 10 | - | GestionEquipeJoueur.php:156-170 |
+| 9b | Afficher saison licence entre parenthèses si < saison travail | ≤ 10 | - | - |
 | 10 | Afficher surclassement (icône #S) | ≤ 10 | - | GestionEquipeJoueur.tpl:110-115 |
 | 11 | Validation compétitions nationales | ≤ 8 | ❌ | GestionEquipeJoueur.js:242-265 |
 | 12 | Séparateur visuel joueurs actifs/inactifs | ≤ 10 | - | GestionEquipeJoueur.tpl:148-150 |
@@ -308,13 +309,13 @@ interface TeamPlayersResponse {
 
   // Mode 2: Création joueur non-licencié (Profil ≤ 4)
   createNew?: boolean
-  nom?: string
-  prenom?: string
-  sexe?: 'M' | 'F'
-  naissance?: string // YYYY-MM-DD
-  arbitre?: '' | 'REG' | 'IR' | 'NAT' | 'INT' | 'OTM' | 'JO'
-  niveau?: string
-  numicf?: number
+  nom?: string        // Obligatoire
+  prenom?: string     // Obligatoire
+  sexe?: 'M' | 'F'   // Obligatoire
+  naissance?: string  // YYYY-MM-DD (facultatif)
+  numicf?: number     // N° licence ICF (facultatif, stocké dans kp_licence.Reserve)
+  arbitre?: '' | 'REG' | 'NAT' | 'INT' | 'OTM' | 'JO'  // Qualification arbitre (facultatif)
+  niveau?: '' | 'A' | 'B' | 'C' | 'S'                   // Niveau arbitre (facultatif, S = Stagiaire)
 }
 ```
 
@@ -328,6 +329,18 @@ interface TeamPlayersResponse {
 - Si compétition N* ou CF*: valider pagaie, certificat, surclassement
 - Générer matric >= 2000000 si createNew
 - Vérifier doublon (nom + prénom + club)
+
+**Création joueur (createNew = true):**
+- Insère dans `kp_licence` avec :
+  - `Matric` auto-incrémenté (>= 2000000)
+  - `Origine` = saison de la compétition
+  - `Numero_club` et `Club` = club de l'équipe en cours
+  - `Reserve` = numicf (numéro licence ICF, facultatif)
+  - `Sexe` obligatoire
+- Si `arbitre` renseigné, insère aussi dans `kp_arbitre` avec :
+  - Qualification : REG (Régional), NAT (National), INT (International), OTM (Officiel Table de Marque), JO (Jeune Officiel)
+  - Niveau : A, B, C, S (Stagiaire)
+  - Flags `regional`, `interregional`, `national`, `international` déduits de la qualification
 
 #### DELETE /admin/teams/:teamId/players
 
@@ -682,6 +695,21 @@ export interface Player {
 }
 ```
 
+### 6.1b Affichage du numéro de licence
+
+La colonne "Licence" affiche :
+- Le numéro de licence ICF (`icf`, champ `Reserve` de `kp_licence`) s'il existe
+- Sinon le numéro de licence national (`matric`)
+- Si la saison de licence (`origine`) est inférieure à la saison de travail de la compétition (`codeSaison`), la saison est affichée entre parenthèses après le numéro
+
+**Exemples :**
+| icf | matric | origine | codeSaison | Affichage |
+|-----|--------|---------|------------|-----------|
+| 12345 | 100200 | 2026 | 2026 | `12345` |
+| 12345 | 100200 | 2025 | 2026 | `12345 (2025)` |
+| null | 100200 | 2026 | 2026 | `100200` |
+| null | 100200 | 2024 | 2026 | `100200 (2024)` |
+
 ### 6.2 Team & Competition Info
 
 ```typescript
@@ -728,22 +756,20 @@ export interface AddPlayerFormData {
   // Existing player
   matric?: number
 
-  // Create new (Matric >= 2000000)
-  nom?: string
-  prenom?: string
-  sexe?: 'M' | 'F'
-  naissance?: string // YYYY-MM-DD
+  // Create new (Matric >= 2000000, insère dans kp_licence + kp_arbitre)
+  nom?: string          // Obligatoire
+  prenom?: string       // Obligatoire
+  sexe?: 'M' | 'F'     // Obligatoire
+  naissance?: string    // YYYY-MM-DD (facultatif)
+  numicf?: number       // N° licence ICF (facultatif → kp_licence.Reserve)
 
   // Common
   numero?: number
   capitaine?: '-' | 'C' | 'E' | 'A' | 'X'
 
-  // Optional referee
-  arbitre?: '' | 'REG' | 'IR' | 'NAT' | 'INT' | 'OTM' | 'JO'
-  niveau?: string
-
-  // Optional ICF
-  numicf?: number
+  // Optional referee (si renseigné → insère dans kp_arbitre)
+  arbitre?: '' | 'REG' | 'NAT' | 'INT' | 'OTM' | 'JO'
+  niveau?: '' | 'A' | 'B' | 'C' | 'S'  // S = Stagiaire
 }
 
 // Team Mode: Copy composition

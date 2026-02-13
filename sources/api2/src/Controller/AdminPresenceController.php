@@ -393,15 +393,15 @@ class AdminPresenceController extends AbstractController
             return $this->json(['players' => []]);
         }
 
-        // Search by matric (exact) or by name (LIKE)
+        // Search by matric (exact), ICF/Reserve (exact) or by name (LIKE)
         if (is_numeric($query)) {
             $sql = "SELECT Matric, Nom, Prenom, Sexe, Naissance, Numero_club, Club,
                            Pagaie_ECA, Pagaie_EVI, Pagaie_MER,
                            Etat_certificat_CK
                     FROM kp_licence
-                    WHERE Matric = ?
+                    WHERE Matric = ? OR Reserve = ?
                     LIMIT " . (int) $limit;
-            $params = [(int) $query];
+            $params = [(int) $query, $query];
         } else {
             $sql = "SELECT Matric, Nom, Prenom, Sexe, Naissance, Numero_club, Club,
                            Pagaie_ECA, Pagaie_EVI, Pagaie_MER,

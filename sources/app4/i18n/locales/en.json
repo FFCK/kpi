@@ -1037,6 +1037,16 @@
     "birth_date": "Birth date",
     "status": "Status",
     "no_compositions": "No compositions available",
-    "players_count_short": "player(s)"
+    "players_count_short": "player(s)",
+    "icf_number": "ICF License",
+    "icf_number_placeholder": "ICF license number",
+    "referee_qualification": "Referee qualification",
+    "referee_level": "Referee level",
+    "referee_level_trainee": "Trainee",
+    "referee_reg": "Regional",
+    "referee_nat": "National",
+    "referee_int": "International",
+    "referee_otm": "Match Official",
+    "referee_jo": "Young Official"
   }
 }

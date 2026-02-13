@@ -1049,6 +1049,16 @@
     "birth_date": "Date de naissance",
     "status": "Statut",
     "no_compositions": "Aucune composition disponible",
-    "players_count_short": "joueur(s)"
+    "players_count_short": "joueur(s)",
+    "icf_number": "Licence ICF",
+    "icf_number_placeholder": "N° licence ICF",
+    "referee_qualification": "Qualification arbitre",
+    "referee_level": "Niveau arbitre",
+    "referee_level_trainee": "Stagiaire",
+    "referee_reg": "Régional",
+    "referee_nat": "National",
+    "referee_int": "International",
+    "referee_otm": "Officiel Table de Marque",
+    "referee_jo": "Jeune Officiel"
   }
 }

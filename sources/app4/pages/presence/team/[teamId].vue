@@ -105,7 +105,8 @@ const filteredPlayers = computed(() => {
   return presenceStore.players.filter(p =>
     p.nom.toLowerCase().includes(query) ||
     p.prenom.toLowerCase().includes(query) ||
-    p.matric.toString().includes(query)
+    p.matric.toString().includes(query) ||
+    (p.icf && p.icf.toString().includes(query))
   )
 })
 
@@ -206,7 +207,7 @@ const addExistingPlayer = async () => {
 }
 
 const createNewPlayer = async () => {
-  if (!addFormData.value.nom || !addFormData.value.prenom) {
+  if (!addFormData.value.nom || !addFormData.value.prenom || !addFormData.value.sexe) {
     addFormError.value = t('presence.required_fields')
     return
   }
@@ -231,7 +232,7 @@ const createNewPlayer = async () => {
 }
 
 const resetAddForm = () => {
-  addFormData.value = { mode: 'existing', capitaine: '-' }
+  addFormData.value = { mode: 'existing', capitaine: '-', sexe: undefined, arbitre: '', niveau: '' }
   selectedPlayer.value = null
   addFormError.value = ''
 }
@@ -299,6 +300,17 @@ const deletePlayer = async (matric: number) => {
   } catch (error: any) {
     toast.add({ title: t('common.error'), description: error.message, color: 'error' })
   }
+}
+
+// License display: show ICF (Reserve) if available, otherwise Matric
+// Show season in parentheses if older than working season
+const getLicenseDisplay = (player: Player): string => {
+  const licenseNumber = player.icf ? `ICF-${player.icf}` : player.matric.toString()
+  const workingSeason = presenceStore.team?.codeSaison || ''
+  if (player.origine && workingSeason && player.origine < workingSeason) {
+    return `${licenseNumber} (${player.origine})`
+  }
+  return licenseNumber
 }
 
 // PDF Links
@@ -544,7 +556,9 @@ const pdfLinks = computed(() => {
 
             <td class="px-3 py-1 text-sm font-medium text-gray-900">{{ player.nom }}</td>
             <td class="px-3 py-1 text-sm text-gray-900">{{ player.prenom }}</td>
-            <td class="px-3 py-1 text-sm text-gray-500 font-mono">{{ player.matric }}</td>
+            <td class="px-3 py-1 text-sm text-gray-500 font-mono">
+              {{ getLicenseDisplay(player) }}
+            </td>
             <td class="px-3 py-1 text-sm text-gray-500">{{ player.categ }}-{{ player.sexe }}</td>
 
             <!-- Pagaie with validation -->
@@ -645,7 +659,7 @@ const pdfLinks = computed(() => {
               </td>
               <td class="px-3 py-1 text-sm font-medium text-gray-900">{{ player.nom }}</td>
               <td class="px-3 py-1 text-sm text-gray-900">{{ player.prenom }}</td>
-              <td class="px-3 py-1 text-sm text-gray-500 font-mono">{{ player.matric }}</td>
+              <td class="px-3 py-1 text-sm text-gray-500 font-mono">{{ getLicenseDisplay(player) }}</td>
               <td class="px-3 py-1 text-sm text-gray-500">{{ player.categ }}-{{ player.sexe }}</td>
               <td class="px-3 py-1 text-sm text-gray-700">{{ player.pagaieLabel }}</td>
               <td class="px-3 py-1 text-sm">
@@ -720,7 +734,7 @@ const pdfLinks = computed(() => {
               </td>
               <td class="px-3 py-1 text-sm font-medium text-gray-900">{{ player.nom }}</td>
               <td class="px-3 py-1 text-sm text-gray-900">{{ player.prenom }}</td>
-              <td class="px-3 py-1 text-sm text-gray-500 font-mono">{{ player.matric }}</td>
+              <td class="px-3 py-1 text-sm text-gray-500 font-mono">{{ getLicenseDisplay(player) }}</td>
               <td class="px-3 py-1 text-sm text-gray-500">{{ player.categ }}-{{ player.sexe }}</td>
               <td class="px-3 py-1 text-sm text-gray-700">{{ player.pagaieLabel }}</td>
               <td class="px-3 py-1 text-sm">
@@ -795,7 +809,7 @@ const pdfLinks = computed(() => {
               </td>
               <td class="px-3 py-1 text-sm font-medium text-gray-900">{{ player.nom }}</td>
               <td class="px-3 py-1 text-sm text-gray-900">{{ player.prenom }}</td>
-              <td class="px-3 py-1 text-sm text-gray-500 font-mono">{{ player.matric }}</td>
+              <td class="px-3 py-1 text-sm text-gray-500 font-mono">{{ getLicenseDisplay(player) }}</td>
               <td class="px-3 py-1 text-sm text-gray-500">{{ player.categ }}-{{ player.sexe }}</td>
               <td class="px-3 py-1 text-sm text-gray-700">{{ player.pagaieLabel }}</td>
               <td class="px-3 py-1 text-sm">
@@ -844,7 +858,7 @@ const pdfLinks = computed(() => {
             />
             <div>
               <div class="font-bold text-gray-900">{{ player.nom }} {{ player.prenom }}</div>
-              <div class="text-sm text-gray-500">{{ player.matric }}</div>
+              <div class="text-sm text-gray-500">{{ getLicenseDisplay(player) }}</div>
             </div>
           </div>
           <span class="px-2 py-1 text-xs font-medium rounded" :class="player.capitaine === 'C' ? 'bg-yellow-200 text-yellow-800' : 'bg-gray-100 text-gray-600'">
@@ -952,27 +966,31 @@ const pdfLinks = computed(() => {
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('common.last_name') }} *</label>
                 <input
-                  v-model="addFormData.nom"
+                  :value="addFormData.nom"
                   type="text"
                   required
-                  class="w-full px-3 py-1 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  class="w-full px-3 py-1 border border-gray-300 rounded-lg text-sm uppercase focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  @input="addFormData.nom = ($event.target as HTMLInputElement).value.toUpperCase(); ($event.target as HTMLInputElement).value = addFormData.nom!"
                 />
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('common.first_name') }} *</label>
                 <input
-                  v-model="addFormData.prenom"
+                  :value="addFormData.prenom"
                   type="text"
                   required
-                  class="w-full px-3 py-1 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  class="w-full px-3 py-1 border border-gray-300 rounded-lg text-sm uppercase focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  @input="addFormData.prenom = ($event.target as HTMLInputElement).value.toUpperCase(); ($event.target as HTMLInputElement).value = addFormData.prenom!"
                 />
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('presence.sex') }}</label>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('presence.sex') }} *</label>
                 <select
                   v-model="addFormData.sexe"
+                  required
                   class="w-full px-3 py-1 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
+                  <option value="" disabled>-</option>
                   <option value="M">M</option>
                   <option value="F">F</option>
                 </select>
@@ -983,6 +1001,45 @@ const pdfLinks = computed(() => {
                   v-model="addFormData.naissance"
                   type="date"
                   class="w-full px-3 py-1 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('presence.referee_qualification') }}</label>
+                <select
+                  v-model="addFormData.arbitre"
+                  class="w-full px-3 py-1 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">-</option>
+                  <option value="INT">INT - {{ t('presence.referee_int') }}</option>
+                  <option value="NAT">NAT - {{ t('presence.referee_nat') }}</option>
+                  <option value="REG">REG - {{ t('presence.referee_reg') }}</option>
+                  <option value="OTM">OTM - {{ t('presence.referee_otm') }}</option>
+                  <option value="JO">JO - {{ t('presence.referee_jo') }}</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('presence.referee_level') }}</label>
+                <select
+                  v-model="addFormData.niveau"
+                  class="w-full px-3 py-1 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="" v-if="addFormData.arbitre">-</option>
+                  <option value="A" v-if="addFormData.arbitre">A</option>
+                  <option value="B" v-if="addFormData.arbitre">B</option>
+                  <option value="C" v-if="addFormData.arbitre">C</option>
+                  <option value="S" v-if="addFormData.arbitre">S - {{ t('presence.referee_level_trainee') }}</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('presence.icf_number') }}</label>
+                <input
+                  :value="addFormData.numicf ?? ''"
+                  type="text"
+                  inputmode="numeric"
+                  pattern="[0-9]*"
+                  :placeholder="t('presence.icf_number_placeholder')"
+                  class="w-full px-3 py-1 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  @input="(e: Event) => { const el = e.target as HTMLInputElement; const digits = el.value.replace(/\D/g, ''); el.value = digits; addFormData.numicf = digits ? parseInt(digits) : undefined }"
                 />
               </div>
             </div>

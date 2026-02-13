@@ -298,15 +298,15 @@ class AdminOperationsController extends AbstractController
             $term2 = "%{$words[1]}%";
             $params = [$term1, $term2, $term2, $term1];
         } else {
-            // Single word: search across nom, prenom, matric
+            // Single word: search across nom, prenom, matric, ICF (Reserve)
             $sql = "SELECT l.Matric, l.Nom, l.Prenom, l.Naissance, l.Numero_club, c.Libelle as Club
                     FROM kp_licence l
                     LEFT JOIN kp_club c ON l.Numero_club = c.Code
-                    WHERE l.Nom LIKE ? OR l.Prenom LIKE ? OR l.Matric LIKE ?
+                    WHERE l.Nom LIKE ? OR l.Prenom LIKE ? OR l.Matric LIKE ? OR l.Reserve LIKE ?
                     ORDER BY l.Nom, l.Prenom
                     LIMIT $limit";
             $searchTerm = "%$query%";
-            $params = [$searchTerm, $searchTerm, $searchTerm];
+            $params = [$searchTerm, $searchTerm, $searchTerm, $searchTerm];
         }
 
         $stmt = $this->connection->prepare($sql);
