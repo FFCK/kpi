@@ -1038,6 +1038,7 @@
     "status": "Status",
     "no_compositions": "No compositions available",
     "players_count_short": "player(s)",
+    "duplicate_warning": "Matching existing player(s):",
     "icf_number": "ICF License",
     "icf_number_placeholder": "ICF license number",
     "referee_qualification": "Referee qualification",

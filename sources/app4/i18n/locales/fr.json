@@ -1050,6 +1050,7 @@
     "status": "Statut",
     "no_compositions": "Aucune composition disponible",
     "players_count_short": "joueur(s)",
+    "duplicate_warning": "Joueur(s) existant(s) correspondant(s) :",
     "icf_number": "Licence ICF",
     "icf_number_placeholder": "N° licence ICF",
     "referee_qualification": "Qualification arbitre",

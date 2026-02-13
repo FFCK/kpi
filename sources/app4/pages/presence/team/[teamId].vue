@@ -50,6 +50,39 @@ const addFormSaving = ref(false)
 // Player search (existing players)
 const selectedPlayer = ref<PlayerAutocomplete | null>(null)
 
+// Duplicate check for new player creation
+const duplicateMatches = ref<PlayerAutocomplete[]>([])
+let duplicateDebounce: ReturnType<typeof setTimeout> | null = null
+
+const checkDuplicates = async () => {
+  const nom = addFormData.value.nom?.trim() || ''
+  const prenom = addFormData.value.prenom?.trim() || ''
+
+  if (nom.length < 2 || prenom.length < 2) {
+    duplicateMatches.value = []
+    return
+  }
+
+  try {
+    const data = await api.get<PlayerAutocomplete[]>(
+      '/admin/operations/autocomplete/players',
+      { q: `${nom} ${prenom}`, limit: 5 }
+    )
+    duplicateMatches.value = data || []
+  } catch {
+    duplicateMatches.value = []
+  }
+}
+
+watch(
+  () => [addFormData.value.nom, addFormData.value.prenom],
+  () => {
+    if (addMode.value !== 'create') return
+    if (duplicateDebounce) clearTimeout(duplicateDebounce)
+    duplicateDebounce = setTimeout(() => checkDuplicates(), 500)
+  }
+)
+
 // Copy composition modal
 const copyModalOpen = ref(false)
 const copyFormData = ref<CopyCompositionFormData>({ sourceCompetition: '', sourceSeason: '' })
@@ -231,10 +264,19 @@ const createNewPlayer = async () => {
   }
 }
 
+// Select a duplicate match: switch to "existing" tab and pre-select the player
+const selectDuplicate = (dup: PlayerAutocomplete) => {
+  addMode.value = 'existing'
+  addFormData.value.mode = 'existing'
+  duplicateMatches.value = []
+  onPlayerSelected(dup)
+}
+
 const resetAddForm = () => {
   addFormData.value = { mode: 'existing', capitaine: '-', sexe: undefined, arbitre: '', niveau: '' }
   selectedPlayer.value = null
   addFormError.value = ''
+  duplicateMatches.value = []
 }
 
 // Copy composition
@@ -983,6 +1025,27 @@ const pdfLinks = computed(() => {
                   @input="addFormData.prenom = ($event.target as HTMLInputElement).value.toUpperCase(); ($event.target as HTMLInputElement).value = addFormData.prenom!"
                 />
               </div>
+              <!-- Duplicate warning -->
+              <div v-if="duplicateMatches.length > 0" class="col-span-2">
+                <div class="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
+                  <UIcon name="i-heroicons-exclamation-triangle" class="w-5 h-5 shrink-0 mt-0.5" />
+                  <div>
+                    <p class="font-medium">{{ t('presence.duplicate_warning') }}</p>
+                    <ul class="mt-1 space-y-0.5">
+                      <li v-for="dup in duplicateMatches" :key="dup.matric">
+                        <button
+                          type="button"
+                          class="text-xs text-amber-800 underline hover:text-amber-950 cursor-pointer"
+                          @click="selectDuplicate(dup)"
+                        >
+                          {{ dup.nom }} {{ dup.prenom }} ({{ dup.matric }}) - {{ dup.club }}
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('presence.sex') }} *</label>
                 <select
