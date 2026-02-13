@@ -90,16 +90,3 @@ export interface RcCopyResponse {
   copied: number
   skipped: number
 }
-
-/**
- * Joueur pour l'autocomplete (recherche personne)
- */
-export interface PlayerAutocomplete {
-  matric: number
-  nom: string
-  prenom: string
-  naissance: string | null
-  numeroClub: string | null
-  club: string | null
-  label: string // Format: "12345 - DUPONT Jean (3512 - Club Name)"
-}

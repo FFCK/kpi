@@ -146,14 +146,14 @@ onMounted(async () => {
     <AdminWorkContextSummary />
 
     <!-- Page header -->
-    <div class="mb-6">
+    <div class="mb-2">
       <h1 class="text-2xl font-bold text-gray-900">
         {{ t('documents.title') }}
       </h1>
     </div>
 
     <!-- Competition selector -->
-    <div class="bg-white rounded-lg shadow p-4 mb-6">
+    <div class="bg-white rounded-lg shadow p-4 mb-2">
       <div class="flex flex-wrap items-end gap-4">
         <div class="w-full sm:w-auto flex-1 min-w-0">
           <AdminCompetitionSingleSelect @change="onCompetitionChange" />

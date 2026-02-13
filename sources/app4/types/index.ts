@@ -91,3 +91,14 @@ export interface ApiError {
   code?: string
   errors?: Record<string, string[]>
 }
+
+// Player autocomplete result (from /admin/operations/autocomplete/players)
+export interface PlayerAutocomplete {
+  matric: number
+  nom: string
+  prenom: string
+  naissance: string | null
+  numeroClub: string | null
+  club: string | null
+  label: string // Format: "12345 - DUPONT Jean (3512 - Club Name)"
+}

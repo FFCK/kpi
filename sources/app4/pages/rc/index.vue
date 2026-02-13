@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
-import type { Rc, RcFormData, PlayerAutocomplete, RcCopyFormData } from '~/types/rc'
+import type { Rc, RcFormData, RcCopyFormData } from '~/types/rc'
+import type { PlayerAutocomplete } from '~/types'
 
 definePageMeta({
   layout: 'admin',
@@ -39,10 +39,7 @@ const formError = ref('')
 const formSaving = ref(false)
 
 // Player search
-const playerSearch = ref('')
-const searchResults = ref<PlayerAutocomplete[]>([])
 const selectedPlayer = ref<PlayerAutocomplete | null>(null)
-const searchingPlayers = ref(false)
 
 // Copy RC
 const copyFormData = ref<RcCopyFormData>({
@@ -102,39 +99,12 @@ const loadRc = async () => {
   }
 }
 
-// Search players (autocomplete)
-let searchTimeout: ReturnType<typeof setTimeout> | null = null
-const searchPlayers = async () => {
-  if (playerSearch.value.length < 2) {
-    searchResults.value = []
-    searchingPlayers.value = false
-    return
-  }
-
-  if (searchTimeout) clearTimeout(searchTimeout)
-
-  searchTimeout = setTimeout(async () => {
-    searchingPlayers.value = true
-    try {
-      const data = await api.get<PlayerAutocomplete[]>(
-        '/admin/operations/autocomplete/players',
-        { q: playerSearch.value }
-      )
-      searchResults.value = data || []
-    } catch (error) {
-      console.error('Error searching players:', error)
-    } finally {
-      searchingPlayers.value = false
-    }
-  }, 300)
-}
-
-// Select player from search
-const selectPlayer = (player: PlayerAutocomplete) => {
+// Handle player selection from autocomplete
+const onPlayerSelected = (player: PlayerAutocomplete | null) => {
   selectedPlayer.value = player
-  formData.value.matric = player.matric
-  playerSearch.value = `${player.nom} ${player.prenom}`
-  searchResults.value = []
+  if (player) {
+    formData.value.matric = player.matric
+  }
 }
 
 // Open add modal
@@ -146,7 +116,6 @@ const openAddModal = () => {
     ordre: 1,
   }
   selectedPlayer.value = null
-  playerSearch.value = ''
   formError.value = ''
   addModalOpen.value = true
 }
@@ -160,7 +129,6 @@ const openEditModal = (rc: Rc) => {
     matric: rc.matric,
     ordre: rc.ordre,
   }
-  playerSearch.value = `${rc.nom} ${rc.prenom}`
   selectedPlayer.value = {
     matric: rc.matric,
     nom: rc.nom,
@@ -494,40 +462,11 @@ watch(selectedCompetitions, () => {
           <label class="block text-sm font-medium text-gray-700 mb-1">
             {{ t('rc.field.search_person') }} *
           </label>
-          <input
-            v-model="playerSearch"
-            type="text"
-            required
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+          <AdminPlayerAutocomplete
+            :model-value="selectedPlayer"
             :placeholder="t('rc.field.search_placeholder')"
-            @input="searchPlayers"
-          >
-
-          <!-- Search loading -->
-          <div v-if="searchingPlayers" class="mt-1 p-3 text-sm text-gray-500 text-center border border-gray-200 rounded-lg bg-white">
-            <UIcon name="i-heroicons-arrow-path" class="w-5 h-5 animate-spin inline mr-2" />
-            {{ t('common.loading') }}
-          </div>
-
-          <!-- Search results -->
-          <div v-else-if="searchResults.length > 0" class="mt-1 max-h-60 overflow-y-auto border border-gray-200 rounded-lg bg-white shadow-lg">
-            <button
-              v-for="result in searchResults"
-              :key="result.matric"
-              type="button"
-              class="w-full px-3 py-2 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
-              @click="selectPlayer(result)"
-            >
-              <div class="font-medium">{{ result.nom }} {{ result.prenom }}</div>
-              <div class="text-sm text-gray-500">{{ result.label }}</div>
-            </button>
-          </div>
-        </div>
-
-        <!-- Selected player info -->
-        <div v-if="selectedPlayer" class="p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm">
-          <div><strong>{{ t('rc.field.licence') }}:</strong> {{ selectedPlayer.matric }}</div>
-          <div><strong>{{ t('common.name') }}:</strong> {{ selectedPlayer.nom }} {{ selectedPlayer.prenom }}</div>
+            @update:model-value="onPlayerSelected"
+          />
         </div>
 
         <!-- Season (readonly) -->

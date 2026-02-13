@@ -255,8 +255,11 @@ export const useApi = () => {
   }
 
   // DELETE request
-  const del = <T>(endpoint: string): Promise<T> => {
-    return apiFetch<T>(endpoint, { method: 'DELETE' })
+  const del = <T>(endpoint: string, data?: unknown): Promise<T> => {
+    return apiFetch<T>(endpoint, {
+      method: 'DELETE',
+      body: data ? JSON.stringify(data) : undefined
+    })
   }
 
   // POST request with FormData (for file uploads)

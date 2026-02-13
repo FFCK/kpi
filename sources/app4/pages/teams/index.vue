@@ -270,6 +270,10 @@ function onCompetitionChange() {
 // Load on mount
 onMounted(async () => {
   await workContext.initContext()
+  // Load teams if competition is already selected
+  if (workContext.pageCompetitionCode) {
+    await loadTeams()
+  }
 })
 
 // Selection handlers
@@ -731,9 +735,6 @@ const getPresencePhotoUrl = (team: CompetitionTeam) =>
 const getControlUrl = (team: CompetitionTeam) =>
   `${legacyBase.value}/admin/FeuillePresenceVisa.php?equipe=${team.id}`
 
-const getPlayersUrl = (team: CompetitionTeam) =>
-  `${legacyBase.value}/admin/GestionEquipeJoueur.php?idEquipe=${team.id}`
-
 // Logo image URL - fallback to club code convention like legacy PHP
 // Logo column should contain relative path within img/ (e.g. "KIP/logo/3512-logo.png" or "Nations/GER.png")
 // French clubs: code length === 4, path = KIP/logo/{code}-logo.png
@@ -761,14 +762,14 @@ const getLogoUrl = (team: CompetitionTeam) => {
     <AdminWorkContextSummary />
 
     <!-- Page header -->
-    <div class="mb-6">
+    <div>
       <h1 class="text-2xl font-bold text-gray-900">
         {{ t('teams_page.title') }}
       </h1>
     </div>
 
     <!-- Competition selector -->
-    <div class="mb-6 bg-white rounded-lg shadow p-4">
+    <div class="mb-2 bg-white rounded-lg shadow p-4">
       <div class="flex flex-wrap items-center gap-4">
         <div class="flex-1 min-w-[250px]">
           <AdminCompetitionSingleSelect @change="onCompetitionChange" />
@@ -1076,13 +1077,13 @@ const getLogoUrl = (team: CompetitionTeam) => {
                   <td class="px-3 py-2">
                     <div class="flex items-center justify-end gap-1">
                       <!-- Players link -->
-                      <a
-                        :href="getPlayersUrl(team)"
+                      <NuxtLink
+                        :to="`/presence/team/${team.id}`"
                         class="p-1 text-purple-600 hover:bg-purple-50 rounded"
                         :title="t('teams_page.players')"
                       >
                         <UIcon name="heroicons:user-group" class="w-5 h-5" />
-                      </a>
+                      </NuxtLink>
 
                       <!-- Presence sheet dropdown -->
                       <button
@@ -1207,12 +1208,12 @@ const getLogoUrl = (team: CompetitionTeam) => {
 
                 <!-- Actions -->
                 <div class="flex items-center gap-1">
-                  <a
-                    :href="getPlayersUrl(team)"
+                  <NuxtLink
+                    :to="`/presence/team/${team.id}`"
                     class="p-1 text-purple-600"
                   >
                     <UIcon name="heroicons:user-group" class="w-5 h-5" />
-                  </a>
+                  </NuxtLink>
                   <button
                     class="presence-dropdown-trigger p-1 text-gray-600"
                     :title="t('teams_page.presence_sheet')"
@@ -1247,7 +1248,16 @@ const getLogoUrl = (team: CompetitionTeam) => {
         class="presence-dropdown-menu fixed w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
         :style="dropdownStyle"
       >
-        <a :href="getPresenceUrl({ id: openDropdownId } as CompetitionTeam)" target="_blank" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg" @click="closePresenceDropdown">
+        <NuxtLink
+          :to="`/presence/team/${openDropdownId}`"
+          class="block px-3 py-2 text-sm font-medium text-blue-700 hover:bg-blue-50 rounded-t-lg"
+          @click="closePresenceDropdown"
+        >
+          <UIcon name="i-heroicons-clipboard-document-list" class="w-4 h-4 inline mr-1" />
+          {{ t('teams_page.manage_composition') }}
+        </NuxtLink>
+        <div class="border-t border-gray-100"></div>
+        <a :href="getPresenceUrl({ id: openDropdownId } as CompetitionTeam)" target="_blank" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50" @click="closePresenceDropdown">
           {{ t('teams_page.presence_sheet') }} (FR)
         </a>
         <a :href="getPresenceEnUrl({ id: openDropdownId } as CompetitionTeam)" target="_blank" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50" @click="closePresenceDropdown">

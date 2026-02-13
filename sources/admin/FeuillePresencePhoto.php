@@ -17,9 +17,12 @@ class FeuillePresencePhoto extends MyPage
 
     $codeCompet = utyGetSession('codeCompet');
     $codeCompet = utyGetGet('Compet', $codeCompet);
+    $codeCompet = utyGetGet('compet', $codeCompet); // App4 uses 'compet'
     $codeSaison = $codeCompet === 'POOL' ? 1000 : $myBdd->GetActiveSaison();
     $codeSaison = utyGetGet('S', $codeSaison);
+    $codeSaison = utyGetGet('season', $codeSaison); // App4 uses 'season'
     $codeEquipe = utyGetGet('equipe', '%');
+    $codeEquipe = utyGetGet('team', $codeEquipe); // App4 uses 'team'
 
     // Chargement des équipes ...
     $arrayEquipe = array();

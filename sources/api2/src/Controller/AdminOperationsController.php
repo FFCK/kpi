@@ -283,16 +283,34 @@ class AdminOperationsController extends AbstractController
             return $this->json([]);
         }
 
-        $sql = "SELECT l.Matric, l.Nom, l.Prenom, l.Naissance, l.Numero_club, c.Libelle as Club
-                FROM kp_licence l
-                LEFT JOIN kp_club c ON l.Numero_club = c.Code
-                WHERE l.Nom LIKE ? OR l.Prenom LIKE ? OR l.Matric LIKE ?
-                ORDER BY l.Nom, l.Prenom
-                LIMIT $limit";
+        // Split query into words to support "nom prenom" or "prenom nom" searches
+        $words = preg_split('/\s+/', trim($query), 2, PREG_SPLIT_NO_EMPTY);
 
-        $searchTerm = "%$query%";
+        if (count($words) >= 2) {
+            // Multi-word: match (Nom=word1 AND Prenom=word2) OR (Nom=word2 AND Prenom=word1)
+            $sql = "SELECT l.Matric, l.Nom, l.Prenom, l.Naissance, l.Numero_club, c.Libelle as Club
+                    FROM kp_licence l
+                    LEFT JOIN kp_club c ON l.Numero_club = c.Code
+                    WHERE (l.Nom LIKE ? AND l.Prenom LIKE ?) OR (l.Nom LIKE ? AND l.Prenom LIKE ?)
+                    ORDER BY l.Nom, l.Prenom
+                    LIMIT $limit";
+            $term1 = "%{$words[0]}%";
+            $term2 = "%{$words[1]}%";
+            $params = [$term1, $term2, $term2, $term1];
+        } else {
+            // Single word: search across nom, prenom, matric
+            $sql = "SELECT l.Matric, l.Nom, l.Prenom, l.Naissance, l.Numero_club, c.Libelle as Club
+                    FROM kp_licence l
+                    LEFT JOIN kp_club c ON l.Numero_club = c.Code
+                    WHERE l.Nom LIKE ? OR l.Prenom LIKE ? OR l.Matric LIKE ?
+                    ORDER BY l.Nom, l.Prenom
+                    LIMIT $limit";
+            $searchTerm = "%$query%";
+            $params = [$searchTerm, $searchTerm, $searchTerm];
+        }
+
         $stmt = $this->connection->prepare($sql);
-        $result = $stmt->executeQuery([$searchTerm, $searchTerm, $searchTerm]);
+        $result = $stmt->executeQuery($params);
 
         $players = array_map(function ($row) {
             return [

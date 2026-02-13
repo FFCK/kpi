@@ -32,9 +32,12 @@ class FeuillePresence extends MyPage
 
         $codeCompet = utyGetSession('codeCompet', '');
         $codeCompet = utyGetGet('Compet', $codeCompet);
+        $codeCompet = utyGetGet('compet', $codeCompet); // App4 uses 'compet'
         $codeSaison = $myBdd->GetActiveSaison();
         $codeSaison = utyGetGet('S', $codeSaison);
+        $codeSaison = utyGetGet('season', $codeSaison); // App4 uses 'season'
         $equipe = utyGetGet('equipe', '%');
+        $equipe = utyGetGet('team', $equipe); // App4 uses 'team'
 
         // Chargement des équipes ...
         $arrayEquipe = array();

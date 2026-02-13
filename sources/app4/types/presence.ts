@@ -235,21 +235,3 @@ export interface InlineEditCell {
   matric: number
   field: 'numero' | 'capitaine'
 }
-
-/**
- * Player autocomplete (search)
- */
-export interface PlayerSearchResult {
-  matric: number
-  nom: string
-  prenom: string
-  sexe: 'M' | 'F'
-  categ: string
-  numeroClub: string
-  clubLibelle: string
-  pagaieLabel: string
-  pagaieValide: number
-  certifCK: 'OUI' | 'NON'
-  origine: string
-  label: string // Full formatted label for display
-}
