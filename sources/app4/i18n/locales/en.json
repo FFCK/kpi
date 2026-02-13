@@ -196,7 +196,9 @@
     "unlocked": "Unlocked",
     "national": "National",
     "search_player_placeholder": "Search by name or license number...",
-    "no_results": "No results"
+    "no_results": "No results",
+    "club": "Club",
+    "exports": "PDF Exports"
   },
   "legacy_redirect": {
     "message": "Redirecting to classic interface...",

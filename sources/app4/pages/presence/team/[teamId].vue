@@ -178,8 +178,11 @@ const startEdit = (player: Player, field: 'numero' | 'capitaine') => {
   editingCell.value = { matric: player.matric, field }
   editingValue.value = field === 'numero' ? (player.numero || '').toString() : player.capitaine
   nextTick(() => {
-    const input = document.getElementById(`inline-edit-${player.matric}-${field}`)
-    if (input) input.focus()
+    const desktopEl = document.getElementById(`inline-edit-${player.matric}-${field}`)
+    const mobileEl = document.getElementById(`mobile-edit-${player.matric}-${field}`)
+    // Focus the visible one (desktop is inside hidden lg:block, mobile is inside lg:hidden)
+    const el = mobileEl && mobileEl.offsetParent !== null ? mobileEl : desktopEl
+    if (el) el.focus()
   })
 }
 
@@ -482,16 +485,26 @@ const pdfLinks = computed(() => {
           {{ t('presence.copy_from') }}
         </button>
 
+        <!-- PDF links: buttons on desktop, select on mobile -->
         <a
           v-for="(link, key) in pdfLinks"
           :key="key"
           :href="link"
           target="_blank"
-          class="px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg transition-colors"
+          class="hidden sm:inline-flex px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg transition-colors"
         >
           <UIcon name="i-heroicons-document-text" class="w-4 h-4 inline mr-1" />
           {{ t(`presence.pdf_${key}`) }}
         </a>
+        <select
+          class="sm:hidden px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg"
+          @change="(e: Event) => { const el = e.target as HTMLSelectElement; if (el.value) { navigateTo(el.value, { external: true, open: { target: '_blank' } }); el.selectedIndex = 0 } }"
+        >
+          <option value="">{{ t('common.exports') }}</option>
+          <option v-for="(link, key) in pdfLinks" :key="key" :value="link">
+            {{ t(`presence.pdf_${key}`) }}
+          </option>
+        </select>
       </template>
     </AdminToolbar>
 
@@ -525,6 +538,7 @@ const pdfLinks = computed(() => {
             <th class="px-3 py-1 text-left text-xs font-medium text-gray-500 uppercase">{{ t('common.last_name') }}</th>
             <th class="px-3 py-1 text-left text-xs font-medium text-gray-500 uppercase">{{ t('common.first_name') }}</th>
             <th class="px-3 py-1 text-left text-xs font-medium text-gray-500 uppercase">{{ t('common.license') }}</th>
+            <th class="px-3 py-1 text-left text-xs font-medium text-gray-500 uppercase">{{ t('common.club') }}</th>
             <th class="px-3 py-1 text-left text-xs font-medium text-gray-500 uppercase">{{ t('common.category') }}</th>
             <th class="px-3 py-1 text-left text-xs font-medium text-gray-500 uppercase">{{ t('common.paddle') }}</th>
             <th class="px-3 py-1 text-left text-xs font-medium text-gray-500 uppercase">{{ t('common.certificate') }}</th>
@@ -601,6 +615,7 @@ const pdfLinks = computed(() => {
             <td class="px-3 py-1 text-sm text-gray-500 font-mono">
               {{ getLicenseDisplay(player) }}
             </td>
+            <td class="px-3 py-1 text-sm text-gray-500">{{ player.numeroClub }}</td>
             <td class="px-3 py-1 text-sm text-gray-500">{{ player.categ }}-{{ player.sexe }}</td>
 
             <!-- Pagaie with validation -->
@@ -644,7 +659,7 @@ const pdfLinks = computed(() => {
           <!-- Coaches (E) -->
           <template v-if="coaches.length > 0">
             <tr class="bg-gray-100">
-              <td :colspan="canEdit ? 10 : 9" class="px-3 py-1 text-xs text-gray-500 text-center">
+              <td :colspan="canEdit ? 11 : 10" class="px-3 py-1 text-xs text-gray-500 text-center">
                 {{ t('presence.section_coaches') }}
               </td>
             </tr>
@@ -702,6 +717,7 @@ const pdfLinks = computed(() => {
               <td class="px-3 py-1 text-sm font-medium text-gray-900">{{ player.nom }}</td>
               <td class="px-3 py-1 text-sm text-gray-900">{{ player.prenom }}</td>
               <td class="px-3 py-1 text-sm text-gray-500 font-mono">{{ getLicenseDisplay(player) }}</td>
+              <td class="px-3 py-1 text-sm text-gray-500">{{ player.numeroClub }}</td>
               <td class="px-3 py-1 text-sm text-gray-500">{{ player.categ }}-{{ player.sexe }}</td>
               <td class="px-3 py-1 text-sm text-gray-700">{{ player.pagaieLabel }}</td>
               <td class="px-3 py-1 text-sm">
@@ -719,7 +735,7 @@ const pdfLinks = computed(() => {
           <!-- Referees (A) -->
           <template v-if="referees.length > 0">
             <tr class="bg-gray-100">
-              <td :colspan="canEdit ? 10 : 9" class="px-3 py-1 text-xs text-gray-500 text-center">
+              <td :colspan="canEdit ? 11 : 10" class="px-3 py-1 text-xs text-gray-500 text-center">
                 {{ t('presence.section_referees') }}
               </td>
             </tr>
@@ -777,6 +793,7 @@ const pdfLinks = computed(() => {
               <td class="px-3 py-1 text-sm font-medium text-gray-900">{{ player.nom }}</td>
               <td class="px-3 py-1 text-sm text-gray-900">{{ player.prenom }}</td>
               <td class="px-3 py-1 text-sm text-gray-500 font-mono">{{ getLicenseDisplay(player) }}</td>
+              <td class="px-3 py-1 text-sm text-gray-500">{{ player.numeroClub }}</td>
               <td class="px-3 py-1 text-sm text-gray-500">{{ player.categ }}-{{ player.sexe }}</td>
               <td class="px-3 py-1 text-sm text-gray-700">{{ player.pagaieLabel }}</td>
               <td class="px-3 py-1 text-sm">
@@ -794,7 +811,7 @@ const pdfLinks = computed(() => {
           <!-- Inactive players (X) -->
           <template v-if="inactivePlayers.length > 0">
             <tr class="bg-gray-100">
-              <td :colspan="canEdit ? 10 : 9" class="px-3 py-1 text-xs text-gray-500 text-center">
+              <td :colspan="canEdit ? 11 : 10" class="px-3 py-1 text-xs text-gray-500 text-center">
                 {{ t('presence.section_inactive') }}
               </td>
             </tr>
@@ -852,6 +869,7 @@ const pdfLinks = computed(() => {
               <td class="px-3 py-1 text-sm font-medium text-gray-900">{{ player.nom }}</td>
               <td class="px-3 py-1 text-sm text-gray-900">{{ player.prenom }}</td>
               <td class="px-3 py-1 text-sm text-gray-500 font-mono">{{ getLicenseDisplay(player) }}</td>
+              <td class="px-3 py-1 text-sm text-gray-500">{{ player.numeroClub }}</td>
               <td class="px-3 py-1 text-sm text-gray-500">{{ player.categ }}-{{ player.sexe }}</td>
               <td class="px-3 py-1 text-sm text-gray-700">{{ player.pagaieLabel }}</td>
               <td class="px-3 py-1 text-sm">
@@ -903,15 +921,61 @@ const pdfLinks = computed(() => {
               <div class="text-sm text-gray-500">{{ getLicenseDisplay(player) }}</div>
             </div>
           </div>
-          <span class="px-2 py-1 text-xs font-medium rounded" :class="player.capitaine === 'C' ? 'bg-yellow-200 text-yellow-800' : 'bg-gray-100 text-gray-600'">
-            {{ player.capitaine }}
-          </span>
+          <!-- Numero + Capitaine badges -->
+          <div class="flex items-center gap-1.5">
+            <!-- Numero (inline edit on mobile) -->
+            <span
+              v-if="!canEdit || editingCell?.matric !== player.matric || editingCell?.field !== 'numero'"
+              class="px-2 py-1 text-xs font-medium rounded bg-gray-50 border border-dashed border-gray-300"
+              :class="canEdit ? 'cursor-pointer hover:border-blue-400 hover:bg-blue-50' : ''"
+              @click="canEdit && startEdit(player, 'numero')"
+            >
+              #{{ player.numero || '-' }}
+            </span>
+            <input
+              v-else
+              :id="`mobile-edit-${player.matric}-numero`"
+              v-model.number="editingValue"
+              type="number"
+              min="0"
+              max="99"
+              class="w-14 px-2 py-1 border border-blue-400 rounded text-xs focus:ring-2 focus:ring-blue-500"
+              @keydown="handleInlineKeydown"
+              @blur="saveInlineEdit"
+            />
+            <!-- Capitaine (inline edit on mobile) -->
+            <span
+              v-if="!canEdit || editingCell?.matric !== player.matric || editingCell?.field !== 'capitaine'"
+              class="px-2 py-1 text-xs font-medium rounded"
+              :class="[
+                player.capitaine === 'C' ? 'bg-yellow-200 text-yellow-800' : 'bg-gray-100 text-gray-600',
+                canEdit ? 'cursor-pointer border border-dashed border-transparent hover:border-blue-400 hover:bg-blue-50' : ''
+              ]"
+              @click="canEdit && startEdit(player, 'capitaine')"
+            >
+              {{ player.capitaine }}
+            </span>
+            <select
+              v-else
+              :id="`mobile-edit-${player.matric}-capitaine`"
+              v-model="editingValue"
+              class="px-2 py-1 text-xs border border-blue-400 rounded focus:ring-2 focus:ring-blue-500"
+              @change="saveInlineEdit"
+              @blur="saveInlineEdit"
+            >
+              <option value="-">-</option>
+              <option value="C">C</option>
+              <option value="E">E</option>
+              <option value="A">A</option>
+              <option value="X">X</option>
+            </select>
+          </div>
         </div>
 
         <div class="space-y-1 text-sm">
           <div class="flex items-center gap-2">
-            <span class="text-gray-500">{{ t('common.number') }}:</span>
-            <span class="font-medium">{{ player.numero || '-' }}</span>
+            <span class="text-gray-500">{{ t('common.club') }}:</span>
+            <span>{{ player.numeroClub }}</span>
           </div>
           <div class="flex items-center gap-2">
             <span class="text-gray-500">{{ t('common.category') }}:</span>

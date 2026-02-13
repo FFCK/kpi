@@ -143,6 +143,7 @@ interface PresencePageState {
 | 12 | Séparateur visuel joueurs actifs/inactifs | ≤ 10 | - | GestionEquipeJoueur.tpl:148-150 |
 | 13 | Dernière modification | ≤ 10 | - | GestionEquipeJoueur.php:172-175 |
 | 14 | Liens PDF (FR/EN/Photo/Contrôle) | ≤ 10 | - | GestionEquipeJoueur.tpl:38-47 |
+| 15 | Détection doublons à la création (nom+prénom, cliquable) | ≤ 4 | ❌ | Frontend uniquement |
 
 **Tri par défaut:**
 ```sql
@@ -329,6 +330,12 @@ interface TeamPlayersResponse {
 - Si compétition N* ou CF*: valider pagaie, certificat, surclassement
 - Générer matric >= 2000000 si createNew
 - Vérifier doublon (nom + prénom + club)
+
+**Détection de doublons (frontend) :**
+- Lors de la saisie du nom et prénom dans l'onglet "Créer un nouveau joueur", une recherche debounced (500ms) est effectuée via `/admin/operations/autocomplete/players` dès que nom ET prénom ont ≥ 2 caractères
+- Si des joueurs correspondants existent, un bandeau d'avertissement ambre s'affiche sous les champs nom/prénom
+- Chaque joueur trouvé est **cliquable** : au clic, bascule automatiquement sur l'onglet "Ajouter un joueur existant" et pré-sélectionne le joueur dans l'autocomplete
+- L'avertissement n'est pas bloquant : la création reste possible malgré les doublons détectés
 
 **Création joueur (createNew = true):**
 - Insère dans `kp_licence` avec :
@@ -2314,6 +2321,10 @@ export const usePresenceStore = defineStore('presence', {
 **4. Ajout joueur - Création**
 - ✅ Génération matric >= 2000000
 - ✅ Vérification doublon (nom + prénom + club)
+- ✅ Détection doublons en temps réel (debounced 500ms, bandeau ambre)
+- ✅ Doublons cliquables → bascule sur onglet "Joueur existant" avec pré-sélection
+- ✅ Saisie nom/prénom forcée en majuscules
+- ✅ Champ licence ICF limité aux chiffres uniquement
 - ✅ Arbitre et niveau optionnels
 - ✅ Numéro ICF optionnel
 - ✅ Bloqué si compétition N*/CF*
@@ -2505,7 +2516,20 @@ sources/
     "players_deleted": "{count} joueur(s) supprimé(s)",
     "composition_copied": "{count} joueurs copiés",
     "composition_initialized": "Composition initialisée ({count} joueurs)",
-    "add_player_failed": "Impossible d'ajouter le joueur"
+    "add_player_failed": "Impossible d'ajouter le joueur",
+    "duplicate_warning": "Joueur(s) existant(s) correspondant(s) :",
+    "icf_number": "Licence ICF",
+    "icf_number_placeholder": "Numéro ICF",
+    "sex": "Sexe",
+    "birth_date": "Date de naissance",
+    "referee_qualification": "Qualification arbitre",
+    "referee_level": "Niveau arbitre",
+    "referee_level_trainee": "Stagiaire",
+    "referee_reg": "Régional",
+    "referee_nat": "National",
+    "referee_int": "International",
+    "referee_otm": "Officiel Table de Marque",
+    "referee_jo": "Jeune Officiel"
   },
   "referee": {
     "regional": "Régional",
@@ -2556,6 +2580,12 @@ Cette spécification définit une page unifiée de gestion des feuilles de prés
 | Coaches/Referees/Inactive éditable | ✅ Implémenté | Inline editing numero + capitaine pour E, A, X |
 | Copie par Numero d'équipe | ✅ Implémenté | Filtre par même Numero dans kp_competition_equipe |
 | Copie = remplacement complet | ✅ Implémenté | DELETE existants puis INSERT source |
+| Détection doublons création | ✅ Implémenté | Debounced 500ms, bandeau ambre, cliquable → bascule onglet existant |
+| Recherche par licence ICF | ✅ Implémenté | Autocomplete + recherche licence par Reserve (ICF) |
+| Affichage licence ICF | ✅ Implémenté | ICF-{num} si dispo, sinon Matric, (saison) si ancienne |
+| Saisie nom/prénom majuscules | ✅ Implémenté | Conversion temps réel à la saisie |
+| Champ ICF chiffres uniquement | ✅ Implémenté | Filtrage non-digits à la saisie |
+| Création joueur → kp_licence + kp_arbitre | ✅ Implémenté | Insertion licence + arbitre si qualification renseignée |
 | Match Mode - Backend | 🔲 À faire | Endpoints match non implémentés |
 | Match Mode - Frontend | 🔲 À faire | Page stub uniquement |
 
