@@ -1,2 +1,4 @@
 utilise @DOC/developer/reference/APP4_STRUCTURE.md @SQL/kpi_structure.sql et les specs existantes pour créer DOC/specs/PAGE_GROUPES.md pour la page Administration des Groupes (à ajouter dans le menu Administration)  à partir des fonctionnalités de GestionGroupe.php GestionGroupe.tpl GestionGroupe.js
 
+utilise @DOC/developer/reference/APP4_STRUCTURE.md @SQL/kpi_structure.sql et les specs existantes dans /DOC/specs pour créer dans DOC/specs/PAGE_JOURNEES_PHASES.md les spécifications pour la page Gestion des Journées/Phases, à partir des fonctionnalités de @sources/admin/GestionCalendrier.php  @sources/smarty/templates/GestionCalendrier.tpl  @sources/js/GestionCalendrier.js et de la capture d'écran de la page legacy.
+Précise les fonctionnalités avec des questions si nécessaire. 
