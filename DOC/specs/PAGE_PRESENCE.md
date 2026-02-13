@@ -1,8 +1,8 @@
 # Specification - Page Feuille de Présence (Unified Presence Sheet Management)
 
-**Version**: 1.0
-**Date**: 2026-02-09
-**Status**: Draft
+**Version**: 1.1
+**Date**: 2026-02-13
+**Status**: In Progress (Team Mode implemented)
 **Legacy PHP**: GestionEquipeJoueur.php, GestionMatchEquipeJoueur.php
 
 ---
@@ -377,13 +377,13 @@ interface TeamPlayersResponse {
 { success: boolean, copied: number }
 ```
 
-**Logique:**
+**Logique (remplacement complet):**
 ```sql
--- 1. Supprimer joueurs existants
+-- 1. Supprimer TOUS les joueurs existants de l'équipe cible
 DELETE FROM kp_competition_equipe_joueur
 WHERE Id_equipe = :teamId
 
--- 2. Copier depuis source
+-- 2. Copier depuis source (même club + même Numero d'équipe)
 INSERT INTO kp_competition_equipe_joueur
 (Id_equipe, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine)
 SELECT :teamId, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine
@@ -392,16 +392,21 @@ WHERE Id_equipe = (
   SELECT Id FROM kp_competition_equipe
   WHERE Code_compet = :sourceCompetition
     AND Code_saison = :sourceSeason
+    AND Code_club = (SELECT Code_club FROM kp_competition_equipe WHERE Id = :teamId)
     AND Numero = (SELECT Numero FROM kp_competition_equipe WHERE Id = :teamId)
 )
 ```
 
+**Important**: La copie est un **remplacement complet** : tous les joueurs existants sont supprimés avant d'insérer les joueurs sources. Le filtre par `Numero` garantit que seule l'équipe portant le même numéro (équipe 1, équipe 2...) au sein du même club est proposée comme source.
+
 #### GET /admin/teams/:teamId/compositions
 
-**Description**: Récupère les compositions disponibles pour copie
+**Description**: Récupère les compositions disponibles pour copie (filtrées par même club ET même Numero d'équipe)
 
 **Query Params:**
 - `season`: Code saison (optionnel, défaut = saison actuelle)
+
+**Filtrage**: Seules les équipes du même club ayant le même `Numero` dans `kp_competition_equipe` sont retournées. Cela garantit que l'équipe 1 d'un club ne voit que les compositions de l'équipe 1, pas celles de l'équipe 2.
 
 **Response:**
 ```typescript
@@ -1095,13 +1100,14 @@ export interface CopyToMatchesFormData {
         </td>
       </tr>
 
-      <!-- Inactive players (E, A, X) -->
+      <!-- Inactive players (E, A, X) - same editable structure as active players -->
       <tr
         v-for="player in inactivePlayers"
         :key="player.matric"
         class="hover:bg-gray-50 opacity-60"
       >
-        <!-- Same structure as active players but with opacity -->
+        <!-- Same structure as active players with inline editing for numero/capitaine -->
+        <!-- Coaches (E), Referees (A) and Inactive (X) are editable when not locked -->
       </tr>
     </tbody>
   </table>
@@ -1217,34 +1223,16 @@ export interface CopyToMatchesFormData {
 
   <!-- Existing player form -->
   <form v-if="addMode === 'existing'" @submit.prevent="addExistingPlayer" class="space-y-4">
-    <!-- Player search autocomplete -->
+    <!-- Player search autocomplete (shared component) -->
     <div>
       <label class="block text-sm font-medium text-gray-700 mb-1">
         {{ t('presence.search_player') }}
       </label>
-      <input
-        v-model="playerSearch"
-        type="text"
-        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-        :placeholder="t('presence.search_placeholder')"
-        @input="searchPlayers"
+      <AdminPlayerAutocomplete
+        v-model="selectedPlayer"
+        :placeholder="t('common.search_player_placeholder')"
+        :disabled="isLocked"
       />
-
-      <!-- Search results dropdown -->
-      <div v-if="searchResults.length > 0" class="mt-1 max-h-60 overflow-y-auto border border-gray-200 rounded-lg bg-white shadow-lg">
-        <button
-          v-for="result in searchResults"
-          :key="result.matric"
-          type="button"
-          class="w-full px-3 py-2 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
-          @click="selectPlayer(result)"
-        >
-          <div class="font-medium">{{ result.nom }} {{ result.prenom }}</div>
-          <div class="text-sm text-gray-500">
-            {{ result.matric }} - {{ result.clubLibelle }} - {{ result.categ }}-{{ result.sexe }}
-          </div>
-        </button>
-      </div>
     </div>
 
     <!-- Selected player info -->
@@ -1975,17 +1963,22 @@ $em->flush();
 
 ### 11.2 Liens PDF (Legacy)
 
-Les liens PDF restent sur le backend PHP legacy car la génération PDF utilise mPDF et nécessite beaucoup de logique métier spécifique :
+Les liens PDF restent sur le backend PHP legacy car la génération PDF utilise mPDF et nécessite beaucoup de logique métier spécifique.
+
+Les fichiers PHP legacy ont été mis à jour pour accepter les noms de paramètres utilisés par app4 en plus des anciens :
+- `compet` (app4) en plus de `Compet` (legacy)
+- `season` (app4) en plus de `S` (legacy)
+- `team` (app4) en plus de `equipe` (legacy)
 
 ```typescript
 const backendBaseUrl = useRuntimeConfig().public.backendBaseUrl
 
-// Team Mode
+// Team Mode - app4 utilise des paramètres nommés différemment
 const pdfLinks = {
-  fr: `${backendBaseUrl}/admin/FeuillePresence.php?equipe=${teamId}`,
-  en: `${backendBaseUrl}/admin/FeuillePresenceEN.php?equipe=${teamId}`,
-  photo: `${backendBaseUrl}/admin/FeuillePresencePhoto.php?equipe=${teamId}`,
-  visa: `${backendBaseUrl}/admin/FeuillePresenceVisa.php?equipe=${teamId}`,
+  fr: `${backendBaseUrl}/admin/FeuillePresence.php?team=${teamId}&compet=${codeCompet}&season=${codeSaison}`,
+  en: `${backendBaseUrl}/admin/FeuillePresenceEN.php?team=${teamId}&compet=${codeCompet}&season=${codeSaison}`,
+  photo: `${backendBaseUrl}/admin/FeuillePresencePhoto.php?team=${teamId}&compet=${codeCompet}&season=${codeSaison}`,
+  visa: `${backendBaseUrl}/admin/FeuillePresenceVisa.php?team=${teamId}&compet=${codeCompet}&season=${codeSaison}`,
 }
 ```
 
@@ -2383,48 +2376,34 @@ sources/app4/
 ├── pages/
 │   └── presence/
 │       ├── team/
-│       │   └── [teamId].vue              # Team composition page
+│       │   └── [teamId].vue              # ✅ Team composition page (implemented)
 │       └── match/
 │           └── [matchId]/
 │               └── team/
-│                   └── [teamCode].vue    # Match composition page
+│                   └── [teamCode].vue    # 🚧 Match composition page (stub)
 ├── stores/
-│   └── presenceStore.ts                  # Unified presence store
+│   └── presenceStore.ts                  # ✅ Unified presence store
 ├── types/
-│   └── presence.ts                       # TypeScript interfaces
+│   ├── index.ts                          # ✅ PlayerAutocomplete (shared)
+│   └── presence.ts                       # ✅ TypeScript interfaces
 ├── components/
-│   └── presence/
-│       ├── PlayerTable.vue               # Reusable player table
-│       ├── AddPlayerModal.vue            # Add player modal (team mode)
-│       ├── AddMatchPlayerModal.vue       # Add player modal (match mode)
-│       ├── CopyCompositionModal.vue      # Copy composition (team mode)
-│       └── CopyToMatchesModal.vue        # Copy to matches (match mode)
+│   └── admin/
+│       └── PlayerAutocomplete.vue        # ✅ Reusable player search (shared with RC)
 └── composables/
-    └── usePresencePermissions.ts         # Permission checks
+    └── usePresencePermissions.ts         # ✅ Permission checks
 ```
+
+**Note**: Les modals (ajout joueur, copie composition) sont intégrées directement dans `[teamId].vue` plutôt que dans des composants séparés. Le composant `AdminPlayerAutocomplete` est partagé entre la page Présence et la page RC.
 
 ### 14.2 Backend (API2)
 
 ```
-sources/api2/src/
-├── Controller/
-│   └── Admin/
-│       └── PresenceController.php        # All presence endpoints
-├── Entity/
-│   ├── CompetitionEquipeJoueur.php       # Team player entity
-│   ├── MatchJoueur.php                   # Match player entity
-│   ├── Competition.php                   # Competition entity
-│   ├── Match.php                         # Match entity
-│   └── Licence.php                       # License entity
-├── Repository/
-│   ├── CompetitionEquipeJoueurRepository.php
-│   ├── MatchJoueurRepository.php
-│   └── LicenceRepository.php
-└── Service/
-    ├── PresenceValidationService.php     # National competition validation
-    ├── PlayerCopyService.php             # Copy logic (team/match)
-    └── JournalService.php                # Journal logging
+sources/api2/src/Controller/
+├── AdminPresenceController.php           # ✅ Team mode endpoints (implemented)
+└── AdminOperationsController.php         # ✅ Player autocomplete (multi-word search)
 ```
+
+**Note**: L'implémentation backend utilise des requêtes DBAL directes plutôt que des entités Doctrine. Les services spécialisés (validation, copie) ne sont pas nécessaires à ce stade.
 
 ### 14.3 Legacy PHP (pour référence)
 
@@ -2537,13 +2516,28 @@ Cette spécification définit une page unifiée de gestion des feuilles de prés
 - Journalisation complète des opérations
 - Support mobile avec cartes responsive
 
-**Prochaines étapes d'implémentation :**
-1. Créer les endpoints API2 dans PresenceController.php
-2. Développer le presenceStore.ts avec toute la logique métier
-3. Créer les pages Vue.js (team/[teamId].vue et match/[matchId]/team/[teamCode].vue)
-4. Développer les composants réutilisables (PlayerTable, modals)
-5. Implémenter les tests unitaires et d'intégration
-6. Migration progressive depuis les pages PHP legacy
+**Statut d'implémentation :**
+
+| Composant | Statut | Notes |
+|-----------|--------|-------|
+| Team Mode - Backend (AdminPresenceController) | ✅ Implémenté | GET/POST/PATCH/DELETE + copy + compositions |
+| Team Mode - Frontend ([teamId].vue) | ✅ Implémenté | Liste, édition inline, ajout, copie, suppression, PDF |
+| Team Mode - Store (presenceStore.ts) | ✅ Implémenté | Actions avec apiInstance pattern |
+| Team Mode - Permissions (usePresencePermissions.ts) | ✅ Implémenté | canEdit, canDelete, canCopy, canCreate |
+| Composant PlayerAutocomplete | ✅ Implémenté | Partagé entre Présence et RC |
+| Player autocomplete multi-mots | ✅ Implémenté | "nom prenom" ou "prenom nom" |
+| Legacy PDF (FeuillePresence*.php) | ✅ Mis à jour | Accepte paramètres app4 (team, compet, season) |
+| Coaches/Referees/Inactive éditable | ✅ Implémenté | Inline editing numero + capitaine pour E, A, X |
+| Copie par Numero d'équipe | ✅ Implémenté | Filtre par même Numero dans kp_competition_equipe |
+| Copie = remplacement complet | ✅ Implémenté | DELETE existants puis INSERT source |
+| Match Mode - Backend | 🔲 À faire | Endpoints match non implémentés |
+| Match Mode - Frontend | 🔲 À faire | Page stub uniquement |
+
+**Prochaines étapes :**
+1. Implémenter les endpoints Match Mode dans AdminPresenceController
+2. Développer la page match/[matchId]/team/[teamCode].vue
+3. Implémenter les fonctionnalités spécifiques match (initialiser, vider, copier vers matchs)
+4. Tests et validation
 
 ---
 

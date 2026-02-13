@@ -66,7 +66,8 @@ sources/app4/
 │   └── admin/
 │       ├── Sidebar.vue     # Menu latéral
 │       ├── Header.vue      # En-tête admin
-│       └── DataTable.vue   # Table de données réutilisable
+│       ├── DataTable.vue   # Table de données réutilisable
+│       └── PlayerAutocomplete.vue  # Recherche joueur (partagé RC + Présence)
 ├── composables/
 │   ├── useAuth.ts          # Authentification JWT
 │   ├── useApi.ts           # Appels API2
@@ -486,22 +487,27 @@ Ces pages ont un stub dans app4 qui redirige automatiquement vers l'interface le
 | 12 | GestionStructure | `/clubs` | ≤ 9 | ↪️ Redirection legacy |
 | 13 | GestionUtilisateur | `/users` | ≤ 3 | ↪️ Redirection legacy |
 
+### Pages implémentées (hors menu principal)
+
+| # | Page PHP | Page Nuxt | Profil | Statut | Specs |
+|---|----------|-----------|--------|--------|-------|
+| 14 | GestionRc | `/rc` | ≤ 4 | ✅ Implémenté | [PAGE_RC.md](../../specs/PAGE_RC.md) |
+| 15 | GestionEquipeJoueur | `/presence/team/:teamId` | ≤ 10 | ✅ Implémenté (Team Mode) | [PAGE_PRESENCE.md](../../specs/PAGE_PRESENCE.md) |
+| 16 | GestionMatchEquipeJoueur | `/presence/match/:matchId/team/:teamCode` | ≤ 10 | 🚧 Stub (Match Mode) | [PAGE_PRESENCE.md](../../specs/PAGE_PRESENCE.md) |
+
 ### Pages non exposées dans le menu app4 (à planifier)
 
 Ces pages legacy ne sont pas encore intégrées au menu de app4. À évaluer pour migration future.
 
 | # | Page PHP | Description | Profil | Priorité |
 |---|----------|-------------|--------|----------|
-| 14 | GestionCopieCompetition | Copier structure de compétition entre saisons | ≤ 3 | Moyenne |
-| 15 | GestionRc | Gestion des Référents Compétition (RC) | ≤ 4 | Moyenne |
-| 16 | GestionGroupe | Gestion des groupes de compétitions | ≤ 2 | Moyenne |
-| 17 | GestionInstances | Gestion des instances fédérales | ≤ 2 | Basse |
-| 18 | GestionGrillePoints | Gestion des grilles de points | ≤ 3 | Basse |
-| 19 | GestionSchema | Schémas de compétition | ≤ 3 | Basse |
-| 20 | GestionParamUser | Paramètres utilisateur | ≤ 9 | Basse |
-| 21 | GestionParamJournee | Paramètres de journée | ≤ 9 | Basse |
-| 22 | GestionEquipeJoueur | Gestion joueurs par équipe | ≤ 9 | Basse |
-| 23 | GestionMatchEquipeJoueur | Joueurs par match | ≤ 9 | Basse |
+| 17 | GestionCopieCompetition | Copier structure de compétition entre saisons | ≤ 3 | Moyenne |
+| 18 | GestionGroupe | Gestion des groupes de compétitions | ≤ 2 | Moyenne |
+| 19 | GestionInstances | Gestion des instances fédérales | ≤ 2 | Basse |
+| 20 | GestionGrillePoints | Gestion des grilles de points | ≤ 3 | Basse |
+| 21 | GestionSchema | Schémas de compétition | ≤ 3 | Basse |
+| 22 | GestionParamUser | Paramètres utilisateur | ≤ 9 | Basse |
+| 23 | GestionParamJournee | Paramètres de journée | ≤ 9 | Basse |
 | 24 | GestionJournal | Consultation des logs | ≤ 1 | Basse |
 
 Pour chaque page, une analyse fonctionnelle détaillée sera produite avant migration.
@@ -641,5 +647,5 @@ Pour chaque page, une analyse fonctionnelle détaillée sera produite avant migr
 ---
 
 **Document créé le** : 2026-01-02
-**Dernière mise à jour** : 2026-02-01
-**Statut** : ✅ Phase 1-6 implémentées - Events, Stats, Documents, Operations terminés, Redirections legacy configurées
+**Dernière mise à jour** : 2026-02-13
+**Statut** : ✅ Phase 1-6 implémentées - Events, Stats, Documents, Operations, RC, Présence (Team Mode) terminés

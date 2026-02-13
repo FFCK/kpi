@@ -1,8 +1,8 @@
 # Spécification - Page Responsables de Compétition (RC)
 
-**Version** : 1.0
-**Date** : 2026-02-09
-**Status** : Draft
+**Version** : 1.1
+**Date** : 2026-02-13
+**Status** : Implemented
 **Legacy PHP** : GestionRc.php + GestionRc.tpl + GestionRc.js
 
 ---
@@ -151,16 +151,25 @@ Page d'administration des Responsables de Compétition (RC). Un RC est une perso
 
 ### 4.2 Recherche personne (Autocomplete)
 
-Utilise l'endpoint existant `GET /admin/operations/autocomplete/players?q={query}`.
+Utilise le composant partagé `AdminPlayerAutocomplete.vue` (dans `components/admin/`) qui appelle l'endpoint `GET /admin/operations/autocomplete/players?q={query}`.
+
+**Composant :**
+```vue
+<AdminPlayerAutocomplete
+  v-model="selectedPlayer"
+  :placeholder="t('common.search_player_placeholder')"
+/>
+```
 
 **Comportement :**
 - Déclenché à partir de 2 caractères
 - Debounce de 300ms
-- Recherche par n° licence (préfixe) ou par nom/prénom (LIKE)
-- Affiche les résultats sous forme de dropdown : `{matric} - {nom} {prenom} ({club} - {clubLibelle})`
-- La sélection remplit automatiquement les champs Licence et Nom
+- Recherche mono-mot : par n° licence, nom ou prénom (LIKE)
+- Recherche multi-mots : "nom prenom" ou "prenom nom" — split sur espace, croisement `(Nom LIKE word1 AND Prenom LIKE word2) OR (Nom LIKE word2 AND Prenom LIKE word1)`
+- Affiche les résultats sous forme de dropdown : nom, prénom + label (club)
+- La sélection émet `update:modelValue` avec l'objet `PlayerAutocomplete`
 
-**Réponse de l'endpoint :**
+**Type partagé** (dans `types/index.ts`) :
 ```typescript
 interface PlayerAutocomplete {
   matric: number
@@ -169,7 +178,7 @@ interface PlayerAutocomplete {
   naissance: string | null
   numeroClub: string | null
   club: string | null
-  label: string  // "12345 - DUPONT Jean (3512 - Club Name)"
+  label: string  // "NOM Prenom (12345) - Club Name"
 }
 ```
 
@@ -465,10 +474,11 @@ Un RC est unique par combinaison `(Code_saison, Code_competition, Matric)`. Cett
 
 ```
 sources/app4/pages/rc/
-└── index.vue                          # Page principale
+└── index.vue                          # ✅ Page principale (implémentée)
 
 sources/app4/components/admin/
-├── CompetitionGroupedSelect.vue       # Nouveau : sélecteur compétition groupé par section
+├── PlayerAutocomplete.vue             # ✅ Recherche joueur (partagé avec Présence)
+├── CompetitionGroupedSelect.vue       # ✅ Sélecteur compétition groupé par section
 ├── CompetitionMultiSelect.vue         # Existant : filtre multi-compétition
 ├── Toolbar.vue                        # Existant : barre d'outils
 ├── Modal.vue                          # Existant : modal générique
@@ -711,6 +721,6 @@ Méthodes :
 ---
 
 **Document créé le** : 09 février 2026
-**Dernière mise à jour** : 09 février 2026
-**Statut** : 📝 Draft
+**Dernière mise à jour** : 13 février 2026
+**Statut** : ✅ Implémenté (Team Mode)
 **Auteur** : Claude Code
