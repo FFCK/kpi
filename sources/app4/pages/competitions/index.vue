@@ -133,6 +133,14 @@ const toggleSection = (sectionId: number) => {
 
 const isSectionCollapsed = (sectionId: number) => collapsedSections.value.has(sectionId)
 
+const expandAll = () => {
+  collapsedSections.value = new Set()
+}
+
+const collapseAll = () => {
+  collapsedSections.value = new Set(competitionsBySection.value.map(s => s.section))
+}
+
 // Competitions grouped by section (with search filtering)
 const competitionsBySection = computed<CompetitionsBySection[]>(() => {
   const filtered = competitions.value.filter(c => {
@@ -661,7 +669,26 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
       :selected-count="selectedCodes.length"
       @add="openAddModal"
       @bulk-delete="openBulkDeleteModal"
-    />
+    >
+      <template v-if="competitionsBySection.length > 1" #left>
+        <button
+          class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-default"
+          :disabled="collapsedSections.size === competitionsBySection.length"
+          @click="collapseAll"
+        >
+          <UIcon name="heroicons:chevron-double-up" class="w-3.5 h-3.5" />
+          {{ t('common.collapse_all') }}
+        </button>
+        <button
+          class="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors disabled:opacity-40 disabled:cursor-default"
+          :disabled="collapsedSections.size === 0"
+          @click="expandAll"
+        >
+          <UIcon name="heroicons:chevron-double-down" class="w-3.5 h-3.5" />
+          {{ t('common.expand_all') }}
+        </button>
+      </template>
+    </AdminToolbar>
 
     <!-- Desktop Table -->
     <div class="hidden lg:block bg-white rounded-lg shadow overflow-hidden">

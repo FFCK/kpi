@@ -18,7 +18,10 @@ const authStore = useAuthStore()
 const rcList = ref<Rc[]>([])
 const loading = ref(false)
 const searchQuery = ref('')
-const selectedCompetitions = ref<string[]>([])
+const selectedCompetitions = computed({
+  get: () => workContext.pageCompetitionCodes,
+  set: (val: string[]) => workContext.setPageCompetitions(val),
+})
 const selectedIds = ref<number[]>([])
 const filterOpen = ref(false)
 
@@ -633,9 +636,9 @@ watch(selectedCompetitions, () => {
       :open="deleteConfirmOpen"
       :title="t('rc.delete_confirm_title')"
       :message="t('rc.delete_confirm_message', { count: selectedIds.length })"
-      :confirming="formSaving"
+      :loading="formSaving"
       @confirm="deleteRc"
-      @cancel="deleteConfirmOpen = false"
+      @close="deleteConfirmOpen = false"
     />
   </div>
 </template>

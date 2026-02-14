@@ -23,7 +23,10 @@ const totalPages = ref(0)
 
 // Filters
 const searchQuery = ref('')
-const selectedCompetitions = ref<string[]>([])
+const selectedCompetitions = computed({
+  get: () => workContext.pageCompetitionCodes,
+  set: (val: string[]) => workContext.setPageCompetitions(val),
+})
 const selectedEvent = ref('-1')
 const selectedMonth = ref('')
 const selectedSort = ref('date_asc')

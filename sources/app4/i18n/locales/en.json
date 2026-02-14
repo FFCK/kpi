@@ -186,6 +186,8 @@
     "confirm": "Confirm",
     "actions": "Actions",
     "scroll_to_top": "Back to top",
+    "collapse_all": "Collapse all",
+    "expand_all": "Expand all",
     "last_name": "Last name",
     "first_name": "First name",
     "license": "License",

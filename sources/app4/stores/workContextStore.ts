@@ -38,6 +38,9 @@ interface WorkContextState {
   // Page-level single competition selection (persisted, shared across pages)
   pageCompetitionCode: string
 
+  // Page-level multi-select competitions (persisted, shared across pages like RC, Gamedays)
+  pageCompetitionCodes: string[]
+
   // Reference data (loaded from API)
   seasons: Season[]
   groups: CompetitionGroup[]
@@ -59,6 +62,7 @@ const STORAGE_KEYS = {
   selectedCompetitionCodes: 'kpi_admin_work_selections',
   eventId: 'kpi_admin_work_event',
   pageCompetitionCode: 'kpi_admin_work_page_competition',
+  pageCompetitionCodes: 'kpi_admin_work_page_competitions',
 }
 
 // Sections definition
@@ -81,6 +85,7 @@ export const useWorkContextStore = defineStore('workContext', {
     eventId: null,
     competitionCodes: [],
     pageCompetitionCode: '',
+    pageCompetitionCodes: [],
     seasons: [],
     groups: [],
     competitions: [],
@@ -298,6 +303,22 @@ export const useWorkContextStore = defineStore('workContext', {
           this.pageCompetitionCode = storedPageCompetition
         }
 
+        // Restore page-level multi-select competitions (default to single selection if not set)
+        const storedPageCompetitions = localStorage.getItem(STORAGE_KEYS.pageCompetitionCodes)
+        if (storedPageCompetitions) {
+          try {
+            const codes = JSON.parse(storedPageCompetitions) as string[]
+            this.pageCompetitionCodes = codes.filter(c => this.competitionCodes.includes(c))
+          }
+          catch {
+            this.pageCompetitionCodes = []
+          }
+        }
+        else if (this.pageCompetitionCode) {
+          // Default multi-select to single selection value
+          this.pageCompetitionCodes = [this.pageCompetitionCode]
+        }
+
         this.initialized = true
       }
       catch (error) {
@@ -400,7 +421,9 @@ export const useWorkContextStore = defineStore('workContext', {
     // Reset page competition (called on any scope change)
     resetPageCompetition() {
       this.pageCompetitionCode = ''
+      this.pageCompetitionCodes = []
       localStorage.removeItem(STORAGE_KEYS.pageCompetitionCode)
+      localStorage.removeItem(STORAGE_KEYS.pageCompetitionCodes)
     },
 
     // Select all competitions
@@ -479,6 +502,17 @@ export const useWorkContextStore = defineStore('workContext', {
       }
     },
 
+    // Set page-level multi-select competitions (persisted across pages like RC, Gamedays)
+    setPageCompetitions(codes: string[]) {
+      this.pageCompetitionCodes = codes
+      if (codes.length > 0) {
+        localStorage.setItem(STORAGE_KEYS.pageCompetitionCodes, JSON.stringify(codes))
+      }
+      else {
+        localStorage.removeItem(STORAGE_KEYS.pageCompetitionCodes)
+      }
+    },
+
     // Compute competition codes based on selection type
     computeCompetitionCodes() {
       switch (this.selectionType) {
@@ -529,6 +563,7 @@ export const useWorkContextStore = defineStore('workContext', {
       this.eventId = null
       this.competitionCodes = []
       this.pageCompetitionCode = ''
+      this.pageCompetitionCodes = []
 
       localStorage.removeItem(STORAGE_KEYS.selectionType)
       localStorage.removeItem(STORAGE_KEYS.sectionId)
@@ -536,6 +571,7 @@ export const useWorkContextStore = defineStore('workContext', {
       localStorage.removeItem(STORAGE_KEYS.selectedCompetitionCodes)
       localStorage.removeItem(STORAGE_KEYS.eventId)
       localStorage.removeItem(STORAGE_KEYS.pageCompetitionCode)
+      localStorage.removeItem(STORAGE_KEYS.pageCompetitionCodes)
     },
 
     // Clear everything

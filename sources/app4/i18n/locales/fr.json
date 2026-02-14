@@ -186,6 +186,8 @@
     "confirm": "Confirmer",
     "actions": "Actions",
     "scroll_to_top": "Retour en haut",
+    "collapse_all": "Tout replier",
+    "expand_all": "Tout déplier",
     "last_name": "Nom",
     "first_name": "Prénom",
     "license": "Licence",
