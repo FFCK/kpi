@@ -249,6 +249,81 @@ export function useDocumentLanguage() {
 - Liste des événements de la saison
 - Triés par date décroissante
 
+### 3.4 Filtre Multi-Compétition (Dropdown inline)
+
+Le composant `AdminCompetitionMultiSelect` est intégré dans un **dropdown inline** positionné en absolu. Ce pattern est utilisé dans les pages Journées et RC pour filtrer par compétitions sans occuper de place verticale.
+
+**Pattern d'intégration :**
+
+```vue
+<div ref="competitionFilterRef" class="relative">
+  <button
+    class="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 bg-white"
+    @click="filterOpen = !filterOpen"
+  >
+    <UIcon name="heroicons:funnel" class="w-4 h-4 text-gray-500" />
+    <span class="text-gray-700">{{ t('rc.filter_competitions') }}</span>
+    <span v-if="selectedCompetitions.length > 0"
+      class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+      {{ selectedCompetitions.length }}
+    </span>
+    <UIcon name="heroicons:chevron-down" class="w-4 h-4 text-gray-400 transition-transform"
+      :class="{ 'rotate-180': filterOpen }" />
+  </button>
+  <div v-show="filterOpen" class="absolute z-20 mt-1 w-80 bg-white border border-gray-200 rounded-lg shadow-lg p-3">
+    <AdminCompetitionMultiSelect
+      v-model="selectedCompetitions"
+      :competitions="workContext.competitions || []"
+    />
+  </div>
+</div>
+```
+
+**Comportement :**
+- Bouton compact aligné avec les autres filtres (Event, Month, Sort) ou dans la toolbar
+- Badge bleu affichant le nombre de compétitions sélectionnées
+- Dropdown flottant (`position: absolute`, `z-20`) au clic
+- Fermeture au clic extérieur via `document.addEventListener('click', ...)` avec ref sur le conteneur
+- Le dropdown contient le `AdminCompetitionMultiSelect` avec checkbox "Toutes" + liste scrollable
+
+**Placement selon la page :**
+- **Journées** : dans la ligne de filtres, au même niveau que Event, Mois, Tri
+- **RC** : dans le slot `#before-search` du `AdminToolbar`, à gauche du champ de recherche
+
+### 3.5 Toolbar (AdminToolbar)
+
+Barre d'outils commune avec recherche, bouton d'ajout et actions en masse.
+
+```vue
+<AdminToolbar
+  v-model:search="searchQuery"
+  :search-placeholder="t('page.search')"
+  :add-label="t('page.add')"
+  :show-add="canEdit"
+  :show-bulk-delete="canDelete"
+  :selected-count="selectedIds.length"
+  @add="openAddModal"
+  @bulk-delete="confirmDelete"
+>
+  <template #before-search>
+    <!-- Contenu à gauche du champ de recherche (ex: filtre compétitions) -->
+  </template>
+  <template #after-search>
+    <!-- Contenu après le champ de recherche (ex: boutons d'actions) -->
+  </template>
+  <template #left>
+    <!-- Contenu côté gauche (zone des actions en masse) -->
+  </template>
+  <template #right>
+    <!-- Contenu après le bouton d'ajout -->
+  </template>
+</AdminToolbar>
+```
+
+**Structure :**
+- **Gauche** : bouton suppression en masse (si sélection) + slot `#left`
+- **Droite** : slot `#before-search` + champ de recherche + slot `#after-search` + bouton ajouter + slot `#right`
+
 ---
 
 ## 4. Endpoints API2 Communs

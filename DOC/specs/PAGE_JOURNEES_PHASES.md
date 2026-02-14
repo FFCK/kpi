@@ -1,6 +1,6 @@
 # Spécification - Page Journées / Phases
 
-## Statut : 📋 À IMPLÉMENTER
+## Statut : ✅ IMPLÉMENTÉ
 
 ## 1. Vue d'ensemble
 
@@ -36,7 +36,7 @@ La page permet de lister, filtrer, créer, modifier, dupliquer et supprimer des 
 |---|----------------|--------|------------|----------|
 | 1 | Liste des journées avec filtres (événement, compétition, mois, tri) | ≤ 10 | Essentielle | ✅ Conserver |
 | 2 | Filtre par événement (dropdown) | ≤ 10 | Essentielle | ✅ Conserver |
-| 3 | Filtre par compétition (select multiple, composant `AdminCompetitionMultiSelect` comme sur la page RC) | ≤ 10 | Essentielle | ✅ Conserver (modernisé) |
+| 3 | Filtre par compétition (dropdown inline avec `AdminCompetitionMultiSelect`, même pattern que page RC) | ≤ 10 | Essentielle | ✅ Conserver (modernisé) |
 | 4 | Filtre par mois | ≤ 10 | Essentielle | ✅ Conserver |
 | 5 | Tri configurable (date croissante/décroissante, nom, numéro, niveau) | ≤ 10 | Essentielle | ✅ Conserver |
 | 6 | Toggle publication (œil) par clic AJAX | ≤ 4 | Essentielle | ✅ Conserver |
@@ -96,7 +96,7 @@ La page permet de lister, filtrer, créer, modifier, dupliquer et supprimer des 
 | 3 | Pagination | La liste legacy n'a pas de pagination (peut être longue) |
 | 4 | Responsive mobile | Vue cartes pour mobile |
 | 5 | Intégration workContext | Utiliser le contexte de travail global pour saison/périmètre compétitions |
-| 6 | Filtre compétition multi-select | Utiliser `AdminCompetitionMultiSelect` (comme la page RC) au lieu d'un select simple |
+| 6 | Filtre compétition multi-select | Dropdown inline compact avec `AdminCompetitionMultiSelect` (badge compteur + dropdown flottant au clic), aligné avec les autres filtres |
 | 7 | Colonne nombre de matchs | Afficher le nombre de matchs par journée |
 | 8 | Mise en valeur calendrier public | Les colonnes Nom, Dates, Lieu, Dpt/Pays sont visuellement distinguées (en-têtes colorés, comme le legacy avec `colorPublic`) |
 | 9 | Modification en masse calendrier public | Permettre de modifier Nom, Dates, Lieu, Dpt/Pays pour toutes les journées cochées |
@@ -118,11 +118,15 @@ La page permet de lister, filtrer, créer, modifier, dupliquer et supprimer des 
 ├──────────────────────────────────────────────────────────────────────────────────┤
 │  Journées / Phases                                                               │
 ├──────────────────────────────────────────────────────────────────────────────────┤
-│  [Événement: ▼ Tous ] [Compétitions: ▼ Multi-select (3)]  [Mois: ▼] [Tri: ▼]  │
-│  [🔍 Recherche...                     ]                          [+ Ajouter]    │
+│  [Événement: ▼ Tous] [🔽 Compétitions (3)] [Mois: ▼ Tous] [Tri: ▼ Date ↑]     │
+│                         └─────────────────────────┐                              │
+│                         │ ☑ Toutes (12)           │  (dropdown flottant)         │
+│                         │ ☑ N1H-A  ☑ N1H-B       │                              │
+│                         │ ☑ N1F    ☐ N2H          │                              │
+│                         └─────────────────────────┘                              │
 ├──────────────────────────────────────────────────────────────────────────────────┤
-│  Sélection: [✓ Tous] [✗ Aucun] [👁 Publier] [📝 Modifier cal. public] [🗑 Sup]│
-│  [🔗 Gérer associations événement] (profil ≤ 3, si événement sélectionné)       │
+│  [🗑 Suppr. (N)]  [🔍 Recherche...               ]       [+ Ajouter une j.]    │
+│                   [👁 Publier] [📝 Cal. public] [🔗 Assoc. événement]           │
 ├──────────────────────────────────────────────────────────────────────────────────┤
 │  │☐│👁│ Id  │   │ Compét./Phase    │Niv│Tour│Éq│Type│ *Nom*          │ Matchs │ │
 │  │  │  │     │   │                  │   │    │  │    │ (cal.public)   │        │ │
@@ -202,19 +206,23 @@ Les colonnes **Niveau**, **Tour** et **Équipes** ne sont affichées que lorsqu'
 | Persistance | localStorage |
 | Impact | Filtre les journées via `kp_evenement_journee` |
 
-### 4.2 Filtre Compétition (Multi-select)
+### 4.2 Filtre Compétition (Dropdown inline multi-select)
 
 | Propriété | Valeur |
 |-----------|--------|
-| Composant | `AdminCompetitionMultiSelect` (même que page RC) |
+| Composant | `AdminCompetitionMultiSelect` dans un dropdown inline flottant |
+| Placement | Dans la ligne de filtres, entre le filtre Événement et le filtre Mois |
+| Bouton | Compact avec icône funnel + label + badge compteur bleu + chevron |
+| Dropdown | `position: absolute; z-index: 20` avec `w-80`, ouvert au clic |
+| Fermeture | Clic extérieur (via `document.addEventListener('click', ...)` avec ref) |
 | Source | `workContext.competitions` (déjà chargées via workContextStore) |
 | Sélection | Multiple (checkboxes avec compteur de sélection) |
-| Groupement | Par section (International, National, Régional, etc.) |
 | Par défaut | Toutes les compétitions (aucune sélection = pas de filtre) |
 | Filtre utilisateur | Respecte `Filtre_competition` via workContext |
-| Persistance | localStorage |
+| Persistance | localStorage (via workContext.pageCompetitionCodes) |
 | Impact | Filtre sur `Code_competition IN (...)` |
-| UI | Section collapsible avec chevron, badge compteur "3 sélectionnées" |
+
+Voir le pattern commun dans `COMMON_ADMIN_SPECS.md` §3.4.
 
 ### 4.3 Filtre Mois
 
@@ -722,11 +730,15 @@ sources/app4/pages/gamedays/
 
 | Composant | Usage |
 |-----------|-------|
-| `AdminToolbar` | Barre de recherche + bouton Ajouter |
+| `AdminWorkContextSummary` | Rappel contexte (saison + périmètre) |
+| `AdminToolbar` | Barre de recherche + bouton Ajouter + actions en masse |
+| `AdminCompetitionMultiSelect` | Filtre multi-compétition (dans dropdown inline flottant) |
 | `AdminModal` | Modal ajout/édition de journée |
 | `AdminConfirmModal` | Confirmation suppression |
-| `AdminToggleButton` | Toggle publication (œil) |
+| `AdminToggleButton` | Toggle publication (oeil) |
 | `AdminPagination` | Pagination de la liste |
+| `AdminCardList` / `AdminCard` | Vue mobile en cartes |
+| `AdminScrollToTop` | Bouton retour en haut |
 
 ### 11.3 Dépendance au contexte de travail
 
@@ -983,6 +995,6 @@ Les champs suivants de `kp_journee` ne sont **pas** affichés dans l'interface :
 ---
 
 **Document créé le** : 13 février 2026
-**Dernière mise à jour** : 13 février 2026
-**Statut** : 📋 À IMPLÉMENTER
+**Dernière mise à jour** : 14 février 2026
+**Statut** : ✅ IMPLÉMENTÉ
 **Auteur** : Claude Code

@@ -1,7 +1,7 @@
 # Spécification - Page Responsables de Compétition (RC)
 
-**Version** : 1.1
-**Date** : 2026-02-13
+**Version** : 1.2
+**Date** : 2026-02-14
 **Status** : Implemented
 **Legacy PHP** : GestionRc.php + GestionRc.tpl + GestionRc.js
 
@@ -33,7 +33,7 @@ Page d'administration des Responsables de Compétition (RC). Un RC est une perso
 | # | Fonctionnalité | Profil | Évaluation | Décision |
 |---|----------------|--------|------------|----------|
 | 1 | Liste des RC pour la saison du contexte | ≤ 4 | Essentielle | ✅ Conserver |
-| 2 | Filtrage par compétitions (CompetitionMultiSelect) | ≤ 4 | Amélioration | ✅ Remplace les 3 filtres legacy (niveau, type, compétition) |
+| 2 | Filtrage par compétitions (dropdown inline CompetitionMultiSelect dans la toolbar) | ≤ 4 | Amélioration | ✅ Remplace les 3 filtres legacy (niveau, type, compétition) |
 | 3 | Recherche textuelle (nom, prénom, licence) | ≤ 4 | Amélioration | ✅ Ajouter |
 | 4 | Ajout d'un RC (modal) | ≤ 2 | Essentielle | ✅ Conserver |
 | 5 | Modification d'un RC (modal) | ≤ 2 | Essentielle | ✅ Conserver |
@@ -45,7 +45,7 @@ Page d'administration des Responsables de Compétition (RC). Un RC est une perso
 
 | # | Amélioration | Description |
 |---|--------------|-------------|
-| 1 | Filtre unifié | CompetitionMultiSelect remplace 3 filtres séparés (niveau, type, compétition) |
+| 1 | Filtre unifié dans la toolbar | Dropdown inline CompetitionMultiSelect dans la toolbar (slot `#before-search`), remplace 3 filtres séparés legacy |
 | 2 | Modal au lieu de formulaire latéral | Formulaire d'ajout/édition dans une modal |
 | 3 | Recherche textuelle | Recherche client-side dans le nom, prénom, n° licence |
 | 4 | Suppression en masse | Sélection multiple avec checkbox + suppression groupée |
@@ -66,16 +66,11 @@ Page d'administration des Responsables de Compétition (RC). Un RC est une perso
 ├──────────────────────────────────────────────────────────────────────────────┤
 │  Responsables de Compétition                                                 │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│  [🔍 Recherche...               ]  [🗑 Suppr. (N)]          [+ Ajouter]     │
-├──────────────────────────────────────────────────────────────────────────────┤
-│  Filtrer par compétitions :                                                  │
-│  ┌──────────────────────────────────────────────────────────────────────┐    │
-│  │ ☑ Toutes les compétitions (12)                                      │    │
-│  │ ☑ N1H-A - Nationale 1 Hommes (Poule A)                             │    │
-│  │ ☑ N1H-B - Nationale 1 Hommes (Poule B)                             │    │
-│  │ ☑ N1F - Nationale 1 Femmes                                         │    │
-│  │ ...                                                                 │    │
-│  └──────────────────────────────────────────────────────────────────────┘    │
+│  [🗑 Suppr.(N)]   [🔽 Compétitions (3)] [🔍 Recherche...] [📋 Copier] [+] │
+│                     └──────────────────┐                                     │
+│                     │ ☑ Toutes (12)    │  (dropdown flottant)                │
+│                     │ ☑ N1H-A  ☑ N1F  │                                     │
+│                     └──────────────────┘                                     │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │  │ ☐ │ Compétition            │ Ordre │ Nom Prénom      │ Licence │ Email  │ │
 │  │───│────────────────────────│───────│─────────────────│─────────│────────│ │
@@ -85,16 +80,14 @@ Page d'administration des Responsables de Compétition (RC). Un RC est une perso
 │  │ ☐ │ N1F                    │   1   │ LEROY Sophie    │  45678  │ s@e.fr │ │
 │  │ ...                                                                      │
 ├──────────────────────────────────────────────────────────────────────────────┤
-│  Pagination : [< 1 2 3 >]  [10 ▼] par page   Total : 24 RC                │
-├──────────────────────────────────────────────────────────────────────────────┤
-│                                                                              │
-│  ── Copier les RC ────────────────────────────────────────────── (profil ≤2) │
-│  │ Saison source : [2025 ▼]   Saison cible : [2026 ▼]   [Copier les RC]  │ │
-│  │ ℹ Cette opération copie tous les RC de la saison source vers la saison │ │
-│  │   cible (les doublons sont ignorés).                                   │ │
-│  └──────────────────────────────────────────────────────────────────────────┘│
+│  Total : 24 RC                                                               │
 └──────────────────────────────────────────────────────────────────────────────┘
 ```
+
+**Toolbar (une seule ligne) :**
+- **Gauche** : bouton suppression en masse (si sélection)
+- **Droite** : filtre compétitions (dropdown inline, slot `#before-search`) + champ de recherche + bouton "Copier les RC" (slot `#after-search`) + bouton "Ajouter"
+- Le bouton "Copier les RC" ouvre une modal (profil ≤ 2), plus de section séparée en bas de page
 
 **Actions par ligne :**
 - Clic sur la ligne : ouvre la modal d'édition (profil ≤ 2)
@@ -109,8 +102,8 @@ Page d'administration des Responsables de Compétition (RC). Un RC est une perso
 ├──────────────────────────────────┤
 │  Responsables de Compétition     │
 ├──────────────────────────────────┤
-│  [🔍 Recherche...              ] │
-│  [Filtrer compétitions ▼]        │
+│  [🔽 Compétitions (3)]          │
+│  [🔍 Recherche...]  [📋 Copier] │
 │  [🗑 Suppr. (0)]   [+ Ajouter]  │
 ├──────────────────────────────────┤
 │  ┌────────────────────────────┐  │
@@ -126,11 +119,6 @@ Page d'administration des Responsables de Compétition (RC). Un RC est une perso
 │  │ p@example.fr               │  │
 │  └────────────────────────────┘  │
 │  ...                             │
-├──────────────────────────────────┤
-│  ── Copier les RC ──             │
-│  Saison source : [▼]            │
-│  Saison cible :  [▼]            │
-│  [Copier les RC]                │
 └──────────────────────────────────┘
 ```
 
@@ -252,12 +240,13 @@ Copie tous les RC d'une saison source vers une saison cible. Les doublons (même
 
 ### 6.2 Interface
 
-Section en bas de page, visible uniquement pour profil ≤ 2.
+Bouton "Copier les RC" intégré dans la toolbar (slot `#after-search`), visible uniquement pour profil ≤ 2. Le clic ouvre une modal de copie.
 
-- **Saison source** : Select dropdown avec toutes les saisons disponibles
+**Modal de copie :**
+- **Saison source** : Select dropdown avec les saisons disponibles (courante + 2 précédentes)
 - **Saison cible** : Select dropdown avec toutes les saisons (la saison source est désactivée)
-- **Bouton** : "Copier les RC" (désactivé si source ou cible vide)
-- **Note** : "Cette opération copie tous les RC de la saison source vers la saison cible (les doublons sont ignorés)."
+- **Note d'avertissement** : "Cette opération copie tous les RC de la saison source vers la saison cible (les doublons sont ignorés)."
+- **Boutons** : "Annuler" + "Copier" (désactivé si source ou cible vide)
 
 ### 6.3 Confirmation
 
@@ -491,11 +480,11 @@ sources/app4/components/admin/
 | Composant | Usage |
 |-----------|-------|
 | `AdminWorkContextSummary` | Rappel contexte (saison + périmètre) |
-| `AdminCompetitionMultiSelect` | Filtre des RC par compétitions |
-| `AdminToolbar` | Barre de recherche + bouton ajouter + suppression en masse |
-| `AdminModal` | Modal ajout/édition de RC |
-| `AdminConfirmModal` | Confirmation de suppression / copie |
-| `AdminPagination` | Pagination de la liste |
+| `AdminToolbar` | Barre d'outils : slots `#before-search` (filtre compétitions) et `#after-search` (bouton copier) |
+| `AdminCompetitionMultiSelect` | Filtre multi-compétition (dans dropdown inline flottant, slot `#before-search` de la toolbar) |
+| `AdminModal` | Modal ajout/édition de RC + modal copie RC |
+| `AdminConfirmModal` | Confirmation de suppression |
+| `AdminCardList` / `AdminCard` | Vue mobile en cartes |
 
 ### 9.3 Nouveau composant : AdminCompetitionGroupedSelect
 
@@ -682,12 +671,12 @@ Toutes les opérations sont loguées dans `kp_journal` :
 |--------|-------------|-------------|
 | Layout | 2 colonnes (table + formulaire latéral) | Table + Modal |
 | Saison | Sélecteur de saison dédié | Saison du contexte de travail |
-| Filtres | 3 filtres (niveau, type, compétition) + filtre client | CompetitionMultiSelect unifié |
+| Filtres | 3 filtres (niveau, type, compétition) + filtre client | Dropdown inline CompetitionMultiSelect dans la toolbar |
 | Recherche | Pas de recherche textuelle | Recherche par nom/prénom/licence |
 | "- CNA -" | Valeur littérale en DB | null en DB, "National (sans compétition)" en UI |
 | Suppression | Individuelle uniquement | Sélection multiple + suppression en masse |
 | Responsive | Non | Oui (table → cartes) |
-| Copie RC | Formulaire latéral | Section dédiée en bas de page |
+| Copie RC | Formulaire latéral | Bouton dans la toolbar + modal dédiée |
 | Compétition (formulaire) | Liste plate | Groupée par section |
 
 ### 13.2 Migration de données
@@ -721,6 +710,6 @@ Méthodes :
 ---
 
 **Document créé le** : 09 février 2026
-**Dernière mise à jour** : 13 février 2026
+**Dernière mise à jour** : 14 février 2026
 **Statut** : ✅ Implémenté (Team Mode)
 **Auteur** : Claude Code
