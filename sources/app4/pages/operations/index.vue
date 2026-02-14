@@ -49,7 +49,7 @@ const changeTab = (tabId: OperationsTab) => {
         <UIcon name="i-heroicons-exclamation-triangle" class="w-5 h-5 text-yellow-600 mt-0.5 shrink-0" />
         <div>
           <h4 class="font-medium text-yellow-800">{{ t('operations.common.warning') }}</h4>
-          <p class="mt-1 text-sm text-yellow-700">{{ t('operations.common.irreversible') }}</p>
+          <p class="mt-1 text-sm text-yellow-700">{{ t('operations.common.irreversibles') }}</p>
         </div>
       </div>
     </div>

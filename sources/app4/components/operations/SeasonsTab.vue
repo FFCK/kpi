@@ -267,7 +267,7 @@ onMounted(() => {
                 {{ t('common.loading') }}
               </td>
             </tr>
-            <tr v-for="season in seasons" :key="season.code" :class="{ 'bg-green-50': season.active }">
+            <tr v-for="season in seasons" :key="season.code" :class="{ 'bg-green-200': season.active }">
               <td class="px-4 py-3 text-sm font-medium text-gray-900">
                 {{ season.code }}
               </td>

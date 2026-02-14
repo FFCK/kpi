@@ -626,7 +626,7 @@
       "cancel": "Annuler",
       "execute": "Exécuter",
       "warning": "Attention",
-      "irreversible": "Cette action est irréversible."
+      "irreversibles": "Ces actions sont irréversibles."
     }
   },
   "competitions": {

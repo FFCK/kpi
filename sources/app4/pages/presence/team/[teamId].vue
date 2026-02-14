@@ -36,6 +36,7 @@ const selectAll = ref(false)
 // Inline editing state
 const editingCell = ref<{ matric: number; field: 'numero' | 'capitaine' } | null>(null)
 const editingValue = ref('')
+const editingOriginalValue = ref('')
 
 // Search filter
 const search = ref('')
@@ -176,13 +177,20 @@ const toggleSelect = (matric: number) => {
 const startEdit = (player: Player, field: 'numero' | 'capitaine') => {
   if (!canEdit.value) return
   editingCell.value = { matric: player.matric, field }
-  editingValue.value = field === 'numero' ? (player.numero || '').toString() : player.capitaine
+  const val = field === 'numero' ? (player.numero || '').toString() : player.capitaine
+  editingValue.value = val
+  editingOriginalValue.value = val
   nextTick(() => {
     const desktopEl = document.getElementById(`inline-edit-${player.matric}-${field}`)
     const mobileEl = document.getElementById(`mobile-edit-${player.matric}-${field}`)
     // Focus the visible one (desktop is inside hidden lg:block, mobile is inside lg:hidden)
     const el = mobileEl && mobileEl.offsetParent !== null ? mobileEl : desktopEl
-    if (el) el.focus()
+    if (el) {
+      el.focus()
+      if (el instanceof HTMLSelectElement) {
+        try { el.showPicker() } catch { /* ignore if unsupported */ }
+      }
+    }
   })
 }
 
@@ -192,9 +200,14 @@ const saveInlineEdit = async () => {
   const { matric, field } = editingCell.value
   const value = field === 'numero' ? parseInt(editingValue.value) || 0 : editingValue.value
 
+  // Close editing
+  editingCell.value = null
+
+  // Only PATCH if value actually changed
+  if (String(value) === editingOriginalValue.value) return
+
   try {
     await presenceStore.updatePlayerInline(matric, field, value, api)
-    editingCell.value = null
     toast.add({ title: t('common.saved'), color: 'success', timeout: 2000 })
   } catch (error: any) {
     toast.add({ title: t('common.error'), description: error.message, color: 'error' })
@@ -552,7 +565,7 @@ const pdfLinks = computed(() => {
             v-for="player in activePlayers"
             :key="player.matric"
             class="hover:bg-gray-50"
-            :class="{ 'bg-yellow-50': player.capitaine === 'C' }"
+            :class="{ 'bg-yellow-100': player.capitaine === 'C' }"
           >
             <td v-if="canEdit" class="px-3 py-1">
               <input
@@ -567,7 +580,7 @@ const pdfLinks = computed(() => {
             <td class="px-3 py-1 text-sm text-gray-900">
               <span
                 v-if="editingCell?.matric !== player.matric || editingCell?.field !== 'numero'"
-                :class="canEdit ? 'editable-cell cursor-pointer' : ''"
+                :class="canEdit ? 'editable-cell' : ''"
                 @click="canEdit && startEdit(player, 'numero')"
               >
                 {{ player.numero || '-' }}
@@ -589,7 +602,7 @@ const pdfLinks = computed(() => {
             <td class="px-3 py-1 text-sm">
               <span
                 v-if="editingCell?.matric !== player.matric || editingCell?.field !== 'capitaine'"
-                :class="canEdit ? 'editable-cell cursor-pointer' : ''"
+                :class="canEdit ? 'editable-cell' : ''"
                 @click="canEdit && startEdit(player, 'capitaine')"
               >
                 {{ player.capitaine }}
@@ -599,7 +612,6 @@ const pdfLinks = computed(() => {
                 :id="`inline-edit-${player.matric}-capitaine`"
                 v-model="editingValue"
                 class="px-2 py-1 border border-blue-400 rounded text-sm focus:ring-2 focus:ring-blue-500"
-                @change="saveInlineEdit"
                 @blur="saveInlineEdit"
               >
                 <option value="-">-</option>
@@ -666,7 +678,7 @@ const pdfLinks = computed(() => {
             <tr
               v-for="player in coaches"
               :key="player.matric"
-              class="hover:bg-gray-50 bg-orange-50/50"
+              class="hover:bg-gray-50 bg-orange-100/50"
             >
               <td v-if="canEdit" class="px-3 py-1">
                 <input v-model="selectedPlayerIds" type="checkbox" :value="player.matric" class="rounded border-gray-300" />
@@ -675,7 +687,7 @@ const pdfLinks = computed(() => {
               <td class="px-3 py-1 text-sm text-gray-900">
                 <span
                   v-if="editingCell?.matric !== player.matric || editingCell?.field !== 'numero'"
-                  :class="canEdit ? 'editable-cell cursor-pointer' : ''"
+                  :class="canEdit ? 'editable-cell' : ''"
                   @click="canEdit && startEdit(player, 'numero')"
                 >
                   {{ player.numero || '-' }}
@@ -694,7 +706,7 @@ const pdfLinks = computed(() => {
               <td class="px-3 py-1 text-sm">
                 <span
                   v-if="editingCell?.matric !== player.matric || editingCell?.field !== 'capitaine'"
-                  :class="canEdit ? 'editable-cell cursor-pointer' : ''"
+                  :class="canEdit ? 'editable-cell' : ''"
                   @click="canEdit && startEdit(player, 'capitaine')"
                 >
                   {{ player.capitaine }}
@@ -742,7 +754,7 @@ const pdfLinks = computed(() => {
             <tr
               v-for="player in referees"
               :key="player.matric"
-              class="hover:bg-gray-50 bg-blue-50/50"
+              class="hover:bg-gray-50 bg-blue-100"
             >
               <td v-if="canEdit" class="px-3 py-1">
                 <input v-model="selectedPlayerIds" type="checkbox" :value="player.matric" class="rounded border-gray-300" />
@@ -751,7 +763,7 @@ const pdfLinks = computed(() => {
               <td class="px-3 py-1 text-sm text-gray-900">
                 <span
                   v-if="editingCell?.matric !== player.matric || editingCell?.field !== 'numero'"
-                  :class="canEdit ? 'editable-cell cursor-pointer' : ''"
+                  :class="canEdit ? 'editable-cell' : ''"
                   @click="canEdit && startEdit(player, 'numero')"
                 >
                   {{ player.numero || '-' }}
@@ -770,7 +782,7 @@ const pdfLinks = computed(() => {
               <td class="px-3 py-1 text-sm">
                 <span
                   v-if="editingCell?.matric !== player.matric || editingCell?.field !== 'capitaine'"
-                  :class="canEdit ? 'editable-cell cursor-pointer' : ''"
+                  :class="canEdit ? 'editable-cell' : ''"
                   @click="canEdit && startEdit(player, 'capitaine')"
                 >
                   {{ player.capitaine }}
@@ -818,7 +830,7 @@ const pdfLinks = computed(() => {
             <tr
               v-for="player in inactivePlayers"
               :key="player.matric"
-              class="hover:bg-gray-50 opacity-60"
+              class="hover:bg-gray-200 opacity-60 italic"
             >
               <td v-if="canEdit" class="px-3 py-1">
                 <input v-model="selectedPlayerIds" type="checkbox" :value="player.matric" class="rounded border-gray-300" />
@@ -827,7 +839,7 @@ const pdfLinks = computed(() => {
               <td class="px-3 py-1 text-sm text-gray-900">
                 <span
                   v-if="editingCell?.matric !== player.matric || editingCell?.field !== 'numero'"
-                  :class="canEdit ? 'editable-cell cursor-pointer' : ''"
+                  :class="canEdit ? 'editable-cell' : ''"
                   @click="canEdit && startEdit(player, 'numero')"
                 >
                   {{ player.numero || '-' }}
@@ -846,7 +858,7 @@ const pdfLinks = computed(() => {
               <td class="px-3 py-1 text-sm">
                 <span
                   v-if="editingCell?.matric !== player.matric || editingCell?.field !== 'capitaine'"
-                  :class="canEdit ? 'editable-cell cursor-pointer' : ''"
+                  :class="canEdit ? 'editable-cell' : ''"
                   @click="canEdit && startEdit(player, 'capitaine')"
                 >
                   {{ player.capitaine }}

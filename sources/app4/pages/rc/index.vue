@@ -260,12 +260,25 @@ const copyRc = async () => {
   }
 }
 
+// Click outside to close filter dropdown
+const competitionFilterRef = ref<HTMLElement | null>(null)
+const onClickOutsideFilter = (e: MouseEvent) => {
+  if (filterOpen.value && competitionFilterRef.value && !competitionFilterRef.value.contains(e.target as Node)) {
+    filterOpen.value = false
+  }
+}
+
 // Initialize from URL parameter
 onMounted(() => {
+  document.addEventListener('click', onClickOutsideFilter)
   const competitionParam = route.query.competition as string
   if (competitionParam) {
     selectedCompetitions.value = [competitionParam]
   }
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', onClickOutsideFilter)
 })
 
 // Watch context changes
@@ -304,39 +317,45 @@ watch(selectedCompetitions, () => {
       :selected-count="selectedIds.length"
       @add="openAddModal"
       @bulk-delete="confirmDelete"
-    />
-
-    <!-- Competition Filter (collapsible) -->
-    <div class="bg-white rounded-lg shadow">
-      <button
-        class="w-full flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors"
-        @click="filterOpen = !filterOpen"
-      >
-        <div class="flex items-center gap-2">
-          <UIcon
-            name="heroicons:funnel"
-            class="w-4 h-4 text-gray-500"
-          />
-          <span class="text-sm font-medium text-gray-700">
-            {{ t('rc.filter_competitions') }}
-          </span>
-          <span v-if="selectedCompetitions.length > 0" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-            {{ selectedCompetitions.length }}
-          </span>
+    >
+      <template #before-search>
+        <!-- Competition Filter (inline dropdown) -->
+        <div ref="competitionFilterRef" class="relative">
+          <button
+            class="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors bg-white"
+            @click="filterOpen = !filterOpen"
+          >
+            <UIcon name="heroicons:funnel" class="w-4 h-4 text-gray-500" />
+            <span class="text-gray-700">{{ t('rc.filter_competitions') }}</span>
+            <span v-if="selectedCompetitions.length > 0" class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+              {{ selectedCompetitions.length }}
+            </span>
+            <UIcon
+              name="heroicons:chevron-down"
+              class="w-4 h-4 text-gray-400 transition-transform"
+              :class="{ 'rotate-180': filterOpen }"
+            />
+          </button>
+          <div v-show="filterOpen" class="absolute z-20 mt-1 w-80 bg-white border border-gray-200 rounded-lg shadow-lg p-3">
+            <AdminCompetitionMultiSelect
+              v-model="selectedCompetitions"
+              :competitions="workContext.competitions || []"
+            />
+          </div>
         </div>
-        <UIcon
-          name="heroicons:chevron-down"
-          class="w-4 h-4 text-gray-400 transition-transform"
-          :class="{ 'rotate-180': filterOpen }"
-        />
-      </button>
-      <div v-show="filterOpen" class="px-4 pb-4 border-t border-gray-100">
-        <AdminCompetitionMultiSelect
-          v-model="selectedCompetitions"
-          :competitions="workContext.competitions || []"
-        />
-      </div>
-    </div>
+      </template>
+      <template #after-search>
+        <!-- Copy RC button -->
+        <button
+          v-if="canCopy"
+          class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          @click="openCopyModal"
+        >
+          <UIcon name="heroicons:document-duplicate" class="w-4 h-4" />
+          {{ t('rc.copy_button') }}
+        </button>
+      </template>
+    </AdminToolbar>
 
     <!-- RC Table (Desktop) -->
     <div class="hidden lg:block bg-white rounded-lg shadow overflow-hidden">
@@ -451,22 +470,6 @@ watch(selectedCompetitions, () => {
         </div>
       </AdminCard>
     </AdminCardList>
-
-    <!-- Copy RC Section (Profil ≤ 2) -->
-    <div v-if="canCopy" class="bg-white rounded-lg shadow p-6">
-      <h2 class="text-lg font-semibold text-gray-900 mb-4">
-        {{ t('rc.copy_title') }}
-      </h2>
-      <p class="text-sm text-gray-600 mb-4">
-        {{ t('rc.copy_help') }}
-      </p>
-      <button
-        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
-        @click="openCopyModal"
-      >
-        {{ t('rc.copy_button') }}
-      </button>
-    </div>
 
     <!-- Add/Edit Modal -->
     <AdminModal

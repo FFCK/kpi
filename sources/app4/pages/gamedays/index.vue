@@ -70,6 +70,7 @@ const bulkCalendarData = ref<Omit<GamedayBulkCalendarData, 'ids'>>({
 // Inline editing
 const editingCell = ref<{ id: number; field: string } | null>(null)
 const editingValue = ref('')
+const editingOriginalValue = ref('')
 
 // Event associations (loaded when panel is open)
 const eventAssociations = ref<Set<number>>(new Set())
@@ -257,62 +258,70 @@ const toggleType = async (gameday: Gameday) => {
 }
 
 // ─── Inline Editing ───
+const inlineFieldMap: Record<string, keyof Gameday> = {
+  Phase: 'phase',
+  Niveau: 'niveau',
+  Etape: 'etape',
+  Nbequipes: 'nbEquipes',
+  Nom: 'nom',
+  Date_debut: 'dateDebut',
+  Date_fin: 'dateFin',
+  Lieu: 'lieu',
+  Departement: 'departement',
+}
+
 const startInlineEdit = (gameday: Gameday, field: string) => {
   if (!canEdit.value) return
   editingCell.value = { id: gameday.id, field }
-  const fieldMap: Record<string, keyof Gameday> = {
-    Phase: 'phase',
-    Niveau: 'niveau',
-    Etape: 'etape',
-    Nbequipes: 'nbEquipes',
-    Nom: 'nom',
-    Date_debut: 'dateDebut',
-    Date_fin: 'dateFin',
-    Lieu: 'lieu',
-    Departement: 'departement',
+  const prop = inlineFieldMap[field]
+  let val = prop ? String(gameday[prop] ?? '') : ''
+  // For date fields, ensure YYYY-MM-DD format for input[type=date]
+  if ((field === 'Date_debut' || field === 'Date_fin') && val.length > 10) {
+    val = val.substring(0, 10)
   }
-  const prop = fieldMap[field]
-  editingValue.value = prop ? String(gameday[prop] ?? '') : ''
+  editingValue.value = val
+  editingOriginalValue.value = val
   nextTick(() => {
-    const input = document.getElementById(`inline-${gameday.id}-${field}`)
-    input?.focus()
-    if (input instanceof HTMLInputElement) input.select()
+    const el = document.getElementById(`inline-${gameday.id}-${field}`)
+    if (el) {
+      el.focus()
+      if (el instanceof HTMLInputElement && el.type !== 'date') el.select()
+      if (el instanceof HTMLInputElement && el.type === 'date') {
+        try { el.showPicker() } catch { /* ignore */ }
+      }
+    }
   })
 }
 
 const saveInlineEdit = async () => {
   if (!editingCell.value) return
   const { id, field } = editingCell.value
+  const value = editingValue.value
+
+  // Close editing
+  editingCell.value = null
+
+  // Only PATCH if value actually changed
+  if (value === editingOriginalValue.value) return
+
   try {
-    await api.patch(`/admin/gamedays/${id}/inline`, { field, value: editingValue.value })
+    await api.patch(`/admin/gamedays/${id}/inline`, { field, value })
     // Refresh the row locally
     const gameday = gamedays.value.find(g => g.id === id)
     if (gameday) {
-      const fieldMap: Record<string, keyof Gameday> = {
-        Phase: 'phase',
-        Niveau: 'niveau',
-        Etape: 'etape',
-        Nbequipes: 'nbEquipes',
-        Nom: 'nom',
-        Date_debut: 'dateDebut',
-        Date_fin: 'dateFin',
-        Lieu: 'lieu',
-        Departement: 'departement',
-      }
-      const prop = fieldMap[field]
+      const prop = inlineFieldMap[field]
       if (prop) {
         const numericFields = ['niveau', 'etape', 'nbEquipes']
         if (numericFields.includes(prop)) {
-          ;(gameday as any)[prop] = editingValue.value ? parseInt(editingValue.value) : null
+          ;(gameday as any)[prop] = value ? parseInt(value) : null
         } else {
-          ;(gameday as any)[prop] = editingValue.value || null
+          ;(gameday as any)[prop] = value || null
         }
       }
     }
   } catch {
     // Error already shown by useApi
   }
-  editingCell.value = null
 }
 
 const cancelInlineEdit = () => {
@@ -598,6 +607,16 @@ const getOfficialsSummary = (g: Gameday): string => {
   if (g.delegue) parts.push(`Del: ${g.delegue}`)
   return parts.length > 0 ? parts.join(', ') : '-'
 }
+
+// ─── Click outside to close filter dropdown ───
+const competitionFilterRef = ref<HTMLElement | null>(null)
+const onClickOutsideFilter = (e: MouseEvent) => {
+  if (filterOpen.value && competitionFilterRef.value && !competitionFilterRef.value.contains(e.target as Node)) {
+    filterOpen.value = false
+  }
+}
+onMounted(() => document.addEventListener('click', onClickOutsideFilter))
+onUnmounted(() => document.removeEventListener('click', onClickOutsideFilter))
 </script>
 
 <template>
@@ -628,26 +647,25 @@ const getOfficialsSummary = (g: Gameday): string => {
         </select>
       </div>
 
-      <!-- Competition Filter (collapsible) -->
-      <div class="bg-white rounded-lg shadow">
+      <!-- Competition Filter (inline collapsible) -->
+      <div ref="competitionFilterRef" class="relative">
+        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('rc.filter_competitions') }}</label>
         <button
-          class="w-full flex items-center justify-between px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors"
+          class="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors bg-white"
           @click="filterOpen = !filterOpen"
         >
-          <div class="flex items-center gap-2">
-            <UIcon name="heroicons:funnel" class="w-4 h-4 text-gray-500" />
-            <span class="text-sm font-medium text-gray-700">{{ t('rc.filter_competitions') }}</span>
-            <span v-if="selectedCompetitions.length > 0" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-              {{ selectedCompetitions.length }}
-            </span>
-          </div>
+          <UIcon name="heroicons:funnel" class="w-4 h-4 text-gray-500" />
+          <span class="text-gray-700">{{ t('rc.filter_competitions') }}</span>
+          <span v-if="selectedCompetitions.length > 0" class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+            {{ selectedCompetitions.length }}
+          </span>
           <UIcon
             name="heroicons:chevron-down"
             class="w-4 h-4 text-gray-400 transition-transform"
             :class="{ 'rotate-180': filterOpen }"
           />
         </button>
-        <div v-show="filterOpen" class="px-4 pb-4 border-t border-gray-100">
+        <div v-show="filterOpen" class="absolute z-20 mt-1 w-80 bg-white border border-gray-200 rounded-lg shadow-lg p-3">
           <AdminCompetitionMultiSelect
             v-model="selectedCompetitions"
             :competitions="workContext.competitions || []"
@@ -698,7 +716,7 @@ const getOfficialsSummary = (g: Gameday): string => {
           class="px-3 py-2 text-sm font-medium text-green-700 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100"
           @click="bulkPublishConfirmOpen = true"
         >
-          <UIcon name="heroicons:eye" class="w-4 h-4 inline mr-1" />
+          <UIcon name="heroicons:eye" class="w-6 h-6 inline mr-1" />
           {{ t('gamedays.field.publication') }}
         </button>
         <!-- Bulk calendar edit -->
@@ -707,7 +725,7 @@ const getOfficialsSummary = (g: Gameday): string => {
           class="px-3 py-2 text-sm font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100"
           @click="openBulkCalendarModal"
         >
-          <UIcon name="heroicons:calendar-days" class="w-4 h-4 inline mr-1" />
+          <UIcon name="heroicons:calendar-days" class="w-6 h-6 inline mr-1" />
           {{ t('gamedays.calendar_public') }}
         </button>
         <!-- Event association -->
@@ -716,7 +734,7 @@ const getOfficialsSummary = (g: Gameday): string => {
           class="px-3 py-2 text-sm font-medium text-purple-700 bg-purple-50 border border-purple-200 rounded-lg hover:bg-purple-100"
           @click="openEventAssociation"
         >
-          <UIcon name="heroicons:link" class="w-4 h-4 inline mr-1" />
+          <UIcon name="heroicons:link" class="w-6 h-6 inline mr-1" />
           {{ t('gamedays.manage_event_association') }}
         </button>
       </template>
@@ -740,7 +758,7 @@ const getOfficialsSummary = (g: Gameday): string => {
               </th>
               <!-- Publication -->
               <th class="w-10 px-2 py-3 text-center text-xs font-medium text-gray-500 uppercase">
-                <UIcon name="heroicons:eye" class="w-4 h-4" />
+                <UIcon name="heroicons:eye" class="w-6 h-6" />
               </th>
               <!-- Id -->
               <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ t('gamedays.field.id') }}</th>
@@ -757,6 +775,7 @@ const getOfficialsSummary = (g: Gameday): string => {
               <!-- Calendar public columns (green headers) -->
               <th class="px-2 py-3 text-left text-xs font-medium text-green-700 uppercase bg-green-50">{{ t('gamedays.field.nom') }}</th>
               <th class="px-2 py-3 text-left text-xs font-medium text-green-700 uppercase bg-green-50">{{ t('gamedays.field.date_debut') }}</th>
+              <th class="px-2 py-3 text-left text-xs font-medium text-green-700 uppercase bg-green-50">{{ t('gamedays.field.date_fin') }}</th>
               <th class="px-2 py-3 text-left text-xs font-medium text-green-700 uppercase bg-green-50">{{ t('gamedays.field.lieu') }}</th>
               <th class="px-2 py-3 text-left text-xs font-medium text-green-700 uppercase bg-green-50">{{ t('gamedays.field.departement') }}</th>
               <!-- Matches -->
@@ -770,14 +789,14 @@ const getOfficialsSummary = (g: Gameday): string => {
           <tbody class="bg-white divide-y divide-gray-200">
             <!-- Loading -->
             <tr v-if="loading && gamedays.length === 0">
-              <td :colspan="canSelect ? 16 : 15" class="px-4 py-8 text-center text-gray-500">
+              <td :colspan="canSelect ? 17 : 16" class="px-4 py-8 text-center text-gray-500">
                 <UIcon name="heroicons:arrow-path" class="w-6 h-6 animate-spin mx-auto mb-2" />
                 {{ t('common.loading') }}
               </td>
             </tr>
             <!-- Empty -->
             <tr v-else-if="gamedays.length === 0">
-              <td :colspan="canSelect ? 16 : 15" class="px-4 py-8 text-center text-gray-500">
+              <td :colspan="canSelect ? 17 : 16" class="px-4 py-8 text-center text-gray-500">
                 {{ t('gamedays.no_results') }}
               </td>
             </tr>
@@ -815,10 +834,10 @@ const getOfficialsSummary = (g: Gameday): string => {
               <td v-if="canEdit" class="px-2 py-2" @click.stop>
                 <div class="flex items-center gap-0.5">
                   <button :title="t('common.edit')" class="p-1 text-blue-600 hover:text-blue-800" @click="openEditModal(g)">
-                    <UIcon name="heroicons:pencil" class="w-4 h-4" />
+                    <UIcon name="heroicons:pencil" class="w-6 h-6" />
                   </button>
                   <button :title="t('gamedays.duplicate')" class="p-1 text-gray-500 hover:text-gray-700" @click="openDuplicateConfirm(g)">
-                    <UIcon name="heroicons:document-duplicate" class="w-4 h-4" />
+                    <UIcon name="heroicons:document-duplicate" class="w-6 h-6" />
                   </button>
                 </div>
               </td>
@@ -840,7 +859,7 @@ const getOfficialsSummary = (g: Gameday): string => {
                 <template v-else>
                   <span
                     class="text-gray-600"
-                    :class="canEdit ? 'cursor-pointer hover:bg-yellow-50 hover:outline-1 hover:outline-yellow-300 px-1 rounded' : ''"
+                    :class="canEdit ? 'editable-cell' : ''"
                     @click="startInlineEdit(g, 'Phase')"
                   >{{ g.phase || '-' }}</span>
                 </template>
@@ -860,7 +879,7 @@ const getOfficialsSummary = (g: Gameday): string => {
                 </template>
                 <template v-else>
                   <span
-                    :class="canEdit ? 'cursor-pointer hover:bg-yellow-50 px-1 rounded' : ''"
+                    :class="canEdit ? 'editable-cell' : ''"
                     @click="startInlineEdit(g, 'Niveau')"
                   >{{ g.niveau ?? '-' }}</span>
                 </template>
@@ -879,7 +898,7 @@ const getOfficialsSummary = (g: Gameday): string => {
                 </template>
                 <template v-else>
                   <span
-                    :class="canEdit ? 'cursor-pointer hover:bg-yellow-50 px-1 rounded' : ''"
+                    :class="canEdit ? 'editable-cell' : ''"
                     @click="startInlineEdit(g, 'Etape')"
                   >{{ g.etape }}</span>
                 </template>
@@ -898,7 +917,7 @@ const getOfficialsSummary = (g: Gameday): string => {
                 </template>
                 <template v-else>
                   <span
-                    :class="canEdit ? 'cursor-pointer hover:bg-yellow-50 px-1 rounded' : ''"
+                    :class="canEdit ? 'editable-cell' : ''"
                     @click="startInlineEdit(g, 'Nbequipes')"
                   >{{ g.nbEquipes }}</span>
                 </template>
@@ -913,7 +932,7 @@ const getOfficialsSummary = (g: Gameday): string => {
                 >
                   <UIcon
                     :name="g.type === 'C' ? 'heroicons:bars-3' : 'heroicons:arrows-right-left'"
-                    class="w-4 h-4"
+                    class="w-6 h-6"
                     :class="g.type === 'C' ? 'text-blue-600' : 'text-orange-600'"
                   />
                 </button>
@@ -934,14 +953,50 @@ const getOfficialsSummary = (g: Gameday): string => {
                 <template v-else>
                   <span
                     class="font-medium text-gray-900"
-                    :class="canEdit ? 'cursor-pointer hover:bg-yellow-50 px-1 rounded' : ''"
+                    :class="canEdit ? 'editable-cell' : ''"
                     @click="startInlineEdit(g, 'Nom')"
                   >{{ g.nom || '-' }}</span>
                 </template>
               </td>
-              <!-- Dates (calendar public) -->
-              <td class="px-2 py-2 text-sm text-gray-700 bg-green-50/30 whitespace-nowrap">
-                {{ formatDateRange(g.dateDebut, g.dateFin) }}
+              <!-- Date début (calendar public, inline editable) -->
+              <td class="px-2 py-2 text-sm bg-green-50/30 whitespace-nowrap">
+                <template v-if="editingCell?.id === g.id && editingCell.field === 'Date_debut'">
+                  <input
+                    :id="`inline-${g.id}-Date_debut`"
+                    v-model="editingValue"
+                    type="date"
+                    class="px-1 py-0.5 text-sm border border-blue-400 rounded focus:ring-1 focus:ring-blue-500"
+                    @keydown="handleInlineKeydown"
+                    @blur="saveInlineEdit"
+                  >
+                </template>
+                <template v-else>
+                  <span
+                    class="text-gray-700"
+                    :class="canEdit ? 'editable-cell' : ''"
+                    @click="startInlineEdit(g, 'Date_debut')"
+                  >{{ formatDate(g.dateDebut) }}</span>
+                </template>
+              </td>
+              <!-- Date fin (calendar public, inline editable) -->
+              <td class="px-2 py-2 text-sm bg-green-50/30 whitespace-nowrap">
+                <template v-if="editingCell?.id === g.id && editingCell.field === 'Date_fin'">
+                  <input
+                    :id="`inline-${g.id}-Date_fin`"
+                    v-model="editingValue"
+                    type="date"
+                    class="px-1 py-0.5 text-sm border border-blue-400 rounded focus:ring-1 focus:ring-blue-500"
+                    @keydown="handleInlineKeydown"
+                    @blur="saveInlineEdit"
+                  >
+                </template>
+                <template v-else>
+                  <span
+                    class="text-gray-700"
+                    :class="canEdit ? 'editable-cell' : ''"
+                    @click="startInlineEdit(g, 'Date_fin')"
+                  >{{ formatDate(g.dateFin) }}</span>
+                </template>
               </td>
               <!-- Lieu (calendar public, inline editable) -->
               <td class="px-2 py-2 text-sm bg-green-50/30">
@@ -958,7 +1013,7 @@ const getOfficialsSummary = (g: Gameday): string => {
                 </template>
                 <template v-else>
                   <span
-                    :class="canEdit ? 'cursor-pointer hover:bg-yellow-50 px-1 rounded' : ''"
+                    :class="canEdit ? 'editable-cell' : ''"
                     @click="startInlineEdit(g, 'Lieu')"
                   >{{ g.lieu || '-' }}</span>
                 </template>
@@ -978,7 +1033,7 @@ const getOfficialsSummary = (g: Gameday): string => {
                 </template>
                 <template v-else>
                   <span
-                    :class="canEdit ? 'cursor-pointer hover:bg-yellow-50 px-1 rounded' : ''"
+                    :class="canEdit ? 'editable-cell' : ''"
                     @click="startInlineEdit(g, 'Departement')"
                   >{{ g.departement || '-' }}</span>
                 </template>
@@ -1005,7 +1060,7 @@ const getOfficialsSummary = (g: Gameday): string => {
                   :title="t('common.delete')"
                   @click="openDeleteConfirm(g)"
                 >
-                  <UIcon name="heroicons:trash" class="w-4 h-4" />
+                  <UIcon name="heroicons:trash" class="w-6 h-6" />
                 </button>
               </td>
             </tr>
@@ -1054,11 +1109,11 @@ const getOfficialsSummary = (g: Gameday): string => {
             <span class="text-green-700 font-medium">{{ g.nom }}</span>
           </div>
           <div v-if="g.dateDebut" class="flex items-center gap-1">
-            <UIcon name="heroicons:calendar" class="w-4 h-4 text-gray-400" />
+            <UIcon name="heroicons:calendar" class="w-6 h-6 text-gray-400" />
             <span>{{ formatDateRange(g.dateDebut, g.dateFin) }}</span>
           </div>
           <div v-if="g.lieu" class="flex items-center gap-1">
-            <UIcon name="heroicons:map-pin" class="w-4 h-4 text-gray-400" />
+            <UIcon name="heroicons:map-pin" class="w-6 h-6 text-gray-400" />
             <span>{{ g.lieu }} <span v-if="g.departement">({{ g.departement }})</span></span>
           </div>
           <div class="flex items-center gap-3 text-xs text-gray-500">
@@ -1105,7 +1160,7 @@ const getOfficialsSummary = (g: Gameday): string => {
       <form @submit.prevent="submitForm" class="space-y-4">
         <!-- Error -->
         <div v-if="formError" class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">
-          <UIcon name="heroicons:exclamation-triangle" class="w-4 h-4 inline mr-1" />
+          <UIcon name="heroicons:exclamation-triangle" class="w-6 h-6 inline mr-1" />
           {{ formError }}
         </div>
 

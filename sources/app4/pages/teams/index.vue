@@ -38,6 +38,7 @@ const selectAll = ref(false)
 // Inline editing state
 const editingCell = ref<{ id: number; field: 'poule' | 'tirage' } | null>(null)
 const editingValue = ref('')
+const editingOriginalValue = ref('')
 
 // Presence sheet dropdown state
 const openDropdownId = ref<number | null>(null)
@@ -301,13 +302,19 @@ const toggleSelect = (id: number) => {
 const startEdit = (team: CompetitionTeam, field: 'poule' | 'tirage') => {
   if (!canEditInline.value) return
   editingCell.value = { id: team.id, field }
-  editingValue.value = field === 'poule' ? team.poule : String(team.tirage)
+  const val = field === 'poule' ? team.poule : String(team.tirage)
+  editingValue.value = val
+  editingOriginalValue.value = val
   nextTick(() => {
-    const input = document.getElementById(`inline-edit-${team.id}-${field}`)
-      || document.getElementById(`mobile-edit-${team.id}-${field}`)
-    input?.focus()
-    if (input instanceof HTMLInputElement) {
-      input.select()
+    const desktopEl = document.getElementById(`inline-edit-${team.id}-${field}`)
+    const mobileEl = document.getElementById(`mobile-edit-${team.id}-${field}`)
+    // Focus the visible one (desktop is inside hidden lg:block, mobile is inside lg:hidden)
+    const el = mobileEl && mobileEl.offsetParent !== null ? mobileEl : desktopEl
+    if (el) {
+      el.focus()
+      if (el instanceof HTMLInputElement) {
+        el.select()
+      }
     }
   })
 }
@@ -322,6 +329,13 @@ const saveInlineEdit = async () => {
   const poule = field === 'poule' ? editingValue.value.toUpperCase().trim() : team.poule
   const tirage = field === 'tirage' ? parseInt(editingValue.value) || 0 : team.tirage
 
+  // Close editing
+  editingCell.value = null
+
+  // Only PATCH if value actually changed
+  const newVal = field === 'poule' ? poule : String(tirage)
+  if (newVal === editingOriginalValue.value) return
+
   try {
     await api.patch(`/admin/competition-teams/${id}/pool-draw`, { poule, tirage })
     team.poule = poule
@@ -330,8 +344,6 @@ const saveInlineEdit = async () => {
   } catch (error: unknown) {
     toast.add({ title: t('common.error'), description: (error as { message?: string })?.message || t('teams_page.error_save'), color: 'error', duration: 3000 })
   }
-
-  editingCell.value = null
 }
 
 const cancelInlineEdit = () => {
@@ -809,7 +821,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
           <UIcon
             v-else-if="competitionInfo.verrou"
             name="heroicons:lock-closed-solid"
-            class="w-5 h-5 text-red-600"
+            class="w-6 h-6 text-red-600"
           />
         </div>
       </div>
@@ -819,7 +831,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
         v-if="competitionInfo?.verrou"
         class="mt-3 flex items-center gap-2 p-2 bg-amber-50 border border-amber-200 rounded text-sm text-amber-800"
       >
-        <UIcon name="heroicons:exclamation-triangle" class="w-4 h-4 shrink-0" />
+        <UIcon name="heroicons:exclamation-triangle" class="w-6 h-6 shrink-0" />
         {{ t('teams_page.competition_locked_notice') }}
       </div>
     </div>
@@ -840,7 +852,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
             class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm flex items-center gap-1"
             @click="openAddModal"
           >
-            <UIcon name="heroicons:plus" class="w-4 h-4" />
+            <UIcon name="heroicons:plus" class="w-6 h-6" />
             {{ t('teams_page.add') }}
           </button>
 
@@ -850,7 +862,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
             class="px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm flex items-center gap-1"
             @click="openDuplicateModal"
           >
-            <UIcon name="heroicons:document-duplicate" class="w-4 h-4" />
+            <UIcon name="heroicons:document-duplicate" class="w-6 h-6" />
             {{ t('teams_page.duplicate') }}
           </button>
 
@@ -878,7 +890,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
             class="global-pdf-trigger px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm flex items-center gap-1"
             @click="toggleGlobalPdf($event)"
           >
-            <UIcon name="heroicons:document-text" class="w-4 h-4" />
+            <UIcon name="heroicons:document-text" class="w-6 h-6" />
             {{ t('teams_page.global_pdf') }}
           </button>
 
@@ -899,7 +911,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
               class="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm flex items-center gap-1"
               @click="openBulkDeleteModal"
             >
-              <UIcon name="heroicons:trash-solid" class="w-4 h-4" />
+              <UIcon name="heroicons:trash-solid" class="w-6 h-6" />
               {{ t('teams_page.delete_selected') }} ({{ selectedIds.length }})
             </button>
           </template>
@@ -1082,7 +1094,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                         class="p-1 text-purple-600 hover:bg-purple-50 rounded"
                         :title="t('teams_page.players')"
                       >
-                        <UIcon name="heroicons:user-group" class="w-5 h-5" />
+                        <UIcon name="heroicons:user-group" class="w-6 h-6" />
                       </NuxtLink>
 
                       <!-- Presence sheet dropdown -->
@@ -1091,7 +1103,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                         :title="t('teams_page.presence_sheet')"
                         @click="togglePresenceDropdown(team.id, $event)"
                       >
-                        <UIcon name="heroicons:document-text" class="w-5 h-5" />
+                        <UIcon name="heroicons:document-text" class="w-6 h-6" />
                       </button>
 
                       <!-- Delete -->
@@ -1101,7 +1113,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                         :title="t('common.delete')"
                         @click="openDeleteModal(team)"
                       >
-                        <UIcon name="heroicons:trash-solid" class="w-5 h-5" />
+                        <UIcon name="heroicons:trash-solid" class="w-6 h-6" />
                       </button>
                     </div>
                   </td>
@@ -1212,21 +1224,21 @@ const getLogoUrl = (team: CompetitionTeam) => {
                     :to="`/presence/team/${team.id}`"
                     class="p-1 text-purple-600"
                   >
-                    <UIcon name="heroicons:user-group" class="w-5 h-5" />
+                    <UIcon name="heroicons:user-group" class="w-6 h-6" />
                   </NuxtLink>
                   <button
                     class="presence-dropdown-trigger p-1 text-gray-600"
                     :title="t('teams_page.presence_sheet')"
                     @click="togglePresenceDropdown(team.id, $event)"
                   >
-                    <UIcon name="heroicons:document-text" class="w-5 h-5" />
+                    <UIcon name="heroicons:document-text" class="w-6 h-6" />
                   </button>
                   <button
                     v-if="canAddDelete && team.nbMatchs === 0"
                     class="p-1 text-red-600"
                     @click="openDeleteModal(team)"
                   >
-                    <UIcon name="heroicons:trash-solid" class="w-5 h-5" />
+                    <UIcon name="heroicons:trash-solid" class="w-6 h-6" />
                   </button>
                 </div>
               </div>
@@ -1253,7 +1265,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
           class="block px-3 py-2 text-sm font-medium text-blue-700 hover:bg-blue-50 rounded-t-lg"
           @click="closePresenceDropdown"
         >
-          <UIcon name="i-heroicons-clipboard-document-list" class="w-4 h-4 inline mr-1" />
+          <UIcon name="i-heroicons-clipboard-document-list" class="w-6 h-6 inline mr-1" />
           {{ t('teams_page.manage_composition') }}
         </NuxtLink>
         <div class="border-t border-gray-100"></div>
@@ -1330,7 +1342,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
             v-if="addFormError"
             class="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800"
           >
-            <UIcon name="heroicons:exclamation-triangle" class="w-5 h-5 shrink-0 mt-0.5" />
+            <UIcon name="heroicons:exclamation-triangle" class="w-6 h-6 shrink-0 mt-0.5" />
             <span class="text-sm">{{ addFormError }}</span>
           </div>
 
@@ -1587,7 +1599,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
             :disabled="addFormSaving"
           >
             <span v-if="addFormSaving" class="flex items-center gap-2">
-              <UIcon name="heroicons:arrow-path" class="w-4 h-4 animate-spin" />
+              <UIcon name="heroicons:arrow-path" class="w-6 h-6 animate-spin" />
               {{ t('common.save') }}
             </span>
             <span v-else>{{ t('common.save') }}</span>
@@ -1703,7 +1715,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
             :disabled="colorsFormSaving"
           >
             <span v-if="colorsFormSaving" class="flex items-center gap-2">
-              <UIcon name="heroicons:arrow-path" class="w-4 h-4 animate-spin" />
+              <UIcon name="heroicons:arrow-path" class="w-6 h-6 animate-spin" />
               {{ t('common.save') }}
             </span>
             <span v-else>{{ t('common.save') }}</span>
@@ -1754,7 +1766,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
             v-if="duplicateFormData.mode === 'replace'"
             class="flex items-start gap-3 p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-800"
           >
-            <UIcon name="heroicons:exclamation-triangle" class="w-5 h-5 shrink-0 mt-0.5" />
+            <UIcon name="heroicons:exclamation-triangle" class="w-6 h-6 shrink-0 mt-0.5" />
             <span class="text-sm">{{ t('teams_page.duplicate_modal.warning_replace') }}</span>
           </div>
 
@@ -1780,7 +1792,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
             :disabled="duplicateFormSaving || !duplicateFormData.sourceCompetition"
           >
             <span v-if="duplicateFormSaving" class="flex items-center gap-2">
-              <UIcon name="heroicons:arrow-path" class="w-4 h-4 animate-spin" />
+              <UIcon name="heroicons:arrow-path" class="w-6 h-6 animate-spin" />
               {{ t('teams_page.duplicate') }}
             </span>
             <span v-else>{{ t('teams_page.duplicate') }}</span>
