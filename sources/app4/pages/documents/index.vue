@@ -189,7 +189,7 @@ onMounted(async () => {
       <!-- ÉQUIPES -->
       <div class="bg-white rounded-lg shadow overflow-hidden">
         <div class="bg-blue-600 px-4 py-3 flex items-center gap-2">
-          <UIcon name="heroicons:user-group" class="w-5 h-5 text-white" />
+          <UIcon name="heroicons:user-group" class="w-7 h-7 text-white" />
           <h2 class="text-white font-semibold">{{ t('documents.categories.teams') }}</h2>
         </div>
         <div class="p-4 space-y-2">
@@ -199,7 +199,7 @@ onMounted(async () => {
             class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
             :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
           >
-            <UIcon name="heroicons:document-text" class="w-4 h-4 text-gray-400" />
+            <UIcon name="heroicons:document-text" class="w-6 h-6 text-gray-400" />
             {{ t('documents.teams.registered') }}
           </a>
           <a
@@ -208,7 +208,7 @@ onMounted(async () => {
             class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
             :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
           >
-            <UIcon name="heroicons:document-text" class="w-4 h-4 text-gray-400" />
+            <UIcon name="heroicons:document-text" class="w-6 h-6 text-gray-400" />
             {{ t('documents.teams.presence_fr') }}
           </a>
           <a
@@ -217,7 +217,7 @@ onMounted(async () => {
             class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
             :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
           >
-            <UIcon name="heroicons:document-text" class="w-4 h-4 text-gray-400" />
+            <UIcon name="heroicons:document-text" class="w-6 h-6 text-gray-400" />
             {{ t('documents.teams.presence_en') }}
           </a>
           <a
@@ -226,7 +226,7 @@ onMounted(async () => {
             class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
             :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
           >
-            <UIcon name="heroicons:document-text" class="w-4 h-4 text-gray-400" />
+            <UIcon name="heroicons:document-text" class="w-6 h-6 text-gray-400" />
             {{ t('documents.teams.presence_visa') }}
           </a>
           <a
@@ -235,7 +235,7 @@ onMounted(async () => {
             class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
             :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
           >
-            <UIcon name="heroicons:document-text" class="w-4 h-4 text-gray-400" />
+            <UIcon name="heroicons:document-text" class="w-6 h-6 text-gray-400" />
             {{ t('documents.teams.presence_photo') }}
           </a>
         </div>
@@ -244,7 +244,7 @@ onMounted(async () => {
       <!-- MATCHS -->
       <div class="bg-white rounded-lg shadow overflow-hidden">
         <div class="bg-green-600 px-4 py-3 flex items-center gap-2">
-          <UIcon name="heroicons:trophy" class="w-5 h-5 text-white" />
+          <UIcon name="heroicons:trophy" class="w-7 h-7 text-white" />
           <h2 class="text-white font-semibold">{{ t('documents.categories.matches') }}</h2>
         </div>
         <div class="p-4 space-y-2">
@@ -254,7 +254,7 @@ onMounted(async () => {
             class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
             :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
           >
-            <UIcon name="heroicons:document-text" class="w-4 h-4 text-gray-400" />
+            <UIcon name="heroicons:document-text" class="w-6 h-6 text-gray-400" />
             {{ t('documents.matches.list_fr') }}
           </a>
           <a
@@ -263,7 +263,7 @@ onMounted(async () => {
             class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
             :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
           >
-            <UIcon name="heroicons:document-text" class="w-4 h-4 text-gray-400" />
+            <UIcon name="heroicons:document-text" class="w-6 h-6 text-gray-400" />
             {{ t('documents.matches.list_en') }}
           </a>
           <a
@@ -272,7 +272,7 @@ onMounted(async () => {
             class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
             :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
           >
-            <UIcon name="heroicons:table-cells" class="w-4 h-4 text-gray-400" />
+            <UIcon name="heroicons:table-cells" class="w-6 h-6 text-gray-400" />
             {{ t('documents.matches.export_spreadsheet') }}
           </a>
           <a
@@ -281,7 +281,7 @@ onMounted(async () => {
             target="_blank"
             class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
           >
-            <UIcon name="heroicons:document-duplicate" class="w-4 h-4 text-gray-400" />
+            <UIcon name="heroicons:document-duplicate" class="w-6 h-6 text-gray-400" />
             {{ t('documents.matches.match_sheets') }}
             <span class="text-xs text-gray-400 ml-auto">{{ matchIds.length }} {{ t('documents.matches.matches_count') }}</span>
           </a>
@@ -289,14 +289,14 @@ onMounted(async () => {
             v-else-if="loadingMatchIds"
             class="flex items-center gap-2 px-3 py-2 text-gray-400"
           >
-            <UIcon name="heroicons:arrow-path" class="w-4 h-4 animate-spin" />
+            <UIcon name="heroicons:arrow-path" class="w-6 h-6 animate-spin" />
             {{ t('common.loading') }}
           </div>
           <div
             v-else
             class="flex items-center gap-2 px-3 py-2 text-gray-400"
           >
-            <UIcon name="heroicons:document-duplicate" class="w-4 h-4" />
+            <UIcon name="heroicons:document-duplicate" class="w-6 h-6" />
             {{ t('documents.matches.match_sheets') }}
             <span class="text-xs ml-auto">{{ t('documents.matches.no_matches') }}</span>
           </div>
@@ -306,7 +306,7 @@ onMounted(async () => {
       <!-- CLASSEMENTS -->
       <div class="bg-white rounded-lg shadow overflow-hidden">
         <div class="bg-amber-600 px-4 py-3 flex items-center gap-2">
-          <UIcon name="heroicons:chart-bar" class="w-5 h-5 text-white" />
+          <UIcon name="heroicons:chart-bar" class="w-7 h-7 text-white" />
           <h2 class="text-white font-semibold">{{ t('documents.categories.rankings') }}</h2>
         </div>
         <div class="p-4 space-y-2">
@@ -318,7 +318,7 @@ onMounted(async () => {
               class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
               :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
             >
-              <UIcon name="heroicons:document-text" class="w-4 h-4 text-gray-400" />
+              <UIcon name="heroicons:document-text" class="w-6 h-6 text-gray-400" />
               {{ t('documents.rankings.general') }}
             </a>
             <a
@@ -327,7 +327,7 @@ onMounted(async () => {
               class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
               :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
             >
-              <UIcon name="heroicons:document-text" class="w-4 h-4 text-gray-400" />
+              <UIcon name="heroicons:document-text" class="w-6 h-6 text-gray-400" />
               {{ t('documents.rankings.detail_team') }}
             </a>
             <a
@@ -336,7 +336,7 @@ onMounted(async () => {
               class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
               :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
             >
-              <UIcon name="heroicons:document-text" class="w-4 h-4 text-gray-400" />
+              <UIcon name="heroicons:document-text" class="w-6 h-6 text-gray-400" />
               {{ t('documents.rankings.detail_gameday') }}
             </a>
           </template>
@@ -349,7 +349,7 @@ onMounted(async () => {
               class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
               :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
             >
-              <UIcon name="heroicons:document-text" class="w-4 h-4 text-gray-400" />
+              <UIcon name="heroicons:document-text" class="w-6 h-6 text-gray-400" />
               {{ t('documents.rankings.general') }}
             </a>
             <a
@@ -358,7 +358,7 @@ onMounted(async () => {
               class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
               :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
             >
-              <UIcon name="heroicons:document-text" class="w-4 h-4 text-gray-400" />
+              <UIcon name="heroicons:document-text" class="w-6 h-6 text-gray-400" />
               {{ t('documents.rankings.detail_phase') }}
             </a>
             <a
@@ -367,7 +367,7 @@ onMounted(async () => {
               class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
               :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
             >
-              <UIcon name="heroicons:document-text" class="w-4 h-4 text-gray-400" />
+              <UIcon name="heroicons:document-text" class="w-6 h-6 text-gray-400" />
               {{ t('documents.rankings.detail_team') }}
             </a>
           </template>
@@ -380,7 +380,7 @@ onMounted(async () => {
               class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
               :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
             >
-              <UIcon name="heroicons:document-text" class="w-4 h-4 text-gray-400" />
+              <UIcon name="heroicons:document-text" class="w-6 h-6 text-gray-400" />
               {{ t('documents.rankings.multi') }}
             </a>
           </template>
@@ -397,7 +397,7 @@ onMounted(async () => {
       <!-- STATISTIQUES -->
       <div class="bg-white rounded-lg shadow overflow-hidden">
         <div class="bg-purple-600 px-4 py-3 flex items-center gap-2">
-          <UIcon name="heroicons:chart-bar-square" class="w-5 h-5 text-white" />
+          <UIcon name="heroicons:chart-bar-square" class="w-7 h-7 text-white" />
           <h2 class="text-white font-semibold">{{ t('documents.categories.statistics') }}</h2>
         </div>
         <div class="p-4 space-y-2">
@@ -418,7 +418,7 @@ onMounted(async () => {
             class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
             :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
           >
-            <UIcon name="heroicons:arrow-top-right-on-square" class="w-4 h-4 text-purple-400" />
+            <UIcon name="heroicons:arrow-top-right-on-square" class="w-6 h-6 text-purple-400" />
             {{ stat.label }}
           </NuxtLink>
         </div>
@@ -427,7 +427,7 @@ onMounted(async () => {
       <!-- ÉVÉNEMENT (profile <= 2 only) -->
       <div v-if="profile <= 2" class="bg-white rounded-lg shadow overflow-hidden">
         <div class="bg-teal-600 px-4 py-3 flex items-center gap-2">
-          <UIcon name="heroicons:calendar" class="w-5 h-5 text-white" />
+          <UIcon name="heroicons:calendar" class="w-7 h-7 text-white" />
           <h2 class="text-white font-semibold">{{ t('documents.categories.event') }}</h2>
         </div>
         <div class="p-4 space-y-3">
@@ -453,7 +453,7 @@ onMounted(async () => {
               class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
               :class="{ 'opacity-40 pointer-events-none': !hasEvent }"
             >
-              <UIcon name="heroicons:document-text" class="w-4 h-4 text-gray-400" />
+              <UIcon name="heroicons:document-text" class="w-6 h-6 text-gray-400" />
               {{ t('documents.event.matches_fr') }}
             </a>
             <a
@@ -462,7 +462,7 @@ onMounted(async () => {
               class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
               :class="{ 'opacity-40 pointer-events-none': !hasEvent }"
             >
-              <UIcon name="heroicons:document-text" class="w-4 h-4 text-gray-400" />
+              <UIcon name="heroicons:document-text" class="w-6 h-6 text-gray-400" />
               {{ t('documents.event.matches_en') }}
             </a>
             <a
@@ -471,7 +471,7 @@ onMounted(async () => {
               class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
               :class="{ 'opacity-40 pointer-events-none': !hasEvent }"
             >
-              <UIcon name="heroicons:qr-code" class="w-4 h-4 text-gray-400" />
+              <UIcon name="heroicons:qr-code" class="w-6 h-6 text-gray-400" />
               {{ t('documents.event.qr_codes') }}
             </a>
             <a
@@ -480,7 +480,7 @@ onMounted(async () => {
               class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
               :class="{ 'opacity-40 pointer-events-none': !hasEvent }"
             >
-              <UIcon name="heroicons:qr-code" class="w-4 h-4 text-gray-400" />
+              <UIcon name="heroicons:qr-code" class="w-6 h-6 text-gray-400" />
               {{ t('documents.event.qr_code_app') }}
             </a>
           </div>
@@ -490,7 +490,7 @@ onMounted(async () => {
       <!-- CONTRÔLE (profile <= 6 only) -->
       <div v-if="profile <= 6" class="bg-white rounded-lg shadow overflow-hidden">
         <div class="bg-red-600 px-4 py-3 flex items-center gap-2">
-          <UIcon name="heroicons:shield-check" class="w-5 h-5 text-white" />
+          <UIcon name="heroicons:shield-check" class="w-7 h-7 text-white" />
           <h2 class="text-white font-semibold">{{ t('documents.categories.control') }}</h2>
         </div>
         <div class="p-4 space-y-2">
@@ -500,7 +500,7 @@ onMounted(async () => {
             class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
             :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
           >
-            <UIcon name="heroicons:document-text" class="w-4 h-4 text-gray-400" />
+            <UIcon name="heroicons:document-text" class="w-6 h-6 text-gray-400" />
             {{ t('documents.control.presence_category') }}
           </a>
           <a
@@ -509,7 +509,7 @@ onMounted(async () => {
             class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
             :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
           >
-            <UIcon name="heroicons:document-text" class="w-4 h-4 text-gray-400" />
+            <UIcon name="heroicons:document-text" class="w-6 h-6 text-gray-400" />
             {{ t('documents.control.presence_u21') }}
           </a>
           <NuxtLink
@@ -517,7 +517,7 @@ onMounted(async () => {
             class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
             :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
           >
-            <UIcon name="heroicons:arrow-top-right-on-square" class="w-4 h-4 text-red-400" />
+            <UIcon name="heroicons:arrow-top-right-on-square" class="w-6 h-6 text-red-400" />
             {{ t('documents.control.competitions_played_club') }}
           </NuxtLink>
           <NuxtLink
@@ -525,7 +525,7 @@ onMounted(async () => {
             class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
             :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
           >
-            <UIcon name="heroicons:arrow-top-right-on-square" class="w-4 h-4 text-red-400" />
+            <UIcon name="heroicons:arrow-top-right-on-square" class="w-6 h-6 text-red-400" />
             {{ t('documents.control.competitions_played_team') }}
           </NuxtLink>
           <NuxtLink
@@ -533,7 +533,7 @@ onMounted(async () => {
             class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
             :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
           >
-            <UIcon name="heroicons:arrow-top-right-on-square" class="w-4 h-4 text-red-400" />
+            <UIcon name="heroicons:arrow-top-right-on-square" class="w-6 h-6 text-red-400" />
             {{ t('documents.control.irregularities') }}
           </NuxtLink>
           <NuxtLink
@@ -541,7 +541,7 @@ onMounted(async () => {
             class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
             :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
           >
-            <UIcon name="heroicons:arrow-top-right-on-square" class="w-4 h-4 text-red-400" />
+            <UIcon name="heroicons:arrow-top-right-on-square" class="w-6 h-6 text-red-400" />
             {{ t('documents.control.national_licensees') }}
           </NuxtLink>
           <NuxtLink
@@ -549,7 +549,7 @@ onMounted(async () => {
             class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
             :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
           >
-            <UIcon name="heroicons:arrow-top-right-on-square" class="w-4 h-4 text-red-400" />
+            <UIcon name="heroicons:arrow-top-right-on-square" class="w-6 h-6 text-red-400" />
             {{ t('documents.control.match_consistency') }}
           </NuxtLink>
           <a
@@ -558,7 +558,7 @@ onMounted(async () => {
             class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-50 text-gray-700 transition-colors"
             :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
           >
-            <UIcon name="heroicons:document-text" class="w-4 h-4 text-gray-400" />
+            <UIcon name="heroicons:document-text" class="w-6 h-6 text-gray-400" />
             {{ t('documents.control.cumulated_cards') }}
           </a>
         </div>

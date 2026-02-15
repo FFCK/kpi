@@ -498,11 +498,11 @@ const formatDate = (date: string | null) => {
                 <AdminToggleButton
                   :active="event.publication"
                   active-icon="heroicons:eye-solid"
-                  inactive-icon="heroicons:x-circle-solid"
+                  inactive-icon="heroicons:eye-slash"
                   active-color="green"
                   :active-title="t('events.published')"
                   :inactive-title="t('events.unpublished')"
-                  size="lg"
+                  size="md"
                   @toggle="togglePublication(event)"
                 />
               </td>
@@ -516,7 +516,7 @@ const formatDate = (date: string | null) => {
                   active-color="blue"
                   :active-title="t('events.app_enabled')"
                   :inactive-title="t('events.app_disabled')"
-                  size="lg"
+                  size="md"
                   @toggle="toggleApp(event)"
                 />
               </td>
@@ -529,7 +529,7 @@ const formatDate = (date: string | null) => {
                     :title="t('common.edit')"
                     @click="openEditModal(event)"
                   >
-                    <UIcon name="heroicons:pencil-solid" class="w-8 h-8" />
+                    <UIcon name="heroicons:pencil-solid" class="w-6 h-6" />
                   </button>
                   <button
                     v-if="authStore.isSuperAdmin"
@@ -537,7 +537,7 @@ const formatDate = (date: string | null) => {
                     :title="t('common.delete')"
                     @click="openDeleteModal(event)"
                   >
-                    <UIcon name="heroicons:trash-solid" class="w-8 h-8" />
+                    <UIcon name="heroicons:trash-solid" class="w-6 h-6" />
                   </button>
                 </div>
               </td>

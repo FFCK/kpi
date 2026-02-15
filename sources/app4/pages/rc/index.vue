@@ -427,7 +427,7 @@ watch(selectedCompetitions, () => {
             <td v-if="canEdit" class="px-3 py-4" @click.stop>
               <UIcon
                 name="i-heroicons-pencil"
-                class="w-5 h-5 text-blue-600 hover:text-blue-800 cursor-pointer"
+                class="w-6 h-6 text-blue-600 hover:text-blue-800 cursor-pointer"
                 @click="openEditModal(rc)"
               />
             </td>

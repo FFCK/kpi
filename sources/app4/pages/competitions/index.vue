@@ -729,7 +729,7 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
                   <th v-if="canDelete" class="px-3 py-2 w-10">
                     <input
                       type="checkbox"
-                      class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                      class="w-6 h-6 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
                       :checked="section.competitions.every(c => isSelected(c.code))"
                       @change="section.competitions.forEach(c => { if (($event.target as HTMLInputElement).checked !== isSelected(c.code)) toggleSelect(c.code) })"
                     />
@@ -784,7 +784,7 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
                     <input
                       :checked="isSelected(competition.code)"
                       type="checkbox"
-                      class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                      class="w-6 h-6 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
                       @change="toggleSelect(competition.code)"
                     />
                   </td>

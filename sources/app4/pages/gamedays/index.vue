@@ -773,11 +773,11 @@ onUnmounted(() => document.removeEventListener('click', onClickOutsideFilter))
               <!-- Type -->
               <th class="w-10 px-2 py-3 text-center text-xs font-medium text-gray-500 uppercase">{{ t('gamedays.field.type') }}</th>
               <!-- Calendar public columns (green headers) -->
-              <th class="px-2 py-3 text-left text-xs font-medium text-green-700 uppercase bg-green-50">{{ t('gamedays.field.nom') }}</th>
-              <th class="px-2 py-3 text-left text-xs font-medium text-green-700 uppercase bg-green-50">{{ t('gamedays.field.date_debut') }}</th>
-              <th class="px-2 py-3 text-left text-xs font-medium text-green-700 uppercase bg-green-50">{{ t('gamedays.field.date_fin') }}</th>
-              <th class="px-2 py-3 text-left text-xs font-medium text-green-700 uppercase bg-green-50">{{ t('gamedays.field.lieu') }}</th>
-              <th class="px-2 py-3 text-left text-xs font-medium text-green-700 uppercase bg-green-50">{{ t('gamedays.field.departement') }}</th>
+              <th class="px-2 py-3 text-left text-xs font-medium text-green-700 uppercase bg-green-100">{{ t('gamedays.field.nom') }}</th>
+              <th class="px-2 py-3 text-left text-xs font-medium text-green-700 uppercase bg-green-100">{{ t('gamedays.field.date_debut') }}</th>
+              <th class="px-2 py-3 text-left text-xs font-medium text-green-700 uppercase bg-green-100">{{ t('gamedays.field.date_fin') }}</th>
+              <th class="px-2 py-3 text-left text-xs font-medium text-green-700 uppercase bg-green-100">{{ t('gamedays.field.lieu') }}</th>
+              <th class="px-2 py-3 text-left text-xs font-medium text-green-700 uppercase bg-green-100">{{ t('gamedays.field.departement') }}</th>
               <!-- Matches -->
               <th class="px-2 py-3 text-center text-xs font-medium text-gray-500 uppercase">{{ t('gamedays.field.matches') }}</th>
               <!-- Officials -->
@@ -843,7 +843,7 @@ onUnmounted(() => document.removeEventListener('click', onClickOutsideFilter))
               </td>
               <!-- Competition / Phase -->
               <td class="px-2 py-2 text-sm">
-                <div class="font-medium text-gray-900">{{ g.codeCompetition }}</div>
+                <span class="font-medium text-gray-900 me-2">{{ g.codeCompetition }}</span>
                 <!-- Inline editable Phase -->
                 <template v-if="editingCell?.id === g.id && editingCell.field === 'Phase'">
                   <input
@@ -938,7 +938,7 @@ onUnmounted(() => document.removeEventListener('click', onClickOutsideFilter))
                 </button>
               </td>
               <!-- Nom (calendar public - green bg, inline editable) -->
-              <td class="px-2 py-2 text-sm bg-green-50/30">
+              <td class="px-2 py-2 text-sm bg-green-50">
                 <template v-if="editingCell?.id === g.id && editingCell.field === 'Nom'">
                   <input
                     :id="`inline-${g.id}-Nom`"
@@ -959,7 +959,7 @@ onUnmounted(() => document.removeEventListener('click', onClickOutsideFilter))
                 </template>
               </td>
               <!-- Date début (calendar public, inline editable) -->
-              <td class="px-2 py-2 text-sm bg-green-50/30 whitespace-nowrap">
+              <td class="px-2 py-2 text-sm bg-green-50 whitespace-nowrap">
                 <template v-if="editingCell?.id === g.id && editingCell.field === 'Date_debut'">
                   <input
                     :id="`inline-${g.id}-Date_debut`"
@@ -979,7 +979,7 @@ onUnmounted(() => document.removeEventListener('click', onClickOutsideFilter))
                 </template>
               </td>
               <!-- Date fin (calendar public, inline editable) -->
-              <td class="px-2 py-2 text-sm bg-green-50/30 whitespace-nowrap">
+              <td class="px-2 py-2 text-sm bg-green-50 whitespace-nowrap">
                 <template v-if="editingCell?.id === g.id && editingCell.field === 'Date_fin'">
                   <input
                     :id="`inline-${g.id}-Date_fin`"
@@ -999,7 +999,7 @@ onUnmounted(() => document.removeEventListener('click', onClickOutsideFilter))
                 </template>
               </td>
               <!-- Lieu (calendar public, inline editable) -->
-              <td class="px-2 py-2 text-sm bg-green-50/30">
+              <td class="px-2 py-2 text-sm bg-green-50">
                 <template v-if="editingCell?.id === g.id && editingCell.field === 'Lieu'">
                   <input
                     :id="`inline-${g.id}-Lieu`"
@@ -1019,7 +1019,7 @@ onUnmounted(() => document.removeEventListener('click', onClickOutsideFilter))
                 </template>
               </td>
               <!-- Departement (calendar public, inline editable) -->
-              <td class="px-2 py-2 text-sm bg-green-50/30">
+              <td class="px-2 py-2 text-sm bg-green-50">
                 <template v-if="editingCell?.id === g.id && editingCell.field === 'Departement'">
                   <input
                     :id="`inline-${g.id}-Departement`"
@@ -1054,7 +1054,7 @@ onUnmounted(() => document.removeEventListener('click', onClickOutsideFilter))
                 {{ getOfficialsSummary(g) }}
               </td>
               <!-- Delete -->
-              <td v-if="canEdit" class="px-2 py-2" @click.stop>
+              <td v-if="canEdit && g.matchCount === 0" class="px-2 py-2" @click.stop>
                 <button
                   class="p-1 text-red-500 hover:text-red-700"
                   :title="t('common.delete')"

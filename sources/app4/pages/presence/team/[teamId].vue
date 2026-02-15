@@ -454,13 +454,13 @@ const pdfLinks = computed(() => {
             class="flex items-center gap-1 px-2 py-1 rounded bg-red-50 text-red-700"
             :title="t('presence.competition_locked')"
           >
-            <UIcon name="i-heroicons-lock-closed-solid" class="w-4 h-4" />
+            <UIcon name="i-heroicons-lock-closed-solid" class="w-6 h-6" />
             <span class="text-xs font-medium">{{ t('common.locked') }}</span>
           </div>
           <UIcon
             v-else
             name="i-heroicons-lock-open-solid"
-            class="w-5 h-5 text-gray-400"
+            class="w-6 h-6 text-gray-400"
             :title="t('common.unlocked')"
           />
         </div>
@@ -663,7 +663,7 @@ const pdfLinks = computed(() => {
                 class="text-red-600 hover:text-red-800"
                 @click="deletePlayer(player.matric)"
               >
-                <UIcon name="i-heroicons-trash" class="w-5 h-5" />
+                <UIcon name="i-heroicons-trash" class="w-6 h-6" />
               </button>
             </td>
           </tr>
@@ -738,7 +738,7 @@ const pdfLinks = computed(() => {
               </td>
               <td v-if="canEdit" class="px-3 py-1 text-right">
                 <button class="text-red-600 hover:text-red-800" @click="deletePlayer(player.matric)">
-                  <UIcon name="i-heroicons-trash" class="w-5 h-5" />
+                  <UIcon name="i-heroicons-trash" class="w-6 h-6" />
                 </button>
               </td>
             </tr>
@@ -814,7 +814,7 @@ const pdfLinks = computed(() => {
               </td>
               <td v-if="canEdit" class="px-3 py-1 text-right">
                 <button class="text-red-600 hover:text-red-800" @click="deletePlayer(player.matric)">
-                  <UIcon name="i-heroicons-trash" class="w-5 h-5" />
+                  <UIcon name="i-heroicons-trash" class="w-6 h-6" />
                 </button>
               </td>
             </tr>
@@ -890,7 +890,7 @@ const pdfLinks = computed(() => {
               </td>
               <td v-if="canEdit" class="px-3 py-1 text-right">
                 <button class="text-red-600 hover:text-red-800" @click="deletePlayer(player.matric)">
-                  <UIcon name="i-heroicons-trash" class="w-5 h-5" />
+                  <UIcon name="i-heroicons-trash" class="w-6 h-6" />
                 </button>
               </td>
             </tr>
@@ -1007,7 +1007,7 @@ const pdfLinks = computed(() => {
 
         <div v-if="canEdit" class="mt-3 pt-3 border-t border-gray-200 flex justify-end">
           <button class="text-red-600 hover:text-red-800 text-sm" @click="deletePlayer(player.matric)">
-            <UIcon name="i-heroicons-trash" class="w-5 h-5 inline mr-1" />
+            <UIcon name="i-heroicons-trash" class="w-6 h-6 inline mr-1" />
             {{ t('common.delete') }}
           </button>
         </div>

@@ -1050,18 +1050,19 @@ const getLogoUrl = (team: CompetitionTeam) => {
                         v-if="getLogoUrl(team)"
                         :src="getLogoUrl(team)!"
                         :alt="team.libelle"
-                        class="w-8 h-8 object-contain pe-2"
+                        class="w-20 h-10 object-contain pe-2"
                         @error="($event.target as HTMLImageElement).style.display = 'none'"
                       />
                       <span
                         v-if="team.color1 || team.color2"
-                        class="inline-flex items-center justify-center w-7 h-7 rounded font-bold"
+                        class="inline-flex items-center justify-center w-8 h-8 rounded-sm aspect-square font-bold"
                         :style="{
                           backgroundColor: team.color1 || '#000',
                           borderColor: team.color2 || 'transparent',
-                          borderWidth: '4px',
+                          borderWidth: '5px',
                           borderStyle: 'solid',
                           color: team.colortext || '#FFF',
+                          boxSizing: 'border-box'
                         }"
                       >
                         1
@@ -1155,13 +1156,14 @@ const getLogoUrl = (team: CompetitionTeam) => {
                   />
                   <span
                     v-if="team.color1 || team.color2"
-                    class="inline-flex items-center justify-center w-6 h-6 rounded text-[10px] font-bold"
+                    class="inline-flex items-center justify-center w-6 h-6 rounded-sm aspect-square text-[10px] font-bold"
                     :style="{
                       backgroundColor: team.color1 || '#000',
                       borderColor: team.color2 || 'transparent',
                       borderWidth: '3px',
                       borderStyle: 'solid',
                       color: team.colortext || '#FFF',
+                      boxSizing: 'border-box'
                     }"
                   >
                     1

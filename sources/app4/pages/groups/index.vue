@@ -505,7 +505,7 @@ const isLastInSection = (group: Group, sectionGroups: Group[]) => {
                       :title="t('common.edit')"
                       @click="openEditModal(group)"
                     >
-                      <UIcon name="heroicons:pencil-solid" class="w-5 h-5" />
+                      <UIcon name="heroicons:pencil-solid" class="w-6 h-6" />
                     </button>
                     <button
                       v-if="authStore.isSuperAdmin && group.competitionCount === 0"
@@ -513,7 +513,7 @@ const isLastInSection = (group: Group, sectionGroups: Group[]) => {
                       :title="t('common.delete')"
                       @click="openDeleteModal(group)"
                     >
-                      <UIcon name="heroicons:trash-solid" class="w-5 h-5" />
+                      <UIcon name="heroicons:trash-solid" class="w-6 h-6" />
                     </button>
                   </div>
                 </td>
