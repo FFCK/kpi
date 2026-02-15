@@ -2,21 +2,39 @@
 interface Props {
   open: boolean
   title: string
-  message: string
+  message?: string
   itemName?: string
   confirmText?: string
   cancelText?: string
   loading?: boolean
   danger?: boolean
+  variant?: 'danger' | 'warning' | 'info'
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   open: false,
+  message: '',
   itemName: '',
   confirmText: 'Confirmer',
   cancelText: 'Annuler',
   loading: false,
-  danger: true
+  danger: true,
+  variant: undefined
+})
+
+const isDanger = computed(() => props.variant === 'danger' || (props.variant === undefined && props.danger))
+const isWarning = computed(() => props.variant === 'warning')
+
+const titleClass = computed(() => {
+  if (isDanger.value) return 'text-red-600'
+  if (isWarning.value) return 'text-amber-600'
+  return 'text-gray-900'
+})
+
+const buttonClass = computed(() => {
+  if (isDanger.value) return 'bg-red-600 hover:bg-red-700'
+  if (isWarning.value) return 'bg-amber-600 hover:bg-amber-700'
+  return 'bg-blue-600 hover:bg-blue-700'
 })
 
 const emit = defineEmits<{
@@ -39,7 +57,7 @@ const emit = defineEmits<{
       <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full">
         <!-- Header -->
         <div class="p-6 border-b border-gray-200">
-          <h3 :class="['text-lg font-semibold', danger ? 'text-red-600' : 'text-gray-900']">
+          <h3 :class="['text-lg font-semibold', titleClass]">
             {{ title }}
           </h3>
         </div>
@@ -68,7 +86,7 @@ const emit = defineEmits<{
             type="button"
             :class="[
               'px-4 py-2 text-white rounded-lg transition-colors disabled:opacity-50',
-              danger ? 'bg-red-600 hover:bg-red-700' : 'bg-blue-600 hover:bg-blue-700'
+              buttonClass
             ]"
             :disabled="loading"
             @click="emit('confirm')"

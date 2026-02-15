@@ -300,7 +300,6 @@ const onClickOutside = () => {
       :confirm-text="t('operations.players.merge_button')"
       :cancel-text="t('common.cancel')"
       :loading="loading"
-      variant="danger"
       @close="confirmMergeModal = false"
       @confirm="confirmMerge"
     />
@@ -313,7 +312,6 @@ const onClickOutside = () => {
       :confirm-text="t('operations.players.auto_merge_button')"
       :cancel-text="t('common.cancel')"
       :loading="loading"
-      variant="danger"
       @close="confirmAutoMergeModal = false"
       @confirm="confirmAutoMerge"
     />

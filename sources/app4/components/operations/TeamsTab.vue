@@ -512,7 +512,6 @@ const confirmMove = async () => {
       :confirm-text="t('operations.teams.merge_button')"
       :cancel-text="t('common.cancel')"
       :loading="loading"
-      variant="danger"
       @close="confirmMergeModal = false"
       @confirm="confirmMerge"
     />

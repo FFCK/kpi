@@ -146,7 +146,6 @@ const confirmChange = async () => {
       :confirm-text="t('operations.codes.change_button')"
       :cancel-text="t('common.cancel')"
       :loading="loading"
-      variant="danger"
       @close="confirmModal = false"
       @confirm="confirmChange"
     />

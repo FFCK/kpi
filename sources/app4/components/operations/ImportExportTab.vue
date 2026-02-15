@@ -292,7 +292,6 @@ const canImport = computed(() => importEventId.value !== null && importEventId.v
       :confirm-text="t('operations.import_export.import_button')"
       :cancel-text="t('common.cancel')"
       :loading="loading"
-      variant="danger"
       @close="confirmImportModal = false"
       @confirm="confirmImport"
     />
