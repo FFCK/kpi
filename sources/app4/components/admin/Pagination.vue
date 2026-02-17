@@ -1,4 +1,6 @@
 <script setup lang="ts">
+const { t } = useI18n()
+
 interface Props {
   page: number
   totalPages: number
@@ -7,12 +9,14 @@ interface Props {
   showingText?: string
   itemsPerPageText?: string
   limitOptions?: number[]
+  showAll?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   showingText: 'Affichage de {from} à {to} sur {total}',
   itemsPerPageText: 'Éléments par page',
-  limitOptions: () => [10, 20, 50, 100]
+  limitOptions: () => [10, 20, 50, 100],
+  showAll: false,
 })
 
 const emit = defineEmits<{
@@ -20,8 +24,9 @@ const emit = defineEmits<{
   (e: 'update:limit', value: number): void
 }>()
 
-const paginationFrom = computed(() => ((props.page - 1) * props.limit) + 1)
-const paginationTo = computed(() => Math.min(props.page * props.limit, props.total))
+const isShowAll = computed(() => props.limit === 0)
+const paginationFrom = computed(() => isShowAll.value ? 1 : ((props.page - 1) * props.limit) + 1)
+const paginationTo = computed(() => isShowAll.value ? props.total : Math.min(props.page * props.limit, props.total))
 
 const showingTextFormatted = computed(() => {
   return props.showingText
@@ -53,11 +58,12 @@ const localLimit = computed({
           class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
         >
           <option v-for="opt in limitOptions" :key="opt" :value="opt">{{ opt }}</option>
+          <option v-if="showAll" :value="0">{{ t('common.all') }}</option>
         </select>
       </div>
 
       <!-- Page navigation -->
-      <div class="flex items-center gap-2">
+      <div v-if="!isShowAll" class="flex items-center gap-2">
         <button
           type="button"
           class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
