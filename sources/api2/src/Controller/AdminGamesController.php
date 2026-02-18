@@ -989,6 +989,221 @@ class AdminGamesController extends AbstractController
     }
 
     /**
+     * Bulk change journée (move matches to another journée)
+     */
+    #[Route('/bulk/journee', name: 'admin_games_bulk_journee', methods: ['PATCH'])]
+    #[IsGranted('ROLE_ORGANIZER')]
+    public function bulkChangeJournee(Request $request): JsonResponse
+    {
+        /** @var User|null $user */
+        $user = $this->getUser();
+        if ($user && $user->getNiveau() > 6) {
+            return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $ids = array_filter(array_map('intval', $data['ids'] ?? []), fn($id) => $id > 0);
+        $journeeId = (int) ($data['journeeId'] ?? 0);
+
+        if (empty($ids) || $journeeId <= 0) {
+            return $this->json(['message' => 'Missing ids or journeeId'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+
+        $this->connection->prepare(
+            "UPDATE kp_match SET Id_journee = ?, Code_uti = ? WHERE Id IN ($placeholders) AND Validation != 'O'"
+        )->executeStatement(array_merge([$journeeId, $user?->getUserIdentifier()], $ids));
+
+        $this->logActionForSeason('Changement journée masse', null, count($ids) . " match(s) → journée $journeeId");
+
+        return $this->json(['updated' => count($ids)]);
+    }
+
+    /**
+     * Bulk renumber matches
+     */
+    #[Route('/bulk/renumber', name: 'admin_games_bulk_renumber', methods: ['PATCH'])]
+    #[IsGranted('ROLE_ORGANIZER')]
+    public function bulkRenumber(Request $request): JsonResponse
+    {
+        /** @var User|null $user */
+        $user = $this->getUser();
+        if ($user && $user->getNiveau() > 6) {
+            return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $ids = array_filter(array_map('intval', $data['ids'] ?? []), fn($id) => $id > 0);
+        $startNumber = (int) ($data['startNumber'] ?? 1);
+
+        if (empty($ids)) {
+            return $this->json(['message' => 'No IDs provided'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Fetch matches in current order
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $rows = $this->connection->prepare(
+            "SELECT Id FROM kp_match WHERE Id IN ($placeholders) ORDER BY Numero_ordre ASC, Id ASC"
+        )->executeQuery($ids)->fetchAllAssociative();
+
+        $num = $startNumber;
+        foreach ($rows as $row) {
+            $this->connection->prepare(
+                "UPDATE kp_match SET Numero_ordre = ?, Code_uti = ? WHERE Id = ?"
+            )->executeStatement([$num, $user?->getUserIdentifier(), (int) $row['Id']]);
+            $num++;
+        }
+
+        $this->logActionForSeason('Renumérotation masse', null, count($rows) . " match(s) à partir de $startNumber");
+
+        return $this->json(['updated' => count($rows)]);
+    }
+
+    /**
+     * Bulk change date
+     */
+    #[Route('/bulk/date', name: 'admin_games_bulk_date', methods: ['PATCH'])]
+    #[IsGranted('ROLE_ORGANIZER')]
+    public function bulkChangeDate(Request $request): JsonResponse
+    {
+        /** @var User|null $user */
+        $user = $this->getUser();
+        if ($user && $user->getNiveau() > 6) {
+            return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $ids = array_filter(array_map('intval', $data['ids'] ?? []), fn($id) => $id > 0);
+        $date = $data['date'] ?? '';
+
+        if (empty($ids) || empty($date)) {
+            return $this->json(['message' => 'Missing ids or date'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Validate date format
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $date)) {
+            return $this->json(['message' => 'Invalid date format (expected YYYY-MM-DD)'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+
+        $affected = $this->connection->prepare(
+            "UPDATE kp_match SET Date_match = ?, Code_uti = ? WHERE Id IN ($placeholders) AND Validation != 'O'"
+        )->executeStatement(array_merge([$date, $user?->getUserIdentifier()], $ids));
+
+        $this->logActionForSeason('Changement date masse', null, "$affected match(s) → $date");
+
+        return $this->json(['updated' => $affected]);
+    }
+
+    /**
+     * Bulk increment time (sequential start time + interval)
+     */
+    #[Route('/bulk/time', name: 'admin_games_bulk_time', methods: ['PATCH'])]
+    #[IsGranted('ROLE_ORGANIZER')]
+    public function bulkIncrementTime(Request $request): JsonResponse
+    {
+        /** @var User|null $user */
+        $user = $this->getUser();
+        if ($user && $user->getNiveau() > 6) {
+            return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $ids = array_filter(array_map('intval', $data['ids'] ?? []), fn($id) => $id > 0);
+        $startTime = $data['startTime'] ?? '10:00';
+        $interval = (int) ($data['interval'] ?? 40);
+
+        if (empty($ids)) {
+            return $this->json(['message' => 'No IDs provided'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Parse start time to minutes
+        $parts = explode(':', $startTime);
+        $currentMinutes = ((int) ($parts[0] ?? 10)) * 60 + ((int) ($parts[1] ?? 0));
+
+        // Fetch matches in order
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $rows = $this->connection->prepare(
+            "SELECT Id, Validation FROM kp_match WHERE Id IN ($placeholders) ORDER BY Numero_ordre ASC, Id ASC"
+        )->executeQuery($ids)->fetchAllAssociative();
+
+        $updated = 0;
+        foreach ($rows as $row) {
+            if ($row['Validation'] === 'O') {
+                // Skip locked but still increment time
+                $currentMinutes += $interval;
+                continue;
+            }
+            $hours = intdiv($currentMinutes, 60);
+            $mins = $currentMinutes % 60;
+            $timeStr = sprintf('%02d:%02d', $hours, $mins);
+
+            $this->connection->prepare(
+                "UPDATE kp_match SET Heure_match = ?, Code_uti = ? WHERE Id = ?"
+            )->executeStatement([$timeStr, $user?->getUserIdentifier(), (int) $row['Id']]);
+
+            $currentMinutes += $interval;
+            $updated++;
+        }
+
+        $this->logActionForSeason('Incrémentation heure masse', null, "$updated match(s) à partir de $startTime, intervalle $interval min");
+
+        return $this->json(['updated' => $updated]);
+    }
+
+    /**
+     * Bulk replace group code in match labels
+     */
+    #[Route('/bulk/group', name: 'admin_games_bulk_group', methods: ['PATCH'])]
+    #[IsGranted('ROLE_ORGANIZER')]
+    public function bulkChangeGroup(Request $request): JsonResponse
+    {
+        /** @var User|null $user */
+        $user = $this->getUser();
+        if ($user && $user->getNiveau() > 6) {
+            return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $ids = array_filter(array_map('intval', $data['ids'] ?? []), fn($id) => $id > 0);
+        $oldGroup = strtoupper(trim($data['oldGroup'] ?? ''));
+        $newGroup = strtoupper(trim($data['newGroup'] ?? ''));
+
+        if (empty($ids) || empty($oldGroup) || empty($newGroup)) {
+            return $this->json(['message' => 'Missing ids, oldGroup, or newGroup'], Response::HTTP_BAD_REQUEST);
+        }
+
+        if (!preg_match('/^[A-Z]{1,5}$/', $oldGroup) || !preg_match('/^[A-Z]{1,5}$/', $newGroup)) {
+            return $this->json(['message' => 'Groups must be 1-5 uppercase letters'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Fetch matches
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $rows = $this->connection->prepare(
+            "SELECT Id, Libelle FROM kp_match WHERE Id IN ($placeholders)"
+        )->executeQuery($ids)->fetchAllAssociative();
+
+        $updated = 0;
+        foreach ($rows as $row) {
+            $libelle = $row['Libelle'] ?? '';
+            // Replace group codes: digit+oldGroup → digit+newGroup (e.g. 1A→1X, 2A→2X)
+            $newLibelle = preg_replace('/(\d)' . preg_quote($oldGroup, '/') . '/', '$1' . $newGroup, $libelle);
+            if ($newLibelle !== $libelle) {
+                $this->connection->prepare(
+                    "UPDATE kp_match SET Libelle = ?, Code_uti = ? WHERE Id = ?"
+                )->executeStatement([$newLibelle, $user?->getUserIdentifier(), (int) $row['Id']]);
+                $updated++;
+            }
+        }
+
+        $this->logActionForSeason('Changement groupe masse', null, "$updated match(s) : $oldGroup → $newGroup");
+
+        return $this->json(['updated' => $updated]);
+    }
+
+    /**
      * Get teams for a journee (for team select dropdowns)
      */
     #[Route('/teams', name: 'admin_games_teams', methods: ['GET'])]

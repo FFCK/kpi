@@ -91,6 +91,21 @@ const bulkPublishConfirmOpen = ref(false)
 const bulkLockConfirmOpen = ref(false)
 const bulkLockPublishConfirmOpen = ref(false)
 const statusConfirmOpen = ref(false)
+const bulkChangeJourneeOpen = ref(false)
+const bulkRenumberOpen = ref(false)
+const bulkChangeDateOpen = ref(false)
+const bulkIncrementTimeOpen = ref(false)
+const bulkChangeGroupOpen = ref(false)
+
+// Bulk action form data
+const bulkJourneeId = ref<number | null>(null)
+const bulkJourneeOptions = ref<GameJournee[]>([])
+const bulkRenumberFrom = ref(1)
+const bulkNewDate = ref('')
+const bulkStartTime = ref('10:00')
+const bulkInterval = ref(40)
+const bulkOldGroup = ref('')
+const bulkNewGroup = ref('')
 
 // Form
 const editingGame = ref<Game | null>(null)
@@ -148,7 +163,7 @@ const filteredGames = computed(() => {
 })
 
 // ─── Load data ───
-const loadGames = async () => {
+const loadGames = async (keepSelection = false) => {
   if (!workContext.season) return
 
   loading.value = true
@@ -191,8 +206,14 @@ const loadGames = async () => {
     phaseLibelle.value = response.phaseLibelle
     availableDates.value = response.dates || []
 
-    // Clear selection on data change
-    selectedIds.value = []
+    if (keepSelection) {
+      // After bulk action: keep only IDs that still exist in the reloaded data
+      const loadedIds = new Set(response.games.map((g: Game) => g.id))
+      selectedIds.value = selectedIds.value.filter(id => loadedIds.has(id))
+    } else {
+      // Clear selection on data change (filter/pagination/sort change)
+      selectedIds.value = []
+    }
   } catch (error) {
     console.error('Error loading games:', error)
   } finally {
@@ -706,8 +727,7 @@ const confirmBulkDelete = async () => {
       : t('games.bulk_deleted', { deleted: response.deleted })
     toast.add({ title: t('common.success'), description: msg, color: 'success' })
     bulkDeleteConfirmOpen.value = false
-    selectedIds.value = []
-    await loadGames()
+    await loadGames(true)
   } catch {
     // Error already shown
   } finally {
@@ -721,8 +741,7 @@ const confirmBulkPublish = async () => {
     const response = await api.patch<{ updated: number }>('/admin/games/bulk/publication', { ids: selectedIds.value })
     toast.add({ title: t('common.success'), description: t('games.bulk_published', { count: response.updated }), color: 'success' })
     bulkPublishConfirmOpen.value = false
-    selectedIds.value = []
-    await loadGames()
+    await loadGames(true)
   } catch {
     // Error already shown
   } finally {
@@ -736,8 +755,7 @@ const confirmBulkLock = async () => {
     const response = await api.patch<{ updated: number }>('/admin/games/bulk/validation', { ids: selectedIds.value })
     toast.add({ title: t('common.success'), description: t('games.bulk_locked', { count: response.updated }), color: 'success' })
     bulkLockConfirmOpen.value = false
-    selectedIds.value = []
-    await loadGames()
+    await loadGames(true)
   } catch {
     // Error already shown
   } finally {
@@ -751,8 +769,7 @@ const confirmBulkLockPublish = async () => {
     const response = await api.patch<{ updated: number }>('/admin/games/bulk/lock-publish', { ids: selectedIds.value })
     toast.add({ title: t('common.success'), description: t('games.bulk_lock_published', { count: response.updated }), color: 'success' })
     bulkLockPublishConfirmOpen.value = false
-    selectedIds.value = []
-    await loadGames()
+    await loadGames(true)
   } catch {
     // Error already shown
   } finally {
@@ -766,6 +783,154 @@ const bulkTogglePrinted = async () => {
     const game = games.value.find(g => g.id === id)
     if (game) await togglePrinted(game)
   }
+}
+
+// ─── Bulk Change Journée ───
+const openBulkChangeJournee = async () => {
+  bulkActionsOpen.value = false
+  bulkJourneeId.value = null
+  // Load journées from same competition context
+  bulkJourneeOptions.value = journees.value
+  bulkChangeJourneeOpen.value = true
+}
+
+const confirmBulkChangeJournee = async () => {
+  if (!bulkJourneeId.value) return
+  formSaving.value = true
+  try {
+    const response = await api.patch<{ updated: number }>('/admin/games/bulk/journee', {
+      ids: selectedIds.value,
+      journeeId: bulkJourneeId.value,
+    })
+    toast.add({ title: t('common.success'), description: t('games.bulk_journee_changed', { count: response.updated }), color: 'success' })
+    bulkChangeJourneeOpen.value = false
+    await loadGames(true)
+  } catch {
+    // Error already shown
+  } finally {
+    formSaving.value = false
+  }
+}
+
+// ─── Bulk Renumber ───
+const openBulkRenumber = () => {
+  bulkActionsOpen.value = false
+  bulkRenumberFrom.value = 1
+  bulkRenumberOpen.value = true
+}
+
+const confirmBulkRenumber = async () => {
+  formSaving.value = true
+  try {
+    const response = await api.patch<{ updated: number }>('/admin/games/bulk/renumber', {
+      ids: selectedIds.value,
+      startNumber: bulkRenumberFrom.value,
+    })
+    toast.add({ title: t('common.success'), description: t('games.bulk_renumbered', { count: response.updated }), color: 'success' })
+    bulkRenumberOpen.value = false
+    await loadGames(true)
+  } catch {
+    // Error already shown
+  } finally {
+    formSaving.value = false
+  }
+}
+
+// ─── Bulk Change Date ───
+const openBulkChangeDate = () => {
+  bulkActionsOpen.value = false
+  // Default to first selected game's date
+  const firstGame = games.value.find(g => selectedIds.value.includes(g.id))
+  bulkNewDate.value = firstGame?.dateMatch?.substring(0, 10) || ''
+  bulkChangeDateOpen.value = true
+}
+
+const confirmBulkChangeDate = async () => {
+  if (!bulkNewDate.value) return
+  formSaving.value = true
+  try {
+    const response = await api.patch<{ updated: number }>('/admin/games/bulk/date', {
+      ids: selectedIds.value,
+      date: bulkNewDate.value,
+    })
+    toast.add({ title: t('common.success'), description: t('games.bulk_date_changed', { count: response.updated }), color: 'success' })
+    bulkChangeDateOpen.value = false
+    await loadGames(true)
+  } catch {
+    // Error already shown
+  } finally {
+    formSaving.value = false
+  }
+}
+
+// ─── Bulk Increment Time ───
+const openBulkIncrementTime = () => {
+  bulkActionsOpen.value = false
+  bulkStartTime.value = '10:00'
+  bulkInterval.value = 40
+  bulkIncrementTimeOpen.value = true
+}
+
+const confirmBulkIncrementTime = async () => {
+  formSaving.value = true
+  try {
+    const response = await api.patch<{ updated: number }>('/admin/games/bulk/time', {
+      ids: selectedIds.value,
+      startTime: bulkStartTime.value,
+      interval: bulkInterval.value,
+    })
+    toast.add({ title: t('common.success'), description: t('games.bulk_time_changed', { count: response.updated }), color: 'success' })
+    bulkIncrementTimeOpen.value = false
+    await loadGames(true)
+  } catch {
+    // Error already shown
+  } finally {
+    formSaving.value = false
+  }
+}
+
+// ─── Bulk Change Group ───
+const openBulkChangeGroup = () => {
+  bulkActionsOpen.value = false
+  bulkOldGroup.value = ''
+  bulkNewGroup.value = ''
+  bulkChangeGroupOpen.value = true
+}
+
+const forceUppercaseLetters = (event: Event) => {
+  const input = event.target as HTMLInputElement
+  input.value = input.value.replace(/[^A-Za-z]/g, '').toUpperCase()
+  // Update the corresponding ref based on input name
+  if (input.name === 'oldGroup') bulkOldGroup.value = input.value
+  else if (input.name === 'newGroup') bulkNewGroup.value = input.value
+}
+
+const confirmBulkChangeGroup = async () => {
+  if (!bulkOldGroup.value || !bulkNewGroup.value) return
+  formSaving.value = true
+  try {
+    const response = await api.patch<{ updated: number }>('/admin/games/bulk/group', {
+      ids: selectedIds.value,
+      oldGroup: bulkOldGroup.value,
+      newGroup: bulkNewGroup.value,
+    })
+    toast.add({ title: t('common.success'), description: t('games.bulk_group_changed', { count: response.updated }), color: 'success' })
+    bulkChangeGroupOpen.value = false
+    await loadGames(true)
+  } catch {
+    // Error already shown
+  } finally {
+    formSaving.value = false
+  }
+}
+
+// ─── Bulk Match Sheets (PDF) ───
+const openBulkMatchSheets = () => {
+  bulkActionsOpen.value = false
+  const config = useRuntimeConfig()
+  const legacyBase = config.public.legacyBaseUrl || 'https://kpi.localhost'
+  const ids = selectedIds.value.join(',')
+  window.open(`${legacyBase}/admin/FeuilleMatchMulti.php?listMatch=${ids}`, '_blank')
 }
 
 // ─── Journee label for dropdown ───
@@ -899,13 +1064,10 @@ const statusColor = (game: Game) => {
       :search-placeholder="t('games.search_placeholder')"
       :add-label="t('games.add')"
       :show-add="canEdit"
-      :show-bulk-delete="canSelect"
-      :bulk-delete-label="t('common.delete_selected')"
       :selected-count="selectedIds.length"
       @add="openAddModal"
-      @bulk-delete="bulkDeleteConfirmOpen = true"
     >
-      <template #after-search>
+      <template #left>
         <!-- Bulk actions dropdown -->
         <div v-if="canSelect && selectedIds.length > 0" ref="bulkActionsRef" class="relative">
           <button
@@ -919,41 +1081,98 @@ const statusColor = (game: Game) => {
             </span>
             <UIcon name="heroicons:chevron-down" class="w-6 h-6 transition-transform" :class="{ 'rotate-180': bulkActionsOpen }" />
           </button>
-          <div v-show="bulkActionsOpen" class="absolute z-20 mt-1 w-56 bg-white border border-gray-200 rounded-lg shadow-lg py-1 right-0">
-            <!-- Publish -->
+          <div v-show="bulkActionsOpen" class="absolute z-20 mt-1 w-72 bg-white border border-gray-200 rounded-lg shadow-lg py-1 left-0">
+            <!-- ── Toggle section ── -->
+            <div class="px-3 py-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{{ t('games.bulk.toggle_section') }}</div>
             <button
               class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
               @click="bulkPublishConfirmOpen = true; bulkActionsOpen = false"
             >
-              <UIcon name="heroicons:eye" class="w-6 h-6 text-green-600" />
+              <UIcon name="heroicons:eye" class="w-5 h-5 text-green-600" />
               {{ t('games.bulk.publish') }}
             </button>
-            <!-- Lock + Publish -->
-            <button
-              v-if="canLock"
-              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
-              @click="bulkLockPublishConfirmOpen = true; bulkActionsOpen = false"
-            >
-              <UIcon name="heroicons:lock-closed" class="w-6 h-6 text-purple-600" />
-              {{ t('games.bulk.lock_publish') }}
-            </button>
-            <!-- Lock -->
             <button
               v-if="canLock"
               class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
               @click="bulkLockConfirmOpen = true; bulkActionsOpen = false"
             >
-              <UIcon name="heroicons:lock-closed" class="w-6 h-6 text-blue-600" />
+              <UIcon name="heroicons:lock-closed" class="w-5 h-5 text-blue-600" />
               {{ t('games.bulk.lock') }}
             </button>
-            <div class="border-t border-gray-100 my-1" />
-            <!-- Toggle printed -->
+            <button
+              v-if="canLock"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              @click="bulkLockPublishConfirmOpen = true; bulkActionsOpen = false"
+            >
+              <UIcon name="heroicons:lock-closed" class="w-5 h-5 text-purple-600" />
+              {{ t('games.bulk.lock_publish') }}
+            </button>
             <button
               class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
               @click="bulkTogglePrinted(); bulkActionsOpen = false"
             >
-              <UIcon name="heroicons:inbox-arrow-down" class="w-6 h-6 text-gray-600" />
+              <UIcon name="heroicons:printer" class="w-5 h-5 text-gray-600" />
               {{ t('games.bulk.toggle_printed') }}
+            </button>
+
+            <!-- ── Edit section ── -->
+            <div class="border-t border-gray-100 my-1" />
+            <div class="px-3 py-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{{ t('games.bulk.edit_section') }}</div>
+            <button
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              @click="openBulkChangeJournee"
+            >
+              <UIcon name="heroicons:arrow-right-circle" class="w-5 h-5 text-indigo-600" />
+              {{ t('games.bulk.change_journee') }}
+            </button>
+            <button
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              @click="openBulkRenumber"
+            >
+              <UIcon name="heroicons:hashtag" class="w-5 h-5 text-orange-600" />
+              {{ t('games.bulk.renumber') }}
+            </button>
+            <button
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              @click="openBulkChangeDate"
+            >
+              <UIcon name="heroicons:calendar" class="w-5 h-5 text-blue-600" />
+              {{ t('games.bulk.change_date') }}
+            </button>
+            <button
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              @click="openBulkIncrementTime"
+            >
+              <UIcon name="heroicons:clock" class="w-5 h-5 text-teal-600" />
+              {{ t('games.bulk.increment_time') }}
+            </button>
+            <button
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              @click="openBulkChangeGroup"
+            >
+              <UIcon name="heroicons:arrow-path" class="w-5 h-5 text-amber-600" />
+              {{ t('games.bulk.change_group') }}
+            </button>
+
+            <!-- ── Documents section ── -->
+            <div class="border-t border-gray-100 my-1" />
+            <div class="px-3 py-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{{ t('games.bulk.documents_section') }}</div>
+            <button
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              @click="openBulkMatchSheets"
+            >
+              <UIcon name="heroicons:document-text" class="w-5 h-5 text-red-600" />
+              {{ t('games.bulk.match_sheets') }}
+            </button>
+
+            <!-- ── Danger section ── -->
+            <div class="border-t border-gray-100 my-1" />
+            <button
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+              @click="bulkDeleteConfirmOpen = true; bulkActionsOpen = false"
+            >
+              <UIcon name="heroicons:trash" class="w-5 h-5" />
+              {{ t('games.bulk.delete') }}
             </button>
           </div>
         </div>
@@ -1709,6 +1928,208 @@ const statusColor = (game: Game) => {
       @close="statusConfirmOpen = false"
       @confirm="confirmToggleStatut"
     />
+
+    <!-- ═══════ BULK CHANGE JOURNÉE ═══════ -->
+    <AdminModal
+      :open="bulkChangeJourneeOpen"
+      :title="t('games.bulk.change_journee_title')"
+      max-width="md"
+      @close="bulkChangeJourneeOpen = false"
+    >
+      <div class="space-y-4">
+        <label class="block text-sm font-medium text-gray-700">{{ t('games.bulk.change_journee_label') }}</label>
+        <select
+          v-model.number="bulkJourneeId"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+        >
+          <option :value="null" disabled>--</option>
+          <option v-for="j in bulkJourneeOptions" :key="j.id" :value="j.id">{{ journeeLabel(j) }}</option>
+        </select>
+      </div>
+      <template #footer>
+        <button
+          type="button"
+          class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+          @click="bulkChangeJourneeOpen = false"
+        >
+          {{ t('common.cancel') }}
+        </button>
+        <button
+          type="button"
+          class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          :disabled="formSaving || !bulkJourneeId"
+          @click="confirmBulkChangeJournee"
+        >
+          {{ formSaving ? t('common.loading') : t('common.confirm') }}
+        </button>
+      </template>
+    </AdminModal>
+
+    <!-- ═══════ BULK RENUMBER ═══════ -->
+    <AdminModal
+      :open="bulkRenumberOpen"
+      :title="t('games.bulk.renumber_title')"
+      max-width="sm"
+      @close="bulkRenumberOpen = false"
+    >
+      <div class="space-y-4">
+        <label class="block text-sm font-medium text-gray-700">{{ t('games.bulk.renumber_from') }}</label>
+        <input
+          v-model.number="bulkRenumberFrom"
+          type="number"
+          min="1"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+        >
+      </div>
+      <template #footer>
+        <button
+          type="button"
+          class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+          @click="bulkRenumberOpen = false"
+        >
+          {{ t('common.cancel') }}
+        </button>
+        <button
+          type="button"
+          class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          :disabled="formSaving"
+          @click="confirmBulkRenumber"
+        >
+          {{ formSaving ? t('common.loading') : t('common.confirm') }}
+        </button>
+      </template>
+    </AdminModal>
+
+    <!-- ═══════ BULK CHANGE DATE ═══════ -->
+    <AdminModal
+      :open="bulkChangeDateOpen"
+      :title="t('games.bulk.change_date_title')"
+      max-width="sm"
+      @close="bulkChangeDateOpen = false"
+    >
+      <div class="space-y-4">
+        <label class="block text-sm font-medium text-gray-700">{{ t('games.bulk.new_date') }}</label>
+        <input
+          v-model="bulkNewDate"
+          type="date"
+          class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+        >
+      </div>
+      <template #footer>
+        <button
+          type="button"
+          class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+          @click="bulkChangeDateOpen = false"
+        >
+          {{ t('common.cancel') }}
+        </button>
+        <button
+          type="button"
+          class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          :disabled="formSaving || !bulkNewDate"
+          @click="confirmBulkChangeDate"
+        >
+          {{ formSaving ? t('common.loading') : t('common.confirm') }}
+        </button>
+      </template>
+    </AdminModal>
+
+    <!-- ═══════ BULK INCREMENT TIME ═══════ -->
+    <AdminModal
+      :open="bulkIncrementTimeOpen"
+      :title="t('games.bulk.increment_time_title')"
+      max-width="sm"
+      @close="bulkIncrementTimeOpen = false"
+    >
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('games.bulk.start_time') }}</label>
+          <input
+            v-model="bulkStartTime"
+            type="time"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+          >
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('games.bulk.interval_minutes') }}</label>
+          <input
+            v-model.number="bulkInterval"
+            type="number"
+            min="1"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+          >
+        </div>
+      </div>
+      <template #footer>
+        <button
+          type="button"
+          class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+          @click="bulkIncrementTimeOpen = false"
+        >
+          {{ t('common.cancel') }}
+        </button>
+        <button
+          type="button"
+          class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          :disabled="formSaving"
+          @click="confirmBulkIncrementTime"
+        >
+          {{ formSaving ? t('common.loading') : t('common.confirm') }}
+        </button>
+      </template>
+    </AdminModal>
+
+    <!-- ═══════ BULK CHANGE GROUP ═══════ -->
+    <AdminModal
+      :open="bulkChangeGroupOpen"
+      :title="t('games.bulk.change_group_title')"
+      max-width="sm"
+      @close="bulkChangeGroupOpen = false"
+    >
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('games.bulk.old_group') }}</label>
+          <input
+            :value="bulkOldGroup"
+            name="oldGroup"
+            type="text"
+            maxlength="5"
+            pattern="[A-Z]{1,5}"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm uppercase"
+            @input="forceUppercaseLetters"
+          >
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('games.bulk.new_group') }}</label>
+          <input
+            :value="bulkNewGroup"
+            name="newGroup"
+            type="text"
+            maxlength="5"
+            pattern="[A-Z]{1,5}"
+            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm uppercase"
+            @input="forceUppercaseLetters"
+          >
+        </div>
+      </div>
+      <template #footer>
+        <button
+          type="button"
+          class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+          @click="bulkChangeGroupOpen = false"
+        >
+          {{ t('common.cancel') }}
+        </button>
+        <button
+          type="button"
+          class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          :disabled="formSaving || !bulkOldGroup || !bulkNewGroup"
+          @click="confirmBulkChangeGroup"
+        >
+          {{ formSaving ? t('common.loading') : t('common.confirm') }}
+        </button>
+      </template>
+    </AdminModal>
 
     <!-- Scroll to top -->
     <AdminScrollToTop :title="t('common.scroll_to_top')" />

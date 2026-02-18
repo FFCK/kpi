@@ -1227,11 +1227,32 @@
     "round_n": "Round {n}",
     "bulk": {
       "actions": "Actions",
+      "toggle_section": "Toggle",
+      "edit_section": "Edit",
+      "documents_section": "Documents",
       "delete": "Delete",
-      "publish": "Publish",
+      "publish": "Publication",
       "lock_publish": "Lock + Publish",
       "lock": "Lock",
-      "toggle_printed": "Toggle printed"
+      "toggle_printed": "Printed",
+      "change_journee": "Change Gameday",
+      "change_journee_title": "Change Gameday / Phase / Pool",
+      "change_journee_label": "New gameday",
+      "renumber": "Renumber",
+      "renumber_title": "Renumber games",
+      "renumber_from": "Renumber from",
+      "change_date": "Change date",
+      "change_date_title": "Change game date",
+      "new_date": "New date",
+      "increment_time": "Increment time",
+      "increment_time_title": "Increment game times",
+      "start_time": "Start time",
+      "interval_minutes": "Interval (min)",
+      "change_group": "Change group",
+      "change_group_title": "Change group code in labels",
+      "old_group": "Group to replace",
+      "new_group": "With",
+      "match_sheets": "Score sheets (PDF)"
     },
     "documents": {
       "game_list_fr": "Game list (FR)",
@@ -1254,6 +1275,11 @@
     "bulk_delete_confirm": "Delete {count} selected game(s)?",
     "bulk_publish_confirm": "Toggle publication for {count} selected game(s)?",
     "bulk_lock_confirm": "Lock {count} selected game(s)?",
-    "bulk_lock_publish_confirm": "Lock and publish {count} selected game(s)?"
+    "bulk_lock_publish_confirm": "Lock and publish {count} selected game(s)?",
+    "bulk_journee_changed": "Gameday changed for {count} game(s).",
+    "bulk_renumbered": "{count} game(s) renumbered.",
+    "bulk_date_changed": "Date changed for {count} game(s).",
+    "bulk_time_changed": "Time changed for {count} game(s).",
+    "bulk_group_changed": "Group changed for {count} game(s)."
   }
 }

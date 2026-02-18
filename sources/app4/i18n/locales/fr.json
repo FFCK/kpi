@@ -1239,11 +1239,32 @@
     "round_n": "Tour {n}",
     "bulk": {
       "actions": "Actions",
+      "toggle_section": "Bascule",
+      "edit_section": "Modifications",
+      "documents_section": "Documents",
       "delete": "Supprimer",
-      "publish": "Publier",
+      "publish": "Publication",
       "lock_publish": "Verrouiller + Publier",
-      "lock": "Verrouiller",
-      "toggle_printed": "Toggle imprimé"
+      "lock": "Verrouillage",
+      "toggle_printed": "Imprimé",
+      "change_journee": "Changer de Journée",
+      "change_journee_title": "Changer de Journée / Phase / Poule",
+      "change_journee_label": "Nouvelle journée",
+      "renumber": "Renuméroter",
+      "renumber_title": "Renuméroter les matchs",
+      "renumber_from": "Renuméroter à partir de",
+      "change_date": "Changer la date",
+      "change_date_title": "Changer la date des matchs",
+      "new_date": "Nouvelle date",
+      "increment_time": "Incrémenter l'heure",
+      "increment_time_title": "Incrémenter l'heure des matchs",
+      "start_time": "Heure de départ",
+      "interval_minutes": "Intervalle (min)",
+      "change_group": "Modifier un groupe",
+      "change_group_title": "Modifier un groupe dans les codes",
+      "old_group": "Groupe à remplacer",
+      "new_group": "Par",
+      "match_sheets": "Feuilles de marque (PDF)"
     },
     "documents": {
       "game_list_fr": "Liste matchs (FR)",
@@ -1266,6 +1287,11 @@
     "bulk_delete_confirm": "Supprimer les {count} match(s) sélectionné(s) ?",
     "bulk_publish_confirm": "Modifier la publication pour {count} match(s) sélectionné(s) ?",
     "bulk_lock_confirm": "Verrouiller {count} match(s) sélectionné(s) ?",
-    "bulk_lock_publish_confirm": "Verrouiller et publier {count} match(s) sélectionné(s) ?"
+    "bulk_lock_publish_confirm": "Verrouiller et publier {count} match(s) sélectionné(s) ?",
+    "bulk_journee_changed": "Journée modifiée pour {count} match(s).",
+    "bulk_renumbered": "{count} match(s) renuméroté(s).",
+    "bulk_date_changed": "Date modifiée pour {count} match(s).",
+    "bulk_time_changed": "Heure modifiée pour {count} match(s).",
+    "bulk_group_changed": "Groupe modifié pour {count} match(s)."
   }
 }
