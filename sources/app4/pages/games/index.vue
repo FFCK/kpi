@@ -440,6 +440,25 @@ const togglePrinted = async (game: Game) => {
 }
 
 // ─── Inline Editing ───
+
+// Custom directive: auto-focus, select content, and open pickers when mounted.
+// On mobile, nextTick + getElementById loses the user-gesture context so focus() is ignored.
+// A directive's mounted hook fires on DOM insertion, which is reliable on all devices.
+const vInlineFocus = {
+  mounted(el: HTMLElement) {
+    el.focus()
+    if (el instanceof HTMLInputElement && el.type !== 'date' && el.type !== 'time') {
+      el.select()
+    }
+    if (el instanceof HTMLInputElement && (el.type === 'date' || el.type === 'time')) {
+      try { el.showPicker() } catch { /* ignore */ }
+    }
+    if (el instanceof HTMLSelectElement) {
+      try { el.showPicker() } catch { /* ignore */ }
+    }
+  },
+}
+
 const inlineFieldMap: Record<string, keyof Game> = {
   Numero_ordre: 'numeroOrdre',
   Date_match: 'dateMatch',
@@ -466,16 +485,6 @@ const startInlineEdit = (game: Game, field: string) => {
   }
   editingValue.value = val
   editingOriginalValue.value = val
-  nextTick(() => {
-    const el = document.getElementById(`inline-${game.id}-${field}`)
-    if (el) {
-      el.focus()
-      if (el instanceof HTMLInputElement && el.type !== 'date') el.select()
-      if (el instanceof HTMLInputElement && el.type === 'date') {
-        try { el.showPicker() } catch { /* ignore */ }
-      }
-    }
-  })
 }
 
 const saveInlineEdit = async () => {
@@ -525,14 +534,6 @@ const startTeamEdit = async (game: Game, team: 'A' | 'B') => {
 
   // Load teams for the journee
   inlineTeams.value = await loadTeamsForJournee(game.idJournee)
-
-  nextTick(() => {
-    const el = document.getElementById(`inline-${game.id}-Team_${team}`) as HTMLSelectElement | null
-    if (el) {
-      el.focus()
-      try { el.showPicker() } catch { /* not supported in all browsers */ }
-    }
-  })
 }
 
 const saveTeamEdit = async () => {
@@ -576,13 +577,6 @@ const startPhaseEdit = (game: Game) => {
   editingCell.value = { id: game.id, field: 'Phase' }
   editingValue.value = String(game.idJournee)
   editingOriginalValue.value = editingValue.value
-  nextTick(() => {
-    const el = document.getElementById(`inline-${game.id}-Phase`) as HTMLSelectElement | null
-    if (el) {
-      el.focus()
-      try { el.showPicker() } catch { /* not supported in all browsers */ }
-    }
-  })
 }
 
 const savePhaseEdit = async () => {
@@ -1302,7 +1296,7 @@ const statusBtnClass = (game: Game) => {
                 <template v-if="editingCell?.id === g.id && editingCell.field === 'Numero_ordre'">
                   <input
                     :id="`inline-${g.id}-Numero_ordre`"
-                    v-model="editingValue"
+                    v-model="editingValue" v-inline-focus
                     type="tel"
                     maxlength="4"
                     class="w-10 px-0.5 py-0 text-xs text-center border border-blue-400 rounded"
@@ -1334,7 +1328,7 @@ const statusBtnClass = (game: Game) => {
                   <template v-if="editingCell?.id === g.id && editingCell.field === 'Date_match'">
                     <input
                       :id="`inline-${g.id}-Date_match`"
-                      v-model="editingValue"
+                      v-model="editingValue" v-inline-focus
                       type="date"
                       class="w-28 px-0.5 py-0 text-xs border border-blue-400 rounded"
                       @keydown="handleInlineKeydown"
@@ -1351,7 +1345,7 @@ const statusBtnClass = (game: Game) => {
                   <template v-if="editingCell?.id === g.id && editingCell.field === 'Heure_match'">
                     <input
                       :id="`inline-${g.id}-Heure_match`"
-                      v-model="editingValue"
+                      v-model="editingValue" v-inline-focus
                       type="time"
                       class="w-20 px-0.5 py-0 text-xs border border-blue-400 rounded"
                       @keydown="handleInlineKeydown"
@@ -1372,7 +1366,7 @@ const statusBtnClass = (game: Game) => {
                 <template v-if="editingCell?.id === g.id && editingCell.field === 'Terrain'">
                   <input
                     :id="`inline-${g.id}-Terrain`"
-                    v-model="editingValue"
+                    v-model="editingValue" v-inline-focus
                     type="tel"
                     maxlength="2"
                     class="w-8 px-0.5 py-0 text-xs text-center border border-blue-400 rounded"
@@ -1396,7 +1390,7 @@ const statusBtnClass = (game: Game) => {
                 <template v-if="editingCell?.id === g.id && editingCell.field === 'Phase'">
                   <select
                     :id="`inline-${g.id}-Phase`"
-                    v-model="editingValue"
+                    v-model="editingValue" v-inline-focus
                     class="w-full px-0.5 py-0 text-xs border border-blue-400 rounded"
                     @change="savePhaseEdit"
                     @keydown="handleTeamKeydown"
@@ -1435,7 +1429,7 @@ const statusBtnClass = (game: Game) => {
                 <template v-if="editingCell?.id === g.id && editingCell.field === 'Libelle'">
                   <input
                     :id="`inline-${g.id}-Libelle`"
-                    v-model="editingValue"
+                    v-model="editingValue" v-inline-focus
                     type="text"
                     maxlength="30"
                     class="w-full px-0.5 py-0 text-xs border border-blue-400 rounded"
@@ -1459,7 +1453,7 @@ const statusBtnClass = (game: Game) => {
                 <template v-if="editingCell?.id === g.id && editingCell.field === 'Team_A'">
                   <select
                     :id="`inline-${g.id}-Team_A`"
-                    v-model="editingValue"
+                    v-model="editingValue" v-inline-focus
                     class="w-full px-0.5 py-0 text-xs border border-blue-400 rounded text-right"
                     @change="saveTeamEdit"
                     @keydown="handleTeamKeydown"
@@ -1485,7 +1479,7 @@ const statusBtnClass = (game: Game) => {
                 <template v-if="editingCell?.id === g.id && editingCell.field === 'ScoreA'">
                   <input
                     :id="`inline-${g.id}-ScoreA`"
-                    v-model="editingValue"
+                    v-model="editingValue" v-inline-focus
                     type="tel"
                     maxlength="4"
                     class="w-10 px-0.5 py-0 text-xs text-center border border-blue-400 rounded"
@@ -1542,7 +1536,7 @@ const statusBtnClass = (game: Game) => {
                 <template v-if="editingCell?.id === g.id && editingCell.field === 'ScoreB'">
                   <input
                     :id="`inline-${g.id}-ScoreB`"
-                    v-model="editingValue"
+                    v-model="editingValue" v-inline-focus
                     type="tel"
                     maxlength="4"
                     class="w-10 px-0.5 py-0 text-xs text-center border border-blue-400 rounded"
@@ -1563,7 +1557,7 @@ const statusBtnClass = (game: Game) => {
                 <template v-if="editingCell?.id === g.id && editingCell.field === 'Team_B'">
                   <select
                     :id="`inline-${g.id}-Team_B`"
-                    v-model="editingValue"
+                    v-model="editingValue" v-inline-focus
                     class="w-full px-0.5 py-0 text-xs border border-blue-400 rounded"
                     @change="saveTeamEdit"
                     @keydown="handleTeamKeydown"
@@ -1655,7 +1649,7 @@ const statusBtnClass = (game: Game) => {
               <template v-if="editingCell?.id === g.id && editingCell.field === 'Numero_ordre'">
                 <input
                   :id="`inline-${g.id}-Numero_ordre`"
-                  v-model="editingValue"
+                  v-model="editingValue" v-inline-focus
                   type="tel"
                   maxlength="4"
                   class="w-12 px-1 py-0 text-sm text-center border border-blue-400 rounded"
@@ -1675,7 +1669,7 @@ const statusBtnClass = (game: Game) => {
                 <template v-if="editingCell?.id === g.id && editingCell.field === 'Phase'">
                   <select
                     :id="`inline-${g.id}-Phase`"
-                    v-model="editingValue"
+                    v-model="editingValue" v-inline-focus
                     class="px-1 py-0 text-sm border border-blue-400 rounded"
                     @change="savePhaseEdit"
                     @keydown="handleTeamKeydown"
@@ -1697,7 +1691,7 @@ const statusBtnClass = (game: Game) => {
               <template v-if="editingCell?.id === g.id && editingCell.field === 'Libelle'">
                 <input
                   :id="`inline-${g.id}-Libelle`"
-                  v-model="editingValue"
+                  v-model="editingValue" v-inline-focus
                   type="text"
                   maxlength="30"
                   class="w-full px-1 py-0 text-sm border border-blue-400 rounded"
@@ -1748,7 +1742,7 @@ const statusBtnClass = (game: Game) => {
             <template v-if="editingCell?.id === g.id && editingCell.field === 'Date_match'">
               <input
                 :id="`inline-${g.id}-Date_match`"
-                v-model="editingValue"
+                v-model="editingValue" v-inline-focus
                 type="date"
                 class="px-1 py-0.5 text-sm border border-blue-400 rounded"
                 @keydown="handleInlineKeydown"
@@ -1764,7 +1758,7 @@ const statusBtnClass = (game: Game) => {
             <template v-if="editingCell?.id === g.id && editingCell.field === 'Heure_match'">
               <input
                 :id="`inline-${g.id}-Heure_match`"
-                v-model="editingValue"
+                v-model="editingValue" v-inline-focus
                 type="time"
                 class="px-1 py-0.5 text-sm border border-blue-400 rounded"
                 @keydown="handleInlineKeydown"
@@ -1784,7 +1778,7 @@ const statusBtnClass = (game: Game) => {
             <template v-if="editingCell?.id === g.id && editingCell.field === 'Terrain'">
               <input
                 :id="`inline-${g.id}-Terrain`"
-                v-model="editingValue"
+                v-model="editingValue" v-inline-focus
                 type="tel"
                 maxlength="2"
                 class="w-10 px-1 py-0.5 text-sm text-center border border-blue-400 rounded"
@@ -1810,7 +1804,7 @@ const statusBtnClass = (game: Game) => {
             <template v-if="editingCell?.id === g.id && editingCell.field === 'ScoreA'">
               <input
                 :id="`inline-${g.id}-ScoreA`"
-                v-model="editingValue"
+                v-model="editingValue" v-inline-focus
                 type="tel"
                 maxlength="4"
                 class="w-10 px-0.5 py-0 text-center font-bold text-lg border border-blue-400 rounded"
@@ -1829,7 +1823,7 @@ const statusBtnClass = (game: Game) => {
             <template v-if="editingCell?.id === g.id && editingCell.field === 'ScoreB'">
               <input
                 :id="`inline-${g.id}-ScoreB`"
-                v-model="editingValue"
+                v-model="editingValue" v-inline-focus
                 type="tel"
                 maxlength="4"
                 class="w-10 px-0.5 py-0 text-center font-bold text-lg border border-blue-400 rounded"
