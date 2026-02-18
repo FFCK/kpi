@@ -78,6 +78,12 @@ input[type="checkbox"] {
   cursor: pointer;
 }
 
+/* Cells containing only a checkbox: full-cell clickable area */
+th:has(> input[type="checkbox"]:only-child),
+td:has(> input[type="checkbox"]:only-child) {
+  cursor: pointer;
+}
+
 /* Improve modal card spacing */
 .ucard {
   min-width: 320px;

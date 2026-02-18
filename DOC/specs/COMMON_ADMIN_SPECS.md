@@ -324,6 +324,23 @@ Barre d'outils commune avec recherche, bouton d'ajout et actions en masse.
 - **Gauche** : bouton suppression en masse (si sélection) + slot `#left`
 - **Droite** : slot `#before-search` + champ de recherche + slot `#after-search` + bouton ajouter + slot `#right`
 
+### 3.6 Cases à cocher dans les tableaux
+
+Les cases à cocher (`<input type="checkbox">`) dans les cellules `<th>` et `<td>` sont cliquables sur toute la surface de la cellule, pas uniquement sur la case elle-même.
+
+**Implémentation :**
+- **Plugin global** : `plugins/checkbox-cell-click.client.ts` — event delegation sur `document` en **phase de capture** (`{ capture: true }`), détecte les clics sur `th`/`td` contenant une unique checkbox et la bascule
+- **CSS** : `cursor: pointer` sur les cellules via `:has(> input[type="checkbox"]:only-child)`
+
+**Phase de capture :** le listener utilise la capture phase pour intercepter le clic **avant** que `@click.stop` (présent sur certains `<td>`) ne bloque la propagation. Sans cela, `stopPropagation` empêcherait l'événement de remonter au `document`.
+
+**Conditions d'activation :**
+- La cellule contient exactement une seule checkbox
+- Le clic ne cible pas déjà la checkbox elle-même
+- La checkbox n'est pas désactivée (`disabled`)
+
+**Aucune modification des pages individuelles n'est nécessaire** — le comportement est automatique pour toutes les pages admin.
+
 ---
 
 ## 4. Endpoints API2 Communs
