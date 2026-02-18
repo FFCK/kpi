@@ -1156,6 +1156,7 @@
     "delete_confirm_message": "Are you sure you want to delete game #{id}?",
     "delete_error_events": "Game events still exist! Cannot delete.",
     "delete_error_locked": "This game is locked. Unlock it before deleting.",
+    "delete_error_score": "This game has a score. Cannot delete.",
     "confirm_status_change": "Confirm status change?",
     "select_journee": "Select a gameday / phase!",
     "date_empty": "Date is required!",
@@ -1204,7 +1205,9 @@
       "interval": "Interval (min)",
       "label_coding": "Label / Coding",
       "game_number": "Game #",
-      "coefficient": "Coeff."
+      "coefficient": "Coeff.",
+      "status": "Status",
+      "group": "Group"
     },
     "type_classification": "Classification",
     "type_elimination": "Elimination",

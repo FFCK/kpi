@@ -1168,6 +1168,7 @@
     "delete_confirm_message": "Êtes-vous sûr de vouloir supprimer le match #{id} ?",
     "delete_error_events": "Il reste des événements dans ce match ! Suppression impossible.",
     "delete_error_locked": "Ce match est verrouillé. Déverrouillez-le avant de le supprimer.",
+    "delete_error_score": "Ce match a un score. Suppression impossible.",
     "confirm_status_change": "Confirmez-vous le changement de statut ?",
     "select_journee": "Sélectionnez une journée / une phase !",
     "date_empty": "La date est obligatoire !",
@@ -1216,7 +1217,9 @@
       "interval": "Intervalle (min)",
       "label_coding": "Intitulé / Codage",
       "game_number": "Match N°",
-      "coefficient": "Coef."
+      "coefficient": "Coef.",
+      "status": "Statut",
+      "group": "Poule"
     },
     "type_classification": "Classement",
     "type_elimination": "Élimination",

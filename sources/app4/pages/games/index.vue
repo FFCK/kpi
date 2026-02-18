@@ -350,8 +350,10 @@ const formatDateShort = (date: string | null) => {
 
 // ─── Row state helpers ───
 const isLocked = (game: Game) => game.validation === 'O'
+const hasScore = (game: Game) => !!(game.scoreA || game.scoreB)
 const isGameEditable = (game: Game) => canEdit.value && !isLocked(game) && game.authorized
 const isScoreEditable = (game: Game) => canEditScores.value && !isLocked(game) && game.authorized
+const isDeletable = (game: Game) => isGameEditable(game) && !hasScore(game)
 
 // ─── Selection ───
 const toggleSelectAll = () => {
@@ -710,6 +712,8 @@ const confirmDelete = async () => {
       toast.add({ title: t('common.error'), description: t('games.delete_error_events'), color: 'error' })
     } else if (code === 'LOCKED') {
       toast.add({ title: t('common.error'), description: t('games.delete_error_locked'), color: 'error' })
+    } else if (code === 'HAS_SCORE') {
+      toast.add({ title: t('common.error'), description: t('games.delete_error_score'), color: 'error' })
     }
     deleteConfirmOpen.value = false
   } finally {
@@ -955,6 +959,14 @@ const statusColor = (game: Game) => {
     case 'ON': return 'text-green-600'
     case 'END': return 'text-red-600'
     default: return 'text-gray-400'
+  }
+}
+
+const statusBtnClass = (game: Game) => {
+  switch (game.statut) {
+    case 'ON': return 'bg-blue-100 text-blue-700 border-blue-200'
+    case 'END': return 'bg-green-100 text-green-700 border-green-200'
+    default: return 'bg-gray-100 text-gray-600 border-gray-200'
   }
 }
 </script>
@@ -1505,14 +1517,18 @@ const statusColor = (game: Game) => {
                 />
                 <UIcon v-else-if="g.validation === 'O'" name="heroicons:lock-closed-solid" class="w-6 h-6 text-blue-500" :title="t('games.locked')" />
                 <!-- Statut -->
-                <div class="text-[10px] leading-tight mt-0.5">
+                <div class="mt-0.5">
                   <button
                     v-if="isGameEditable(g)"
-                    :class="statusColor(g)"
-                    class="hover:underline"
+                    class="px-1.5 py-0 text-[10px] font-medium rounded-full border leading-tight text-nowrap"
+                    :class="statusBtnClass(g)"
                     @click="openStatusConfirm(g)"
-                  >{{ g.statut || 'ATT' }}</button>
-                  <span v-else :class="statusColor(g)">{{ g.statut || 'ATT' }}</span>
+                  >{{ statusLabel(g) }}</button>
+                  <span
+                    v-else
+                    class="px-1.5 py-0 text-[10px] font-medium rounded-full border leading-tight inline-block text-nowrap"
+                    :class="statusBtnClass(g)"
+                  >{{ statusLabel(g) }}</span>
                 </div>
                 <!-- Provisional score when ON or END -->
                 <div v-if="(g.statut === 'ON' || g.statut === 'END') && (g.scoreDetailA || g.scoreDetailB)" class="text-[9px] text-gray-500 leading-tight">
@@ -1597,7 +1613,7 @@ const statusColor = (game: Game) => {
               <!-- Delete -->
               <td v-if="canEdit" class="px-1 py-1" @click.stop>
                 <button
-                  v-if="isGameEditable(g)"
+                  v-if="isDeletable(g)"
                   class="p-0.5 text-red-500 hover:text-red-700"
                   :title="t('common.delete')"
                   @click="openDeleteConfirm(g)"
@@ -1633,12 +1649,70 @@ const statusColor = (game: Game) => {
         @toggle-select="toggleSelect(g.id)"
       >
         <template #header>
-          <div>
+          <div class="flex-1 min-w-0">
             <div class="font-bold text-gray-900">
-              {{ t('games.field.game_number') }}{{ g.numeroOrdre }} — {{ g.soustitre2 || g.codeCompetition }}
-              <span v-if="g.phase" class="text-gray-500 font-normal">{{ g.phase }}</span>
+              <!-- Match number (inline editable) -->
+              <template v-if="editingCell?.id === g.id && editingCell.field === 'Numero_ordre'">
+                <input
+                  :id="`inline-${g.id}-Numero_ordre`"
+                  v-model="editingValue"
+                  type="tel"
+                  maxlength="4"
+                  class="w-12 px-1 py-0 text-sm text-center border border-blue-400 rounded"
+                  @keydown="handleInlineKeydown"
+                  @blur="saveInlineEdit"
+                >
+              </template>
+              <template v-else>
+                <span
+                  :class="isGameEditable(g) ? 'editable-cell' : ''"
+                  @click="startInlineEdit(g, 'Numero_ordre')"
+                >{{ t('games.field.game_number') }}{{ g.numeroOrdre }}</span>
+              </template>
+              — {{ g.soustitre2 || g.codeCompetition }}
+              <!-- Phase/Poule (inline editable) -->
+              <template v-if="g.phase">
+                <template v-if="editingCell?.id === g.id && editingCell.field === 'Phase'">
+                  <select
+                    :id="`inline-${g.id}-Phase`"
+                    v-model="editingValue"
+                    class="px-1 py-0 text-sm border border-blue-400 rounded"
+                    @change="savePhaseEdit"
+                    @keydown="handleTeamKeydown"
+                    @blur="savePhaseEdit"
+                  >
+                    <option v-for="j in journees" :key="j.id" :value="String(j.id)">{{ j.phase || j.codeCompetition }}</option>
+                  </select>
+                </template>
+                <span
+                  v-else
+                  class="text-gray-500 font-normal"
+                  :class="isGameEditable(g) ? 'editable-cell' : ''"
+                  @click="startPhaseEdit(g)"
+                >{{ g.phase }}</span>
+              </template>
             </div>
-            <div v-if="g.libelle" class="text-sm text-gray-600">{{ g.libelle }}</div>
+            <!-- Libelle (inline editable) -->
+            <div class="text-sm text-gray-600">
+              <template v-if="editingCell?.id === g.id && editingCell.field === 'Libelle'">
+                <input
+                  :id="`inline-${g.id}-Libelle`"
+                  v-model="editingValue"
+                  type="text"
+                  maxlength="30"
+                  class="w-full px-1 py-0 text-sm border border-blue-400 rounded"
+                  @keydown="handleInlineKeydown"
+                  @blur="saveInlineEdit"
+                >
+              </template>
+              <template v-else>
+                <span
+                  v-if="g.libelle || isGameEditable(g)"
+                  :class="isGameEditable(g) ? 'editable-cell' : ''"
+                  @click="startInlineEdit(g, 'Libelle')"
+                >{{ g.libelle || '-' }}</span>
+              </template>
+            </div>
           </div>
         </template>
         <template #header-right>
@@ -1666,36 +1740,145 @@ const statusColor = (game: Game) => {
           </div>
         </template>
 
-        <div class="space-y-1 text-sm">
+        <div class="space-y-2 text-sm">
+          <!-- Date / Time / Terrain (inline editable) -->
           <div class="flex items-center gap-2">
-            <UIcon name="heroicons:calendar" class="w-6 h-6 text-gray-400" />
-            <span>{{ formatDate(g.dateMatch) }}</span>
-            <span v-if="g.heureMatch" class="font-medium">{{ g.heureMatch }}</span>
+            <UIcon name="heroicons:calendar" class="w-5 h-5 text-gray-400 shrink-0" />
+            <!-- Date inline -->
+            <template v-if="editingCell?.id === g.id && editingCell.field === 'Date_match'">
+              <input
+                :id="`inline-${g.id}-Date_match`"
+                v-model="editingValue"
+                type="date"
+                class="px-1 py-0.5 text-sm border border-blue-400 rounded"
+                @keydown="handleInlineKeydown"
+                @blur="saveInlineEdit"
+              >
+            </template>
+            <span
+              v-else
+              :class="isGameEditable(g) ? 'editable-cell' : ''"
+              @click="startInlineEdit(g, 'Date_match')"
+            >{{ formatDate(g.dateMatch) }}</span>
+            <!-- Time inline -->
+            <template v-if="editingCell?.id === g.id && editingCell.field === 'Heure_match'">
+              <input
+                :id="`inline-${g.id}-Heure_match`"
+                v-model="editingValue"
+                type="time"
+                class="px-1 py-0.5 text-sm border border-blue-400 rounded"
+                @keydown="handleInlineKeydown"
+                @blur="saveInlineEdit"
+              >
+            </template>
+            <span
+              v-else-if="g.heureMatch"
+              class="font-medium"
+              :class="isGameEditable(g) ? 'editable-cell' : ''"
+              @click="startInlineEdit(g, 'Heure_match')"
+            >{{ g.heureMatch }}</span>
           </div>
-          <div v-if="g.terrain" class="flex items-center gap-2">
-            <UIcon name="heroicons:map-pin" class="w-6 h-6 text-gray-400" />
-            <span>{{ t('games.field.terrain') }} {{ g.terrain }}</span>
+          <div class="flex items-center gap-2">
+            <UIcon name="heroicons:map-pin" class="w-5 h-5 text-gray-400 shrink-0" />
+            <!-- Terrain inline -->
+            <template v-if="editingCell?.id === g.id && editingCell.field === 'Terrain'">
+              <input
+                :id="`inline-${g.id}-Terrain`"
+                v-model="editingValue"
+                type="tel"
+                maxlength="2"
+                class="w-10 px-1 py-0.5 text-sm text-center border border-blue-400 rounded"
+                @keydown="handleInlineKeydown"
+                @blur="saveInlineEdit"
+              >
+            </template>
+            <span
+              v-else
+              :class="isGameEditable(g) ? 'editable-cell' : ''"
+              @click="startInlineEdit(g, 'Terrain')"
+            >{{ t('games.field.terrain') }} {{ g.terrain || '-' }}</span>
             <span v-if="g.lieu" class="text-gray-500">| {{ g.lieu }}</span>
           </div>
-          <div class="flex items-center gap-2 font-medium">
-            <span :class="(!g.idEquipeA || g.idEquipeA < 1) ? 'text-red-400 italic' : ''">
-              {{ g.equipeA || t('games.team_undefined') }}
-            </span>
-            <span class="font-bold text-lg">{{ g.scoreA || '-' }} - {{ g.scoreB || '-' }}</span>
-            <span :class="(!g.idEquipeB || g.idEquipeB < 1) ? 'text-red-400 italic' : ''">
-              {{ g.equipeB || t('games.team_undefined') }}
-            </span>
+
+          <!-- Score: centered, team names close to score -->
+          <div class="flex items-center justify-center gap-2 py-1">
+            <span
+              class="text-right flex-1 truncate font-medium"
+              :class="(!g.idEquipeA || g.idEquipeA < 1) ? 'text-red-400 italic' : ''"
+            >{{ g.equipeA || t('games.team_undefined') }}</span>
+            <!-- Score A inline -->
+            <template v-if="editingCell?.id === g.id && editingCell.field === 'ScoreA'">
+              <input
+                :id="`inline-${g.id}-ScoreA`"
+                v-model="editingValue"
+                type="tel"
+                maxlength="4"
+                class="w-10 px-0.5 py-0 text-center font-bold text-lg border border-blue-400 rounded"
+                @keydown="handleInlineKeydown"
+                @blur="saveInlineEdit"
+              >
+            </template>
+            <span
+              v-else
+              class="font-bold text-lg min-w-[1.5rem] text-center"
+              :class="isScoreEditable(g) ? 'editable-cell' : ''"
+              @click="startInlineEdit(g, 'ScoreA')"
+            >{{ g.scoreA || '-' }}</span>
+            <span class="text-gray-400">-</span>
+            <!-- Score B inline -->
+            <template v-if="editingCell?.id === g.id && editingCell.field === 'ScoreB'">
+              <input
+                :id="`inline-${g.id}-ScoreB`"
+                v-model="editingValue"
+                type="tel"
+                maxlength="4"
+                class="w-10 px-0.5 py-0 text-center font-bold text-lg border border-blue-400 rounded"
+                @keydown="handleInlineKeydown"
+                @blur="saveInlineEdit"
+              >
+            </template>
+            <span
+              v-else
+              class="font-bold text-lg min-w-[1.5rem] text-center"
+              :class="isScoreEditable(g) ? 'editable-cell' : ''"
+              @click="startInlineEdit(g, 'ScoreB')"
+            >{{ g.scoreB || '-' }}</span>
+            <span
+              class="text-left flex-1 truncate font-medium"
+              :class="(!g.idEquipeB || g.idEquipeB < 1) ? 'text-red-400 italic' : ''"
+            >{{ g.equipeB || t('games.team_undefined') }}</span>
           </div>
+
+          <!-- Type + Status -->
           <div class="flex items-center gap-3 text-xs text-gray-500">
-            <span>{{ g.type === 'C' ? t('games.type_classification') : t('games.type_elimination') }}</span>
+            <button
+              :title="g.type === 'C' ? t('games.type_classification') : t('games.type_elimination')"
+              class="p-0.5 rounded"
+              :class="isGameEditable(g) ? 'hover:bg-gray-100 cursor-pointer' : 'cursor-default opacity-60'"
+              :disabled="!isGameEditable(g)"
+              @click="isGameEditable(g) && toggleType(g)"
+            >
+              <UIcon
+                :name="g.type === 'C' ? 'heroicons:bars-3' : 'heroicons:arrows-right-left'"
+                class="w-5 h-5"
+                :class="g.type === 'C' ? 'text-blue-600' : 'text-orange-600'"
+              />
+            </button>
+            <span class="text-gray-300">|</span>
+            <!-- <span class="text-gray-500">{{ t('games.field.status') }}</span> -->
             <button
               v-if="isGameEditable(g)"
-              :class="statusColor(g)"
-              class="font-medium hover:underline"
+              class="px-2 py-0.5 text-xs font-medium rounded-full border"
+              :class="statusBtnClass(g)"
               @click="openStatusConfirm(g)"
             >{{ statusLabel(g) }}</button>
-            <span v-else :class="statusColor(g)">{{ statusLabel(g) }}</span>
+            <span
+              v-else
+              class="px-2 py-0.5 text-xs font-medium rounded-full border"
+              :class="statusBtnClass(g)"
+            >{{ statusLabel(g) }}</span>
           </div>
+
           <div v-if="g.arbitrePrincipal || g.arbitreSecondaire" class="text-xs text-gray-500">
             {{ g.arbitrePrincipal || '' }}
             <span v-if="g.arbitreSecondaire"> / {{ g.arbitreSecondaire }}</span>
@@ -1706,7 +1889,7 @@ const statusColor = (game: Game) => {
           <AdminActionButton v-if="canEdit" icon="heroicons:pencil" @click="openEditModal(g)">
             {{ t('common.edit') }}
           </AdminActionButton>
-          <AdminActionButton v-if="isGameEditable(g)" variant="danger" icon="heroicons:trash" @click="openDeleteConfirm(g)">
+          <AdminActionButton v-if="isDeletable(g)" variant="danger" icon="heroicons:trash" @click="openDeleteConfirm(g)">
             {{ t('common.delete') }}
           </AdminActionButton>
         </template>

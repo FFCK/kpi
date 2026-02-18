@@ -507,13 +507,29 @@ class AdminGamesController extends AbstractController
         }
 
         $row = $this->connection->prepare(
-            "SELECT m.Id, m.Validation, j.Code_competition, j.Code_saison
+            "SELECT m.Id, m.Validation, m.ScoreA, m.ScoreB, j.Code_competition, j.Code_saison
              FROM kp_match m INNER JOIN kp_journee j ON m.Id_journee = j.Id
              WHERE m.Id = ?"
         )->executeQuery([$id])->fetchAssociative();
 
         if (!$row) {
             return $this->json(['message' => 'Game not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        // Check locked
+        if ($row['Validation'] === 'O') {
+            return $this->json([
+                'message' => 'Game is locked. Unlock before deleting.',
+                'code' => 'LOCKED',
+            ], Response::HTTP_CONFLICT);
+        }
+
+        // Check for score
+        if (($row['ScoreA'] !== null && $row['ScoreA'] !== '') || ($row['ScoreB'] !== null && $row['ScoreB'] !== '')) {
+            return $this->json([
+                'message' => 'Game has a score. Cannot delete.',
+                'code' => 'HAS_SCORE',
+            ], Response::HTTP_CONFLICT);
         }
 
         // Check for match events
@@ -525,14 +541,6 @@ class AdminGamesController extends AbstractController
             return $this->json([
                 'message' => 'Game events still exist. Cannot delete.',
                 'code' => 'HAS_EVENTS',
-            ], Response::HTTP_CONFLICT);
-        }
-
-        // Check locked
-        if ($row['Validation'] === 'O') {
-            return $this->json([
-                'message' => 'Game is locked. Unlock before deleting.',
-                'code' => 'LOCKED',
             ], Response::HTTP_CONFLICT);
         }
 
