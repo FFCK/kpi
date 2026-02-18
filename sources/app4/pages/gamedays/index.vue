@@ -1042,7 +1042,7 @@ onUnmounted(() => document.removeEventListener('click', onClickOutsideFilter))
               <td class="px-2 py-2 text-sm text-center">
                 <NuxtLink
                   v-if="g.matchCount > 0"
-                  :to="`/games?journee=${g.id}`"
+                  :to="`/games?phase=${g.id}`"
                   class="text-blue-600 hover:underline font-medium"
                 >
                   {{ g.matchCount }}

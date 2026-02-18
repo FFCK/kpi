@@ -13,6 +13,40 @@ const toast = useToast()
 const workContext = useWorkContextStore()
 const authStore = useAuthStore()
 
+// ─── LocalStorage filter persistence ───
+const FILTERS_STORAGE_KEY = 'app4_games_filters'
+
+interface SavedFilters {
+  selectedTour: string
+  selectedJournee: string
+  selectedDate: string
+  selectedTerrain: string
+  selectedSort: string
+  unlockedOnly: boolean
+}
+
+function loadSavedFilters(): Partial<SavedFilters> {
+  try {
+    const raw = localStorage.getItem(FILTERS_STORAGE_KEY)
+    if (raw) return JSON.parse(raw)
+  } catch { /* ignore */ }
+  return {}
+}
+
+function saveFilters() {
+  try {
+    const data: SavedFilters = {
+      selectedTour: selectedTour.value,
+      selectedJournee: selectedJournee.value,
+      selectedDate: selectedDate.value,
+      selectedTerrain: selectedTerrain.value,
+      selectedSort: selectedSort.value,
+      unlockedOnly: unlockedOnly.value,
+    }
+    localStorage.setItem(FILTERS_STORAGE_KEY, JSON.stringify(data))
+  } catch { /* ignore */ }
+}
+
 // ─── State ───
 const loading = ref(false)
 const games = ref<Game[]>([])
@@ -23,19 +57,20 @@ const totalPages = ref(0)
 const phaseLibelle = ref(false)
 const availableDates = ref<string[]>([])
 
-// Filters
+// Filters (restored from localStorage)
+const saved = loadSavedFilters()
 const searchQuery = ref('')
 const selectedEvent = ref('-1')
 const selectedCompetitions = computed({
   get: () => workContext.pageCompetitionCodes,
   set: (val: string[]) => workContext.setPageCompetitions(val),
 })
-const selectedTour = ref('')
-const selectedJournee = ref('*')
-const selectedDate = ref('')
-const selectedTerrain = ref('')
-const selectedSort = ref('date_time_terrain')
-const unlockedOnly = ref(false)
+const selectedTour = ref(saved.selectedTour ?? '')
+const selectedJournee = ref(saved.selectedJournee ?? '*')
+const selectedDate = ref(saved.selectedDate ?? '')
+const selectedTerrain = ref(saved.selectedTerrain ?? '')
+const selectedSort = ref(saved.selectedSort ?? 'date_time_terrain')
+const unlockedOnly = ref(saved.unlockedOnly ?? false)
 
 // Filter data
 const events = ref<GameEvent[]>([])
@@ -203,12 +238,15 @@ const loadTeamsForJournee = async (journeeId: number) => {
 }
 
 // ─── Init from route query ───
+const router = useRouter()
 onMounted(async () => {
   await workContext.initContext()
 
-  const journeeFromQuery = route.query.journee as string
-  if (journeeFromQuery) {
-    selectedJournee.value = journeeFromQuery
+  const phaseFromQuery = route.query.phase as string
+  if (phaseFromQuery) {
+    selectedJournee.value = phaseFromQuery
+    // Remove query param from URL without triggering navigation
+    router.replace({ query: { ...route.query, phase: undefined } })
   }
 })
 
@@ -231,9 +269,20 @@ watch([selectedCompetitions, selectedEvent, selectedTour, selectedJournee, selec
 })
 
 // Reload journees when competition/event/tour changes
+// Skip the first trigger to preserve restored/query filters on init
+let journeeResetReady = false
 watch([selectedCompetitions, selectedEvent, selectedTour], () => {
+  if (!journeeResetReady) {
+    journeeResetReady = true
+    return
+  }
   selectedJournee.value = '*'
   loadJournees()
+})
+
+// Persist filters to localStorage
+watch([selectedTour, selectedJournee, selectedDate, selectedTerrain, selectedSort, unlockedOnly], () => {
+  saveFilters()
 })
 
 // Debounced search
@@ -935,20 +984,20 @@ const statusColor = (game: Game) => {
               <th v-if="canEdit" class="w-16 px-1 py-2" />
               <!-- Time -->
               <th class="px-1 py-2 text-left text-gray-500 font-medium">{{ t('games.field.time') }}</th>
+              <!-- Terrain -->
+              <th class="w-8 px-1 py-2 text-center text-gray-500 font-medium">{{ t('games.field.terrain') }}</th>
               <!-- Cat -->
               <th class="px-1 py-2 text-left text-gray-500 font-medium">{{ t('games.field.category') }}</th>
               <!-- Phase (conditional) -->
               <th v-if="phaseLibelle" class="px-1 py-2 text-left text-gray-500 font-medium">{{ t('games.field.phase') }}</th>
+              <!-- Type -->
+              <th class="w-8 px-1 py-2 text-center text-gray-500 font-medium">{{ t('games.field.type') }}</th>
               <!-- Code (conditional) -->
               <th v-if="phaseLibelle" class="px-1 py-2 text-left text-gray-500 font-medium">{{ t('games.field.code') }}</th>
               <!-- Code (non-phaseLibelle) -->
               <th v-if="!phaseLibelle" class="px-1 py-2 text-left text-gray-500 font-medium">{{ t('games.field.code') }}</th>
               <!-- Lieu (non-phaseLibelle) -->
               <th v-if="!phaseLibelle" class="px-1 py-2 text-left text-gray-500 font-medium">{{ t('games.field.location') }}</th>
-              <!-- Type -->
-              <th class="w-8 px-1 py-2 text-center text-gray-500 font-medium">{{ t('games.field.type') }}</th>
-              <!-- Terrain -->
-              <th class="w-8 px-1 py-2 text-center text-gray-500 font-medium">{{ t('games.field.terrain') }}</th>
               <!-- Team A -->
               <th class="px-1 py-2 text-right text-gray-500 font-medium">{{ t('games.field.team_a') }}</th>
               <!-- Score A -->
@@ -1087,6 +1136,27 @@ const statusColor = (game: Game) => {
                 </div>
               </td>
 
+              <!-- Terrain (inline editable) -->
+              <td class="px-1 py-1 text-center">
+                <template v-if="editingCell?.id === g.id && editingCell.field === 'Terrain'">
+                  <input
+                    :id="`inline-${g.id}-Terrain`"
+                    v-model="editingValue"
+                    type="tel"
+                    maxlength="2"
+                    class="w-8 px-0.5 py-0 text-xs text-center border border-blue-400 rounded"
+                    @keydown="handleInlineKeydown"
+                    @blur="saveInlineEdit"
+                  >
+                </template>
+                <template v-else>
+                  <span
+                    :class="isGameEditable(g) ? 'editable-cell' : ''"
+                    @click="startInlineEdit(g, 'Terrain')"
+                  >{{ g.terrain || '' }}</span>
+                </template>
+              </td>
+
               <!-- Category -->
               <td class="px-1 py-1 text-gray-600">{{ g.soustitre2 || g.codeCompetition }}</td>
 
@@ -1112,6 +1182,23 @@ const statusColor = (game: Game) => {
                 </template>
               </td>
 
+              <!-- Type toggle -->
+              <td class="px-1 py-1 text-center">
+                <button
+                  :title="g.type === 'C' ? t('games.type_classification') : t('games.type_elimination')"
+                  class="p-0.5 rounded"
+                  :class="isGameEditable(g) ? 'hover:bg-gray-100 cursor-pointer' : 'cursor-default opacity-60'"
+                  :disabled="!isGameEditable(g)"
+                  @click="isGameEditable(g) && toggleType(g)"
+                >
+                  <UIcon
+                    :name="g.type === 'C' ? 'heroicons:bars-3' : 'heroicons:arrows-right-left'"
+                    class="w-6 h-6"
+                    :class="g.type === 'C' ? 'text-blue-600' : 'text-orange-600'"
+                  />
+                </button>
+              </td>
+
               <!-- Code / Libelle (inline editable) -->
               <td class="px-1 py-1">
                 <template v-if="editingCell?.id === g.id && editingCell.field === 'Libelle'">
@@ -1135,44 +1222,6 @@ const statusColor = (game: Game) => {
 
               <!-- Lieu (non-phaseLibelle, read-only) -->
               <td v-if="!phaseLibelle" class="px-1 py-1 text-gray-500">{{ g.lieu || '-' }}</td>
-
-              <!-- Type toggle -->
-              <td class="px-1 py-1 text-center">
-                <button
-                  :title="g.type === 'C' ? t('games.type_classification') : t('games.type_elimination')"
-                  class="p-0.5 rounded"
-                  :class="isGameEditable(g) ? 'hover:bg-gray-100 cursor-pointer' : 'cursor-default opacity-60'"
-                  :disabled="!isGameEditable(g)"
-                  @click="isGameEditable(g) && toggleType(g)"
-                >
-                  <UIcon
-                    :name="g.type === 'C' ? 'heroicons:bars-3' : 'heroicons:arrows-right-left'"
-                    class="w-6 h-6"
-                    :class="g.type === 'C' ? 'text-blue-600' : 'text-orange-600'"
-                  />
-                </button>
-              </td>
-
-              <!-- Terrain (inline editable) -->
-              <td class="px-1 py-1 text-center">
-                <template v-if="editingCell?.id === g.id && editingCell.field === 'Terrain'">
-                  <input
-                    :id="`inline-${g.id}-Terrain`"
-                    v-model="editingValue"
-                    type="tel"
-                    maxlength="2"
-                    class="w-8 px-0.5 py-0 text-xs text-center border border-blue-400 rounded"
-                    @keydown="handleInlineKeydown"
-                    @blur="saveInlineEdit"
-                  >
-                </template>
-                <template v-else>
-                  <span
-                    :class="isGameEditable(g) ? 'editable-cell' : ''"
-                    @click="startInlineEdit(g, 'Terrain')"
-                  >{{ g.terrain || '' }}</span>
-                </template>
-              </td>
 
               <!-- Team A (inline select, right-aligned) -->
               <td class="px-1 py-1 text-right">
@@ -1374,13 +1423,28 @@ const statusColor = (game: Game) => {
           </div>
         </template>
         <template #header-right>
-          <AdminToggleButton
-            :active="g.publication === 'O'"
-            active-icon="heroicons:eye-solid"
-            inactive-icon="heroicons:eye-slash"
-            active-color="green"
-            @toggle="canEdit && togglePublication(g)"
-          />
+          <div class="flex items-center gap-1">
+            <AdminToggleButton
+              v-if="canLock"
+              :active="g.validation === 'O'"
+              active-icon="heroicons:lock-closed-solid"
+              inactive-icon="heroicons:lock-open"
+              active-color="blue"
+              size="md"
+              :active-title="t('games.locked')"
+              :inactive-title="t('games.unlocked')"
+              @toggle="toggleValidation(g)"
+            />
+            <UIcon v-else-if="g.validation === 'O'" name="heroicons:lock-closed-solid" class="w-5 h-5 text-blue-500" :title="t('games.locked')" />
+            <AdminToggleButton
+              :active="g.publication === 'O'"
+              active-icon="heroicons:eye-solid"
+              inactive-icon="heroicons:eye-slash"
+              active-color="green"
+              size="md"
+              @toggle="canEdit && togglePublication(g)"
+            />
+          </div>
         </template>
 
         <div class="space-y-1 text-sm">
@@ -1405,11 +1469,13 @@ const statusColor = (game: Game) => {
           </div>
           <div class="flex items-center gap-3 text-xs text-gray-500">
             <span>{{ g.type === 'C' ? t('games.type_classification') : t('games.type_elimination') }}</span>
-            <span v-if="isLocked(g)" class="text-blue-600 font-medium">
-              <UIcon name="heroicons:lock-closed-solid" class="w-3 h-3 inline" />
-              {{ t('games.locked') }}
-            </span>
-            <span :class="statusColor(g)">{{ statusLabel(g) }}</span>
+            <button
+              v-if="isGameEditable(g)"
+              :class="statusColor(g)"
+              class="font-medium hover:underline"
+              @click="openStatusConfirm(g)"
+            >{{ statusLabel(g) }}</button>
+            <span v-else :class="statusColor(g)">{{ statusLabel(g) }}</span>
           </div>
           <div v-if="g.arbitrePrincipal || g.arbitreSecondaire" class="text-xs text-gray-500">
             {{ g.arbitrePrincipal || '' }}
