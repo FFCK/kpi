@@ -1284,5 +1284,62 @@
     "bulk_date_changed": "Date changed for {count} game(s).",
     "bulk_time_changed": "Time changed for {count} game(s).",
     "bulk_group_changed": "Group changed for {count} game(s)."
+  },
+  "clubs": {
+    "title": "Clubs Management",
+    "search_placeholder": "Search club (name or code)...",
+    "map": {
+      "title": "Clubs map",
+      "search_address": "Address, City, Country",
+      "locate": "Locate",
+      "no_club_on_map": "If your club is not on the map, send its coordinates to contact{'@'}kayak-polo.info.",
+      "geocode_failed": "Geocoding failed. Address not found."
+    },
+    "update": {
+      "title": "Update a club",
+      "select_club": "Search a club...",
+      "postal": "Postal address",
+      "postal_hint": "e.g.: 27 rue du Bout du Monde - 99000 La Fin",
+      "www": "Website",
+      "www_hint": "e.g.: http://www.mysite.com",
+      "email": "Email address",
+      "email_hint": "Avoid personal email addresses if possible",
+      "coord": "GPS coordinates lat,long",
+      "coord_hint": "e.g.: 48.856614, 2.3522219",
+      "submit": "Update",
+      "select_first": "Select a club to edit.",
+      "success": "Club updated.",
+      "error": "Error updating club."
+    },
+    "add_cd": {
+      "title": "Add a Departmental Committee / Country",
+      "comite_reg": "Regional Committee",
+      "comite_reg_placeholder": "Search a regional committee...",
+      "code": "Code",
+      "libelle": "Departmental committee / country name",
+      "submit": "Add",
+      "success": "Departmental committee added.",
+      "error_no_cr": "Select a Regional Committee.",
+      "error_empty": "Name or code is empty."
+    },
+    "add_club": {
+      "title": "Add a Club / Organization",
+      "comite_dep": "Departmental Committee / Country",
+      "comite_dep_placeholder": "Search a committee / country...",
+      "check_existing": "Check that the organization does not already exist",
+      "code": "Code",
+      "libelle": "Club / organization name",
+      "postal": "Postal address",
+      "www": "Website",
+      "email": "Email address",
+      "coord": "GPS coordinates",
+      "equipe": "New team (optional)",
+      "equipe_help": "Follow naming conventions: Name in lowercase (1st letter uppercase), space before Roman numeral (I, II, III), space before category (F, JH, JF, -21). E.g.: Acigne II, Acigne I F",
+      "submit": "Add",
+      "success": "Club added.",
+      "error_no_cd": "Select a Departmental Committee.",
+      "error_empty": "Club name or code is empty.",
+      "error_duplicate": "This club code already exists."
+    }
   }
 }

@@ -1296,5 +1296,62 @@
     "bulk_date_changed": "Date modifiée pour {count} match(s).",
     "bulk_time_changed": "Heure modifiée pour {count} match(s).",
     "bulk_group_changed": "Groupe modifié pour {count} match(s)."
+  },
+  "clubs": {
+    "title": "Gestion des Clubs",
+    "search_placeholder": "Rechercher un club (nom ou code)...",
+    "map": {
+      "title": "Carte des clubs",
+      "search_address": "Adresse, Ville, Pays",
+      "locate": "Localiser",
+      "no_club_on_map": "Si votre club n'apparaît pas sur la carte, transmettez ses coordonnées à contact{'@'}kayak-polo.info.",
+      "geocode_failed": "Échec du géocodage. Adresse non trouvée."
+    },
+    "update": {
+      "title": "Modifier un club",
+      "select_club": "Rechercher un club...",
+      "postal": "Adresse postale",
+      "postal_hint": "ex: 27 rue du Bout du Monde - 99000 La Fin",
+      "www": "Site internet",
+      "www_hint": "ex: http://www.monsite.fr",
+      "email": "Adresse email",
+      "email_hint": "Éviter si possible les adresses personnelles",
+      "coord": "Coordonnées GPS lat,long",
+      "coord_hint": "ex: 48.856614, 2.3522219",
+      "submit": "Mettre à jour",
+      "select_first": "Sélectionnez un club pour le modifier.",
+      "success": "Club mis à jour.",
+      "error": "Erreur lors de la mise à jour."
+    },
+    "add_cd": {
+      "title": "Ajouter un Comité Départemental / Pays",
+      "comite_reg": "Comité Régional d'appartenance",
+      "comite_reg_placeholder": "Rechercher un comité régional...",
+      "code": "Code",
+      "libelle": "Nom du comité départemental / pays",
+      "submit": "Ajouter",
+      "success": "Comité départemental ajouté.",
+      "error_no_cr": "Sélectionnez un Comité Régional.",
+      "error_empty": "Le nom ou le code est vide."
+    },
+    "add_club": {
+      "title": "Ajouter un Club / une Structure",
+      "comite_dep": "Comité Départemental / Pays d'appartenance",
+      "comite_dep_placeholder": "Rechercher un CD / pays...",
+      "check_existing": "Vérifier que la structure n'existe pas déjà",
+      "code": "Code",
+      "libelle": "Nom du club / structure",
+      "postal": "Adresse postale",
+      "www": "Adresse Internet",
+      "email": "Adresse email",
+      "coord": "Coordonnées GPS",
+      "equipe": "Nouvelle équipe (optionnel)",
+      "equipe_help": "Respectez le formalisme : Nom en minuscule (1ère lettre majuscule), espace avant numéro romain (I, II, III), espace avant catégorie (F, JH, JF, -21). Ex: Acigné II, Acigné I F",
+      "submit": "Ajouter",
+      "success": "Club ajouté.",
+      "error_no_cd": "Sélectionnez un Comité Départemental.",
+      "error_empty": "Le nom ou le code du club est vide.",
+      "error_duplicate": "Ce code club existe déjà."
+    }
   }
 }

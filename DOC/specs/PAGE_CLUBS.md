@@ -58,7 +58,7 @@ Page d'administration des structures (comites regionaux, comites departementaux,
 |---|----------------|--------|--------|----------|
 | 1 | Selectionner le comite departemental / pays | <= 2 | Select dropdown kp_cd | ✅ Remplacer par autocomplete |
 | 2 | Verification structures internationales existantes | <= 2 | Select dropdown pour verifier | ✅ Remplacer par autocomplete + verification en temps reel |
-| 3 | Saisir code club (maxlength 5) | <= 2 | Input text | ✅ Conserver |
+| 3 | Saisir code club (maxlength 5, uppercase) | <= 2 | Input text + auto-uppercase | ✅ Conserver |
 | 4 | Saisir libelle club (maxlength 50, uppercase) | <= 2 | Input text + auto-uppercase | ✅ Conserver |
 | 5 | Saisir adresse postale | <= 2 | Input text (maxlength 100) | ✅ Conserver |
 | 6 | Saisir adresse internet | <= 2 | Input text (maxlength 60) | ✅ Conserver |
@@ -74,8 +74,8 @@ Page d'administration des structures (comites regionaux, comites departementaux,
 |---|--------------|-------------|
 | 1 | Autocomplete au lieu de selects | Remplacer les selects clubs/CR/CD par des champs autocomplete avec recherche en temps reel |
 | 2 | Carte responsive | Carte pleine largeur adaptative au lieu de taille fixe 620x550 |
-| 3 | Layout reorganise | Carte en haut, formulaires en dessous (ou layout adaptatif desktop/mobile) |
-| 4 | Liste tabulaire des clubs | Ajouter un mode liste/tableau des clubs avec recherche textuelle |
+| 3 | Layout reorganise | Carte en haut, formulaires dans des modales |
+| 4 | Pas de liste tabulaire des clubs |  |
 | 5 | Validation en temps reel | Verification code club unique avant soumission |
 | 6 | Formulaires en modals | Ajout CD et ajout club dans des modals separees |
 | 7 | Toast notifications | Retour visuel moderne au lieu d'alerts JavaScript |
@@ -113,7 +113,7 @@ Page d'administration des structures (comites regionaux, comites departementaux,
 |  +-----------------------------------------------------------------------+  |
 |  [Adresse, Ville, Pays...                          ] [Localiser]           |
 |                                                                             |
-|  +--- Panneau club selectionne (ou tableau des clubs) ------------------+  |
+|  +--- Panneau club selectionne  ------------------+  |
 |  |  Club : [Autocomplete recherche club...          ]                    |  |
 |  |  Code : 1234  |  Libelle : KAYAK CLUB DE PARIS                       |  |
 |  |  Adresse : [                                   ]                      |  |

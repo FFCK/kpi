@@ -514,7 +514,7 @@ Ajouter un listener `click` global pour fermer le dropdown lors d'un clic en deh
 | Journées | `/gamedays` | Legacy redirect |
 | Classements | `/rankings` | Legacy redirect |
 | Athlètes | `/athletes` | Legacy redirect |
-| Clubs | `/clubs` | Legacy redirect |
+| Clubs | `/clubs` | Implémentée (carte Leaflet) |
 | Utilisateurs | `/users` | Legacy redirect |
 
 ---
