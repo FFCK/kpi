@@ -25,6 +25,7 @@ sources/app4/
 ├── components/
 │   └── admin/                      # Composants réutilisables
 │       ├── WorkContextSelector.vue # Sélecteur de contexte de travail
+│       ├── AthleteEditModal.vue    # Modal modification athlète
 │       ├── ActionButton.vue        # Boutons d'action
 │       ├── Card.vue                # Carte mobile
 │       ├── CardList.vue            # Liste de cartes
@@ -513,11 +514,11 @@ Ajouter un listener `click` global pour fermer le dropdown lors d'un clic en deh
 | Équipes | `/teams` | Implémentée (contexte) |
 | Journées | `/gamedays` | Legacy redirect |
 | Classements | `/rankings` | Legacy redirect |
-| Athlètes | `/athletes` | Legacy redirect |
+| Athlètes | `/athletes` | Implémentée (recherche + fiche + participations) |
 | Clubs | `/clubs` | Implémentée (carte Leaflet) |
 | Utilisateurs | `/users` | Legacy redirect |
 
 ---
 
 **Document créé le** : 2026-02-03
-**Dernière mise à jour** : 2026-02-09
+**Dernière mise à jour** : 2026-02-19

@@ -1341,5 +1341,110 @@
       "error_empty": "Club name or code is empty.",
       "error_duplicate": "This club code already exists."
     }
+  },
+  "athletes": {
+    "title": "Athletes Management",
+    "search_placeholder": "Search athlete (name, first name, licence)...",
+    "no_athlete_selected": "Search for an athlete to view their profile.",
+    "licence": "Licence #",
+    "icf_number": "ICF #",
+    "surclasse": "Upgraded on",
+    "club": {
+      "title": "Club",
+      "last_season": "Last season"
+    },
+    "pagaie": {
+      "title": "Paddle",
+      "eau_vive": "White water",
+      "mer": "Sea",
+      "eau_calme": "Flat water"
+    },
+    "certificats": {
+      "title": "Certificates",
+      "aps": "APS (Leisure)",
+      "ck": "CK (Competition)"
+    },
+    "arbitrage": {
+      "title": "Refereeing",
+      "niveau": "Level",
+      "saison": "Season",
+      "livret": "Booklet",
+      "qualification": {
+        "Reg": "Regional",
+        "IR": "Interregional",
+        "Nat": "National",
+        "Int": "International",
+        "OTM": "Game official",
+        "JO": "Young official"
+      }
+    },
+    "edit": {
+      "title": "Edit athlete",
+      "nom": "Last name",
+      "prenom": "First name",
+      "sexe": "Gender",
+      "naissance": "Date of birth",
+      "derniere_saison": "Last season",
+      "icf": "ICF number",
+      "arb_qualification": "Referee qualification",
+      "arb_niveau": "Referee level",
+      "new_club": "New club",
+      "new_club_placeholder": "Search a club...",
+      "submit": "Update",
+      "success": "Update successful.",
+      "error": "Error updating athlete.",
+      "forbidden": "Modification forbidden for this athlete."
+    },
+    "participations": {
+      "season": "Season",
+      "presence": {
+        "title": "Presence sheets",
+        "competition": "Comp",
+        "equipe": "Team",
+        "numero": "#",
+        "role": "Role",
+        "categorie": "Category",
+        "empty": "No presence sheet for this season."
+      },
+      "officiels": {
+        "title": "Officials",
+        "date": "Date",
+        "heure": "Time",
+        "competition": "Comp",
+        "match": "Match",
+        "arb_principal": "Main Ref.",
+        "arb_secondaire": "Sec. Ref.",
+        "secretaire": "Sec",
+        "chronometreur": "Timer",
+        "timekeeper": "T.S",
+        "ligne": "Lines",
+        "empty": "No official role for this season."
+      },
+      "matchs": {
+        "title": "Matches",
+        "date": "Date",
+        "competition": "Comp",
+        "match": "Match",
+        "equipes": "Teams",
+        "score": "Score",
+        "numero": "#",
+        "role": "Role",
+        "buts": "Goals",
+        "vert": "Green",
+        "jaune": "Yellow",
+        "rouge": "Red",
+        "rouge_def": "Red D.",
+        "tir": "Shot",
+        "arret": "Save",
+        "empty": "No match for this season."
+      }
+    },
+    "roles": {
+      "C": "Cap",
+      "E": "Coach",
+      "A": "Ref.",
+      "X": "Unavailable",
+      "-": ""
+    }
   }
 }

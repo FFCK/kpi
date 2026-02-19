@@ -903,6 +903,55 @@ POST   /admin/operations/cache/purge                          Purge cache files
 - `imageFile` - The image file
 - Additional params depending on type: `codeCompetition`, `saison`, `numeroClub`, `codeNation`
 
+### Admin Athletes
+```
+GET    /admin/athletes/search                    Search athletes by name/firstname/licence (autocomplete)
+GET    /admin/athletes/{matric}                   Get full athlete profile
+GET    /admin/athletes/{matric}/participations    Get athlete participations for a season
+PUT    /admin/athletes/{matric}                   Update athlete (profile <=2, Matric > 2000000)
+```
+
+**Query Parameters:**
+- `/athletes/search`: `q` (min 2 chars), `limit` (default: 20, max: 50)
+- `/athletes/{matric}/participations`: `season` (required)
+
+**Search Response:**
+```json
+[
+  {
+    "matric": 63155,
+    "nom": "VIGNET",
+    "prenom": "Eric",
+    "sexe": "M",
+    "naissance": "1972-10-06",
+    "club": "CK LE HAVRE",
+    "codeClub": "7603",
+    "label": "VIGNET Eric (63155) - CK LE HAVRE"
+  }
+]
+```
+
+**Update Request (PUT):**
+```json
+{
+  "nom": "VIGNET",
+  "prenom": "ERIC",
+  "sexe": "M",
+  "naissance": "1972-10-06",
+  "origine": "2026",
+  "icf": 12345,
+  "arbitrage": {
+    "qualification": "Nat",
+    "niveau": "C"
+  },
+  "codeClub": "7603"
+}
+```
+
+**Update Restrictions:**
+- Only athletes with Matric > 2000000 (non-federal) can be modified
+- Matric <= 2000000 returns 403 Forbidden
+
 ## HTTP Status Codes
 
 - `200` - Success
@@ -956,6 +1005,7 @@ The `/_error/` routes are internal Symfony routes used for error handling:
 | `GestionEquipeJoueur.php` | `/api2/admin/teams/{teamId}/players/*` |
 | `GestionRc.php` | `/api2/admin/rc/*` |
 | `GestionOperations.php` | `/api2/admin/operations/*` |
+| `GestionAthlete.php` | `/api2/admin/athletes/*` |
 
 **Important differences:**
 - **Authentication:** API2 uses `X-Auth-Token` header instead of token in URL for Staff/Report endpoints

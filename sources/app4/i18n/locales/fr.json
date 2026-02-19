@@ -1353,5 +1353,110 @@
       "error_empty": "Le nom ou le code du club est vide.",
       "error_duplicate": "Ce code club existe déjà."
     }
+  },
+  "athletes": {
+    "title": "Gestion des Athlètes",
+    "search_placeholder": "Rechercher un athlète (nom, prénom, licence)...",
+    "no_athlete_selected": "Recherchez un athlète pour afficher sa fiche.",
+    "licence": "Licence n°",
+    "icf_number": "ICF #",
+    "surclasse": "Surclassé le",
+    "club": {
+      "title": "Club",
+      "last_season": "Dernière saison"
+    },
+    "pagaie": {
+      "title": "Pagaie",
+      "eau_vive": "Eau vive",
+      "mer": "Mer",
+      "eau_calme": "Eau calme"
+    },
+    "certificats": {
+      "title": "Certificats",
+      "aps": "APS (Loisir)",
+      "ck": "CK (Compétition)"
+    },
+    "arbitrage": {
+      "title": "Arbitrage",
+      "niveau": "Niveau",
+      "saison": "Saison",
+      "livret": "Livret",
+      "qualification": {
+        "Reg": "Régional",
+        "IR": "Interrégional",
+        "Nat": "National",
+        "Int": "International",
+        "OTM": "Officiel table de marque",
+        "JO": "Jeune officiel"
+      }
+    },
+    "edit": {
+      "title": "Modifier l'athlète",
+      "nom": "Nom",
+      "prenom": "Prénom",
+      "sexe": "Sexe",
+      "naissance": "Date de naissance",
+      "derniere_saison": "Dernière saison",
+      "icf": "Numéro ICF",
+      "arb_qualification": "Qualification arbitrage",
+      "arb_niveau": "Niveau arbitrage",
+      "new_club": "Nouveau club",
+      "new_club_placeholder": "Rechercher un club...",
+      "submit": "Modifier",
+      "success": "Modification effectuée.",
+      "error": "Erreur lors de la modification.",
+      "forbidden": "Modification interdite pour cet athlète."
+    },
+    "participations": {
+      "season": "Saison",
+      "presence": {
+        "title": "Feuilles de présence",
+        "competition": "Comp",
+        "equipe": "Équipe",
+        "numero": "#",
+        "role": "Rôle",
+        "categorie": "Catégorie",
+        "empty": "Aucune feuille de présence pour cette saison."
+      },
+      "officiels": {
+        "title": "Officiels",
+        "date": "Date",
+        "heure": "Heure",
+        "competition": "Comp",
+        "match": "Match",
+        "arb_principal": "Arb. Prin.",
+        "arb_secondaire": "Arb. Sec.",
+        "secretaire": "Sec",
+        "chronometreur": "Chrono",
+        "timekeeper": "T.S",
+        "ligne": "Lignes",
+        "empty": "Aucune fonction officielle pour cette saison."
+      },
+      "matchs": {
+        "title": "Matchs",
+        "date": "Date",
+        "competition": "Comp",
+        "match": "Match",
+        "equipes": "Équipes",
+        "score": "Score",
+        "numero": "#",
+        "role": "Rôle",
+        "buts": "Buts",
+        "vert": "Vert",
+        "jaune": "Jaune",
+        "rouge": "Rouge",
+        "rouge_def": "Rouge D.",
+        "tir": "Tir",
+        "arret": "Arrêt",
+        "empty": "Aucun match pour cette saison."
+      }
+    },
+    "roles": {
+      "C": "Cap",
+      "E": "Entraîneur",
+      "A": "Arbitre",
+      "X": "Inactif",
+      "-": ""
+    }
   }
 }
