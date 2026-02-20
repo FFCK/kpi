@@ -408,199 +408,198 @@ onBeforeUnmount(() => {
 <template>
   <div>
     <!-- Page Title -->
-    <h1 class="text-2xl font-bold text-gray-900 mb-6">
+    <h1 class="text-2xl font-bold text-gray-900 mb-4">
       {{ t('clubs.title') }}
     </h1>
 
-    <!-- ═══ Map Section ═══ -->
-    <div class="mb-6">
-      <h2 class="text-lg font-semibold text-gray-800 mb-3">
-        {{ t('clubs.map.title') }}
-      </h2>
-
-      <!-- Map loading skeleton -->
-      <div v-if="mapLoading" class="w-full h-100 sm:h-125 bg-gray-100 rounded-lg animate-pulse flex items-center justify-center">
-        <UIcon name="i-heroicons-map-pin" class="w-8 h-8 text-gray-400" />
-      </div>
-
-      <!-- Leaflet Map (client-only) -->
-      <AdminClubMap
-        v-show="!mapLoading"
-        ref="mapRef"
-        :clubs="mapClubs"
-        :selected-club-code="selectedClubCode"
-        @select-club="onMapSelectClub"
-      />
-
-      <!-- Geocode search bar -->
-      <div class="flex mt-3 gap-2">
-        <input
-          v-model="geocodeAddress"
-          type="text"
-          :placeholder="t('clubs.map.search_address')"
-          class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          @keydown.enter="handleGeocode"
-        >
+    <!-- ═══ Toolbar ═══ -->
+    <div v-if="canEdit" class="bg-white border border-gray-200 rounded-lg p-3 mb-4 flex flex-wrap items-center gap-3">
+      <!-- Admin action buttons -->
+      <div class="flex items-center gap-2">
         <button
-          class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2"
-          :disabled="geocoding || !geocodeAddress.trim()"
-          @click="handleGeocode"
+          class="px-3 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 flex items-center gap-1.5"
+          @click="openAddCdModal"
         >
-          <UIcon v-if="geocoding" name="i-heroicons-arrow-path" class="w-4 h-4 animate-spin" />
-          <UIcon v-else name="i-heroicons-map-pin" class="w-4 h-4" />
-          {{ t('clubs.map.locate') }}
+          <UIcon name="i-heroicons-plus" class="w-4 h-4" />
+          {{ t('clubs.add_cd.title') }}
+        </button>
+        <button
+          class="px-3 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 flex items-center gap-1.5"
+          @click="openAddClubModal"
+        >
+          <UIcon name="i-heroicons-plus" class="w-4 h-4" />
+          {{ t('clubs.add_club.title') }}
         </button>
       </div>
-
-      <p class="mt-2 text-xs text-gray-500">
-        {{ t('clubs.map.no_club_on_map') }}
-      </p>
     </div>
 
-    <!-- ═══ Update Club Section ═══ -->
-    <div class="bg-white border border-gray-200 rounded-lg p-6 mb-6">
-      <h2 class="text-lg font-semibold text-gray-800 mb-4">
-        {{ t('clubs.update.title') }}
-      </h2>
-
-      <!-- Club Autocomplete -->
-      <div ref="clubSearchRef" class="mb-4 relative">
-        <label class="block text-sm font-medium text-gray-700 mb-1">
-          {{ t('clubs.update.select_club') }}
-        </label>
-        <div class="relative">
-          <input
-            v-model="clubSearch"
-            type="text"
-            :placeholder="t('clubs.search_placeholder')"
-            class="w-full px-3 py-2 pl-9 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            @input="onClubSearchInput"
-            @focus="onClubSearchInput"
-          >
-          <UIcon name="i-heroicons-magnifying-glass" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-          <UIcon v-if="clubSearchLoading" name="i-heroicons-arrow-path" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 animate-spin" />
+    <!-- ═══ Main content: Map + Side panel ═══ -->
+    <div class="flex flex-col lg:flex-row gap-4">
+      <!-- Map (left) -->
+      <div class="flex-1 min-w-0">
+        <!-- Map loading skeleton -->
+        <div v-if="mapLoading" class="w-full h-100 sm:h-125 lg:h-[calc(100vh-220px)] bg-gray-100 rounded-lg animate-pulse flex items-center justify-center">
+          <UIcon name="i-heroicons-map-pin" class="w-8 h-8 text-gray-400" />
         </div>
-        <!-- Dropdown results -->
-        <div
-          v-if="clubSearchOpen && clubSearchResults.length > 0"
-          class="absolute z-20 mt-1 w-full max-h-60 overflow-y-auto bg-white border border-gray-200 rounded-lg shadow-lg"
-        >
-          <button
-            v-for="result in clubSearchResults"
-            :key="result.code"
-            class="w-full px-3 py-2 text-left text-sm text-gray-900 hover:bg-blue-50 focus:bg-blue-100 focus:outline-none flex items-center gap-2"
-            @click="selectClub(result)"
+
+        <!-- Leaflet Map -->
+        <AdminClubMap
+          v-show="!mapLoading"
+          ref="mapRef"
+          :clubs="mapClubs"
+          :selected-club-code="selectedClubCode"
+          class="lg:h-[calc(100vh-220px)]!"
+          @select-club="onMapSelectClub"
+        />
+
+        <!-- Geocode search bar -->
+        <div class="flex mt-3 gap-2">
+          <input
+            v-model="geocodeAddress"
+            type="text"
+            :placeholder="t('clubs.map.search_address')"
+            class="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            @keydown.enter="handleGeocode"
           >
-            <span class="font-mono text-xs text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">{{ result.code }}</span>
-            <span>{{ result.libelle }}</span>
+          <button
+            class="px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center gap-1.5"
+            :disabled="geocoding || !geocodeAddress.trim()"
+            @click="handleGeocode"
+          >
+            <UIcon v-if="geocoding" name="i-heroicons-arrow-path" class="w-4 h-4 animate-spin" />
+            <UIcon v-else name="i-heroicons-map-pin" class="w-4 h-4" />
+            {{ t('clubs.map.locate') }}
           </button>
         </div>
+
+        <p class="mt-2 text-xs text-gray-500">
+          {{ t('clubs.map.no_club_on_map') }}
+        </p>
       </div>
 
-      <!-- Club form (shown when a club is selected) -->
-      <template v-if="selectedClub">
-        <div class="mb-4 flex items-center gap-4 text-sm">
-          <span class="font-medium text-gray-600">Code:</span>
-          <span class="font-mono font-bold">{{ selectedClub.code }}</span>
-          <span class="font-medium text-gray-600 ml-4">{{ selectedClub.libelle }}</span>
-          <span v-if="selectedClub.libelleComiteDep" class="text-gray-400 ml-auto">
-            {{ selectedClub.libelleComiteDep }}
-          </span>
+      <!-- Side panel (right) -->
+      <div class="w-full lg:w-80 xl:w-96 shrink-0">
+        <div class="bg-white border border-gray-200 rounded-lg p-4 lg:sticky lg:top-4">
+          <!-- Club search autocomplete -->
+          <div ref="clubSearchRef" class="relative mb-4">
+            <div class="relative">
+              <input
+                v-model="clubSearch"
+                type="text"
+                :placeholder="t('clubs.search_placeholder')"
+                class="w-full px-3 py-2 pl-9 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                @input="onClubSearchInput"
+                @focus="onClubSearchInput"
+              >
+              <UIcon name="i-heroicons-magnifying-glass" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <UIcon v-if="clubSearchLoading" name="i-heroicons-arrow-path" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 animate-spin" />
+            </div>
+            <!-- Dropdown results -->
+            <div
+              v-if="clubSearchOpen && clubSearchResults.length > 0"
+              class="absolute z-20 mt-1 w-full max-h-60 overflow-y-auto bg-white border border-gray-200 rounded-lg shadow-lg"
+            >
+              <button
+                v-for="result in clubSearchResults"
+                :key="result.code"
+                class="w-full px-3 py-2 text-left text-sm text-gray-900 hover:bg-blue-50 focus:bg-blue-100 focus:outline-none flex items-center gap-2"
+                @click="selectClub(result)"
+              >
+                <span class="font-mono text-xs text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">{{ result.code }}</span>
+                <span>{{ result.libelle }}</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Club detail / edit form -->
+          <template v-if="selectedClub">
+            <div class="mb-3 text-sm">
+              <div class="flex items-center gap-2 mb-1">
+                <span class="font-mono text-xs text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">{{ selectedClub.code }}</span>
+                <span class="font-semibold text-gray-900">{{ selectedClub.libelle }}</span>
+              </div>
+              <span v-if="selectedClub.libelleComiteDep" class="text-xs text-gray-400">
+                {{ selectedClub.libelleComiteDep }}
+              </span>
+            </div>
+
+            <div v-if="canEdit" class="space-y-3">
+              <!-- Postal -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('clubs.update.postal') }}</label>
+                <input
+                  v-model="updateForm.postal"
+                  type="text"
+                  maxlength="100"
+                  :placeholder="t('clubs.update.postal_hint')"
+                  class="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+              </div>
+
+              <!-- Website -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('clubs.update.www') }}</label>
+                <input
+                  v-model="updateForm.www"
+                  type="text"
+                  maxlength="60"
+                  :placeholder="t('clubs.update.www_hint')"
+                  class="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+              </div>
+
+              <!-- Email -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('clubs.update.email') }}</label>
+                <input
+                  v-model="updateForm.email"
+                  type="text"
+                  maxlength="60"
+                  :placeholder="t('clubs.update.email_hint')"
+                  class="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+              </div>
+
+              <!-- GPS Coordinates -->
+              <div>
+                <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('clubs.update.coord') }}</label>
+                <input
+                  v-model="updateForm.coord"
+                  type="text"
+                  maxlength="50"
+                  :placeholder="t('clubs.update.coord_hint')"
+                  class="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+              </div>
+
+              <!-- Update button -->
+              <div class="flex justify-end">
+                <button
+                  class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2"
+                  :disabled="updating"
+                  @click="handleUpdate"
+                >
+                  <UIcon v-if="updating" name="i-heroicons-arrow-path" class="w-4 h-4 animate-spin" />
+                  {{ t('clubs.update.submit') }}
+                </button>
+              </div>
+            </div>
+
+            <!-- Read-only for non-admins -->
+            <div v-else class="space-y-2 text-sm text-gray-600">
+              <div v-if="selectedClub.postal"><span class="font-medium">{{ t('clubs.update.postal') }}:</span> {{ selectedClub.postal }}</div>
+              <div v-if="selectedClub.www"><span class="font-medium">{{ t('clubs.update.www') }}:</span> {{ selectedClub.www }}</div>
+              <div v-if="selectedClub.email"><span class="font-medium">{{ t('clubs.update.email') }}:</span> {{ selectedClub.email }}</div>
+              <div v-if="selectedClub.coord"><span class="font-medium">{{ t('clubs.update.coord') }}:</span> {{ selectedClub.coord }}</div>
+            </div>
+          </template>
+
+          <!-- No club selected -->
+          <p v-else class="text-sm text-gray-400 italic">
+            {{ t('clubs.update.select_first') }}
+          </p>
         </div>
-
-        <div v-if="canEdit" class="space-y-4">
-          <!-- Postal -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('clubs.update.postal') }}</label>
-            <input
-              v-model="updateForm.postal"
-              type="text"
-              maxlength="100"
-              :placeholder="t('clubs.update.postal_hint')"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-          </div>
-
-          <!-- Website -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('clubs.update.www') }}</label>
-            <input
-              v-model="updateForm.www"
-              type="text"
-              maxlength="60"
-              :placeholder="t('clubs.update.www_hint')"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-          </div>
-
-          <!-- Email -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('clubs.update.email') }}</label>
-            <input
-              v-model="updateForm.email"
-              type="text"
-              maxlength="60"
-              :placeholder="t('clubs.update.email_hint')"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-          </div>
-
-          <!-- GPS Coordinates -->
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('clubs.update.coord') }}</label>
-            <input
-              v-model="updateForm.coord"
-              type="text"
-              maxlength="50"
-              :placeholder="t('clubs.update.coord_hint')"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-          </div>
-
-          <!-- Update button -->
-          <div class="flex justify-end">
-            <button
-              class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2"
-              :disabled="updating"
-              @click="handleUpdate"
-            >
-              <UIcon v-if="updating" name="i-heroicons-arrow-path" class="w-4 h-4 animate-spin" />
-              {{ t('clubs.update.submit') }}
-            </button>
-          </div>
-        </div>
-
-        <!-- Read-only for non-admins -->
-        <div v-else class="space-y-2 text-sm text-gray-600">
-          <div v-if="selectedClub.postal"><span class="font-medium">{{ t('clubs.update.postal') }}:</span> {{ selectedClub.postal }}</div>
-          <div v-if="selectedClub.www"><span class="font-medium">{{ t('clubs.update.www') }}:</span> {{ selectedClub.www }}</div>
-          <div v-if="selectedClub.email"><span class="font-medium">{{ t('clubs.update.email') }}:</span> {{ selectedClub.email }}</div>
-          <div v-if="selectedClub.coord"><span class="font-medium">{{ t('clubs.update.coord') }}:</span> {{ selectedClub.coord }}</div>
-        </div>
-      </template>
-
-      <!-- No club selected -->
-      <p v-else class="text-sm text-gray-400 italic">
-        {{ t('clubs.update.select_first') }}
-      </p>
-    </div>
-
-    <!-- ═══ Admin Actions (profile <= 2) ═══ -->
-    <div v-if="canEdit" class="flex flex-wrap gap-3 mb-6">
-      <button
-        class="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 flex items-center gap-2"
-        @click="openAddCdModal"
-      >
-        <UIcon name="i-heroicons-plus" class="w-4 h-4" />
-        {{ t('clubs.add_cd.title') }}
-      </button>
-      <button
-        class="px-4 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 flex items-center gap-2"
-        @click="openAddClubModal"
-      >
-        <UIcon name="i-heroicons-plus" class="w-4 h-4" />
-        {{ t('clubs.add_club.title') }}
-      </button>
+      </div>
     </div>
 
     <!-- ═══ Modal: Add CD ═══ -->
