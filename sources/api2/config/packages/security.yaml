@@ -13,9 +13,9 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        # Login endpoint - no authentication required
+        # Login and reset-password endpoints - no authentication required
         login:
-            pattern: ^/auth/login$
+            pattern: ^/auth/(login|reset-password)$
             stateless: true
             security: false
 
@@ -60,6 +60,8 @@ security:
         # Auth me/refresh require authenticated user
         - { path: ^/auth/me, roles: ROLE_USER }
         - { path: ^/auth/refresh, roles: ROLE_USER }
+        - { path: ^/auth/mandates, roles: ROLE_USER }
+        - { path: ^/auth/switch-mandate, roles: ROLE_USER }
 
 when@test:
     security:

@@ -55,6 +55,7 @@ export interface FilterEvent {
 export interface AuthResponse {
   token: string
   user: User
+  hasMandates?: boolean
 }
 
 // Event type (from API)

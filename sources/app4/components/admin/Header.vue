@@ -151,8 +151,8 @@ const adminMenuItems = computed<MenuItem[]>(() => {
     })
   }
 
-  // Utilisateurs - profile <= 3
-  if (profile <= 3) {
+  // Utilisateurs - profile <= 4
+  if (profile <= 4) {
     items.push({
       to: '/users',
       icon: 'heroicons:users',
@@ -372,7 +372,23 @@ onMounted(() => {
                   <div class="text-xs text-gray-500 mt-1">
                     {{ t('profile') }} {{ user?.profile }}
                   </div>
+                  <!-- Active mandate display -->
+                  <div v-if="authStore.activeMandate" class="mt-1.5 px-2 py-1 bg-blue-50 rounded text-xs text-blue-700">
+                    <div class="font-medium">{{ t('users.header.current_mandate') }}</div>
+                    <div>{{ authStore.activeMandate.libelle }}</div>
+                  </div>
                 </div>
+
+                <!-- Switch mandate (if user has mandates) -->
+                <NuxtLink
+                  v-if="authStore.hasMandates"
+                  to="/select-mandate"
+                  class="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                  @click="userMenuOpen = false"
+                >
+                  <UIcon name="heroicons:arrows-right-left" class="w-5 h-5" />
+                  <span>{{ t('users.header.switch_mandate') }}</span>
+                </NuxtLink>
 
                 <!-- Menu items -->
                 <button

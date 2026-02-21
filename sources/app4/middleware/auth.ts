@@ -7,11 +7,11 @@ export default defineNuxtRouteMiddleware((to) => {
   }
 
   // Public routes that don't require authentication
-  const publicRoutes = ['/login']
+  const publicRoutes = ['/login', '/reset-password']
 
   if (publicRoutes.includes(to.path)) {
-    // If already authenticated, redirect to home
-    if (authStore.isAuthenticated) {
+    // If already authenticated and on login, redirect to home
+    if (authStore.isAuthenticated && to.path === '/login') {
       return navigateTo('/')
     }
     return
@@ -20,5 +20,10 @@ export default defineNuxtRouteMiddleware((to) => {
   // Protected routes - require authentication
   if (!authStore.isAuthenticated) {
     return navigateTo('/login')
+  }
+
+  // select-mandate requires auth but no further checks
+  if (to.path === '/select-mandate') {
+    return
   }
 })

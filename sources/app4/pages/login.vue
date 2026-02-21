@@ -6,7 +6,6 @@ definePageMeta({
 
 const { t } = useI18n()
 const { login } = useAuth()
-const router = useRouter()
 
 const form = ref({
   username: '',
@@ -21,8 +20,12 @@ const handleSubmit = async () => {
   loading.value = true
 
   try {
-    await login(form.value.username, form.value.password)
-    router.push('/')
+    const result = await login(form.value.username, form.value.password)
+    if (result.hasMandates) {
+      await navigateTo('/select-mandate')
+    } else {
+      await navigateTo('/')
+    }
   } catch (e) {
     if (e instanceof Error) {
       if (e.message.includes('profile 1')) {
