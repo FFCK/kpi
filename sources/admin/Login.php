@@ -47,7 +47,7 @@ class Login extends MyPage
 					SET Pwd = ? 
 					WHERE Code = ? ";
 				$result = $myBdd->pdo->prepare($sql);
-				$result->execute(array(md5($gpwd), $user));
+				$result->execute(array(password_hash($gpwd, PASSWORD_BCRYPT), $user));
 				//MAIL 
 				$sujet = 'Modification de votre mot de passe kayak-polo.info (KPI)';
 				$email_expediteur = 'contact@kayak-polo.info';
@@ -87,7 +87,24 @@ class Login extends MyPage
 			$result->execute(array($user));
 			if ($result->rowCount() == 1) {
 				$row = $result->fetch();
-				if ($row["Pwd"] === md5(utyGetPost('Pwd', false))) {
+				$plainPassword = utyGetPost('Pwd', false);
+				$storedHash = $row["Pwd"];
+				$passwordValid = false;
+
+				// Try bcrypt first (new passwords)
+				if (password_verify($plainPassword, $storedHash)) {
+					$passwordValid = true;
+				}
+				// Fallback: MD5 (legacy passwords) with auto-upgrade to bcrypt
+				elseif (md5($plainPassword) === $storedHash) {
+					$passwordValid = true;
+					$bcryptHash = password_hash($plainPassword, PASSWORD_BCRYPT);
+					$sqlUpgrade = "UPDATE kp_user SET Pwd = ? WHERE Code = ?";
+					$stmtUpgrade = $myBdd->pdo->prepare($sqlUpgrade);
+					$stmtUpgrade->execute(array($bcryptHash, $user));
+				}
+
+				if ($passwordValid) {
 					$_SESSION['User'] = $user;
 					$_SESSION['Profile'] = $row["Niveau"];
 					$_SESSION['ProfileOrigine'] = $row["Niveau"];

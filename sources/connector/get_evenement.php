@@ -44,12 +44,25 @@ $myBdd = new MyBdd();
 
 if (PRODUCTION) {
 	// Vérification user - pwd ...
-	$sql = "SELECT * 
-		FROM kp_user 
-		WHERE md5(concat(code,pwd)) = ? ";
+	// md5(concat(code,pwd)) works for MD5 passwords still in DB
+	// For bcrypt-upgraded passwords, also check via kp_user_token
+	$sql = "SELECT *
+		FROM kp_user
+		WHERE md5(concat(Code, Pwd)) = ? ";
 	$result = $myBdd->pdo->prepare($sql);
 	$result->execute(array($userpwd));
 	$num_results = $result->rowCount();
+
+	// Fallback: if no match (bcrypt passwords), try token-based auth
+	if ($num_results == 0) {
+		$sql = "SELECT u.*
+			FROM kp_user u
+			INNER JOIN kp_user_token ut ON u.Code = ut.user
+			WHERE md5(concat(u.Code, ut.token)) = ? ";
+		$result = $myBdd->pdo->prepare($sql);
+		$result->execute(array($userpwd));
+		$num_results = $result->rowCount();
+	}
 
 	$bKo = true;
 	$bUserPwd = false;

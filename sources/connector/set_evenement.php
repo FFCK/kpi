@@ -25,7 +25,7 @@ if (utyGetGet('json', false)) {
 	{
 		$row = $result->fetch();
 
-		if ( ($row["Pwd"] === md5($pwd)) )
+		if (password_verify($pwd, $row["Pwd"]) || $row["Pwd"] === md5($pwd))
 		{
 			// Ici on peut intégrer les données ...
 			if ($myBdd->m_database == 'poloweb5')

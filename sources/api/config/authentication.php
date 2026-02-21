@@ -17,7 +17,13 @@ function user_authentication()
 		if ($result->rowCount() == 1) {
 			$row = $result->fetch();
 			$events = trim($row['Id_Evenement'], '|');
-			if ($row["Pwd"] === md5($_SERVER["PHP_AUTH_PW"]) && strlen($events) > 0) {
+			$plainPw = $_SERVER["PHP_AUTH_PW"];
+			$passwordValid = password_verify($plainPw, $row["Pwd"]) || $row["Pwd"] === md5($plainPw);
+			if ($passwordValid && strlen($events) > 0) {
+				// Auto-upgrade MD5 to bcrypt
+				if (!password_get_info($row["Pwd"])['algo'] && md5($plainPw) === $row["Pwd"]) {
+					$myBdd->pdo->prepare("UPDATE kp_user SET Pwd = ? WHERE Code = ?")->execute([password_hash($plainPw, PASSWORD_BCRYPT), $row["Code"]]);
+				}
 				if ($row["token"] !== null) {
 					$token = $row["token"];
 				} else {
