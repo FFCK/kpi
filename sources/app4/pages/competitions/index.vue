@@ -732,7 +732,7 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
                       class="w-6 h-6 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
                       :checked="section.competitions.every(c => isSelected(c.code))"
                       @change="section.competitions.forEach(c => { if (($event.target as HTMLInputElement).checked !== isSelected(c.code)) toggleSelect(c.code) })"
-                    />
+                    >
                   </th>
                   <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {{ t('competitions.columns.code') }}
@@ -786,7 +786,7 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
                       type="checkbox"
                       class="w-6 h-6 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
                       @change="toggleSelect(competition.code)"
-                    />
+                    >
                   </td>
 
                   <!-- Code with link to documents -->
@@ -1121,8 +1121,8 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
               <button
                 v-if="canChangeImportedCode"
                 type="button"
-                @click="toggleCodeEdit"
                 class="text-xs text-blue-600 hover:text-blue-800 font-medium"
+                @click="toggleCodeEdit"
               >
                 {{ isCodeEditable ? '🔓 ' : '🔒 ' }}{{ t('competitions.form.edit_code') }}
               </button>
@@ -1136,7 +1136,7 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
               maxlength="12"
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 uppercase disabled:bg-gray-100 disabled:cursor-not-allowed"
-            />
+            >
             <p class="mt-1 text-xs text-gray-500">{{ t('competitions.form.code_hint') }}</p>
           </div>
 
@@ -1187,7 +1187,7 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
               maxlength="80"
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
+            >
           </div>
 
           <!-- Soustitre -->
@@ -1199,7 +1199,7 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
               :placeholder="t('competitions.form.soustitre_placeholder')"
               maxlength="80"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
+            >
           </div>
 
           <!-- Soustitre 2 -->
@@ -1211,7 +1211,7 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
               :placeholder="t('competitions.form.soustitre2_placeholder')"
               maxlength="80"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
+            >
           </div>
 
           <!-- Row: Groupe + Order -->
@@ -1239,7 +1239,7 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
                 min="0"
                 max="99"
                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
+              >
             </div>
           </div>
 
@@ -1281,7 +1281,7 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
                 type="number"
                 min="0"
                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
+              >
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('competitions.form.elimines') }}</label>
@@ -1290,7 +1290,7 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
                 type="number"
                 min="0"
                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
+              >
             </div>
           </div>
 
@@ -1361,7 +1361,7 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
                       type="checkbox"
                       :value="comp.code"
                       class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
+                    >
                     <label :for="`multi-${comp.code}`" class="text-sm text-gray-700 cursor-pointer">
                       {{ comp.code }} - {{ comp.libelle }}
                     </label>
@@ -1379,7 +1379,7 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
               type="url"
               :placeholder="t('competitions.form.web_placeholder')"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
+            >
           </div>
 
           <!-- Display options -->
@@ -1387,27 +1387,27 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
             <label class="block text-sm font-medium text-gray-700 mb-2">{{ t('competitions.form.options') }}</label>
             <div class="grid grid-cols-2 gap-2">
               <label class="flex items-center gap-2 cursor-pointer">
-                <input v-model="formData.enActif" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600" />
+                <input v-model="formData.enActif" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600" >
                 <span class="text-sm">{{ t('competitions.form.en_actif') }}</span>
               </label>
               <label class="flex items-center gap-2 cursor-pointer">
-                <input v-model="formData.titreActif" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600" />
+                <input v-model="formData.titreActif" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600" >
                 <span class="text-sm">{{ t('competitions.form.titre_actif') }}</span>
               </label>
               <label class="flex items-center gap-2 cursor-pointer">
-                <input v-model="formData.bandeauActif" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600" />
+                <input v-model="formData.bandeauActif" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600" >
                 <span class="text-sm">{{ t('competitions.form.bandeau_actif') }}</span>
               </label>
               <label class="flex items-center gap-2 cursor-pointer">
-                <input v-model="formData.logoActif" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600" />
+                <input v-model="formData.logoActif" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600" >
                 <span class="text-sm">{{ t('competitions.form.logo_actif') }}</span>
               </label>
               <label class="flex items-center gap-2 cursor-pointer">
-                <input v-model="formData.sponsorActif" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600" />
+                <input v-model="formData.sponsorActif" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600" >
                 <span class="text-sm">{{ t('competitions.form.sponsor_actif') }}</span>
               </label>
               <label class="flex items-center gap-2 cursor-pointer">
-                <input v-model="formData.kpiFfckActif" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600" />
+                <input v-model="formData.kpiFfckActif" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600" >
                 <span class="text-sm">{{ t('competitions.form.kpi_ffck_actif') }}</span>
               </label>
             </div>

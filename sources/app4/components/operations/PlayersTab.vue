@@ -186,7 +186,7 @@ const onClickOutside = () => {
             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             @focus="showSourceDropdown = sourceResults.length > 0"
             @blur="setTimeout(() => showSourceDropdown = false, 200)"
-          />
+          >
           <!-- Dropdown -->
           <div
             v-if="showSourceDropdown && sourceResults.length > 0"
@@ -227,7 +227,7 @@ const onClickOutside = () => {
             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             @focus="showTargetDropdown = targetResults.length > 0"
             @blur="setTimeout(() => showTargetDropdown = false, 200)"
-          />
+          >
           <!-- Dropdown -->
           <div
             v-if="showTargetDropdown && targetResults.length > 0"

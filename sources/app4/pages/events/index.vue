@@ -369,7 +369,7 @@ const formatDate = (date: string | null) => {
                   type="checkbox"
                   class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
                   @change="toggleSelectAll"
-                />
+                >
               </th>
 
               <!-- ID -->
@@ -465,7 +465,7 @@ const formatDate = (date: string | null) => {
                   type="checkbox"
                   class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
                   @change="toggleSelect(event.id)"
-                />
+                >
               </td>
 
               <!-- ID -->
@@ -682,7 +682,7 @@ const formatDate = (date: string | null) => {
               maxlength="40"
               required
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
+            >
           </div>
 
           <!-- Lieu -->
@@ -696,7 +696,7 @@ const formatDate = (date: string | null) => {
               :placeholder="t('events.form.lieu_placeholder')"
               maxlength="40"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
+            >
           </div>
 
           <!-- Date debut -->
@@ -708,7 +708,7 @@ const formatDate = (date: string | null) => {
               v-model="formData.dateDebut"
               type="date"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
+            >
           </div>
 
           <!-- Date fin -->
@@ -720,7 +720,7 @@ const formatDate = (date: string | null) => {
               v-model="formData.dateFin"
               type="date"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
+            >
           </div>
         </div>
 

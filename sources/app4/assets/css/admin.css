@@ -120,7 +120,7 @@ header.sticky {
 /* ===== Nuxt UI Component Improvements ===== */
 
 /* Buttons - ensure proper styling */
-/* button[class*="bg-blue"] {
+button[class*="bg-blue"] {
   background-color: rgb(37 99 235) !important;
   color: white !important;
 }
@@ -145,7 +145,7 @@ button[class*="bg-green"] {
 
 button[class*="bg-green"]:hover {
   background-color: rgb(21 128 61) !important;
-} */
+}
 
 /* Input fields improvements */
 input[type="text"],

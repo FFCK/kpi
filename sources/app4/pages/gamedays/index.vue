@@ -1157,7 +1157,7 @@ onUnmounted(() => document.removeEventListener('click', onClickOutsideFilter))
       max-width="xl"
       @close="formModalOpen = false"
     >
-      <form @submit.prevent="submitForm" class="space-y-4">
+      <form class="space-y-4" @submit.prevent="submitForm">
         <!-- Error -->
         <div v-if="formError" class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">
           <UIcon name="heroicons:exclamation-triangle" class="w-6 h-6 inline mr-1" />
@@ -1414,7 +1414,7 @@ onUnmounted(() => document.removeEventListener('click', onClickOutsideFilter))
       max-width="md"
       @close="bulkCalendarModalOpen = false"
     >
-      <form @submit.prevent="submitBulkCalendar" class="space-y-4">
+      <form class="space-y-4" @submit.prevent="submitBulkCalendar">
         <p class="text-sm text-gray-600">
           {{ t('gamedays.bulk_calendar_hint', { count: selectedIds.length }) }}
         </p>

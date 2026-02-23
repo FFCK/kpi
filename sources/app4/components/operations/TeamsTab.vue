@@ -298,7 +298,7 @@ const confirmMove = async () => {
             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             @focus="showRenameDropdown = renameResults.length > 0"
             @blur="setTimeout(() => showRenameDropdown = false, 200)"
-          />
+          >
           <div
             v-if="showRenameDropdown && renameResults.length > 0"
             class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto"
@@ -326,7 +326,7 @@ const confirmMove = async () => {
             type="text"
             :disabled="!selectedRenameTeam"
             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
-          />
+          >
         </div>
       </div>
 
@@ -358,7 +358,7 @@ const confirmMove = async () => {
             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             @focus="showMergeSourceDropdown = mergeSourceResults.length > 0"
             @blur="setTimeout(() => showMergeSourceDropdown = false, 200)"
-          />
+          >
           <div
             v-if="showMergeSourceDropdown && mergeSourceResults.length > 0"
             class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto"
@@ -388,7 +388,7 @@ const confirmMove = async () => {
             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             @focus="showMergeTargetDropdown = mergeTargetResults.length > 0"
             @blur="setTimeout(() => showMergeTargetDropdown = false, 200)"
-          />
+          >
           <div
             v-if="showMergeTargetDropdown && mergeTargetResults.length > 0"
             class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto"
@@ -435,7 +435,7 @@ const confirmMove = async () => {
             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             @focus="showMoveTeamDropdown = moveTeamResults.length > 0"
             @blur="setTimeout(() => showMoveTeamDropdown = false, 200)"
-          />
+          >
           <div
             v-if="showMoveTeamDropdown && moveTeamResults.length > 0"
             class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto"
@@ -465,7 +465,7 @@ const confirmMove = async () => {
             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             @focus="showMoveClubDropdown = moveClubResults.length > 0"
             @blur="setTimeout(() => showMoveClubDropdown = false, 200)"
-          />
+          >
           <div
             v-if="showMoveClubDropdown && moveClubResults.length > 0"
             class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto"

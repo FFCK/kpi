@@ -250,7 +250,7 @@ const confirmRename = async () => {
                 type="text"
                 placeholder="ex: N1H"
                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 uppercase"
-              />
+              >
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -261,7 +261,7 @@ const confirmRename = async () => {
                 type="text"
                 placeholder="ex: 2024-2025"
                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              />
+              >
             </div>
           </div>
         </template>
@@ -276,7 +276,7 @@ const confirmRename = async () => {
               type="text"
               placeholder="ex: 0750001"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            />
+            >
           </div>
         </template>
 
@@ -290,7 +290,7 @@ const confirmRename = async () => {
               type="text"
               placeholder="ex: FRA"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 uppercase"
-            />
+            >
           </div>
         </template>
 
@@ -306,7 +306,7 @@ const confirmRename = async () => {
               :accept="currentAccept"
               class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-1 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
               @change="onFileSelected"
-            />
+            >
             <button
               v-if="selectedFile"
               class="px-3 py-2 text-gray-600 hover:text-gray-900"
@@ -350,7 +350,7 @@ const confirmRename = async () => {
               type="text"
               placeholder="ex: L-N1H-2024-2025.jpg"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            />
+            >
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -361,7 +361,7 @@ const confirmRename = async () => {
               type="text"
               placeholder="ex: L-N1M-2024-2025.jpg"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-            />
+            >
           </div>
         </div>
 

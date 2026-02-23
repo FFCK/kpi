@@ -78,7 +78,7 @@ const confirmChange = async () => {
           type="text"
           placeholder="ex: N1H"
           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 uppercase"
-        />
+        >
       </div>
 
       <!-- Target code -->
@@ -91,7 +91,7 @@ const confirmChange = async () => {
           type="text"
           placeholder="ex: N1M"
           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 uppercase"
-        />
+        >
       </div>
 
       <!-- Options -->
@@ -101,7 +101,7 @@ const confirmChange = async () => {
             v-model="allSeasons"
             type="checkbox"
             class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-          />
+          >
           <span class="text-sm text-gray-700">{{ t('operations.codes.all_seasons') }}</span>
         </label>
 
@@ -110,7 +110,7 @@ const confirmChange = async () => {
             v-model="targetExists"
             type="checkbox"
             class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-          />
+          >
           <span class="text-sm text-gray-700">{{ t('operations.codes.target_exists') }}</span>
         </label>
       </div>

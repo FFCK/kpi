@@ -30,7 +30,7 @@ const emit = defineEmits<{
           type="checkbox"
           class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer flex-shrink-0"
           @change="emit('toggle-select')"
-        />
+        >
         <slot name="header" />
       </div>
       <slot name="header-right" />

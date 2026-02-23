@@ -316,7 +316,7 @@ onMounted(() => {
             type="text"
             placeholder="2025"
             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-          />
+          >
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -326,7 +326,7 @@ onMounted(() => {
             v-model="newSeasonNatDebut"
             type="date"
             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-          />
+          >
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -336,7 +336,7 @@ onMounted(() => {
             v-model="newSeasonNatFin"
             type="date"
             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-          />
+          >
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -346,7 +346,7 @@ onMounted(() => {
             v-model="newSeasonInterDebut"
             type="date"
             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-          />
+          >
         </div>
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">
@@ -356,7 +356,7 @@ onMounted(() => {
             v-model="newSeasonInterFin"
             type="date"
             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-          />
+          >
         </div>
         <div class="flex items-end">
           <button
@@ -491,7 +491,7 @@ onMounted(() => {
                 type="checkbox"
                 :value="comp.code"
                 class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
+              >
               <span class="text-sm">{{ comp.code }} - {{ comp.libelle }}</span>
             </label>
           </div>
@@ -504,7 +504,7 @@ onMounted(() => {
               v-model="copyMatches"
               type="checkbox"
               class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-            />
+            >
             <span class="text-sm text-gray-700">{{ t('operations.seasons.copy_matches') }}</span>
           </label>
         </div>

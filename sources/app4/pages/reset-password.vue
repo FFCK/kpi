@@ -93,7 +93,7 @@ async function handleSubmit() {
         </div>
 
         <!-- Form -->
-        <form v-else @submit.prevent="handleSubmit" class="space-y-4">
+        <form v-else class="space-y-4" @submit.prevent="handleSubmit">
           <!-- Error -->
           <div
             v-if="error"

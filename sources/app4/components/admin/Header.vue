@@ -227,7 +227,7 @@ onMounted(() => {
         <!-- Left: Logo -->
         <div class="flex items-center gap-4">
           <NuxtLink to="/" class="flex items-center gap-2">
-            <img src="/img/logo_kp.png" width="30" height="30" alt="logo" class="inline-block align-middle" />
+            <img src="/img/logo_kp.png" width="30" height="30" alt="logo" class="inline-block align-middle" >
             <span class="text-xl font-bold text-blue-400">KPI</span>
             <span class="text-sm text-gray-300">Admin</span>
           </NuxtLink>
@@ -490,8 +490,8 @@ onMounted(() => {
               color="error"
               variant="soft"
               size="sm"
-              @click="handleLogout"
               class="pe-2"
+              @click="handleLogout"
             >
               {{ t('logout') }}
             </UButton>

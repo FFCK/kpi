@@ -733,7 +733,7 @@ const exportPdf = async () => {
                 min="1"
                 max="500"
                 class="w-full px-3 py-2 border-y border-gray-300 bg-white text-gray-900 text-center focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
+              >
               <button
                 type="button"
                 class="px-3 py-2 border border-gray-300 rounded-r-lg bg-gray-50 text-gray-700 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"

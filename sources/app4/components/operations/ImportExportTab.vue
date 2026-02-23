@@ -176,7 +176,7 @@ const canImport = computed(() => importEventId.value !== null && importEventId.v
             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
             @focus="showEventDropdown = events.length > 0"
             @blur="onBlur"
-          />
+          >
           <!-- Dropdown -->
           <div
             v-if="showEventDropdown && events.length > 0"
@@ -242,7 +242,7 @@ const canImport = computed(() => importEventId.value !== null && importEventId.v
             min="1"
             :placeholder="t('operations.import_export.event_id_placeholder')"
             class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-          />
+          >
         </div>
 
         <!-- File input -->
@@ -257,7 +257,7 @@ const canImport = computed(() => importEventId.value !== null && importEventId.v
               accept="application/json"
               class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-1 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
               @change="onImportFileSelected"
-            />
+            >
             <button
               v-if="importFile"
               class="px-3 py-2 text-gray-600 hover:text-gray-900"

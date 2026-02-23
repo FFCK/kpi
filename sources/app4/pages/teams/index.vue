@@ -989,7 +989,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                       type="checkbox"
                       class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
                       @change="toggleSelect(team.id)"
-                    />
+                    >
                   </td>
 
                   <!-- Poule (inline editable) -->
@@ -1003,7 +1003,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                         class="w-12 px-1 py-0.5 border border-blue-400 rounded text-center text-sm uppercase focus:ring-2 focus:ring-blue-500"
                         @keydown="handleInlineKeydown"
                         @blur="saveInlineEdit"
-                      />
+                      >
                     </template>
                     <template v-else>
                       <span
@@ -1027,7 +1027,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                         class="w-14 px-1 py-0.5 border border-blue-400 rounded text-center text-sm focus:ring-2 focus:ring-blue-500"
                         @keydown="handleInlineKeydown"
                         @blur="saveInlineEdit"
-                      />
+                      >
                     </template>
                     <template v-else>
                       <span
@@ -1052,7 +1052,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                         :alt="team.libelle"
                         class="w-20 h-10 object-contain pe-2"
                         @error="($event.target as HTMLImageElement).style.display = 'none'"
-                      />
+                      >
                       <span
                         v-if="team.color1 || team.color2"
                         class="inline-flex items-center justify-center w-8 h-8 rounded-sm aspect-square font-bold"
@@ -1139,7 +1139,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                   type="checkbox"
                   class="w-5 h-5 rounded border-gray-300 text-blue-600 mt-0.5 cursor-pointer"
                   @change="toggleSelect(team.id)"
-                />
+                >
 
                 <!-- Logo + Color swatch (clickable to edit) -->
                 <div
@@ -1153,7 +1153,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                     :alt="team.libelle"
                     class="w-8 h-8 object-contain"
                     @error="($event.target as HTMLImageElement).style.display = 'none'"
-                  />
+                  >
                   <span
                     v-if="team.color1 || team.color2"
                     class="inline-flex items-center justify-center w-6 h-6 rounded-sm aspect-square text-[10px] font-bold"
@@ -1183,7 +1183,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                         class="w-12 px-1 py-0.5 border border-blue-400 rounded text-center text-xs uppercase focus:ring-2 focus:ring-blue-500"
                         @keydown="handleInlineKeydown"
                         @blur="saveInlineEdit"
-                      />
+                      >
                     </template>
                     <span
                       v-else
@@ -1204,7 +1204,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                         class="w-14 px-1 py-0.5 border border-blue-400 rounded text-center text-xs focus:ring-2 focus:ring-blue-500"
                         @keydown="handleInlineKeydown"
                         @blur="saveInlineEdit"
-                      />
+                      >
                     </template>
                     <span
                       v-else
@@ -1270,7 +1270,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
           <UIcon name="i-heroicons-clipboard-document-list" class="w-6 h-6 inline mr-1" />
           {{ t('teams_page.manage_composition') }}
         </NuxtLink>
-        <div class="border-t border-gray-100"></div>
+        <div class="border-t border-gray-100"/>
         <a :href="getPresenceUrl({ id: openDropdownId } as CompetitionTeam)" target="_blank" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50" @click="closePresenceDropdown">
           {{ t('teams_page.presence_sheet') }} (FR)
         </a>
@@ -1382,7 +1382,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                 maxlength="30"
                 required
                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
+              >
             </div>
 
             <!-- Club autocomplete -->
@@ -1397,7 +1397,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                   :placeholder="t('teams_page.add_modal.search_club')"
                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   @input="searchClubs"
-                />
+                >
                 <div
                   v-if="clubSearchResults.length > 0"
                   class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto"
@@ -1467,7 +1467,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                 :placeholder="t('teams_page.add_modal.search_team')"
                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 @input="searchHistoryTeams"
-              />
+              >
             </div>
 
             <!-- Search results -->
@@ -1487,7 +1487,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                     :checked="isHistoryTeamSelected(ht.numero)"
                     type="checkbox"
                     class="w-4 h-4 rounded border-gray-300 text-blue-600 pointer-events-none"
-                  />
+                  >
                   <span class="text-sm flex-1">{{ ht.libelle }}</span>
                   <span class="text-xs text-gray-400">{{ ht.codeClub }}</span>
                 </div>
@@ -1508,7 +1508,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                     :checked="isHistoryTeamSelected(ht.numero)"
                     type="checkbox"
                     class="w-4 h-4 rounded border-gray-300 text-blue-600 pointer-events-none"
-                  />
+                  >
                   <span class="text-sm flex-1">{{ ht.libelle }}</span>
                   <span class="text-xs text-gray-400">{{ ht.codeClub }}</span>
                 </div>
@@ -1528,7 +1528,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                   type="checkbox"
                   class="w-4 h-4 rounded border-gray-300 text-blue-600"
                   @change="showCopyComposition && loadCompositions(addFormData.teamNumbers[0])"
-                />
+                >
                 <span class="text-sm">{{ t('teams_page.add_modal.copy_composition') }}</span>
               </label>
 
@@ -1571,7 +1571,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                 :placeholder="t('teams_page.add_modal.poule_placeholder')"
                 maxlength="5"
                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 uppercase"
-              />
+              >
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('teams_page.add_modal.tirage') }}</label>
@@ -1581,7 +1581,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                 min="0"
                 max="99"
                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
+              >
             </div>
           </div>
         </div>
@@ -1634,7 +1634,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
               :placeholder="t('teams_page.edit_modal.logo_placeholder')"
               maxlength="50"
               class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            />
+            >
           </div>
 
           <!-- Colors -->
@@ -1645,7 +1645,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                 v-model="colorsFormData.color1"
                 type="color"
                 class="w-full h-10 border border-gray-300 rounded-lg cursor-pointer"
-              />
+              >
             </div>
             <div>
               <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('teams_page.edit_modal.color2') }}</label>
@@ -1653,7 +1653,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                 v-model="colorsFormData.color2"
                 type="color"
                 class="w-full h-10 border border-gray-300 rounded-lg cursor-pointer"
-              />
+              >
             </div>
             <div>
               <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('teams_page.edit_modal.colortext') }}</label>
@@ -1661,7 +1661,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                 v-model="colorsFormData.colortext"
                 type="color"
                 class="w-full h-10 border border-gray-300 rounded-lg cursor-pointer"
-              />
+              >
             </div>
           </div>
 
@@ -1688,15 +1688,15 @@ const getLogoUrl = (team: CompetitionTeam) => {
           <!-- Propagation options -->
           <div class="border border-gray-200 rounded-lg p-3 space-y-2">
             <label class="flex items-center gap-2 cursor-pointer">
-              <input v-model="colorsFormData.propagateNext" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600" />
+              <input v-model="colorsFormData.propagateNext" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600" >
               <span class="text-sm">{{ t('teams_page.edit_modal.propagate_next') }}</span>
             </label>
             <label class="flex items-center gap-2 cursor-pointer">
-              <input v-model="colorsFormData.propagatePrevious" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600" />
+              <input v-model="colorsFormData.propagatePrevious" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600" >
               <span class="text-sm">{{ t('teams_page.edit_modal.propagate_previous') }}</span>
             </label>
             <label class="flex items-center gap-2 cursor-pointer text-amber-700">
-              <input v-model="colorsFormData.propagateClub" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-amber-600" />
+              <input v-model="colorsFormData.propagateClub" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-amber-600" >
               <span class="text-sm font-medium">{{ t('teams_page.edit_modal.propagate_club') }}</span>
             </label>
           </div>
@@ -1754,11 +1754,11 @@ const getLogoUrl = (team: CompetitionTeam) => {
           <!-- Mode -->
           <div class="space-y-2">
             <label class="flex items-center gap-2 cursor-pointer">
-              <input v-model="duplicateFormData.mode" type="radio" value="append" class="w-4 h-4 text-blue-600" />
+              <input v-model="duplicateFormData.mode" type="radio" value="append" class="w-4 h-4 text-blue-600" >
               <span class="text-sm">{{ t('teams_page.duplicate_modal.mode_append') }}</span>
             </label>
             <label class="flex items-center gap-2 cursor-pointer">
-              <input v-model="duplicateFormData.mode" type="radio" value="replace" class="w-4 h-4 text-blue-600" />
+              <input v-model="duplicateFormData.mode" type="radio" value="replace" class="w-4 h-4 text-blue-600" >
               <span class="text-sm">{{ t('teams_page.duplicate_modal.mode_replace') }}</span>
             </label>
           </div>
@@ -1774,7 +1774,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
 
           <!-- Copy players -->
           <label class="flex items-center gap-2 cursor-pointer">
-            <input v-model="duplicateFormData.copyPlayers" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600" />
+            <input v-model="duplicateFormData.copyPlayers" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600" >
             <span class="text-sm">{{ t('teams_page.duplicate_modal.copy_players') }}</span>
           </label>
         </div>

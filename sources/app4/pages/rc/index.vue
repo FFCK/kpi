@@ -478,7 +478,7 @@ watch(selectedCompetitions, () => {
       max-width="lg"
       @close="addModalOpen = false; editModalOpen = false"
     >
-      <form @submit.prevent="submitForm" class="space-y-4">
+      <form class="space-y-4" @submit.prevent="submitForm">
         <!-- Error -->
         <div v-if="formError" class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">
           <UIcon name="i-heroicons-exclamation-triangle" class="w-5 h-5 inline mr-2" />
@@ -563,7 +563,7 @@ watch(selectedCompetitions, () => {
       max-width="md"
       @close="copyModalOpen = false"
     >
-      <form @submit.prevent="copyRc" class="space-y-4">
+      <form class="space-y-4" @submit.prevent="copyRc">
         <!-- Error -->
         <div v-if="formError" class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">
           {{ formError }}
