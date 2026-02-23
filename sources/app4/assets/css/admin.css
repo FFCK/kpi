@@ -1,3 +1,6 @@
+@import "tailwindcss";
+@import "@nuxt/ui";
+@import "./toast.css";
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap');
 
 :root {
@@ -10,10 +13,6 @@
   --color-success: #209452;
   --color-danger: #c94a4c;
 }
-
-@import "tailwindcss";
-@import "@nuxt/ui";
-@import "./toast.css";
 
 /* ===== Force Light Mode for Admin Interface ===== */
 /* Override dark mode styles to ensure consistent light theme */
@@ -119,33 +118,9 @@ header.sticky {
 
 /* ===== Nuxt UI Component Improvements ===== */
 
-/* Buttons - ensure proper styling */
-button[class*="bg-blue"] {
-  background-color: rgb(37 99 235) !important;
-  color: white !important;
-}
-
-button[class*="bg-blue"]:hover {
-  background-color: rgb(29 78 216) !important;
-}
-
-button[class*="bg-red"] {
-  background-color: rgb(220 38 38) !important;
-  color: white !important;
-}
-
-button[class*="bg-red"]:hover {
-  background-color: rgb(185 28 28) !important;
-}
-
-button[class*="bg-green"] {
-  background-color: rgb(22 163 74) !important;
-  color: white !important;
-}
-
-button[class*="bg-green"]:hover {
-  background-color: rgb(21 128 61) !important;
-}
+/* Buttons - removed overly broad [class*="bg-*"] selectors that
+   were overriding Tailwind utility classes (e.g. bg-blue-100 vs bg-blue-700).
+   Tailwind classes handle button colors correctly on their own. */
 
 /* Input fields improvements */
 input[type="text"],
@@ -188,7 +163,8 @@ input[type="date"] {
 }
 
 /* Modal overlay improvements */
-[class*="backdrop"] {
+[role="dialog"] [class*="backdrop"],
+.backdrop-blur-sm {
   backdrop-filter: blur(4px);
 }
 
@@ -370,20 +346,7 @@ form button[type="submit"] {
 }
 
 /* ===== Toast/Notification Styles ===== */
-/* Ensure toasts are visible and properly positioned */
-/* IMPORTANT: z-index must be higher than modal (9999) and modal backdrop to avoid blur effect */
-[data-sonner-toaster] {
-  z-index: 100000 !important;
-  position: fixed !important;
-}
-
-[data-sonner-toast] {
-  background-color: white !important;
-  border: 1px solid rgb(229 231 235) !important;
-  border-radius: 0.5rem !important;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
-  padding: 1rem !important;
-}
+/* Toast styles are in toast.css (targeting Nuxt UI v4 / Reka UI selectors) */
 
 /* Ensure modals are centered */
 [role="dialog"] {
