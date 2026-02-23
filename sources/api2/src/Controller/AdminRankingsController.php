@@ -140,13 +140,11 @@ class AdminRankingsController extends AbstractController
                 // 3. Process matches
                 $this->processMatches($competition, $season, $includeUnlocked, $pointsStr);
 
-                // 4. Finalize rankings
-                if ($type === 'CHPT') {
-                    $this->finalizeChptRanking($competition, $season, $goalaverage);
-                    $this->finalizeJourneeChptRanking($competition, $season, $goalaverage);
-                }
+                // 4. Finalize rankings (all types: CHPT and CP)
+                $this->finalizeChptRanking($competition, $season, $goalaverage);
                 $this->finalizeNiveauRanking($competition, $season);
                 $this->finalizeNiveauNiveauRanking($competition, $season);
+                $this->finalizeJourneeChptRanking($competition, $season, $goalaverage);
                 $this->finalizeJourneeNiveauRanking($competition, $season);
             }
 
@@ -1253,14 +1251,37 @@ class AdminRankingsController extends AbstractController
         $rows = $this->connection->prepare($sql)->executeQuery([$competition, $season])->fetchAllAssociative();
 
         $clt = 1;
-        foreach ($rows as $row) {
+        $oldPts = -1;
+        $oldClt = 1;
+        $ties = []; // clt -> [ids] for H2H resolution
+        $oldId = 0;
+
+        foreach ($rows as $i => $row) {
+            $id = (int) $row['Id'];
+            if ($row['Pts'] == $oldPts) {
+                if ($goalaverage === 'gen') {
+                    // General goal-average: each team gets sequential rank
+                    $clt = $i + 1;
+                } else {
+                    // Particular goal-average: teams share rank, collect for H2H
+                    $clt = $oldClt;
+                    $ties[$clt][$oldId] = $oldId;
+                    $ties[$clt][$id] = $id;
+                }
+            } else {
+                $clt = $i + 1;
+            }
+
             $sql = "UPDATE kp_competition_equipe SET Clt = ? WHERE Id = ?";
-            $this->connection->prepare($sql)->executeStatement([$clt, (int) $row['Id']]);
-            $clt++;
+            $this->connection->prepare($sql)->executeStatement([$clt, $id]);
+
+            $oldPts = $row['Pts'];
+            $oldClt = $clt;
+            $oldId = $id;
         }
 
         // Head-to-head tie-breaking if goal-average = 'part'
-        if ($goalaverage === 'part') {
+        if ($goalaverage === 'part' && !empty($ties)) {
             $this->resolveHeadToHead($competition, $season);
         }
     }
@@ -1332,109 +1353,161 @@ class AdminRankingsController extends AbstractController
 
     private function finalizeNiveauRanking(string $competition, string $season): void
     {
-        // Assign CltNiveau based on PtsNiveau DESC
+        // Assign CltNiveau based on PtsNiveau DESC, Diff DESC
+        // Teams with same PtsNiveau AND same Diff share the same rank
         $sql = "SELECT Id, PtsNiveau, Diff FROM kp_competition_equipe
                 WHERE Code_compet = ? AND Code_saison = ?
                 ORDER BY PtsNiveau DESC, Diff DESC";
         $rows = $this->connection->prepare($sql)->executeQuery([$competition, $season])->fetchAllAssociative();
 
         $clt = 1;
-        foreach ($rows as $row) {
+        $oldPts = 0;
+        $oldDiff = 9999;
+        foreach ($rows as $i => $row) {
+            if (abs($row['PtsNiveau'] - $oldPts) >= 1 || $row['Diff'] != $oldDiff) {
+                $clt = $i + 1;
+                $oldPts = $row['PtsNiveau'];
+                $oldDiff = $row['Diff'];
+            }
             $sql = "UPDATE kp_competition_equipe SET CltNiveau = ? WHERE Id = ?";
             $this->connection->prepare($sql)->executeStatement([$clt, (int) $row['Id']]);
-            $clt++;
         }
     }
 
     private function finalizeNiveauNiveauRanking(string $competition, string $season): void
     {
-        // Assign Clt within each Niveau group in kp_competition_equipe_niveau
-        $sql = "SELECT DISTINCT cen.Niveau
+        // Assign Clt/CltNiveau within each Niveau group in kp_competition_equipe_niveau
+        // Teams with same PtsNiveau AND same Diff share the same rank
+        $sql = "SELECT cen.Id, cen.Niveau, cen.PtsNiveau, cen.Diff
                 FROM kp_competition_equipe_niveau cen
                 INNER JOIN kp_competition_equipe ce ON cen.Id = ce.Id
-                WHERE ce.Code_compet = ? AND ce.Code_saison = ?";
-        $niveaux = $this->connection->prepare($sql)->executeQuery([$competition, $season])->fetchAllAssociative();
+                WHERE ce.Code_compet = ? AND ce.Code_saison = ?
+                ORDER BY cen.Niveau, cen.PtsNiveau DESC, cen.Diff DESC";
+        $rows = $this->connection->prepare($sql)->executeQuery([$competition, $season])->fetchAllAssociative();
 
-        foreach ($niveaux as $nRow) {
-            $niveau = (int) $nRow['Niveau'];
-            $sql = "SELECT cen.Id, cen.Pts, cen.Diff, cen.Plus
-                    FROM kp_competition_equipe_niveau cen
-                    INNER JOIN kp_competition_equipe ce ON cen.Id = ce.Id
-                    WHERE ce.Code_compet = ? AND ce.Code_saison = ? AND cen.Niveau = ?
-                    ORDER BY cen.Pts DESC, cen.Diff DESC, cen.Plus DESC";
-            $rows = $this->connection->prepare($sql)->executeQuery([$competition, $season, $niveau])->fetchAllAssociative();
+        $oldNiveau = -1;
+        $clt = 1;
+        $oldPts = 0;
+        $oldDiff = 9999;
+        $j = 0;
 
-            $clt = 1;
-            foreach ($rows as $row) {
-                $sql = "UPDATE kp_competition_equipe_niveau SET Clt = ?, CltNiveau = ? WHERE Id = ? AND Niveau = ?";
-                $this->connection->prepare($sql)->executeStatement([$clt, $clt, (int) $row['Id'], $niveau]);
-                $clt++;
+        foreach ($rows as $row) {
+            $niveau = (int) $row['Niveau'];
+
+            if ($niveau !== $oldNiveau) {
+                // New niveau: reset
+                $oldNiveau = $niveau;
+                $clt = 1;
+                $oldPts = $row['PtsNiveau'];
+                $oldDiff = $row['Diff'];
+                $j = 0;
+            } else {
+                if (abs($row['PtsNiveau'] - $oldPts) >= 1 || $row['Diff'] != $oldDiff) {
+                    $clt = $j + 1;
+                    $oldPts = $row['PtsNiveau'];
+                    $oldDiff = $row['Diff'];
+                }
             }
+
+            $sql = "UPDATE kp_competition_equipe_niveau SET Clt = ?, CltNiveau = ? WHERE Id = ? AND Niveau = ?";
+            $this->connection->prepare($sql)->executeStatement([$clt, $clt, (int) $row['Id'], $niveau]);
+            $j++;
         }
     }
 
     private function finalizeJourneeChptRanking(string $competition, string $season, string $goalaverage): void
     {
-        // Assign Clt within each journee
-        $sql = "SELECT DISTINCT cej.Id_journee
+        // Assign Clt within each journee, grouped by journee
+        $sql = "SELECT cej.Id, cej.Id_journee, cej.Pts, cej.Diff, cej.Plus, j.Type
                 FROM kp_competition_equipe_journee cej
                 INNER JOIN kp_competition_equipe ce ON cej.Id = ce.Id
                 INNER JOIN kp_journee j ON j.Id = cej.Id_journee
                 WHERE j.Code_competition = ? AND j.Code_saison = ?
-                AND (j.Consolidation IS NULL OR j.Consolidation != 'O')";
-        $journees = $this->connection->prepare($sql)->executeQuery([$competition, $season])->fetchAllAssociative();
+                AND (j.Consolidation IS NULL OR j.Consolidation != 'O')
+                ORDER BY cej.Id_journee, cej.Pts DESC, cej.Diff DESC, cej.Plus DESC";
+        $rows = $this->connection->prepare($sql)->executeQuery([$competition, $season])->fetchAllAssociative();
 
-        foreach ($journees as $jRow) {
-            $journeeId = (int) $jRow['Id_journee'];
+        $oldJourneeId = -1;
+        $clt = 1;
+        $oldPts = -1;
+        $oldClt = 1;
+        $oldId = 0;
+        $i = 0;
 
-            // Check journee type
-            $sql = "SELECT Type FROM kp_journee WHERE Id = ?";
-            $typeRow = $this->connection->prepare($sql)->executeQuery([$journeeId])->fetchAssociative();
-            $type = $typeRow['Type'] ?? 'C';
+        foreach ($rows as $row) {
+            $journeeId = (int) $row['Id_journee'];
+            $id = (int) $row['Id'];
+            $type = $row['Type'] ?? 'C';
 
-            if ($type === 'C') {
-                $sql = "SELECT cej.Id, cej.Pts, cej.Diff, cej.Plus
-                        FROM kp_competition_equipe_journee cej
-                        WHERE cej.Id_journee = ?
-                        ORDER BY cej.Pts DESC, cej.Diff DESC, cej.Plus DESC";
-                $rows = $this->connection->prepare($sql)->executeQuery([$journeeId])->fetchAllAssociative();
-
+            if ($journeeId !== $oldJourneeId) {
+                // New journee: reset
+                $oldJourneeId = $journeeId;
                 $clt = 1;
-                foreach ($rows as $row) {
-                    $sql = "UPDATE kp_competition_equipe_journee SET Clt = ? WHERE Id = ? AND Id_journee = ?";
-                    $this->connection->prepare($sql)->executeStatement([$clt, (int) $row['Id'], $journeeId]);
-                    $clt++;
+                $oldPts = $row['Pts'];
+                $oldClt = 1;
+                $i = 0;
+            } else {
+                if ($row['Pts'] == $oldPts) {
+                    if ($goalaverage === 'gen') {
+                        $clt = $i + 1;
+                    } else {
+                        $clt = $oldClt;
+                    }
+                } else {
+                    $clt = $i + 1;
                 }
             }
+
+            $sql = "UPDATE kp_competition_equipe_journee SET Clt = ? WHERE Id = ? AND Id_journee = ?";
+            $this->connection->prepare($sql)->executeStatement([$clt, $id, $journeeId]);
+
+            $oldPts = $row['Pts'];
+            $oldClt = $clt;
+            $oldId = $id;
+            $i++;
         }
     }
 
     private function finalizeJourneeNiveauRanking(string $competition, string $season): void
     {
-        // For CP: assign PtsNiveau-based ranking within journees
-        $sql = "SELECT DISTINCT cej.Id_journee
+        // For CP: assign CltNiveau within each journee
+        // Teams with same PtsNiveau AND same Diff share the same rank
+        $sql = "SELECT cej.Id, cej.Id_journee, cej.PtsNiveau, cej.Diff
                 FROM kp_competition_equipe_journee cej
                 INNER JOIN kp_competition_equipe ce ON cej.Id = ce.Id
                 INNER JOIN kp_journee j ON j.Id = cej.Id_journee
                 WHERE j.Code_competition = ? AND j.Code_saison = ?
-                AND (j.Consolidation IS NULL OR j.Consolidation != 'O')";
-        $journees = $this->connection->prepare($sql)->executeQuery([$competition, $season])->fetchAllAssociative();
+                AND (j.Consolidation IS NULL OR j.Consolidation != 'O')
+                ORDER BY cej.Id_journee, cej.PtsNiveau DESC, cej.Diff DESC";
+        $rows = $this->connection->prepare($sql)->executeQuery([$competition, $season])->fetchAllAssociative();
 
-        foreach ($journees as $jRow) {
-            $journeeId = (int) $jRow['Id_journee'];
+        $oldJourneeId = -1;
+        $clt = 1;
+        $oldPts = 0;
+        $oldDiff = 9999;
+        $j = 0;
 
-            $sql = "SELECT cej.Id, cej.PtsNiveau, cej.Diff
-                    FROM kp_competition_equipe_journee cej
-                    WHERE cej.Id_journee = ?
-                    ORDER BY cej.PtsNiveau DESC, cej.Diff DESC";
-            $rows = $this->connection->prepare($sql)->executeQuery([$journeeId])->fetchAllAssociative();
+        foreach ($rows as $row) {
+            $journeeId = (int) $row['Id_journee'];
 
-            $clt = 1;
-            foreach ($rows as $row) {
-                $sql = "UPDATE kp_competition_equipe_journee SET CltNiveau = ? WHERE Id = ? AND Id_journee = ?";
-                $this->connection->prepare($sql)->executeStatement([$clt, (int) $row['Id'], $journeeId]);
-                $clt++;
+            if ($journeeId !== $oldJourneeId) {
+                // New journee: reset
+                $oldJourneeId = $journeeId;
+                $clt = 1;
+                $oldPts = $row['PtsNiveau'];
+                $oldDiff = $row['Diff'];
+                $j = 0;
+            } else {
+                if (abs($row['PtsNiveau'] - $oldPts) >= 1 || $row['Diff'] != $oldDiff) {
+                    $clt = $j + 1;
+                    $oldPts = $row['PtsNiveau'];
+                    $oldDiff = $row['Diff'];
+                }
             }
+
+            $sql = "UPDATE kp_competition_equipe_journee SET CltNiveau = ? WHERE Id = ? AND Id_journee = ?";
+            $this->connection->prepare($sql)->executeStatement([$clt, (int) $row['Id'], $journeeId]);
+            $j++;
         }
     }
 
