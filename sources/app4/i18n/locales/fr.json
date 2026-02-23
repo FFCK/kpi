@@ -1582,5 +1582,122 @@
       "base_profile": "Profil de base",
       "switch_mandate": "Changer de mandat"
     }
+  },
+  "rankings": {
+    "title": "Gestion du Classement",
+    "tabs": {
+      "computed": "Classement calculé",
+      "published": "Classement publié"
+    },
+    "type": {
+      "label": "Type de classement",
+      "CHPT": "Championnat",
+      "CP": "Tournoi à élimination",
+      "MULTI": "Multi-Compétition"
+    },
+    "goalaverage": {
+      "label": "Goal-average",
+      "gen": "Général",
+      "part": "Particulier"
+    },
+    "table": {
+      "rank": "Clt",
+      "team": "Équipe",
+      "structure": "Structure",
+      "club": "Club",
+      "cd": "Comité départemental",
+      "cr": "Comité régional",
+      "nation": "Nation",
+      "pts": "Pts",
+      "j": "J",
+      "g": "G",
+      "n": "N",
+      "p": "P",
+      "f": "F",
+      "plus": "+",
+      "minus": "-",
+      "diff": "Diff"
+    },
+    "qualified": "Qualifié",
+    "eliminated": "Éliminé",
+    "winner": "Vainqueur",
+    "loser": "Perdant",
+    "no_teams": "Aucune équipe dans cette compétition",
+    "compute": {
+      "title": "Calcul du classement",
+      "date": "Calcul",
+      "by": "par",
+      "include_unlocked": "Inclure les matchs non verrouillés",
+      "button": "Recalculer",
+      "not_computed": "Classement non calculé",
+      "mode_all": "Tous les matchs",
+      "mode_locked": "Matchs verrouillés uniquement",
+      "computing": "Recalcul en cours..."
+    },
+    "publish": {
+      "title": "Classement public",
+      "date_compute": "Calcul",
+      "date_publish": "Publication",
+      "button": "Publier le classement",
+      "unpublish": "Supprimer le classement publié",
+      "not_published": "Classement non publié",
+      "different": "Attention : le classement publié est différent du classement calculé",
+      "publishing": "Publication en cours...",
+      "unpublishing": "Suppression en cours..."
+    },
+    "phases": {
+      "title": "Progression",
+      "consolidated": "Phase consolidée",
+      "consolidate": "Consolider la phase",
+      "elimination": "Phase éliminatoire"
+    },
+    "transfer": {
+      "title": "Affectation - Promotion - Relégation",
+      "target_season": "Affecter vers saison",
+      "target_competition": "Affecter vers compétition",
+      "button": "Affecter les équipes cochées",
+      "nothing_selected": "Aucune équipe sélectionnée",
+      "select_competition": "Sélectionnez une compétition cible",
+      "select_season": "Sélectionnez une saison cible",
+      "success": "{count} équipe(s) transférée(s)",
+      "skipped": "{count} équipe(s) ignorée(s) (déjà présentes)",
+      "transferring": "Transfert en cours...",
+      "confirm": "Transférer {count} équipe(s) vers {competition} ({season}) ?"
+    },
+    "pdf": {
+      "title": "Extractions PDF",
+      "admin": "PDFs Admin (provisoire)",
+      "public": "PDFs Public",
+      "general": "Classement général",
+      "progress": "Déroulement",
+      "detail": "Détail par équipe",
+      "matches": "Matchs"
+    },
+    "status_restriction": "Les modifications ne sont disponibles que pour les compétitions en cours (statut ON)",
+    "initial": {
+      "title": "Classement initial",
+      "subtitle": "Classement initial de {competition}",
+      "button": "Classement initial...",
+      "reload": "Recharger",
+      "reset": "Remise à zéro",
+      "reset_confirm": "Remettre à zéro toutes les valeurs initiales ?",
+      "reset_success": "Valeurs initiales remises à zéro",
+      "back": "Retour aux classements"
+    },
+    "confirm_publish": "Publier le classement calculé comme classement public ?",
+    "confirm_unpublish": "Supprimer le classement public ?",
+    "confirm_compute": "Recalculer le classement de la compétition ?",
+    "confirm_delete_phase_team": "Retirer cette équipe de la phase ?",
+    "error_load": "Erreur lors du chargement du classement",
+    "error_compute": "Erreur lors du recalcul",
+    "error_publish": "Erreur lors de la publication",
+    "error_save": "Erreur lors de la sauvegarde",
+    "success_computed": "Classement recalculé",
+    "success_published": "Classement publié",
+    "success_unpublished": "Classement public supprimé",
+    "success_saved": "Valeur modifiée",
+    "success_consolidated": "Phase consolidée",
+    "success_unconsolidated": "Phase déconsolidée",
+    "success_team_removed": "Équipe retirée de la phase"
   }
 }

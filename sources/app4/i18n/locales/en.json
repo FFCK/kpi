@@ -1570,5 +1570,122 @@
       "base_profile": "Base profile",
       "switch_mandate": "Switch mandate"
     }
+  },
+  "rankings": {
+    "title": "Rankings Management",
+    "tabs": {
+      "computed": "Computed ranking",
+      "published": "Published ranking"
+    },
+    "type": {
+      "label": "Ranking type",
+      "CHPT": "Championship",
+      "CP": "Cup / Tournament",
+      "MULTI": "Multi-Competition"
+    },
+    "goalaverage": {
+      "label": "Goal average",
+      "gen": "General",
+      "part": "Head-to-head"
+    },
+    "table": {
+      "rank": "Rk",
+      "team": "Team",
+      "structure": "Structure",
+      "club": "Club",
+      "cd": "Departmental committee",
+      "cr": "Regional committee",
+      "nation": "Nation",
+      "pts": "Pts",
+      "j": "P",
+      "g": "W",
+      "n": "D",
+      "p": "L",
+      "f": "FF",
+      "plus": "+",
+      "minus": "-",
+      "diff": "GD"
+    },
+    "qualified": "Qualified",
+    "eliminated": "Eliminated",
+    "winner": "Winner",
+    "loser": "Loser",
+    "no_teams": "No teams in this competition",
+    "compute": {
+      "title": "Ranking computation",
+      "date": "Computed",
+      "by": "by",
+      "include_unlocked": "Include unlocked matches",
+      "button": "Recalculate",
+      "not_computed": "Ranking not computed",
+      "mode_all": "All matches",
+      "mode_locked": "Locked matches only",
+      "computing": "Computing..."
+    },
+    "publish": {
+      "title": "Public ranking",
+      "date_compute": "Computed",
+      "date_publish": "Published",
+      "button": "Publish ranking",
+      "unpublish": "Delete published ranking",
+      "not_published": "Ranking not published",
+      "different": "Warning: published ranking differs from computed ranking",
+      "publishing": "Publishing...",
+      "unpublishing": "Deleting..."
+    },
+    "phases": {
+      "title": "Progress",
+      "consolidated": "Consolidated phase",
+      "consolidate": "Consolidate phase",
+      "elimination": "Elimination phase"
+    },
+    "transfer": {
+      "title": "Team Assignment - Promotion - Relegation",
+      "target_season": "Assign to season",
+      "target_competition": "Assign to competition",
+      "button": "Assign selected teams",
+      "nothing_selected": "No team selected",
+      "select_competition": "Select a target competition",
+      "select_season": "Select a target season",
+      "success": "{count} team(s) transferred",
+      "skipped": "{count} team(s) skipped (already present)",
+      "transferring": "Transferring...",
+      "confirm": "Transfer {count} team(s) to {competition} ({season})?"
+    },
+    "pdf": {
+      "title": "PDF Exports",
+      "admin": "Admin PDFs (provisional)",
+      "public": "Public PDFs",
+      "general": "General ranking",
+      "progress": "Progress",
+      "detail": "Detail per team",
+      "matches": "Matches"
+    },
+    "status_restriction": "Modifications are only available for ongoing competitions (status ON)",
+    "initial": {
+      "title": "Initial ranking",
+      "subtitle": "Initial ranking of {competition}",
+      "button": "Initial ranking...",
+      "reload": "Reload",
+      "reset": "Reset to zero",
+      "reset_confirm": "Reset all initial values to zero?",
+      "reset_success": "Initial values reset to zero",
+      "back": "Back to rankings"
+    },
+    "confirm_publish": "Publish computed ranking as public ranking?",
+    "confirm_unpublish": "Delete the public ranking?",
+    "confirm_compute": "Recalculate the competition ranking?",
+    "confirm_delete_phase_team": "Remove this team from the phase?",
+    "error_load": "Error loading ranking",
+    "error_compute": "Error during recalculation",
+    "error_publish": "Error during publication",
+    "error_save": "Error saving",
+    "success_computed": "Ranking recalculated",
+    "success_published": "Ranking published",
+    "success_unpublished": "Published ranking deleted",
+    "success_saved": "Value updated",
+    "success_consolidated": "Phase consolidated",
+    "success_unconsolidated": "Phase unconsolidated",
+    "success_team_removed": "Team removed from phase"
   }
 }

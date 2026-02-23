@@ -57,8 +57,8 @@ sources/app4/
 │   ├── groups/index.vue            # Groupes (/groups)
 │   ├── operations/index.vue        # Opérations système (/operations)
 │   ├── rankings/
-│   │   ├── index.vue               # Classements (/rankings)
-│   │   └── initial.vue             # Classement initial (/rankings/initial)
+│   │   ├── index.vue               # Classements (/rankings) - onglets calculé/publié, édition inline, phases CP, PDFs, transfert
+│   │   └── initial.vue             # Classement initial (/rankings/initial) - CHPT uniquement, édition inline, remise à zéro
 │   ├── stats/
 │   │   ├── index.vue               # Statistiques (/stats)
 │   │   └── [type]/[saison]/[competition].vue
@@ -74,7 +74,8 @@ sources/app4/
 ├── types/                          # Types TypeScript
 │   ├── index.ts                    # Types généraux (Season, Competition, etc.)
 │   ├── competitions.ts             # Types spécifiques compétitions
-│   └── teams.ts                    # Types spécifiques équipes
+│   ├── teams.ts                    # Types spécifiques équipes
+│   └── rankings.ts                 # Types spécifiques classements (RankingCompetitionInfo, RankingTeam, RankingPhase, etc.)
 ├── nuxt.config.ts                  # Configuration Nuxt
 └── tailwind.config.ts              # Configuration Tailwind
 ```
@@ -513,7 +514,8 @@ Ajouter un listener `click` global pour fermer le dropdown lors d'un clic en deh
 | Matchs | `/games` | Legacy redirect |
 | Équipes | `/teams` | Implémentée (contexte) |
 | Journées | `/gamedays` | Legacy redirect |
-| Classements | `/rankings` | Legacy redirect |
+| Classements | `/rankings` | Implémentée (contexte, calcul, publication, phases CP, transfert) |
+| Classement initial | `/rankings/initial` | Implémentée (CHPT uniquement, édition inline, RAZ) |
 | Athlètes | `/athletes` | Implémentée (recherche + fiche + participations) |
 | Clubs | `/clubs` | Implémentée (carte Leaflet) |
 | Utilisateurs | `/users` | Legacy redirect |
@@ -521,4 +523,4 @@ Ajouter un listener `click` global pour fermer le dropdown lors d'un clic en deh
 ---
 
 **Document créé le** : 2026-02-03
-**Dernière mise à jour** : 2026-02-19
+**Dernière mise à jour** : 2026-02-22

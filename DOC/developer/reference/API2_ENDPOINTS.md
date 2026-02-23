@@ -952,6 +952,115 @@ PUT    /admin/athletes/{matric}                   Update athlete (profile <=2, M
 - Only athletes with Matric > 2000000 (non-federal) can be modified
 - Matric <= 2000000 returns 403 Forbidden
 
+### Admin Rankings
+```
+GET    /admin/rankings                              Get rankings for a competition (profile <= 10)
+POST   /admin/rankings/compute                      Recalculate ranking (profile <= 6)
+POST   /admin/rankings/publish                      Publish ranking (profile <= 4)
+DELETE /admin/rankings/publish                      Unpublish ranking (profile <= 3)
+PATCH  /admin/rankings/{teamId}/inline              Inline edit a ranking value (profile <= 4)
+PATCH  /admin/rankings/consolidation/{journeeId}    Toggle phase consolidation (profile <= 4)
+DELETE /admin/rankings/phase-team/{journeeId}/{teamId}  Remove team from phase (profile <= 4)
+POST   /admin/rankings/transfer                     Transfer teams to another competition (profile <= 4)
+GET    /admin/rankings/transfer-competitions        Get available target competitions (profile <= 4)
+GET    /admin/rankings/initial                      Get initial ranking values (profile <= 6)
+PATCH  /admin/rankings/initial/{teamId}             Edit initial ranking value (profile <= 6)
+POST   /admin/rankings/initial/reset                Reset initial ranking values (profile <= 6)
+```
+
+**Query Parameters (GET /admin/rankings):**
+- `season` - Season code (required)
+- `competition` - Competition code (required)
+- `type` - Force ranking type: `CHPT`, `CP`, `MULTI` (optional, defaults to competition type)
+
+**Query Parameters (GET /admin/rankings/transfer-competitions):**
+- `season` - Target season code (required)
+
+**Query Parameters (GET /admin/rankings/initial):**
+- `season` - Season code (required)
+- `competition` - Competition code (required)
+
+**Compute Request (POST /admin/rankings/compute):**
+```json
+{
+  "season": "2025",
+  "competition": "ECM",
+  "includeUnlocked": true
+}
+```
+
+**Publish/Unpublish Request (POST or DELETE /admin/rankings/publish):**
+```json
+{
+  "season": "2025",
+  "competition": "ECM"
+}
+```
+
+**Inline Edit Request (PATCH /admin/rankings/{teamId}/inline):**
+```json
+{
+  "field": "Pts",
+  "value": 900,
+  "journeeId": null
+}
+```
+- If `journeeId` is provided, edits `kp_competition_equipe_journee`; otherwise `kp_competition_equipe`
+- Allowed fields: `Clt`, `Pts`, `J`, `G`, `N`, `P`, `F`, `Plus`, `Moins`, `Diff`, `CltNiveau`, `PtsNiveau`
+- `Pts` must be sent × 100 (frontend multiplies before sending)
+
+**Consolidation Toggle Request (PATCH /admin/rankings/consolidation/{journeeId}):**
+```json
+{
+  "consolidation": true
+}
+```
+
+**Transfer Request (POST /admin/rankings/transfer):**
+```json
+{
+  "teamIds": [1234, 5678],
+  "targetSeason": "2026",
+  "targetCompetition": "ECM"
+}
+```
+
+**Transfer Response:**
+```json
+{
+  "transferred": 2,
+  "skipped": 0,
+  "details": [
+    { "teamId": 1234, "libelle": "ESP Men", "status": "created", "newId": 9876 },
+    { "teamId": 5678, "libelle": "ITA Men", "status": "created", "newId": 9877 }
+  ]
+}
+```
+
+**Initial Ranking Edit Request (PATCH /admin/rankings/initial/{teamId}):**
+```json
+{
+  "field": "Pts",
+  "value": 5
+}
+```
+- Allowed fields: `Clt`, `Pts`, `J`, `G`, `N`, `P`, `F`, `Plus`, `Moins`, `Diff`
+- Values stored as-is (not × 100); multiplication by 100 happens at compute time
+
+**Initial Ranking Reset Request (POST /admin/rankings/initial/reset):**
+```json
+{
+  "season": "2025",
+  "competition": "ECM"
+}
+```
+
+**Validations:**
+- All write operations require competition status `ON` (returns 403 otherwise)
+- Phase consolidation toggle: competition must be `ON`
+- Phase team removal: team must have no played matches in the phase (`J = 0`)
+- Transfer: source competition must differ from target; at least one team selected
+
 ## HTTP Status Codes
 
 - `200` - Success
@@ -1006,6 +1115,8 @@ The `/_error/` routes are internal Symfony routes used for error handling:
 | `GestionRc.php` | `/api2/admin/rc/*` |
 | `GestionOperations.php` | `/api2/admin/operations/*` |
 | `GestionAthlete.php` | `/api2/admin/athletes/*` |
+| `GestionClassement.php` | `/api2/admin/rankings/*` |
+| `GestionClassementInit.php` | `/api2/admin/rankings/initial/*` |
 
 **Important differences:**
 - **Authentication:** API2 uses `X-Auth-Token` header instead of token in URL for Staff/Report endpoints

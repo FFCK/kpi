@@ -1,3 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap');
+
+:root {
+  --color-header: #20265b;
+  --color-primary: #1e4385;
+  --color-secondary: #69b9e6;
+  --color-light: #c6c7c7;
+  --color-dark: #1e1e1c;
+  --color-warning: #e9b410;
+  --color-success: #209452;
+  --color-danger: #c94a4c;
+}
+
 @import "tailwindcss";
 @import "@nuxt/ui";
 @import "./toast.css";
@@ -107,7 +120,7 @@ header.sticky {
 /* ===== Nuxt UI Component Improvements ===== */
 
 /* Buttons - ensure proper styling */
-button[class*="bg-blue"] {
+/* button[class*="bg-blue"] {
   background-color: rgb(37 99 235) !important;
   color: white !important;
 }
@@ -132,7 +145,7 @@ button[class*="bg-green"] {
 
 button[class*="bg-green"]:hover {
   background-color: rgb(21 128 61) !important;
-}
+} */
 
 /* Input fields improvements */
 input[type="text"],
