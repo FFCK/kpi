@@ -712,6 +712,14 @@ const editValueForField = (field: string, value: number): string => {
             </div>
 
             <!-- RIGHT: Action buttons -->
+
+            <NuxtLink
+              v-if="canAccessInitial && effectiveType === 'CHPT'"
+              :to="`/rankings/initial?competition=${competitionInfo.code}&season=${workContext.season}`"
+              class="px-3 py-1.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+            >
+              {{ t('rankings.initial.button') }}
+            </NuxtLink>
             <template v-if="canCompute && isStatusOn">
               <label class="flex items-center gap-2 text-sm">
                 <input
@@ -740,14 +748,6 @@ const editValueForField = (field: string, value: number): string => {
               <template v-if="publishing">{{ t('rankings.publish.publishing') }}</template>
               <template v-else>{{ t('rankings.publish.button') }}</template>
             </button>
-
-            <NuxtLink
-              v-if="canAccessInitial && effectiveType === 'CHPT'"
-              :to="`/rankings/initial?competition=${competitionInfo.code}&season=${workContext.season}`"
-              class="px-3 py-1.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm"
-            >
-              {{ t('rankings.initial.button') }}
-            </NuxtLink>
           </div>
 
           <!-- Loading -->
@@ -812,7 +812,7 @@ const editValueForField = (field: string, value: number): string => {
                           v-if="getFlagUrl(team)"
                           :src="getFlagUrl(team)!"
                           :alt="team.codeClub"
-                          class="w-6 h-4 object-contain"
+                          class="w-6 h-6 object-contain"
                           @error="($event.target as HTMLImageElement).style.display = 'none'"
                         >
                       </td>
@@ -960,7 +960,7 @@ const editValueForField = (field: string, value: number): string => {
                       v-if="isInternational && getFlagUrl(team)"
                       :src="getFlagUrl(team)!"
                       :alt="team.codeClub"
-                      class="w-6 h-4 object-contain mt-0.5"
+                      class="w-6 h-6 object-contain mt-0.5"
                       @error="($event.target as HTMLImageElement).style.display = 'none'"
                     >
                     <span
@@ -1381,7 +1381,7 @@ const editValueForField = (field: string, value: number): string => {
                           v-if="getFlagUrl(team)"
                           :src="getFlagUrl(team)!"
                           :alt="team.codeClub"
-                          class="w-6 h-4 object-contain"
+                          class="w-6 h-6 object-contain"
                           @error="($event.target as HTMLImageElement).style.display = 'none'"
                         >
                       </td>
@@ -1442,7 +1442,7 @@ const editValueForField = (field: string, value: number): string => {
                       v-if="isInternational && getFlagUrl(team)"
                       :src="getFlagUrl(team)!"
                       :alt="team.codeClub"
-                      class="w-6 h-4 object-contain mt-0.5"
+                      class="w-6 h-6 object-contain mt-0.5"
                       @error="($event.target as HTMLImageElement).style.display = 'none'"
                     >
                     <span

@@ -303,7 +303,7 @@ export const useWorkContextStore = defineStore('workContext', {
           this.pageCompetitionCode = storedPageCompetition
         }
 
-        // Restore page-level multi-select competitions (default to single selection if not set)
+        // Restore page-level multi-select competitions
         const storedPageCompetitions = localStorage.getItem(STORAGE_KEYS.pageCompetitionCodes)
         if (storedPageCompetitions) {
           try {
@@ -314,9 +314,23 @@ export const useWorkContextStore = defineStore('workContext', {
             this.pageCompetitionCodes = []
           }
         }
-        else if (this.pageCompetitionCode) {
-          // Default multi-select to single selection value
+
+        // Synchronize single and multi selections
+        if (this.pageCompetitionCodes.length === 0 && this.pageCompetitionCode) {
+          // Multi empty + single set → multi = [single]
           this.pageCompetitionCodes = [this.pageCompetitionCode]
+          localStorage.setItem(STORAGE_KEYS.pageCompetitionCodes, JSON.stringify([this.pageCompetitionCode]))
+        }
+        else if (!this.pageCompetitionCode && this.pageCompetitionCodes.length > 0) {
+          // Single empty + multi set → single = multi[0]
+          this.pageCompetitionCode = this.pageCompetitionCodes[0]!
+          localStorage.setItem(STORAGE_KEYS.pageCompetitionCode, this.pageCompetitionCodes[0]!)
+        }
+        else if (this.pageCompetitionCode && this.pageCompetitionCodes.length > 0
+          && !this.pageCompetitionCodes.includes(this.pageCompetitionCode)) {
+          // Single not in multi → single = multi[0]
+          this.pageCompetitionCode = this.pageCompetitionCodes[0]!
+          localStorage.setItem(STORAGE_KEYS.pageCompetitionCode, this.pageCompetitionCodes[0]!)
         }
 
         this.initialized = true
@@ -496,6 +510,11 @@ export const useWorkContextStore = defineStore('workContext', {
       this.pageCompetitionCode = code
       if (code) {
         localStorage.setItem(STORAGE_KEYS.pageCompetitionCode, code)
+        // Sync: if new value is not in multi-selection, replace it
+        if (!this.pageCompetitionCodes.includes(code)) {
+          this.pageCompetitionCodes = [code]
+          localStorage.setItem(STORAGE_KEYS.pageCompetitionCodes, JSON.stringify([code]))
+        }
       }
       else {
         localStorage.removeItem(STORAGE_KEYS.pageCompetitionCode)
@@ -507,6 +526,11 @@ export const useWorkContextStore = defineStore('workContext', {
       this.pageCompetitionCodes = codes
       if (codes.length > 0) {
         localStorage.setItem(STORAGE_KEYS.pageCompetitionCodes, JSON.stringify(codes))
+        // Sync: if single selection is not in new multi-selection, pick first
+        if (!codes.includes(this.pageCompetitionCode)) {
+          this.pageCompetitionCode = codes[0]!
+          localStorage.setItem(STORAGE_KEYS.pageCompetitionCode, codes[0]!)
+        }
       }
       else {
         localStorage.removeItem(STORAGE_KEYS.pageCompetitionCodes)
