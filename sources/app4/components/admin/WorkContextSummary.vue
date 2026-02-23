@@ -8,8 +8,11 @@ const scopeLabel = computed(() => {
       return t('context.type_all')
     case 'selection':
       return `${t('context.type_selection')} (${workContext.selectedCompetitionCodes.length})`
-    case 'section':
-      return `${t('context.type_section')} ${workContext.sectionId}`
+    case 'section': {
+      const section = workContext.sections.find(s => s.id === workContext.sectionId)
+      const sectionName = section ? t(section.labelKey) : String(workContext.sectionId)
+      return `${t('context.type_section')} ${sectionName}`
+    }
     case 'group':
       return `${t('context.type_group')} ${workContext.groupCode}`
     case 'event': {
