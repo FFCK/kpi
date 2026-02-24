@@ -213,7 +213,7 @@ const profileOptions = computed(() => {
       <h1 class="text-2xl font-bold text-gray-900">{{ t('users.title') }}</h1>
       <NuxtLink
         v-if="canDelete"
-        to="/activity-log"
+        to="/journal"
         class="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
       >
         {{ t('users.activity_log') }}

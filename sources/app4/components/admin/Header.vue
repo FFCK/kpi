@@ -169,6 +169,15 @@ const adminMenuItems = computed<MenuItem[]>(() => {
     })
   }
 
+  // Journal - profile <= 2
+  if (profile <= 2) {
+    items.push({
+      to: '/journal',
+      icon: 'heroicons:document-text',
+      label: t('menu.journal')
+    })
+  }
+
   return items
 })
 

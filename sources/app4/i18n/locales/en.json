@@ -27,7 +27,8 @@
     "users": "Users",
     "operations": "Operations",
     "groups": "Groups",
-    "rc": "Officials"
+    "rc": "Officials",
+    "journal": "Activity Log"
   },
   "profile": "Profile",
   "logout": "Logout",
@@ -1702,5 +1703,47 @@
     "success_consolidated": "Phase consolidated",
     "success_unconsolidated": "Phase unconsolidated",
     "success_team_removed": "Team removed from phase"
+  },
+  "journal": {
+    "title": "Activity Log",
+    "search_placeholder": "Search in the log...",
+    "filters": {
+      "user": "User",
+      "user_all": "All",
+      "user_placeholder": "Filter by user...",
+      "action": "Action",
+      "action_all": "All",
+      "action_group_ensemble": "Groups",
+      "action_group_detail": "Detail",
+      "action_connexion": "Logins",
+      "action_ajout": "Additions",
+      "action_modif": "Modifications",
+      "action_supp": "Deletions",
+      "action_calcul": "Calculations",
+      "season": "Season",
+      "season_all": "All",
+      "competition": "Competition",
+      "competition_placeholder": "Competition code...",
+      "date_from": "From",
+      "date_to": "To"
+    },
+    "table": {
+      "date": "Date",
+      "identite": "Identity",
+      "action": "Action",
+      "detail": "Detail",
+      "competition": "Comp.",
+      "gameday": "Day",
+      "match": "Match"
+    },
+    "empty": "No entries in the log.",
+    "empty_filtered": "No entries match the filters.",
+    "loading": "Loading activity log...",
+    "error": "Error loading activity log.",
+    "total_entries": "{count} entry | {count} entries",
+    "pagination": {
+      "showing": "Showing {from} to {to} of {total}",
+      "items_per_page": "Items per page"
+    }
   }
 }

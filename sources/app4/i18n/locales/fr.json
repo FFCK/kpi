@@ -27,7 +27,8 @@
     "users": "Utilisateurs",
     "operations": "Opérations",
     "groups": "Groupes",
-    "rc": "RC"
+    "rc": "RC",
+    "journal": "Journal"
   },
   "profile": "Profil",
   "logout": "Déconnexion",
@@ -1714,5 +1715,47 @@
     "success_consolidated": "Phase consolidée",
     "success_unconsolidated": "Phase déconsolidée",
     "success_team_removed": "Équipe retirée de la phase"
+  },
+  "journal": {
+    "title": "Journal d'activité",
+    "search_placeholder": "Rechercher dans le journal...",
+    "filters": {
+      "user": "Utilisateur",
+      "user_all": "Tous",
+      "user_placeholder": "Filtrer par utilisateur...",
+      "action": "Action",
+      "action_all": "Toutes",
+      "action_group_ensemble": "Ensemble",
+      "action_group_detail": "Détail",
+      "action_connexion": "Connexions",
+      "action_ajout": "Ajouts",
+      "action_modif": "Modifications",
+      "action_supp": "Suppressions",
+      "action_calcul": "Calculs",
+      "season": "Saison",
+      "season_all": "Toutes",
+      "competition": "Compétition",
+      "competition_placeholder": "Code compétition...",
+      "date_from": "Du",
+      "date_to": "Au"
+    },
+    "table": {
+      "date": "Date",
+      "identite": "Identité",
+      "action": "Action",
+      "detail": "Détail",
+      "competition": "Comp.",
+      "gameday": "Journ.",
+      "match": "Match"
+    },
+    "empty": "Aucune entrée dans le journal.",
+    "empty_filtered": "Aucune entrée ne correspond aux filtres.",
+    "loading": "Chargement du journal...",
+    "error": "Erreur lors du chargement du journal.",
+    "total_entries": "{count} entrée | {count} entrées",
+    "pagination": {
+      "showing": "Affichage de {from} à {to} sur {total}",
+      "items_per_page": "Éléments par page"
+    }
   }
 }
