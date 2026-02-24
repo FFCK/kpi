@@ -136,6 +136,15 @@ function onClubSearchInput() {
   }, 300)
 }
 
+function clearClubSearch() {
+  clubSearch.value = ''
+  clubSearchResults.value = []
+  clubSearchOpen.value = false
+  selectedClub.value = null
+  selectedClubCode.value = null
+  clubTeams.value = []
+}
+
 async function selectClub(club: ClubSearchResult) {
   clubSearchOpen.value = false
   clubSearch.value = `${club.code} - ${club.libelle}`
@@ -507,11 +516,18 @@ onBeforeUnmount(() => {
                 v-model="clubSearch"
                 type="text"
                 :placeholder="t('clubs.search_placeholder')"
-                class="w-full px-3 py-2 pl-9 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full px-3 py-2 pl-9 pr-8 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 @input="onClubSearchInput"
                 @focus="onClubSearchInput"
               >
               <UIcon name="i-heroicons-magnifying-glass" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <button
+                v-if="clubSearch && !clubSearchLoading"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                @click="clearClubSearch"
+              >
+                <UIcon name="i-heroicons-x-mark" class="w-4 h-4" />
+              </button>
               <UIcon v-if="clubSearchLoading" name="i-heroicons-arrow-path" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 animate-spin" />
             </div>
             <!-- Dropdown results -->

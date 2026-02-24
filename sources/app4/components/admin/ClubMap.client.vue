@@ -100,28 +100,41 @@ watch(() => props.clubs, () => {
 }, { deep: true })
 
 // Geocode an address and place a search marker
-function geocode(address: string): Promise<{ lat: number; lng: number } | null> {
-  return fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1`)
+function geocode(address: string): Promise<{ lat: number; lng: number; displayName: string } | null> {
+  return fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address)}&limit=1&addressdetails=1`)
     .then(r => r.json())
-    .then((results: Array<{ lat: string; lon: string }>) => {
+    .then((results: Array<{ lat: string; lon: string; display_name: string }>) => {
       if (!results.length || !map.value) return null
 
       const lat = parseFloat(results[0]!.lat)
       const lng = parseFloat(results[0]!.lon)
+      const displayName = results[0]!.display_name
+      const coordStr = `${lat},${lng}`
 
       // Remove previous search marker
       if (searchMarker.value && map.value) {
         map.value.removeLayer(searchMarker.value)
       }
 
+      const popupContent = `
+        <div style="min-width:200px">
+          <div style="font-weight:600;margin-bottom:6px">${displayName}</div>
+          <div style="display:flex;align-items:center;gap:6px;background:#f3f4f6;padding:4px 8px;border-radius:4px;font-family:monospace;font-size:12px">
+            <span style="user-select:all">${coordStr}</span>
+            <button onclick="navigator.clipboard.writeText('${coordStr}')" title="Copier" style="border:none;background:none;cursor:pointer;padding:2px;line-height:1;color:#6b7280">
+              <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path d="M7 3.5A1.5 1.5 0 018.5 2h3.879a1.5 1.5 0 011.06.44l3.122 3.12A1.5 1.5 0 0117 6.622V12.5a1.5 1.5 0 01-1.5 1.5h-1v-3.379a3 3 0 00-.879-2.121L10.5 5.379A3 3 0 008.379 4.5H7v-1z"/><path d="M4.5 6A1.5 1.5 0 003 7.5v9A1.5 1.5 0 004.5 18h7a1.5 1.5 0 001.5-1.5v-5.879a1.5 1.5 0 00-.44-1.06L9.44 6.439A1.5 1.5 0 008.378 6H4.5z"/></svg>
+            </button>
+          </div>
+        </div>`
+
       searchMarker.value = L.marker([lat, lng], { icon: searchIcon })
         .addTo(map.value!)
-        .bindPopup(address)
+        .bindPopup(popupContent, { maxWidth: 300 })
         .openPopup()
 
       map.value!.setView([lat, lng], 12)
 
-      return { lat, lng }
+      return { lat, lng, displayName }
     })
     .catch(() => null)
 }
