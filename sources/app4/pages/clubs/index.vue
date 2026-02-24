@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ClubMapItem, ClubDetail, RegionalCommittee, DepartmentalCommittee, ClubSearchResult } from '~/types/clubs'
+import type { ClubMapItem, ClubDetail, RegionalCommittee, DepartmentalCommittee, ClubSearchResult, ClubTeam } from '~/types/clubs'
 
 definePageMeta({
   layout: 'admin',
@@ -36,6 +36,10 @@ const updateForm = reactive({
   coord: ''
 })
 const updating = ref(false)
+
+// ── Club teams ──
+const clubTeams = ref<ClubTeam[]>([])
+const clubTeamsLoading = ref(false)
 
 // ── Add CD Modal ──
 const cdModalOpen = ref(false)
@@ -151,6 +155,22 @@ async function selectClub(club: ClubSearchResult) {
     })
   } catch {
     // useApi already shows toast
+  }
+
+  // Load club teams
+  loadClubTeams(club.code)
+}
+
+async function loadClubTeams(code: string) {
+  clubTeamsLoading.value = true
+  clubTeams.value = []
+  try {
+    const response = await api.get<{ teams: ClubTeam[] }>(`/admin/clubs/${code}/teams`)
+    clubTeams.value = response.teams
+  } catch {
+    // useApi already shows toast
+  } finally {
+    clubTeamsLoading.value = false
   }
 }
 
@@ -598,6 +618,45 @@ onBeforeUnmount(() => {
           <p v-else class="text-sm text-gray-400 italic">
             {{ t('clubs.update.select_first') }}
           </p>
+
+          <!-- ═══ Club teams ═══ -->
+          <template v-if="selectedClub">
+            <div class="mt-4 pt-4 border-t border-gray-200">
+              <h3 class="text-sm font-semibold text-gray-900 mb-2">
+                {{ t('clubs.teams.title') }}
+              </h3>
+
+              <!-- Loading -->
+              <div v-if="clubTeamsLoading" class="flex items-center gap-2 text-sm text-gray-400">
+                <UIcon name="i-heroicons-arrow-path" class="w-4 h-4 animate-spin" />
+                <span>{{ t('common.loading') }}</span>
+              </div>
+
+              <!-- No teams -->
+              <p v-else-if="clubTeams.length === 0" class="text-sm text-gray-400 italic">
+                {{ t('clubs.teams.no_teams') }}
+              </p>
+
+              <!-- Teams list -->
+              <div v-else class="space-y-1.5">
+                <NuxtLink
+                  v-for="team in clubTeams"
+                  :key="team.numero"
+                  :to="`/clubs/team/${team.numero}`"
+                  class="block px-3 py-2 rounded-lg hover:bg-blue-50 transition-colors group"
+                >
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-gray-900 group-hover:text-blue-700">{{ team.libelle }}</span>
+                    <UIcon name="i-heroicons-chevron-right" class="w-4 h-4 text-gray-300 group-hover:text-blue-500" />
+                  </div>
+                  <div class="flex items-center gap-3 text-xs text-gray-500 mt-0.5">
+                    <span v-if="team.derniereSaison">{{ t('clubs.teams.last_season') }} : {{ team.derniereSaison }}</span>
+                    <span v-if="team.nbCompetitions > 0">{{ team.nbCompetitions }} {{ t('clubs.teams.competitions_count') }}</span>
+                  </div>
+                </NuxtLink>
+              </div>
+            </div>
+          </template>
         </div>
       </div>
     </div>

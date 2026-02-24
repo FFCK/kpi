@@ -1352,6 +1352,21 @@
       "error_no_cd": "Sélectionnez un Comité Départemental.",
       "error_empty": "Le nom ou le code du club est vide.",
       "error_duplicate": "Ce code club existe déjà."
+    },
+    "teams": {
+      "title": "Équipes du club",
+      "no_teams": "Aucune équipe associée à ce club",
+      "last_season": "Dernière saison",
+      "competitions_count": "compétition(s)",
+      "detail_title": "Détail de l'équipe",
+      "club": "Club",
+      "colors": "Couleurs",
+      "competitions": "Compétitions",
+      "season": "Saison",
+      "competition": "Compétition",
+      "team_name": "Nom équipe",
+      "no_competitions": "Aucune participation à une compétition",
+      "back_to_club": "Retour au club"
     }
   },
   "athletes": {

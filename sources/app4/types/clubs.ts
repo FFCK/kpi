@@ -35,3 +35,30 @@ export interface ClubSearchResult {
   libelle: string
   codeComiteDep: string
 }
+
+export interface ClubTeam {
+  numero: number
+  libelle: string
+  logo: string
+  derniereSaison: string | null
+  nbCompetitions: number
+}
+
+export interface TeamDetail {
+  numero: number
+  libelle: string
+  codeClub: string
+  libelleClub: string
+  logo: string
+  color1: string
+  color2: string
+  colortext: string
+  competitions: TeamCompetition[]
+}
+
+export interface TeamCompetition {
+  codeCompet: string
+  codeSaison: string
+  libelleEquipe: string
+  libelleCompet: string
+}

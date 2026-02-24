@@ -1340,6 +1340,21 @@
       "error_no_cd": "Select a Departmental Committee.",
       "error_empty": "Club name or code is empty.",
       "error_duplicate": "This club code already exists."
+    },
+    "teams": {
+      "title": "Club teams",
+      "no_teams": "No teams associated with this club",
+      "last_season": "Last season",
+      "competitions_count": "competition(s)",
+      "detail_title": "Team detail",
+      "club": "Club",
+      "colors": "Colors",
+      "competitions": "Competitions",
+      "season": "Season",
+      "competition": "Competition",
+      "team_name": "Team name",
+      "no_competitions": "No competition participation",
+      "back_to_club": "Back to club"
     }
   },
   "athletes": {

@@ -238,6 +238,85 @@ class AdminClubsController extends AbstractController
     }
 
     /**
+     * Get all teams (kp_equipe) for a club, with last season and competition count
+     */
+    #[Route('/admin/clubs/{code}/teams', name: 'admin_clubs_teams', methods: ['GET'])]
+    public function clubTeams(string $code): JsonResponse
+    {
+        // Check club exists
+        $exists = $this->connection->fetchOne("SELECT Code FROM kp_club WHERE Code = ?", [$code]);
+        if (!$exists) {
+            return $this->json(['error' => true, 'message' => 'Club not found', 'code' => 'NOT_FOUND'], Response::HTTP_NOT_FOUND);
+        }
+
+        $sql = "SELECT e.Numero, e.Libelle, e.logo,
+                       MAX(ce.Code_saison) AS derniereSaison,
+                       COUNT(DISTINCT CONCAT(ce.Code_compet, '-', ce.Code_saison)) AS nbCompetitions
+                FROM kp_equipe e
+                LEFT JOIN kp_competition_equipe ce ON ce.Numero = e.Numero
+                WHERE e.Code_club = ?
+                GROUP BY e.Numero, e.Libelle, e.logo
+                ORDER BY derniereSaison DESC, e.Libelle";
+
+        $rows = $this->connection->fetchAllAssociative($sql, [$code]);
+
+        $teams = array_map(fn(array $row) => [
+            'numero' => (int) $row['Numero'],
+            'libelle' => $row['Libelle'],
+            'logo' => $row['logo'] ?? '',
+            'derniereSaison' => $row['derniereSaison'],
+            'nbCompetitions' => (int) $row['nbCompetitions'],
+        ], $rows);
+
+        return $this->json(['teams' => $teams]);
+    }
+
+    /**
+     * Get team detail with competition history
+     */
+    #[Route('/admin/teams/{numero}', name: 'admin_teams_detail', methods: ['GET'])]
+    public function teamDetail(int $numero): JsonResponse
+    {
+        $sql = "SELECT e.Numero, e.Libelle, e.Code_club, e.logo, e.color1, e.color2, e.colortext,
+                       c.Libelle AS libelleClub
+                FROM kp_equipe e
+                LEFT JOIN kp_club c ON c.Code = e.Code_club
+                WHERE e.Numero = ?";
+
+        $row = $this->connection->fetchAssociative($sql, [$numero]);
+
+        if (!$row) {
+            return $this->json(['error' => true, 'message' => 'Team not found', 'code' => 'NOT_FOUND'], Response::HTTP_NOT_FOUND);
+        }
+
+        $sqlCompets = "SELECT ce.Code_compet, ce.Code_saison, ce.Libelle AS libelleEquipe,
+                              comp.Libelle AS libelleCompet
+                       FROM kp_competition_equipe ce
+                       LEFT JOIN kp_competition comp ON comp.Code = ce.Code_compet AND comp.Code_saison = ce.Code_saison
+                       WHERE ce.Numero = ?
+                       ORDER BY ce.Code_saison DESC, comp.Libelle";
+
+        $compets = $this->connection->fetchAllAssociative($sqlCompets, [$numero]);
+
+        return $this->json([
+            'numero' => (int) $row['Numero'],
+            'libelle' => $row['Libelle'],
+            'codeClub' => $row['Code_club'],
+            'libelleClub' => $row['libelleClub'] ?? '',
+            'logo' => $row['logo'] ?? '',
+            'color1' => $row['color1'] ?? '',
+            'color2' => $row['color2'] ?? '',
+            'colortext' => $row['colortext'] ?? '',
+            'competitions' => array_map(fn(array $r) => [
+                'codeCompet' => $r['Code_compet'],
+                'codeSaison' => $r['Code_saison'],
+                'libelleEquipe' => $r['libelleEquipe'] ?? '',
+                'libelleCompet' => $r['libelleCompet'] ?? '',
+            ], $compets),
+        ]);
+    }
+
+    /**
      * Create a new departmental committee
      */
     #[Route('/admin/departmental-committees', name: 'admin_cd_create', methods: ['POST'])]
