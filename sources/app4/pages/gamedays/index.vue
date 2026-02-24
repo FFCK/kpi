@@ -629,6 +629,13 @@ onUnmounted(() => document.removeEventListener('click', onClickOutsideFilter))
       <h1 class="text-2xl font-bold text-gray-900">
         {{ t('gamedays.title') }}
       </h1>
+      <NuxtLink
+        to="/gamedays/schema"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
+      >
+        <UIcon name="heroicons:rectangle-group" class="w-4 h-4" />
+        {{ t('schema.title') }}
+      </NuxtLink>
     </div>
 
     <!-- Filters Row -->

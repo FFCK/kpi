@@ -1757,5 +1757,22 @@
       "showing": "Affichage de {from} à {to} sur {total}",
       "items_per_page": "Éléments par page"
     }
+  },
+  "schema": {
+    "title": "Schéma de compétition",
+    "games_count": "{count} Match | {count} Matchs",
+    "phase_games": "match | matchs",
+    "show_game_count": "Matchs",
+    "show_time_slots": "Horaires",
+    "no_competition": "Sélectionnez une compétition pour afficher le schéma",
+    "no_data": "Aucune donnée disponible pour cette compétition",
+    "stage": "Étape",
+    "table": {
+      "rank": "#",
+      "teams": "Équipes",
+      "pts": "Pts",
+      "played": "J",
+      "diff": "+/-"
+    }
   }
 }

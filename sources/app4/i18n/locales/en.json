@@ -1745,5 +1745,22 @@
       "showing": "Showing {from} to {to} of {total}",
       "items_per_page": "Items per page"
     }
+  },
+  "schema": {
+    "title": "Draw progression",
+    "games_count": "{count} Game | {count} Games",
+    "phase_games": "game | games",
+    "show_game_count": "Games",
+    "show_time_slots": "Time slots",
+    "no_competition": "Select a competition to display the chart",
+    "no_data": "No data available for this competition",
+    "stage": "Stage",
+    "table": {
+      "rank": "#",
+      "teams": "Teams",
+      "pts": "Pts",
+      "played": "P",
+      "diff": "+/-"
+    }
   }
 }
