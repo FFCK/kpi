@@ -27,7 +27,7 @@
     "users": "Users",
     "operations": "Operations",
     "groups": "Groups",
-    "rc": "Officials",
+    "rc": "Competition Officials",
     "journal": "Activity Log"
   },
   "profile": "Profile",
@@ -803,6 +803,8 @@
     "select_event": "Select an event",
     "competitions_from_context": "Competitions (from context)",
     "competition_from_context": "Competition (from context)",
+    "competition_from_event": "Competition (from event)",
+    "competition_from_group": "Competition (from group)",
     "all_competitions": "All",
     "current": "Context",
     "competitions_count": "{count} competition(s)",
@@ -810,7 +812,13 @@
     "active_season": "Active season",
     "change": "Change",
     "summary": "Summary",
-    "no_competitions": "No competitions in this scope"
+    "no_competitions": "No competitions in this scope",
+    "all_competitions_for_selection": "All competitions"
+  },
+  "eventGroupSelect": {
+    "all": "All",
+    "events": "Events",
+    "label": "Event / Group"
   },
   "teams_page": {
     "title": "Team Management",

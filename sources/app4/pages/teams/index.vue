@@ -780,11 +780,22 @@ const getLogoUrl = (team: CompetitionTeam) => {
       </h1>
     </div>
 
-    <!-- Competition selector -->
+    <!-- Filters: Event/Group + Competition -->
     <div class="mb-2 bg-white rounded-lg shadow p-4">
-      <div class="flex flex-wrap items-center gap-4">
+      <div class="flex flex-wrap items-end gap-4">
+        <!-- Event / Group filter -->
+        <div class="min-w-48 max-w-96">
+          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('eventGroupSelect.label') }}</label>
+          <AdminEventGroupSelect />
+        </div>
+
+        <!-- Competition filter -->
         <div class="flex-1 min-w-[250px]">
-          <AdminCompetitionSingleSelect @change="onCompetitionChange" />
+          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t(workContext.competitionFilterLabelKey) }}</label>
+          <AdminCompetitionSingleSelect
+            :filtered-codes="workContext.pageFilteredCompetitionCodes"
+            @change="onCompetitionChange"
+          />
         </div>
 
         <!-- Competition badges -->

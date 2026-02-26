@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Game, GamesListResponse, GameFormData, GameJournee, GameTeam, GameEvent } from '~/types/games'
+import type { Game, GamesListResponse, GameFormData, GameJournee, GameTeam } from '~/types/games'
 
 definePageMeta({
   layout: 'admin',
@@ -60,11 +60,6 @@ const availableDates = ref<string[]>([])
 // Filters (restored from localStorage)
 const saved = loadSavedFilters()
 const searchQuery = ref('')
-const selectedEvent = ref('-1')
-const selectedCompetitions = computed({
-  get: () => workContext.pageCompetitionCodes,
-  set: (val: string[]) => workContext.setPageCompetitions(val),
-})
 const selectedTour = ref(saved.selectedTour ?? '')
 const selectedJournee = ref(saved.selectedJournee ?? '*')
 const selectedDate = ref(saved.selectedDate ?? '')
@@ -73,12 +68,7 @@ const selectedSort = ref(saved.selectedSort ?? 'date_time_terrain')
 const unlockedOnly = ref(saved.unlockedOnly ?? false)
 
 // Filter data
-const events = ref<GameEvent[]>([])
 const journees = ref<GameJournee[]>([])
-
-// Competition filter dropdown
-const competitionFilterOpen = ref(false)
-const competitionFilterRef = ref<HTMLElement | null>(null)
 
 // Selection
 const selectedIds = ref<number[]>([])
@@ -175,13 +165,20 @@ const loadGames = async (keepSelection = false) => {
       sort: selectedSort.value,
     }
 
-    if (selectedCompetitions.value.length > 0) {
-      params.competitions = selectedCompetitions.value.join(',')
+    // Competition filter
+    if (workContext.pageCompetitionCodeAll) {
+      params.competitions = workContext.pageCompetitionCodeAll
+    } else if (workContext.pageEventGroupType === 'group') {
+      const group = workContext.uniqueGroups.find(g => g.code === workContext.pageEventGroupValue)
+      if (group) {
+        const contextCodes = new Set(workContext.competitionCodes)
+        const groupCodes = group.competitions.filter(c => contextCodes.has(c))
+        if (groupCodes.length > 0) params.competitions = groupCodes.join(',')
+      }
+    } else if (workContext.pageEventGroupType === 'event') {
+      params.event = workContext.pageEventGroupValue
     } else if (workContext.hasValidContext && workContext.competitionCodes.length > 0) {
       params.competitions = workContext.competitionCodes.join(',')
-    }
-    if (selectedEvent.value && selectedEvent.value !== '-1') {
-      params.event = selectedEvent.value
     }
     if (selectedTour.value) {
       params.tour = selectedTour.value
@@ -221,25 +218,26 @@ const loadGames = async (keepSelection = false) => {
   }
 }
 
-const loadEvents = async () => {
-  try {
-    const data = await api.get<{ items: GameEvent[] }>('/admin/games/events')
-    events.value = data.items || []
-  } catch {
-    // Silently fail
-  }
-}
 
 const loadJournees = async () => {
   if (!workContext.season) return
   try {
     const params: Record<string, string> = { season: workContext.season }
-    if (selectedCompetitions.value.length > 0) {
-      params.competitions = selectedCompetitions.value.join(',')
+    // Competition filter (same logic as loadGames)
+    if (workContext.pageCompetitionCodeAll) {
+      params.competitions = workContext.pageCompetitionCodeAll
+    } else if (workContext.pageEventGroupType === 'group') {
+      const group = workContext.uniqueGroups.find(g => g.code === workContext.pageEventGroupValue)
+      if (group) {
+        const contextCodes = new Set(workContext.competitionCodes)
+        const groupCodes = group.competitions.filter(c => contextCodes.has(c))
+        if (groupCodes.length > 0) params.competitions = groupCodes.join(',')
+      }
+    } else if (workContext.pageEventGroupType === 'event') {
+      params.event = workContext.pageEventGroupValue
     } else if (workContext.hasValidContext && workContext.competitionCodes.length > 0) {
       params.competitions = workContext.competitionCodes.join(',')
     }
-    if (selectedEvent.value && selectedEvent.value !== '-1') params.event = selectedEvent.value
     if (selectedTour.value) params.tour = selectedTour.value
 
     const data = await api.get<{ journees: GameJournee[] }>('/admin/games/journees', params)
@@ -275,7 +273,6 @@ onMounted(async () => {
 watch(() => [workContext.initialized, workContext.season], () => {
   if (workContext.initialized && workContext.season) {
     loadGames()
-    loadEvents()
     loadJournees()
   }
 }, { immediate: true })
@@ -284,7 +281,7 @@ watch([page, limit, selectedSort], () => {
   loadGames()
 })
 
-watch([selectedCompetitions, selectedEvent, selectedTour, selectedJournee, selectedDate, selectedTerrain], () => {
+watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGroupSelection, selectedTour, selectedJournee, selectedDate, selectedTerrain], () => {
   page.value = 1
   loadGames()
 })
@@ -292,7 +289,7 @@ watch([selectedCompetitions, selectedEvent, selectedTour, selectedJournee, selec
 // Reload journees when competition/event/tour changes
 // Skip the first trigger to preserve restored/query filters on init
 let journeeResetReady = false
-watch([selectedCompetitions, selectedEvent, selectedTour], () => {
+watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGroupSelection, selectedTour], () => {
   if (!journeeResetReady) {
     journeeResetReady = true
     return
@@ -320,9 +317,6 @@ watch(searchQuery, () => {
 const onClickOutside = (e: MouseEvent) => {
   if (bulkActionsRef.value && !bulkActionsRef.value.contains(e.target as Node)) {
     bulkActionsOpen.value = false
-  }
-  if (competitionFilterRef.value && !competitionFilterRef.value.contains(e.target as Node)) {
-    competitionFilterOpen.value = false
   }
 }
 onMounted(() => document.addEventListener('click', onClickOutside))
@@ -974,78 +968,63 @@ const statusBtnClass = (game: Game) => {
     <h1 class="text-2xl font-bold text-gray-900">{{ t('games.title') }}</h1>
 
     <!-- ═══════ FILTERS ═══════ -->
-    <div class="flex flex-wrap items-center gap-2">
-      <!-- Event -->
-      <div class="flex items-center gap-1">
-        <label class="text-xs text-gray-500 whitespace-nowrap">{{ t('games.filter_event') }}</label>
-        <select v-model="selectedEvent" class="text-sm border border-gray-300 rounded-lg px-2 py-1.5">
-          <option value="-1">{{ t('games.all_events') }}</option>
-          <option v-for="ev in events" :key="ev.id" :value="String(ev.id)">{{ ev.id }} - {{ ev.libelle }}</option>
-        </select>
+    <div class="flex flex-wrap gap-3 items-end">
+      <!-- Event / Group -->
+      <div class="min-w-48">
+        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('eventGroupSelect.label') }}</label>
+        <AdminEventGroupSelect @change="() => { page = 1 }" />
       </div>
 
-      <!-- Competition (multi-select dropdown) -->
-      <div ref="competitionFilterRef" class="relative flex items-center gap-1">
-        <label class="text-xs text-gray-500 whitespace-nowrap">{{ t('games.filter_competition') }}</label>
-        <button
-          class="flex items-center gap-1.5 px-2 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 bg-white"
-          @click="competitionFilterOpen = !competitionFilterOpen"
-        >
-          <UIcon name="heroicons:funnel" class="w-4 h-4 text-gray-500" />
-          <span class="text-gray-700">{{ t('games.filter_competition') }}</span>
-          <span v-if="selectedCompetitions.length > 0" class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-            {{ selectedCompetitions.length }}
-          </span>
-          <UIcon name="heroicons:chevron-down" class="w-4 h-4 text-gray-400 transition-transform" :class="{ 'rotate-180': competitionFilterOpen }" />
-        </button>
-        <div v-show="competitionFilterOpen" class="absolute z-20 mt-1 top-full left-0 w-80 bg-white border border-gray-200 rounded-lg shadow-lg p-3">
-          <AdminCompetitionMultiSelect
-            v-model="selectedCompetitions"
-            :competitions="workContext.competitions || []"
-          />
-        </div>
+      <!-- Competition (single select) -->
+      <div class="min-w-48">
+        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t(workContext.competitionFilterLabelKey) }}</label>
+        <AdminCompetitionSingleSelect
+          :show-all-option="!!workContext.pageEventGroupSelection"
+          :filtered-codes="workContext.pageFilteredCompetitionCodes"
+          @change="() => { page = 1 }"
+        />
       </div>
 
       <!-- Tour -->
-      <div class="flex items-center gap-1">
-        <label class="text-xs text-gray-500 whitespace-nowrap">{{ t('games.filter_round') }}</label>
-        <select v-model="selectedTour" class="text-sm border border-gray-300 rounded-lg px-2 py-1.5 w-20">
+      <div>
+        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('games.filter_round') }}</label>
+        <select v-model="selectedTour" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
           <option value="">{{ t('games.all_rounds') }}</option>
           <option v-for="n in 5" :key="n" :value="String(n)">{{ t('games.round_n', { n }) }}</option>
         </select>
       </div>
 
       <!-- Journee -->
-      <div class="flex items-center gap-1">
-        <label class="text-xs text-gray-500 whitespace-nowrap">{{ t('games.filter_journee') }}</label>
-        <select v-model="selectedJournee" class="text-sm border border-gray-300 rounded-lg px-2 py-1.5 max-w-60">
+      <div class="min-w-48">
+        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('games.filter_journee') }}</label>
+        <select v-model="selectedJournee" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
           <option value="*">{{ t('games.all_journees') }}</option>
           <option v-for="j in journees" :key="j.id" :value="String(j.id)">{{ journeeLabel(j) }}</option>
         </select>
       </div>
 
       <!-- Date -->
-      <div class="flex items-center gap-1">
-        <label class="text-xs text-gray-500 whitespace-nowrap">{{ t('games.filter_date') }}</label>
-        <select v-model="selectedDate" class="text-sm border border-gray-300 rounded-lg px-2 py-1.5">
+      <div>
+        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('games.filter_date') }}</label>
+        <select v-model="selectedDate" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
           <option value="">{{ t('games.all_dates') }}</option>
           <option v-for="d in availableDates" :key="d" :value="d">{{ formatDate(d) }}</option>
         </select>
       </div>
 
       <!-- Terrain -->
-      <div class="flex items-center gap-1">
-        <label class="text-xs text-gray-500 whitespace-nowrap">{{ t('games.filter_terrain') }}</label>
-        <select v-model="selectedTerrain" class="text-sm border border-gray-300 rounded-lg px-2 py-1.5 w-20">
+      <div>
+        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('games.filter_terrain') }}</label>
+        <select v-model="selectedTerrain" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
           <option value="">{{ t('games.all_terrains') }}</option>
           <option v-for="n in 8" :key="n" :value="String(n)">{{ n }}</option>
         </select>
       </div>
 
       <!-- Sort -->
-      <div class="flex items-center gap-1">
-        <label class="text-xs text-gray-500 whitespace-nowrap">{{ t('games.filter_sort') }}</label>
-        <select v-model="selectedSort" class="text-sm border border-gray-300 rounded-lg px-2 py-1.5">
+      <div>
+        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('games.filter_sort') }}</label>
+        <select v-model="selectedSort" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
           <option value="date_time_terrain">{{ t('games.sort.date_time_terrain') }}</option>
           <option value="competition_date">{{ t('games.sort.competition_date') }}</option>
           <option value="competition_phase">{{ t('games.sort.competition_phase') }}</option>
@@ -1055,7 +1034,7 @@ const statusBtnClass = (game: Game) => {
       </div>
 
       <!-- Unlocked only checkbox -->
-      <label class="flex items-center gap-1.5 text-sm cursor-pointer" :class="unlockedOnly ? 'text-blue-700 font-medium' : 'text-gray-600'">
+      <label class="flex items-center gap-1.5 px-3 py-2 text-sm cursor-pointer" :class="unlockedOnly ? 'text-blue-700 font-medium' : 'text-gray-600'">
         <input v-model="unlockedOnly" type="checkbox" class="rounded border-gray-300 text-blue-600">
         {{ t('games.unlocked_only') }}
       </label>

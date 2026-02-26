@@ -18,12 +18,7 @@ const authStore = useAuthStore()
 const rcList = ref<Rc[]>([])
 const loading = ref(false)
 const searchQuery = ref('')
-const selectedCompetitions = computed({
-  get: () => workContext.pageCompetitionCodes,
-  set: (val: string[]) => workContext.setPageCompetitions(val),
-})
 const selectedIds = ref<number[]>([])
-const filterOpen = ref(false)
 
 // Modals
 const addModalOpen = ref(false)
@@ -60,20 +55,13 @@ const canCopy = computed(() => authStore.profile <= 2)
 const filteredRc = computed(() => {
   let filtered = rcList.value
 
-  // Filter by selected competitions
-  if (selectedCompetitions.value.length > 0) {
-    filtered = filtered.filter(rc =>
-      selectedCompetitions.value.includes(rc.competitionCode || '')
-    )
-  }
-
   // Search filter
   if (searchQuery.value.trim()) {
     const query = searchQuery.value.toLowerCase()
     filtered = filtered.filter(rc =>
-      rc.nom.toLowerCase().includes(query) ||
-      rc.prenom.toLowerCase().includes(query) ||
-      rc.matric.toString().includes(query)
+      rc.nom.toLowerCase().includes(query)
+      || rc.prenom.toLowerCase().includes(query)
+      || rc.matric.toString().includes(query),
     )
   }
 
@@ -90,15 +78,32 @@ const loadRc = async () => {
       season: workContext.season,
     }
 
-    if (selectedCompetitions.value.length > 0) {
-      params.competitions = selectedCompetitions.value.join(',')
+    // Competition filter
+    if (workContext.pageCompetitionCodeAll) {
+      params.competitions = workContext.pageCompetitionCodeAll
+    }
+    else if (workContext.pageEventGroupType === 'group') {
+      const group = workContext.uniqueGroups.find(g => g.code === workContext.pageEventGroupValue)
+      if (group) {
+        const contextCodes = new Set(workContext.competitionCodes)
+        const groupCodes = group.competitions.filter(c => contextCodes.has(c))
+        if (groupCodes.length > 0) params.competitions = groupCodes.join(',')
+      }
+    }
+    else if (workContext.pageEventGroupType === 'event') {
+      params.event = workContext.pageEventGroupValue
+    }
+    else if (workContext.hasValidContext && workContext.competitionCodes.length > 0) {
+      params.competitions = workContext.competitionCodes.join(',')
     }
 
     const data = await api.get<{ items: Rc[]; total: number }>('/admin/rc', params)
     rcList.value = data.items || []
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error loading RC:', error)
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -159,7 +164,8 @@ const submitForm = async () => {
   try {
     if (editingRc.value) {
       await api.put(`/admin/rc/${editingRc.value.id}`, formData.value)
-    } else {
+    }
+    else {
       await api.post('/admin/rc', formData.value)
     }
 
@@ -172,9 +178,11 @@ const submitForm = async () => {
     addModalOpen.value = false
     editModalOpen.value = false
     await loadRc()
-  } catch (error: any) {
+  }
+  catch (error: any) {
     formError.value = error.message || t('common.error')
-  } finally {
+  }
+  finally {
     formSaving.value = false
   }
 }
@@ -202,16 +210,17 @@ const deleteRc = async () => {
     selectedIds.value = []
     deleteConfirmOpen.value = false
     await loadRc()
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error deleting RC:', error)
-  } finally {
+  }
+  finally {
     formSaving.value = false
   }
 }
 
 // Copy RC
 const openCopyModal = () => {
-  // Generate list of seasons (current + 2 previous)
   const currentSeason = parseInt(workContext.season || new Date().getFullYear().toString())
   availableSeasons.value = [
     currentSeason.toString(),
@@ -242,7 +251,7 @@ const copyRc = async () => {
   try {
     const data = await api.post<{ copied: number; skipped: number }>(
       '/admin/operations/seasons/copy-rc',
-      copyFormData.value
+      copyFormData.value,
     )
 
     toast.add({
@@ -253,32 +262,23 @@ const copyRc = async () => {
 
     copyModalOpen.value = false
     await loadRc()
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Error copying RC:', error)
-  } finally {
+  }
+  finally {
     formSaving.value = false
   }
 }
 
-// Click outside to close filter dropdown
-const competitionFilterRef = ref<HTMLElement | null>(null)
-const onClickOutsideFilter = (e: MouseEvent) => {
-  if (filterOpen.value && competitionFilterRef.value && !competitionFilterRef.value.contains(e.target as Node)) {
-    filterOpen.value = false
-  }
-}
+// Init
+onMounted(async () => {
+  await workContext.initContext()
 
-// Initialize from URL parameter
-onMounted(() => {
-  document.addEventListener('click', onClickOutsideFilter)
   const competitionParam = route.query.competition as string
   if (competitionParam) {
-    selectedCompetitions.value = [competitionParam]
+    workContext.setPageCompetitionAll(competitionParam)
   }
-})
-
-onUnmounted(() => {
-  document.removeEventListener('click', onClickOutsideFilter)
 })
 
 // Watch context changes
@@ -288,8 +288,8 @@ watch(() => [workContext.initialized, workContext.season], () => {
   }
 }, { immediate: true })
 
-// Watch competition filter
-watch(selectedCompetitions, () => {
+// Watch competition/event-group changes
+watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGroupSelection], () => {
   loadRc()
 })
 </script>
@@ -300,10 +300,28 @@ watch(selectedCompetitions, () => {
     <AdminWorkContextSummary />
 
     <!-- Title -->
-    <div class="flex items-center justify-between">
+    <div class="mb-2">
       <h1 class="text-2xl font-bold text-gray-900">
         {{ t('rc.title') }}
       </h1>
+    </div>
+
+    <!-- Filters: Event/Group + Competition -->
+    <div class="flex flex-wrap gap-3 items-end mb-2">
+      <!-- Event / Group filter -->
+      <div class="min-w-48 max-w-96">
+        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('eventGroupSelect.label') }}</label>
+        <AdminEventGroupSelect @change="() => {}" />
+      </div>
+
+      <!-- Competition filter (single select with "All" option) -->
+      <div class="min-w-48 max-w-96">
+        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t(workContext.competitionFilterLabelKey) }}</label>
+        <AdminCompetitionSingleSelect
+          :show-all-option="!!workContext.pageEventGroupSelection"
+          :filtered-codes="workContext.pageFilteredCompetitionCodes"
+        />
+      </div>
     </div>
 
     <!-- Toolbar -->
@@ -318,32 +336,6 @@ watch(selectedCompetitions, () => {
       @add="openAddModal"
       @bulk-delete="confirmDelete"
     >
-      <template #before-search>
-        <!-- Competition Filter (inline dropdown) -->
-        <div ref="competitionFilterRef" class="relative">
-          <button
-            class="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors bg-white"
-            @click="filterOpen = !filterOpen"
-          >
-            <UIcon name="heroicons:funnel" class="w-4 h-4 text-gray-500" />
-            <span class="text-gray-700">{{ t('rc.filter_competitions') }}</span>
-            <span v-if="selectedCompetitions.length > 0" class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-              {{ selectedCompetitions.length }}
-            </span>
-            <UIcon
-              name="heroicons:chevron-down"
-              class="w-4 h-4 text-gray-400 transition-transform"
-              :class="{ 'rotate-180': filterOpen }"
-            />
-          </button>
-          <div v-show="filterOpen" class="absolute z-20 mt-1 w-80 bg-white border border-gray-200 rounded-lg shadow-lg p-3">
-            <AdminCompetitionMultiSelect
-              v-model="selectedCompetitions"
-              :competitions="workContext.competitions || []"
-            />
-          </div>
-        </div>
-      </template>
       <template #after-search>
         <!-- Copy RC button -->
         <button

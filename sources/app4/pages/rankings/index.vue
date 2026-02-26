@@ -594,11 +594,22 @@ const editValueForField = (field: string, value: number): string => {
       <h1 class="text-2xl font-bold text-gray-900">{{ t('rankings.title') }}</h1>
     </div>
 
-    <!-- Competition selector + badges -->
+    <!-- Filters: Event/Group + Competition + badges -->
     <div class="mb-4 bg-white rounded-lg shadow p-4">
-      <div class="flex flex-wrap items-center gap-3">
-        <div class="flex-1 min-w-[250px]">
-          <AdminCompetitionSingleSelect @change="onCompetitionChange" />
+      <div class="flex flex-wrap items-end gap-3">
+        <!-- Event / Group filter -->
+        <div class="min-w-48 max-w-96">
+          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('eventGroupSelect.label') }}</label>
+          <AdminEventGroupSelect />
+        </div>
+
+        <!-- Competition filter -->
+        <div class="flex-1 min-w-48 max-w-96">
+          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t(workContext.competitionFilterLabelKey) }}</label>
+          <AdminCompetitionSingleSelect
+            :filtered-codes="workContext.pageFilteredCompetitionCodes"
+            @change="onCompetitionChange"
+          />
         </div>
 
         <!-- Badges -->
@@ -629,7 +640,7 @@ const editValueForField = (field: string, value: number): string => {
         </div>
         <!-- Type selector (profil ≤ 3) -->
         <div v-if="canChangeType && rankingTypes.length > 0">
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('rankings.type.label') }}</label>
+          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('rankings.type.label') }}</label>
           <select
             v-model="selectedType"
             class="w-full px-3 py-1.5 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
@@ -640,17 +651,16 @@ const editValueForField = (field: string, value: number): string => {
             </option>
           </select>
         </div>
+        <!-- Status restriction notice -->
+        <div
+          v-if="competitionInfo && competitionInfo.statut !== 'ON'"
+          class="mb-4 flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800"
+        >
+          <UIcon name="heroicons:exclamation-triangle" class="w-5 h-5 shrink-0" />
+          {{ t('rankings.status_restriction') }}
+        </div>
       </div>
 
-    </div>
-
-    <!-- Status restriction notice -->
-    <div
-      v-if="competitionInfo && competitionInfo.statut !== 'ON'"
-      class="mb-4 flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800"
-    >
-      <UIcon name="heroicons:exclamation-triangle" class="w-5 h-5 shrink-0" />
-      {{ t('rankings.status_restriction') }}
     </div>
 
     <!-- No competition selected -->

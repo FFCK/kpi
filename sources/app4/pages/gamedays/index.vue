@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Gameday, GamedayFormData, GamedayBulkCalendarData, GamedayEvent } from '~/types/gamedays'
+import type { Gameday, GamedayFormData, GamedayBulkCalendarData } from '~/types/gamedays'
 import type { PaginatedResponse } from '~/types'
 
 definePageMeta({
@@ -23,17 +23,8 @@ const totalPages = ref(0)
 
 // Filters
 const searchQuery = ref('')
-const selectedCompetitions = computed({
-  get: () => workContext.pageCompetitionCodes,
-  set: (val: string[]) => workContext.setPageCompetitions(val),
-})
-const selectedEvent = ref('-1')
 const selectedMonth = ref('')
 const selectedSort = ref('date_asc')
-const filterOpen = ref(false)
-
-// Events for filter dropdown
-const events = ref<GamedayEvent[]>([])
 
 // Selection
 const selectedIds = ref<number[]>([])
@@ -81,11 +72,17 @@ const canEdit = computed(() => authStore.profile <= 4)
 const canSelect = computed(() => authStore.profile <= 3)
 const canAssociateEvents = computed(() => authStore.profile <= 3)
 
+// Navigate to schema page, setting competition from gameday row
+function goToSchema(competitionCode: string) {
+  workContext.setPageCompetition(competitionCode)
+  navigateTo('/gamedays/schema')
+}
+
 // ─── Computed ───
 // Check if a single CP competition is selected (to show Niveau/Tour/Equipes columns)
 const showCPColumns = computed(() => {
-  if (selectedCompetitions.value.length !== 1) return false
-  const comp = gamedays.value.find(g => g.codeCompetition === selectedCompetitions.value[0])
+  if (!workContext.pageCompetitionCodeAll) return false
+  const comp = gamedays.value.find(g => g.codeCompetition === workContext.pageCompetitionCodeAll)
   return comp?.competitionTypeClt === 'CP'
 })
 
@@ -134,14 +131,23 @@ const loadGamedays = async () => {
       sort: selectedSort.value,
     }
 
-    if (selectedCompetitions.value.length > 0) {
-      params.competitions = selectedCompetitions.value.join(',')
+    // Competition filter
+    if (workContext.pageCompetitionCodeAll) {
+      // A specific competition is selected
+      params.competitions = workContext.pageCompetitionCodeAll
+    } else if (workContext.pageEventGroupType === 'group') {
+      // "All competitions" with a group selected: resolve group to competition codes
+      const group = workContext.uniqueGroups.find(g => g.code === workContext.pageEventGroupValue)
+      if (group) {
+        const contextCodes = new Set(workContext.competitionCodes)
+        const groupCodes = group.competitions.filter(c => contextCodes.has(c))
+        if (groupCodes.length > 0) params.competitions = groupCodes.join(',')
+      }
+    } else if (workContext.pageEventGroupType === 'event') {
+      // "All competitions" with an event selected
+      params.event = workContext.pageEventGroupValue
     } else if (workContext.hasValidContext && workContext.competitionCodes.length > 0) {
       params.competitions = workContext.competitionCodes.join(',')
-    }
-
-    if (selectedEvent.value && selectedEvent.value !== '-1') {
-      params.event = selectedEvent.value
     }
     if (selectedMonth.value) {
       params.month = selectedMonth.value
@@ -164,20 +170,15 @@ const loadGamedays = async () => {
   }
 }
 
-const loadEvents = async () => {
-  try {
-    const data = await api.get<{ items: GamedayEvent[] }>('/admin/gamedays/events')
-    events.value = data.items || []
-  } catch {
-    // Silently fail
-  }
-}
+// ─── Init ───
+onMounted(() => {
+  workContext.initContext()
+})
 
 // ─── Watchers ───
 watch(() => [workContext.initialized, workContext.season], () => {
   if (workContext.initialized && workContext.season) {
     loadGamedays()
-    loadEvents()
   }
 }, { immediate: true })
 
@@ -185,7 +186,7 @@ watch([page, limit, selectedSort], () => {
   loadGamedays()
 })
 
-watch([selectedCompetitions, selectedEvent, selectedMonth], () => {
+watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGroupSelection, selectedMonth], () => {
   page.value = 1
   loadGamedays()
 })
@@ -538,17 +539,23 @@ const confirmBulkDelete = async () => {
 }
 
 // ─── Event Association ───
+const selectedEventId = computed(() => {
+  if (workContext.pageEventGroupType === 'event') {
+    return parseInt(workContext.pageEventGroupValue, 10)
+  }
+  return null
+})
+
 const openEventAssociation = async () => {
-  if (!selectedEvent.value || selectedEvent.value === '-1') return
+  if (!selectedEventId.value) return
   eventAssociationOpen.value = true
   eventAssociationLoading.value = true
 
   // Load current associations for this event
   try {
-    // Fetch all gameday IDs for this event from the main list (re-query without event filter to get all)
     const params: Record<string, string | number> = {
       season: workContext.season || '',
-      event: selectedEvent.value,
+      event: selectedEventId.value,
       limit: 9999,
     }
     if (workContext.hasValidContext && workContext.competitionCodes.length > 0) {
@@ -564,7 +571,7 @@ const openEventAssociation = async () => {
 }
 
 const toggleEventAssociation = async (gamedayId: number) => {
-  const eventId = parseInt(selectedEvent.value)
+  const eventId = selectedEventId.value
   if (!eventId) return
 
   try {
@@ -608,15 +615,6 @@ const getOfficialsSummary = (g: Gameday): string => {
   return parts.length > 0 ? parts.join(', ') : '-'
 }
 
-// ─── Click outside to close filter dropdown ───
-const competitionFilterRef = ref<HTMLElement | null>(null)
-const onClickOutsideFilter = (e: MouseEvent) => {
-  if (filterOpen.value && competitionFilterRef.value && !competitionFilterRef.value.contains(e.target as Node)) {
-    filterOpen.value = false
-  }
-}
-onMounted(() => document.addEventListener('click', onClickOutsideFilter))
-onUnmounted(() => document.removeEventListener('click', onClickOutsideFilter))
 </script>
 
 <template>
@@ -625,59 +623,28 @@ onUnmounted(() => document.removeEventListener('click', onClickOutsideFilter))
     <AdminWorkContextSummary />
 
     <!-- Title -->
-    <div class="flex items-center justify-between">
+    <div class="mb-2">
       <h1 class="text-2xl font-bold text-gray-900">
         {{ t('gamedays.title') }}
       </h1>
-      <NuxtLink
-        to="/gamedays/schema"
-        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-lg transition-colors"
-      >
-        <UIcon name="heroicons:rectangle-group" class="w-4 h-4" />
-        {{ t('schema.title') }}
-      </NuxtLink>
     </div>
 
     <!-- Filters Row -->
     <div class="flex flex-wrap gap-3 items-end">
-      <!-- Event filter -->
-      <div class="min-w-48">
-        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('gamedays.field.event') }}</label>
-        <select
-          v-model="selectedEvent"
-          class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="-1">{{ t('gamedays.all_events') }}</option>
-          <option v-for="evt in events" :key="evt.id" :value="String(evt.id)">
-            {{ evt.id }} - {{ evt.libelle }}
-          </option>
-        </select>
+      <!-- Event / Group filter -->
+      <div class="min-w-48 max-w-96">
+        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('eventGroupSelect.label') }}</label>
+        <AdminEventGroupSelect @change="() => { page = 1 }" />
       </div>
 
-      <!-- Competition Filter (inline collapsible) -->
-      <div ref="competitionFilterRef" class="relative">
-        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('rc.filter_competitions') }}</label>
-        <button
-          class="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors bg-white"
-          @click="filterOpen = !filterOpen"
-        >
-          <UIcon name="heroicons:funnel" class="w-4 h-4 text-gray-500" />
-          <span class="text-gray-700">{{ t('rc.filter_competitions') }}</span>
-          <span v-if="selectedCompetitions.length > 0" class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-            {{ selectedCompetitions.length }}
-          </span>
-          <UIcon
-            name="heroicons:chevron-down"
-            class="w-4 h-4 text-gray-400 transition-transform"
-            :class="{ 'rotate-180': filterOpen }"
-          />
-        </button>
-        <div v-show="filterOpen" class="absolute z-20 mt-1 w-80 bg-white border border-gray-200 rounded-lg shadow-lg p-3">
-          <AdminCompetitionMultiSelect
-            v-model="selectedCompetitions"
-            :competitions="workContext.competitions || []"
-          />
-        </div>
+      <!-- Competition filter (single select) -->
+      <div class="min-w-48 max-w-96">
+        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t(workContext.competitionFilterLabelKey) }}</label>
+        <AdminCompetitionSingleSelect
+          :show-all-option="!!workContext.pageEventGroupSelection"
+          :filtered-codes="workContext.pageFilteredCompetitionCodes"
+          @change="() => { page = 1 }"
+        />
       </div>
 
       <!-- Month filter -->
@@ -737,7 +704,7 @@ onUnmounted(() => document.removeEventListener('click', onClickOutsideFilter))
         </button>
         <!-- Event association -->
         <button
-          v-if="canAssociateEvents && selectedEvent !== '-1'"
+          v-if="canAssociateEvents && selectedEventId"
           class="px-3 py-2 text-sm font-medium text-purple-700 bg-purple-50 border border-purple-200 rounded-lg hover:bg-purple-100"
           @click="openEventAssociation"
         >
@@ -845,6 +812,9 @@ onUnmounted(() => document.removeEventListener('click', onClickOutsideFilter))
                   </button>
                   <button :title="t('gamedays.duplicate')" class="p-1 text-gray-500 hover:text-gray-700" @click="openDuplicateConfirm(g)">
                     <UIcon name="heroicons:document-duplicate" class="w-6 h-6" />
+                  </button>
+                  <button :title="t('schema.title')" class="p-1 text-gray-500 hover:text-gray-700" @click="goToSchema(g.codeCompetition)">
+                    <UIcon name="heroicons:rectangle-group" class="w-6 h-6" />
                   </button>
                 </div>
               </td>
@@ -1138,6 +1108,9 @@ onUnmounted(() => document.removeEventListener('click', onClickOutsideFilter))
           </AdminActionButton>
           <AdminActionButton v-if="canEdit" icon="heroicons:document-duplicate" @click="openDuplicateConfirm(g)">
             {{ t('gamedays.duplicated') }}
+          </AdminActionButton>
+          <AdminActionButton icon="heroicons:rectangle-group" @click="goToSchema(g.codeCompetition)">
+            {{ t('schema.title') }}
           </AdminActionButton>
           <AdminActionButton v-if="canEdit" variant="danger" icon="heroicons:trash" @click="openDeleteConfirm(g)">
             {{ t('common.delete') }}

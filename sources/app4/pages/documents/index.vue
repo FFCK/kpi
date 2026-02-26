@@ -152,11 +152,22 @@ onMounted(async () => {
       </h1>
     </div>
 
-    <!-- Competition selector -->
+    <!-- Filters: Event/Group + Competition -->
     <div class="bg-white rounded-lg shadow p-4 mb-2">
       <div class="flex flex-wrap items-end gap-4">
-        <div class="w-full sm:w-auto flex-1 min-w-0">
-          <AdminCompetitionSingleSelect @change="onCompetitionChange" />
+        <!-- Event / Group filter -->
+        <div class="min-w-48 max-w-96">
+          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('eventGroupSelect.label') }}</label>
+          <AdminEventGroupSelect />
+        </div>
+
+        <!-- Competition filter -->
+        <div class="min-w-48 max-w-96 flex-1">
+          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t(workContext.competitionFilterLabelKey) }}</label>
+          <AdminCompetitionSingleSelect
+            :filtered-codes="workContext.pageFilteredCompetitionCodes"
+            @change="onCompetitionChange"
+          />
         </div>
 
         <!-- Competition info badges -->

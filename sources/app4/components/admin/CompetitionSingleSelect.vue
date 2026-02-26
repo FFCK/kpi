@@ -4,9 +4,26 @@ import type { Competition } from '~/types'
 const { t } = useI18n()
 const workContext = useWorkContextStore()
 
+const props = withDefaults(defineProps<{
+  showAllOption?: boolean
+  allOptionLabel?: string
+  filteredCodes?: string[] | null
+}>(), {
+  showAllOption: false,
+  allOptionLabel: '',
+  filteredCodes: null,
+})
+
 const emit = defineEmits<{
   (e: 'change', code: string): void
 }>()
+
+// The current competition code depends on the mode:
+// - showAllOption=true uses pageCompetitionCodeAll (can be '' = all)
+// - showAllOption=false uses pageCompetitionCode (always a real code)
+const currentCode = computed(() => {
+  return props.showAllOption ? workContext.pageCompetitionCodeAll : workContext.pageCompetitionCode
+})
 
 // Available competitions grouped by section
 interface SectionGroup {
@@ -15,7 +32,10 @@ interface SectionGroup {
 }
 
 const groupedCompetitions = computed(() => {
-  const codes = new Set(workContext.competitionCodes)
+  // Use filteredCodes if provided, otherwise use all context competition codes
+  const codes = props.filteredCodes
+    ? new Set(props.filteredCodes.filter(c => workContext.competitionCodes.includes(c)))
+    : new Set(workContext.competitionCodes)
   const sections: SectionGroup[] = []
 
   for (const group of workContext.groups) {
@@ -40,28 +60,46 @@ const isSingleSection = computed(() => groupedCompetitions.value.length === 1)
 
 // Handle selection change
 function onSelect(code: string) {
-  workContext.setPageCompetition(code)
+  if (props.showAllOption) {
+    workContext.setPageCompetitionAll(code)
+  }
+  else {
+    workContext.setPageCompetition(code)
+  }
   emit('change', code)
 }
 
-// Auto-select: when competitions change, ensure we have a valid selection
+// Resolved label for the "All" option
+const resolvedAllLabel = computed(() => props.allOptionLabel || t('context.all_competitions_for_selection'))
+
+// Available codes: filteredCodes (intersected with context) or all context codes
+const availableCodes = computed(() => {
+  if (props.filteredCodes) {
+    return props.filteredCodes.filter(c => workContext.competitionCodes.includes(c))
+  }
+  return workContext.competitionCodes
+})
+
+// Auto-select: when available competitions change, ensure we have a valid selection
 watch(
-  () => workContext.competitionCodes,
+  availableCodes,
   (codes) => {
     if (!codes.length) {
-      if (workContext.pageCompetitionCode) {
-        workContext.setPageCompetition('')
-        emit('change', '')
+      if (currentCode.value) {
+        onSelect('')
       }
       return
     }
+    // If "All" option is active and showAllOption is enabled, keep it
+    if (props.showAllOption && currentCode.value === '') {
+      return
+    }
     // If current selection is still valid, keep it
-    if (workContext.pageCompetitionCode && codes.includes(workContext.pageCompetitionCode)) {
+    if (currentCode.value && codes.includes(currentCode.value)) {
       return
     }
     // Auto-select first
-    workContext.setPageCompetition(codes[0])
-    emit('change', codes[0])
+    onSelect(codes[0])
   },
   { immediate: true },
 )
@@ -74,20 +112,19 @@ function formatCompetitionLabel(comp: { code: string; libelle: string; soustitre
 
 <template>
   <div>
-    <label class="block text-sm font-medium text-gray-700 mb-1">
-      {{ t('context.competition_from_context') }}
-    </label>
-
     <div v-if="!hasCompetitions" class="text-sm text-gray-500 italic">
       {{ t('context.no_competitions') }}
     </div>
 
     <select
       v-else
-      :value="workContext.pageCompetitionCode"
+      :value="currentCode"
       class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
       @change="onSelect(($event.target as HTMLSelectElement).value)"
     >
+      <!-- "All competitions" option -->
+      <option v-if="showAllOption" value="">{{ resolvedAllLabel }}</option>
+
       <!-- Single section: no optgroup needed -->
       <template v-if="isSingleSection">
         <option

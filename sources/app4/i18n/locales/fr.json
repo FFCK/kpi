@@ -27,7 +27,7 @@
     "users": "Utilisateurs",
     "operations": "Opérations",
     "groups": "Groupes",
-    "rc": "RC",
+    "rc": "Resp. Compétition",
     "journal": "Journal"
   },
   "profile": "Profil",
@@ -815,6 +815,8 @@
     "select_event": "Sélectionnez un événement",
     "competitions_from_context": "Compétitions (du contexte)",
     "competition_from_context": "Compétition (du contexte)",
+    "competition_from_event": "Compétition (de l'événement)",
+    "competition_from_group": "Compétition (du groupe)",
     "all_competitions": "Toutes",
     "current": "Contexte",
     "competitions_count": "{count} compétition(s)",
@@ -822,7 +824,13 @@
     "active_season": "Saison active",
     "change": "Modifier",
     "summary": "Résumé",
-    "no_competitions": "Aucune compétition dans ce périmètre"
+    "no_competitions": "Aucune compétition dans ce périmètre",
+    "all_competitions_for_selection": "Toutes les compétitions"
+  },
+  "eventGroupSelect": {
+    "all": "Tous",
+    "events": "Événements",
+    "label": "Événement / Groupe"
   },
   "teams_page": {
     "title": "Gestion des équipes",

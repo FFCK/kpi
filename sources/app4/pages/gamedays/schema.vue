@@ -3,7 +3,7 @@ import type { SchemaResponse, SchemaPhase } from '~/types/schema'
 
 definePageMeta({
   layout: 'admin',
-  middleware: 'auth'
+  middleware: 'auth',
 })
 
 const { t, locale } = useI18n()
@@ -57,13 +57,15 @@ const loadSchema = async () => {
     const params: Record<string, string> = {
       season: workContext.season,
       competition: workContext.pageCompetitionCode,
-      lang: locale.value
+      lang: locale.value,
     }
     data.value = await api.get<SchemaResponse>('/admin/schema', params)
-  } catch (error: unknown) {
+  }
+  catch (error: unknown) {
     const message = (error as { message?: string })?.message || t('schema.no_data')
     toast.add({ title: t('common.error'), description: message, color: 'error', duration: 3000 })
-  } finally {
+  }
+  finally {
     loading.value = false
   }
 }
@@ -74,10 +76,11 @@ watch(
   (code) => {
     if (code) {
       loadSchema()
-    } else {
+    }
+    else {
       data.value = null
     }
-  }
+  },
 )
 
 // Load on mount
@@ -87,10 +90,6 @@ onMounted(async () => {
     await loadSchema()
   }
 })
-
-function onCompetitionChange() {
-  // Watch above handles the reload
-}
 </script>
 
 <template>
@@ -99,22 +98,32 @@ function onCompetitionChange() {
     <AdminWorkContextSummary />
 
     <!-- Page header -->
-    <div class="mb-4 flex items-center gap-3">
+    <div class="mb-2 flex items-center justify-between">
+      <h1 class="text-2xl font-bold text-gray-900">{{ t('schema.title') }}</h1>
       <NuxtLink
         to="/gamedays"
-        class="inline-flex items-center gap-1 px-2 py-1.5 text-sm text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 border border-gray-300 rounded-lg transition-colors"
       >
         <UIcon name="heroicons:arrow-left" class="w-4 h-4" />
         {{ t('menu.gamedays') }}
       </NuxtLink>
-      <h1 class="text-2xl font-bold text-gray-900">{{ t('schema.title') }}</h1>
     </div>
 
-    <!-- Competition selector + badges -->
+    <!-- Filters: Event/Group + Competition + badges -->
     <div class="mb-4 bg-white rounded-lg shadow p-4">
-      <div class="flex flex-wrap items-center gap-3">
+      <div class="flex flex-wrap items-end gap-3">
+        <!-- Event / Group filter -->
+        <div class="min-w-48 max-w-96">
+          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('eventGroupSelect.label') }}</label>
+          <AdminEventGroupSelect />
+        </div>
+
+        <!-- Competition filter -->
         <div class="flex-1 min-w-[250px]">
-          <AdminCompetitionSingleSelect @change="onCompetitionChange" />
+          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t(workContext.competitionFilterLabelKey) }}</label>
+          <AdminCompetitionSingleSelect
+            :filtered-codes="workContext.pageFilteredCompetitionCodes"
+          />
         </div>
 
         <!-- Badges -->

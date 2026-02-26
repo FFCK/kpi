@@ -249,48 +249,180 @@ export function useDocumentLanguage() {
 - Liste des événements de la saison
 - Triés par date décroissante
 
-### 3.4 Filtre Multi-Compétition (Dropdown inline)
+### 3.4 ~~Filtre Multi-Compétition (Dropdown inline)~~ — OBSOLÈTE
 
-Le composant `AdminCompetitionMultiSelect` est intégré dans un **dropdown inline** positionné en absolu. Ce pattern est utilisé dans les pages Journées et RC pour filtrer par compétitions sans occuper de place verticale.
+> **Remplacé par** le pattern EventGroupSelect + CompetitionSingleSelect (§ 3.5).
+>
+> Les pages Journées, Matchs et RC utilisent désormais `CompetitionSingleSelect` avec `showAllOption=true` au lieu du dropdown multi-sélection `AdminCompetitionMultiSelect`. Le composant `AdminCompetitionMultiSelect` reste disponible mais n'est plus utilisé dans les pages admin principales.
 
-**Pattern d'intégration :**
+### 3.5 Filtre Événement / Groupe (EventGroupSelect + CompetitionSingleSelect)
+
+Le composant `AdminEventGroupSelect` permet de filtrer par événement ou groupe de compétitions. Il est présent sur toutes les pages admin qui utilisent `AdminCompetitionSingleSelect`.
+
+#### 3.5.1 Pages et comportement
+
+| Page | EventGroupSelect | CompetitionSingleSelect | Option "Toutes" |
+|------|:-:|:-:|:-:|
+| Journées/Phases | ✅ | ✅ | ✅ Oui |
+| Matchs | ✅ | ✅ | ✅ Oui |
+| Resp. Compétition | ✅ | ✅ | ✅ Oui |
+| Documents | ✅ | ✅ | ❌ Non |
+| Équipes | ✅ | ✅ | ❌ Non |
+| Classements | ✅ | ✅ | ❌ Non |
+| Schéma | ✅ | ✅ | ❌ Non |
+
+- **Pages avec "Toutes les compétitions"** (Journées, Matchs, Resp. Compétition) : quand un événement ou groupe est sélectionné, l'option "Toutes les compétitions" apparaît en premier dans le sélecteur de compétition et est pré-sélectionnée.
+- **Pages sans "Toutes les compétitions"** (Documents, Équipes, Classements, Schéma) : quand un événement ou groupe est sélectionné, la liste des compétitions est filtrée et la première compétition est auto-sélectionnée.
+
+#### 3.5.2 Composant EventGroupSelect
+
+Le composant `AdminEventGroupSelect` affiche un `<select>` avec :
+- **Option "Tous"** (`value=""`) : aucun filtre événement/groupe
+- **Optgroup "Événements"** : liste des événements du contexte (`workContext.events`)
+- **Optgroups par section** : groupes de compétitions (`workContext.uniqueGroups`), filtrés pour ne montrer que ceux dont au moins une compétition est dans le contexte courant
+
+**Format de la valeur** : `'event:{id}'`, `'group:{code}'` ou `''` (aucun filtre).
+
+**Stockage** : la sélection est persistée dans `localStorage` via la clé `kpi_admin_work_page_event_group` et restaurée au rechargement (avec validation que l'événement/groupe existe encore).
+
+**Comportement au changement** :
+1. Met à jour `workContext.pageEventGroupSelection`
+2. Remet `pageCompetitionCodeAll` à `''` (= Toutes)
+3. Si événement sélectionné → charge les codes compétitions associés via l'API (`/admin/filters/event-competitions`)
+4. Si groupe ou "Tous" → vide `pageEventCompetitionCodes`
+
+**Validation au changement de contexte** : un watcher surveille `competitionCodes` et `events` ; si la sélection courante n'est plus valide (événement supprimé, groupe sans compétitions dans le contexte), elle est remise à `''`.
+
+#### 3.5.3 Composant CompetitionSingleSelect — Props
+
+| Prop | Type | Défaut | Description |
+|------|------|--------|-------------|
+| `showAllOption` | `boolean` | `false` | Affiche l'option "Toutes les compétitions" en premier |
+| `allOptionLabel` | `string` | `''` | Label personnalisé pour l'option "Toutes" (défaut : clé i18n `context.all_competitions_for_selection`) |
+| `filteredCodes` | `string[] \| null` | `null` | Si fourni, restreint les compétitions affichées à l'intersection de ces codes avec le contexte |
+
+**Logique de sélection** :
+- `showAllOption=true` → lit/écrit `workContext.pageCompetitionCodeAll` (peut être `''` = toutes)
+- `showAllOption=false` → lit/écrit `workContext.pageCompetitionCode` (toujours un code réel)
+
+**Auto-sélection** : quand les compétitions disponibles changent, le watcher :
+1. Si `showAllOption=true` et la valeur courante est `''` → conserve "Toutes"
+2. Si la sélection courante est encore dans la liste → conserve
+3. Sinon → auto-sélectionne la première compétition disponible
+
+#### 3.5.4 Label dynamique du sélecteur de compétition
+
+Le label au-dessus du sélecteur de compétition s'adapte au contexte via `workContext.competitionFilterLabelKey` :
+
+| Contexte | Clé i18n | Label FR | Label EN |
+|----------|----------|----------|----------|
+| Aucun filtre | `context.competition_from_context` | Compétition (du contexte) | Competition (from context) |
+| Événement sélectionné | `context.competition_from_event` | Compétition (de l'événement) | Competition (from event) |
+| Groupe sélectionné | `context.competition_from_group` | Compétition (du groupe) | Competition (from group) |
+
+#### 3.5.5 Stockage séparé des sélections de compétition
+
+**Problème** : les pages avec et sans "Toutes les compétitions" partagent le même contexte de travail. Si un utilisateur choisit "Toutes" sur Journées puis navigue vers Équipes, la page Équipes ne peut pas afficher "Toutes" car elle requiert une compétition spécifique. Inversement, si Équipes auto-sélectionne la première compétition, le retour sur Journées ne devrait pas perdre le choix "Toutes".
+
+**Solution** : deux clés de stockage distinctes dans le store `workContextStore` :
+
+| Clé | localStorage | Utilisation | Valeur possible |
+|-----|-------------|-------------|-----------------|
+| `pageCompetitionCode` | `kpi_admin_work_page_competition` | Pages **sans** "Toutes" (Documents, Équipes, Classements, Schéma) | Code compétition (jamais vide) |
+| `pageCompetitionCodeAll` | `kpi_admin_work_page_competition_all` | Pages **avec** "Toutes" (Journées, Matchs, Resp. Compétition) | Code compétition ou `''` (= toutes) |
+| `pageEventGroupSelection` | `kpi_admin_work_page_event_group` | Toutes les pages avec EventGroupSelect | `'event:{id}'`, `'group:{code}'` ou `''` |
+
+**Règles** :
+- `CompetitionSingleSelect` avec `showAllOption=false` lit/écrit `pageCompetitionCode`
+- `CompetitionSingleSelect` avec `showAllOption=true` lit/écrit `pageCompetitionCodeAll`
+- Changer la compétition sur une page "avec Toutes" ne change pas la sélection sur les pages "sans Toutes" (et vice versa)
+- Changer l'événement/groupe dans `EventGroupSelect` remet `pageCompetitionCodeAll` à `''` (= Toutes), ce qui déclenche l'auto-sélection de la première compétition sur les pages "sans Toutes" via leur watcher
+- Le `pageEventGroupSelection` est partagé entre toutes les pages (la sélection événement/groupe est commune)
+
+#### 3.5.6 Pattern d'intégration
+
+**Layout commun** : les filtres EventGroupSelect et CompetitionSingleSelect sont placés dans une ligne de filtres avec labels au-dessus :
 
 ```vue
-<div ref="competitionFilterRef" class="relative">
-  <button
-    class="flex items-center gap-2 px-3 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 bg-white"
-    @click="filterOpen = !filterOpen"
-  >
-    <UIcon name="heroicons:funnel" class="w-4 h-4 text-gray-500" />
-    <span class="text-gray-700">{{ t('rc.filter_competitions') }}</span>
-    <span v-if="selectedCompetitions.length > 0"
-      class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-      {{ selectedCompetitions.length }}
-    </span>
-    <UIcon name="heroicons:chevron-down" class="w-4 h-4 text-gray-400 transition-transform"
-      :class="{ 'rotate-180': filterOpen }" />
-  </button>
-  <div v-show="filterOpen" class="absolute z-20 mt-1 w-80 bg-white border border-gray-200 rounded-lg shadow-lg p-3">
-    <AdminCompetitionMultiSelect
-      v-model="selectedCompetitions"
-      :competitions="workContext.competitions || []"
-    />
+<div class="flex flex-wrap gap-3 items-end">
+  <!-- Event / Group filter -->
+  <div class="min-w-48 max-w-96">
+    <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('eventGroupSelect.label') }}</label>
+    <AdminEventGroupSelect @change="..." />
+  </div>
+  <!-- Competition filter -->
+  <div class="min-w-48 max-w-96">
+    <label class="block text-xs font-medium text-gray-500 mb-1">{{ t(workContext.competitionFilterLabelKey) }}</label>
+    <AdminCompetitionSingleSelect ... />
   </div>
 </div>
 ```
 
-**Comportement :**
-- Bouton compact aligné avec les autres filtres (Event, Month, Sort) ou dans la toolbar
-- Badge bleu affichant le nombre de compétitions sélectionnées
-- Dropdown flottant (`position: absolute`, `z-20`) au clic
-- Fermeture au clic extérieur via `document.addEventListener('click', ...)` avec ref sur le conteneur
-- Le dropdown contient le `AdminCompetitionMultiSelect` avec checkbox "Toutes" + liste scrollable
+**Pages avec "Toutes les compétitions" (Journées, Matchs, RC) :**
+```vue
+<AdminEventGroupSelect @change="() => { page = 1 }" />
+<AdminCompetitionSingleSelect
+  :show-all-option="!!workContext.pageEventGroupSelection"
+  :filtered-codes="workContext.pageFilteredCompetitionCodes"
+  @change="() => { page = 1 }"
+/>
+```
+Ces pages lisent `workContext.pageCompetitionCodeAll` dans leur logique de chargement.
 
-**Placement selon la page :**
-- **Journées** : dans la ligne de filtres, au même niveau que Event, Mois, Tri
-- **RC** : dans le slot `#before-search` du `AdminToolbar`, à gauche du champ de recherche
+**Pages sans "Toutes les compétitions" (Documents, Équipes, Classements, Schéma) :**
+```vue
+<AdminEventGroupSelect />
+<AdminCompetitionSingleSelect
+  :filtered-codes="workContext.pageFilteredCompetitionCodes"
+  @change="onCompetitionChange"
+/>
+```
+Ces pages lisent `workContext.pageCompetitionCode` dans leur logique de chargement.
 
-### 3.5 Toolbar (AdminToolbar)
+#### 3.5.7 Logique de chargement des pages "avec Toutes"
+
+Les pages Journées, Matchs et RC utilisent une logique de chargement commune pour résoudre le filtre compétition à envoyer à l'API :
+
+```typescript
+// Competition filter
+if (workContext.pageCompetitionCodeAll) {
+  // A specific competition is selected
+  params.competitions = workContext.pageCompetitionCodeAll
+} else if (workContext.pageEventGroupType === 'group') {
+  // "All competitions" with a group: resolve group to competition codes
+  const group = workContext.uniqueGroups.find(g => g.code === workContext.pageEventGroupValue)
+  if (group) {
+    const contextCodes = new Set(workContext.competitionCodes)
+    const groupCodes = group.competitions.filter(c => contextCodes.has(c))
+    if (groupCodes.length > 0) params.competitions = groupCodes.join(',')
+  }
+} else if (workContext.pageEventGroupType === 'event') {
+  // "All competitions" with an event: pass event ID
+  params.event = workContext.pageEventGroupValue
+} else if (workContext.hasValidContext && workContext.competitionCodes.length > 0) {
+  // No filter: use all context competition codes
+  params.competitions = workContext.competitionCodes.join(',')
+}
+```
+
+**Watchers** : ces pages surveillent `workContext.pageCompetitionCodeAll` et `workContext.pageEventGroupSelection` pour recharger les données.
+
+#### 3.5.8 Filtrage des compétitions par événement/groupe
+
+Quand un événement ou groupe est sélectionné dans `EventGroupSelect`, la prop `filteredCodes` de `CompetitionSingleSelect` est renseignée via `workContext.pageFilteredCompetitionCodes` :
+- **Événement** : les codes sont chargés depuis l'API (`/admin/filters/event-competitions`)
+- **Groupe** : les codes sont résolus côté client via `workContext.uniqueGroups`
+- **Aucun filtre** : `null` → toutes les compétitions du contexte sont affichées
+
+#### 3.5.9 Lien Schéma depuis la page Journées
+
+Le lien vers la page Schéma n'est plus un lien global dans le header de la page Journées. Il est désormais un bouton d'action par ligne de journée, qui :
+1. Définit `workContext.pageCompetitionCode` avec le code compétition de la journée
+2. Navigue vers `/gamedays/schema`
+
+Cela garantit que le schéma s'ouvre directement sur la bonne compétition.
+
+### 3.6 Toolbar (AdminToolbar)
 
 Barre d'outils commune avec recherche, bouton d'ajout et actions en masse.
 
@@ -324,7 +456,7 @@ Barre d'outils commune avec recherche, bouton d'ajout et actions en masse.
 - **Gauche** : bouton suppression en masse (si sélection) + slot `#left`
 - **Droite** : slot `#before-search` + champ de recherche + slot `#after-search` + bouton ajouter + slot `#right`
 
-### 3.6 Cases à cocher dans les tableaux
+### 3.7 Cases à cocher dans les tableaux
 
 Les cases à cocher (`<input type="checkbox">`) dans les cellules `<th>` et `<td>` sont cliquables sur toute la surface de la cellule, pas uniquement sur la case elle-même.
 
