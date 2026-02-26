@@ -770,35 +770,13 @@ const getLogoUrl = (team: CompetitionTeam) => {
 
 <template>
   <div>
-    <!-- Work Context Summary -->
-    <AdminWorkContextSummary />
-
     <!-- Page header -->
-    <div>
-      <h1 class="text-2xl font-bold text-gray-900">
-        {{ t('teams_page.title') }}
-      </h1>
-    </div>
-
-    <!-- Filters: Event/Group + Competition -->
-    <div class="mb-2 bg-white rounded-lg shadow p-4">
-      <div class="flex flex-wrap items-end gap-4">
-        <!-- Event / Group filter -->
-        <div class="min-w-48 max-w-96">
-          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('eventGroupSelect.label') }}</label>
-          <AdminEventGroupSelect />
-        </div>
-
-        <!-- Competition filter -->
-        <div class="flex-1 min-w-[250px]">
-          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t(workContext.competitionFilterLabelKey) }}</label>
-          <AdminCompetitionSingleSelect
-            :filtered-codes="workContext.pageFilteredCompetitionCodes"
-            @change="onCompetitionChange"
-          />
-        </div>
-
-        <!-- Competition badges -->
+    <AdminPageHeader
+      :title="t('teams_page.title')"
+      :competition-filtered-codes="workContext.pageFilteredCompetitionCodes"
+      @competition-change="onCompetitionChange"
+    >
+      <template #badges>
         <div v-if="competitionInfo" class="flex items-center gap-2 flex-wrap">
           <span
             class="px-2 py-1 text-xs font-medium rounded"
@@ -835,17 +813,17 @@ const getLogoUrl = (team: CompetitionTeam) => {
             class="w-6 h-6 text-red-600"
           />
         </div>
-      </div>
-
-      <!-- Lock notice -->
-      <div
-        v-if="competitionInfo?.verrou"
-        class="mt-3 flex items-center gap-2 p-2 bg-amber-50 border border-amber-200 rounded text-sm text-amber-800"
-      >
-        <UIcon name="heroicons:exclamation-triangle" class="w-6 h-6 shrink-0" />
-        {{ t('teams_page.competition_locked_notice') }}
-      </div>
-    </div>
+      </template>
+      <template #notices>
+        <div
+          v-if="competitionInfo?.verrou"
+          class="flex items-center gap-2 p-2 bg-amber-50 border border-amber-200 rounded text-sm text-amber-800"
+        >
+          <UIcon name="heroicons:exclamation-triangle" class="w-6 h-6 shrink-0" />
+          {{ t('teams_page.competition_locked_notice') }}
+        </div>
+      </template>
+    </AdminPageHeader>
 
     <!-- No competition selected -->
     <div v-if="!workContext.pageCompetitionCode" class="bg-white rounded-lg shadow p-8 text-center text-gray-500">

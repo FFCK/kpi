@@ -961,87 +961,73 @@ const statusBtnClass = (game: Game) => {
 
 <template>
   <div class="space-y-4">
-    <!-- Work context summary -->
-    <AdminWorkContextSummary />
+    <!-- Page header -->
+    <AdminPageHeader
+      :title="t('games.title')"
+      :show-all-option="true"
+      :competition-filtered-codes="workContext.pageFilteredCompetitionCodes"
+      @event-group-change="() => { page = 1 }"
+      @competition-change="() => { page = 1 }"
+    >
+      <template #filters>
+        <!-- Tour -->
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('games.filter_round') }}</label>
+          <select v-model="selectedTour" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+            <option value="">{{ t('games.all_rounds') }}</option>
+            <option v-for="n in 5" :key="n" :value="String(n)">{{ t('games.round_n', { n }) }}</option>
+          </select>
+        </div>
 
-    <!-- Title -->
-    <h1 class="text-2xl font-bold text-gray-900">{{ t('games.title') }}</h1>
+        <!-- Journee -->
+        <div class="min-w-48">
+          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('games.filter_journee') }}</label>
+          <select v-model="selectedJournee" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+            <option value="*">{{ t('games.all_journees') }}</option>
+            <option v-for="j in journees" :key="j.id" :value="String(j.id)">{{ journeeLabel(j) }}</option>
+          </select>
+        </div>
 
-    <!-- ═══════ FILTERS ═══════ -->
-    <div class="flex flex-wrap gap-3 items-end">
-      <!-- Event / Group -->
-      <div class="min-w-48">
-        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('eventGroupSelect.label') }}</label>
-        <AdminEventGroupSelect @change="() => { page = 1 }" />
-      </div>
+        <!-- Date -->
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('games.filter_date') }}</label>
+          <select v-model="selectedDate" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+            <option value="">{{ t('games.all_dates') }}</option>
+            <option v-for="d in availableDates" :key="d" :value="d">{{ formatDate(d) }}</option>
+          </select>
+        </div>
 
-      <!-- Competition (single select) -->
-      <div class="min-w-48">
-        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t(workContext.competitionFilterLabelKey) }}</label>
-        <AdminCompetitionSingleSelect
-          :show-all-option="!!workContext.pageEventGroupSelection"
-          :filtered-codes="workContext.pageFilteredCompetitionCodes"
-          @change="() => { page = 1 }"
-        />
-      </div>
+        <!-- Terrain -->
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('games.filter_terrain') }}</label>
+          <select v-model="selectedTerrain" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+            <option value="">{{ t('games.all_terrains') }}</option>
+            <option v-for="n in 8" :key="n" :value="String(n)">{{ n }}</option>
+          </select>
+        </div>
 
-      <!-- Tour -->
-      <div>
-        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('games.filter_round') }}</label>
-        <select v-model="selectedTour" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-          <option value="">{{ t('games.all_rounds') }}</option>
-          <option v-for="n in 5" :key="n" :value="String(n)">{{ t('games.round_n', { n }) }}</option>
-        </select>
-      </div>
+        <!-- Sort -->
+        <div>
+          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('games.filter_sort') }}</label>
+          <select v-model="selectedSort" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+            <option value="date_time_terrain">{{ t('games.sort.date_time_terrain') }}</option>
+            <option value="competition_date">{{ t('games.sort.competition_date') }}</option>
+            <option value="competition_phase">{{ t('games.sort.competition_phase') }}</option>
+            <option value="terrain_date">{{ t('games.sort.terrain_date') }}</option>
+            <option value="number">{{ t('games.sort.number') }}</option>
+          </select>
+        </div>
 
-      <!-- Journee -->
-      <div class="min-w-48">
-        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('games.filter_journee') }}</label>
-        <select v-model="selectedJournee" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-          <option value="*">{{ t('games.all_journees') }}</option>
-          <option v-for="j in journees" :key="j.id" :value="String(j.id)">{{ journeeLabel(j) }}</option>
-        </select>
-      </div>
+        <!-- Unlocked only checkbox -->
+        <label class="flex items-center gap-1.5 px-3 py-2 text-sm cursor-pointer" :class="unlockedOnly ? 'text-blue-700 font-medium' : 'text-gray-600'">
+          <input v-model="unlockedOnly" type="checkbox" class="rounded border-gray-300 text-blue-600">
+          {{ t('games.unlocked_only') }}
+        </label>
 
-      <!-- Date -->
-      <div>
-        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('games.filter_date') }}</label>
-        <select v-model="selectedDate" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-          <option value="">{{ t('games.all_dates') }}</option>
-          <option v-for="d in availableDates" :key="d" :value="d">{{ formatDate(d) }}</option>
-        </select>
-      </div>
-
-      <!-- Terrain -->
-      <div>
-        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('games.filter_terrain') }}</label>
-        <select v-model="selectedTerrain" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-          <option value="">{{ t('games.all_terrains') }}</option>
-          <option v-for="n in 8" :key="n" :value="String(n)">{{ n }}</option>
-        </select>
-      </div>
-
-      <!-- Sort -->
-      <div>
-        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('games.filter_sort') }}</label>
-        <select v-model="selectedSort" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-          <option value="date_time_terrain">{{ t('games.sort.date_time_terrain') }}</option>
-          <option value="competition_date">{{ t('games.sort.competition_date') }}</option>
-          <option value="competition_phase">{{ t('games.sort.competition_phase') }}</option>
-          <option value="terrain_date">{{ t('games.sort.terrain_date') }}</option>
-          <option value="number">{{ t('games.sort.number') }}</option>
-        </select>
-      </div>
-
-      <!-- Unlocked only checkbox -->
-      <label class="flex items-center gap-1.5 px-3 py-2 text-sm cursor-pointer" :class="unlockedOnly ? 'text-blue-700 font-medium' : 'text-gray-600'">
-        <input v-model="unlockedOnly" type="checkbox" class="rounded border-gray-300 text-blue-600">
-        {{ t('games.unlocked_only') }}
-      </label>
-
-      <!-- Loading spinner -->
-      <UIcon v-if="loading" name="heroicons:arrow-path" class="w-5 h-5 text-blue-500 animate-spin" />
-    </div>
+        <!-- Loading spinner -->
+        <UIcon v-if="loading" name="heroicons:arrow-path" class="w-5 h-5 text-blue-500 animate-spin" />
+      </template>
+    </AdminPageHeader>
 
     <!-- ═══════ TOOLBAR ═══════ -->
     <AdminToolbar

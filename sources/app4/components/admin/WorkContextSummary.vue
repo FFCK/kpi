@@ -1,4 +1,12 @@
 <script setup lang="ts">
+interface Props {
+  compact?: boolean
+}
+
+withDefaults(defineProps<Props>(), {
+  compact: false,
+})
+
 const { t } = useI18n()
 const workContext = useWorkContextStore()
 
@@ -26,7 +34,8 @@ const scopeLabel = computed(() => {
 </script>
 
 <template>
-  <div class="mb-4 px-4 py-1 bg-blue-50 border border-blue-200 rounded-lg w-fit">
+  <!-- Normal mode (full-width bar) -->
+  <div v-if="!compact" class="mb-4 px-4 py-1 bg-blue-50 border border-blue-200 rounded-lg w-fit">
     <div class="flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-start gap-2 sm:gap-8">
       <div class="flex items-center gap-2">
         <UIcon name="i-heroicons-calendar" class="w-5 h-5 text-blue-600 shrink-0" />
@@ -51,5 +60,29 @@ const scopeLabel = computed(() => {
         {{ t('context.change') }}
       </NuxtLink>
     </div>
+  </div>
+
+  <!-- Compact mode (inline badges for PageHeader title row) -->
+  <div v-else class="flex flex-wrap items-center gap-2">
+    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-blue-50 border border-blue-200 rounded-md text-sm">
+      <UIcon name="i-heroicons-calendar" class="w-4 h-4 text-blue-600 shrink-0" />
+      <span class="font-medium text-gray-900">{{ workContext.season || '-' }}</span>
+    </span>
+    <span v-if="workContext.hasValidContext" class="inline-flex items-center gap-1.5 px-2.5 py-1 bg-blue-50 border border-blue-200 rounded-md text-sm">
+      <UIcon name="i-heroicons-funnel" class="w-4 h-4 text-blue-600 shrink-0" />
+      <span class="font-medium text-gray-900">{{ scopeLabel }}</span>
+      <span class="text-xs text-gray-500">({{ workContext.competitionCount }})</span>
+    </span>
+    <span v-else class="inline-flex items-center gap-1 text-xs text-amber-600">
+      <UIcon name="i-heroicons-exclamation-triangle" class="w-3.5 h-3.5 shrink-0" />
+      {{ t('context.no_context') }}
+    </span>
+    <NuxtLink
+      to="/"
+      class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded transition-colors"
+    >
+      <UIcon name="i-heroicons-pencil-square" class="w-3.5 h-3.5" />
+      {{ t('context.change') }}
+    </NuxtLink>
   </div>
 </template>

@@ -473,6 +473,113 @@ Les cases à cocher (`<input type="checkbox">`) dans les cellules `<th>` et `<td
 
 **Aucune modification des pages individuelles n'est nécessaire** — le comportement est automatique pour toutes les pages admin.
 
+### 3.8 Header de page (AdminPageHeader)
+
+Le composant `AdminPageHeader` uniformise la structure du header sur toutes les pages de gestion de compétition. Il remplace le pattern précédent où chaque page assemblait manuellement `AdminWorkContextSummary`, le titre, les filtres et les notices.
+
+#### 3.8.1 Layout
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│ [← Retour] Titre (h1)              [Saison: 2025] [Périmètre] [✏]│
+├──────────────────────────────────────────────────────────────────┤
+│ Événement/Groupe    Compétition     [filtres extra]  [badges]    │
+│ [▼ select]          [▼ select]      [▼ mois] [▼ tri] NIV TYPE   │
+├──────────────────────────────────────────────────────────────────┤
+│ ⚠ Notice (masquable via ×)                                       │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+**Ligne 1 — Titre + Contexte de travail :**
+- Titre de la page (h1) à gauche, avec optionnellement un bouton retour (page Schéma)
+- `AdminWorkContextSummary` en mode compact à droite (badges inline : saison + périmètre + lien modifier)
+
+**Ligne 2 — Filtres :**
+- `AdminEventGroupSelect` + `AdminCompetitionSingleSelect` intégrés avec labels au-dessus (`min-w-48 max-w-96`)
+- Slot `#filters` pour les filtres supplémentaires spécifiques à chaque page
+- Slot `#badges` pour les badges de compétition (niveau, type, statut, etc.)
+- Utilise `flex-wrap` pour le responsive
+
+**Ligne 3 — Notices (optionnelle) :**
+- Slot `#notices` pour les messages d'alerte (verrou compétition, restriction statut, etc.)
+- Bouton × pour masquer la notice (état local, réinitialisé au changement de compétition)
+
+**Note :** La toolbar (`AdminToolbar`) reste un composant séparé, utilisé juste après `AdminPageHeader`.
+
+#### 3.8.2 Props
+
+| Prop | Type | Défaut | Description |
+|------|------|--------|-------------|
+| `title` | `string` | requis | Titre de la page |
+| `showFilters` | `boolean` | `true` | Afficher la ligne de filtres (`false` pour la page Compétitions) |
+| `showAllOption` | `boolean` | `false` | Active l'option "Toutes les compétitions" dans `CompetitionSingleSelect` |
+| `competitionFilteredCodes` | `string[] \| null` | `null` | Codes filtrés passés à `CompetitionSingleSelect` |
+| `backTo` | `string` | `''` | Route pour le bouton retour (ex: `/gamedays` pour la page Schéma) |
+| `backLabel` | `string` | `''` | Label du bouton retour |
+
+#### 3.8.3 Événements
+
+| Événement | Description |
+|-----------|-------------|
+| `event-group-change` | Émis quand l'événement/groupe change dans `EventGroupSelect` |
+| `competition-change` | Émis quand la compétition change dans `CompetitionSingleSelect` |
+
+#### 3.8.4 Slots
+
+| Slot | Description | Exemple d'utilisation |
+|------|-------------|----------------------|
+| `#filters` | Filtres supplémentaires après EventGroup + Competition | Mois, tri (Journées), tour, journée, date, terrain (Matchs), type (Classements) |
+| `#badges` | Badges de compétition sur la ligne des filtres | Niveau (INT/NAT/REG), type (CHPT/CP), statut, verrou, goal-average |
+| `#notices` | Messages d'alerte sous les filtres, masquables | Notice de verrouillage (Équipes), restriction de statut (Classements) |
+
+#### 3.8.5 Pages et utilisation
+
+| Page | `showFilters` | `showAllOption` | Slot `#filters` | Slot `#badges` | Slot `#notices` |
+|------|:-:|:-:|:-:|:-:|:-:|
+| Compétitions | `false` | — | — | — | — |
+| Resp. Compétition | `true` | `true` | — | — | — |
+| Documents | `true` | `false` | — | EN + type | — |
+| Schéma | `true` | `false` | — | niveau + type | — |
+| Équipes | `true` | `false` | — | niveau + type + statut + verrou | verrou compétition |
+| Classements | `true` | `false` | type selector | niveau + type + statut + goal-avg | restriction statut |
+| Journées/Phases | `true` | `true` | mois, tri | — | — |
+| Matchs | `true` | `true` | tour, journée, date, terrain, tri, checkbox, spinner | — | — |
+
+#### 3.8.6 Pattern d'intégration
+
+```vue
+<!-- Exemple simple (RC) -->
+<AdminPageHeader
+  :title="t('rc.title')"
+  :show-all-option="true"
+  :competition-filtered-codes="workContext.pageFilteredCompetitionCodes"
+/>
+
+<!-- Exemple avec filtres, badges et notices (Équipes) -->
+<AdminPageHeader
+  :title="t('teams_page.title')"
+  :competition-filtered-codes="workContext.pageFilteredCompetitionCodes"
+  @competition-change="onCompetitionChange"
+>
+  <template #badges>
+    <div v-if="competitionInfo" class="flex items-center gap-2 flex-wrap">
+      <span class="px-2 py-1 text-xs font-medium rounded" :class="getLevelColor(...)">...</span>
+    </div>
+  </template>
+  <template #notices>
+    <div v-if="competitionInfo?.verrou" class="flex items-center gap-2 p-2 bg-amber-50 ...">
+      ⚠ Compétition verrouillée
+    </div>
+  </template>
+</AdminPageHeader>
+```
+
+#### 3.8.7 WorkContextSummary — Mode compact
+
+Le composant `AdminWorkContextSummary` supporte un prop `compact` (défaut `false`) :
+- **Mode normal** (`compact=false`) : barre pleine largeur avec fond bleu, utilisé si le composant est utilisé seul
+- **Mode compact** (`compact=true`) : badges inline sans wrapper, utilisé dans `AdminPageHeader` sur la ligne du titre
+
 ---
 
 ## 4. Endpoints API2 Communs

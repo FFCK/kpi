@@ -648,15 +648,8 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
 
 <template>
   <div>
-    <!-- Work Context Summary -->
-    <AdminWorkContextSummary />
-
     <!-- Page header -->
-    <div class="mb-6">
-      <h1 class="text-2xl font-bold text-gray-900">
-        {{ t('competitions.title') }}
-      </h1>
-    </div>
+    <AdminPageHeader :title="t('competitions.title')" :show-filters="false" />
 
     <!-- Toolbar -->
     <AdminToolbar

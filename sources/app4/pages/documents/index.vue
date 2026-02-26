@@ -142,35 +142,13 @@ onMounted(async () => {
 
 <template>
   <div>
-    <!-- Work Context Summary -->
-    <AdminWorkContextSummary />
-
     <!-- Page header -->
-    <div class="mb-2">
-      <h1 class="text-2xl font-bold text-gray-900">
-        {{ t('documents.title') }}
-      </h1>
-    </div>
-
-    <!-- Filters: Event/Group + Competition -->
-    <div class="bg-white rounded-lg shadow p-4 mb-2">
-      <div class="flex flex-wrap items-end gap-4">
-        <!-- Event / Group filter -->
-        <div class="min-w-48 max-w-96">
-          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('eventGroupSelect.label') }}</label>
-          <AdminEventGroupSelect />
-        </div>
-
-        <!-- Competition filter -->
-        <div class="min-w-48 max-w-96 flex-1">
-          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t(workContext.competitionFilterLabelKey) }}</label>
-          <AdminCompetitionSingleSelect
-            :filtered-codes="workContext.pageFilteredCompetitionCodes"
-            @change="onCompetitionChange"
-          />
-        </div>
-
-        <!-- Competition info badges -->
+    <AdminPageHeader
+      :title="t('documents.title')"
+      :competition-filtered-codes="workContext.pageFilteredCompetitionCodes"
+      @competition-change="onCompetitionChange"
+    >
+      <template #badges>
         <div v-if="workContext.pageCompetition" class="flex items-center gap-2">
           <span
             v-if="workContext.pageCompetition.enActif"
@@ -185,8 +163,8 @@ onMounted(async () => {
             {{ workContext.pageCompetition.codeTypeclt }}
           </span>
         </div>
-      </div>
-    </div>
+      </template>
+    </AdminPageHeader>
 
     <!-- Loading state -->
     <div v-if="loading" class="text-center py-12 text-gray-500">

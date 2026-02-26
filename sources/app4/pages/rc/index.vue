@@ -296,33 +296,12 @@ watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGrou
 
 <template>
   <div>
-    <!-- Work Context Summary -->
-    <AdminWorkContextSummary />
-
-    <!-- Title -->
-    <div class="mb-2">
-      <h1 class="text-2xl font-bold text-gray-900">
-        {{ t('rc.title') }}
-      </h1>
-    </div>
-
-    <!-- Filters: Event/Group + Competition -->
-    <div class="flex flex-wrap gap-3 items-end mb-2">
-      <!-- Event / Group filter -->
-      <div class="min-w-48 max-w-96">
-        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('eventGroupSelect.label') }}</label>
-        <AdminEventGroupSelect @change="() => {}" />
-      </div>
-
-      <!-- Competition filter (single select with "All" option) -->
-      <div class="min-w-48 max-w-96">
-        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t(workContext.competitionFilterLabelKey) }}</label>
-        <AdminCompetitionSingleSelect
-          :show-all-option="!!workContext.pageEventGroupSelection"
-          :filtered-codes="workContext.pageFilteredCompetitionCodes"
-        />
-      </div>
-    </div>
+    <!-- Page header -->
+    <AdminPageHeader
+      :title="t('rc.title')"
+      :show-all-option="true"
+      :competition-filtered-codes="workContext.pageFilteredCompetitionCodes"
+    />
 
     <!-- Toolbar -->
     <AdminToolbar

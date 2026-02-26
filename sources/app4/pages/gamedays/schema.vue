@@ -94,39 +94,14 @@ onMounted(async () => {
 
 <template>
   <div>
-    <!-- Work context summary -->
-    <AdminWorkContextSummary />
-
     <!-- Page header -->
-    <div class="mb-2 flex items-center justify-between">
-      <h1 class="text-2xl font-bold text-gray-900">{{ t('schema.title') }}</h1>
-      <NuxtLink
-        to="/gamedays"
-        class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 border border-gray-300 rounded-lg transition-colors"
-      >
-        <UIcon name="heroicons:arrow-left" class="w-4 h-4" />
-        {{ t('menu.gamedays') }}
-      </NuxtLink>
-    </div>
-
-    <!-- Filters: Event/Group + Competition + badges -->
-    <div class="mb-4 bg-white rounded-lg shadow p-4">
-      <div class="flex flex-wrap items-end gap-3">
-        <!-- Event / Group filter -->
-        <div class="min-w-48 max-w-96">
-          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('eventGroupSelect.label') }}</label>
-          <AdminEventGroupSelect />
-        </div>
-
-        <!-- Competition filter -->
-        <div class="flex-1 min-w-[250px]">
-          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t(workContext.competitionFilterLabelKey) }}</label>
-          <AdminCompetitionSingleSelect
-            :filtered-codes="workContext.pageFilteredCompetitionCodes"
-          />
-        </div>
-
-        <!-- Badges -->
+    <AdminPageHeader
+      :title="t('schema.title')"
+      :competition-filtered-codes="workContext.pageFilteredCompetitionCodes"
+      back-to="/gamedays"
+      :back-label="t('menu.gamedays')"
+    >
+      <template #badges>
         <div v-if="data?.competition" class="flex items-center gap-2 flex-wrap">
           <span
             class="px-2 py-1 text-xs font-medium rounded uppercase"
@@ -138,8 +113,8 @@ onMounted(async () => {
             {{ data.competition.codeTypeclt }}
           </span>
         </div>
-      </div>
-    </div>
+      </template>
+    </AdminPageHeader>
 
     <!-- No competition selected -->
     <div v-if="!workContext.pageCompetitionCode" class="bg-white rounded-lg shadow p-8 text-center text-gray-500">

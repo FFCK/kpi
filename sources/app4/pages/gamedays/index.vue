@@ -619,57 +619,39 @@ const getOfficialsSummary = (g: Gameday): string => {
 
 <template>
   <div>
-    <!-- Work Context Summary -->
-    <AdminWorkContextSummary />
+    <!-- Page header -->
+    <AdminPageHeader
+      :title="t('gamedays.title')"
+      :show-all-option="true"
+      :competition-filtered-codes="workContext.pageFilteredCompetitionCodes"
+      @event-group-change="() => { page = 1 }"
+      @competition-change="() => { page = 1 }"
+    >
+      <template #filters>
+        <!-- Month filter -->
+        <div class="min-w-36">
+          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('gamedays.field.date_debut') }}</label>
+          <select
+            v-model="selectedMonth"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">{{ t('gamedays.all_months') }}</option>
+            <option v-for="m in months" :key="m.value" :value="m.value">{{ m.label }}</option>
+          </select>
+        </div>
 
-    <!-- Title -->
-    <div class="mb-2">
-      <h1 class="text-2xl font-bold text-gray-900">
-        {{ t('gamedays.title') }}
-      </h1>
-    </div>
-
-    <!-- Filters Row -->
-    <div class="flex flex-wrap gap-3 items-end">
-      <!-- Event / Group filter -->
-      <div class="min-w-48 max-w-96">
-        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('eventGroupSelect.label') }}</label>
-        <AdminEventGroupSelect @change="() => { page = 1 }" />
-      </div>
-
-      <!-- Competition filter (single select) -->
-      <div class="min-w-48 max-w-96">
-        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t(workContext.competitionFilterLabelKey) }}</label>
-        <AdminCompetitionSingleSelect
-          :show-all-option="!!workContext.pageEventGroupSelection"
-          :filtered-codes="workContext.pageFilteredCompetitionCodes"
-          @change="() => { page = 1 }"
-        />
-      </div>
-
-      <!-- Month filter -->
-      <div class="min-w-36">
-        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('gamedays.field.date_debut') }}</label>
-        <select
-          v-model="selectedMonth"
-          class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="">{{ t('gamedays.all_months') }}</option>
-          <option v-for="m in months" :key="m.value" :value="m.value">{{ m.label }}</option>
-        </select>
-      </div>
-
-      <!-- Sort -->
-      <div class="min-w-48">
-        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('gamedays.sort.date_asc') }}</label>
-        <select
-          v-model="selectedSort"
-          class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-        >
-          <option v-for="opt in sortOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
-        </select>
-      </div>
-    </div>
+        <!-- Sort -->
+        <div class="min-w-48">
+          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('gamedays.sort.date_asc') }}</label>
+          <select
+            v-model="selectedSort"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+          >
+            <option v-for="opt in sortOptions" :key="opt.value" :value="opt.value">{{ opt.label }}</option>
+          </select>
+        </div>
+      </template>
+    </AdminPageHeader>
 
     <!-- Toolbar (search + add + bulk) -->
     <AdminToolbar
