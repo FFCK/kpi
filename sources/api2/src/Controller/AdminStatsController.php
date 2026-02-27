@@ -124,7 +124,7 @@ class AdminStatsController extends AbstractController
         // Check profile restrictions
         $user = $this->getUser();
         $profile = $user instanceof \App\Entity\User ? $user->getNiveau() : 10;
-        $restrictedTypes = ['CJouees3', 'LicenciesNationaux', 'CoherenceMatchs'];
+        $restrictedTypes = ['CJouees3', 'CJouees3b', 'LicenciesNationaux', 'CoherenceMatchs'];
         if ($profile > 6 && in_array($statType, $restrictedTypes)) {
             return $this->json(['message' => 'Access denied for this stat type'], 403);
         }
@@ -144,6 +144,7 @@ class AdminStatsController extends AbstractController
             'CJouees' => $this->getCJouees($compets, $codeSaison, $limit),
             'CJouees2' => $this->getCJouees2($compets, $codeSaison, $limit),
             'CJouees3' => $this->getCJouees3($compets, $codeSaison, $limit),
+            'CJouees3b' => $this->getCJouees3b($compets, $codeSaison, $limit),
             'CJoueesN' => $this->getCJoueesN($codeSaison, $limit),
             'CJoueesCF' => $this->getCJoueesCF($codeSaison, $limit),
             'OfficielsJournees' => $this->getOfficielsJournees($compets, $codeSaison, $limit),
@@ -405,7 +406,7 @@ class AdminStatsController extends AbstractController
         // Check profile restrictions
         $user = $this->getUser();
         $profile = $user instanceof \App\Entity\User ? $user->getNiveau() : 10;
-        $restrictedTypes = ['CJouees3', 'LicenciesNationaux', 'CoherenceMatchs'];
+        $restrictedTypes = ['CJouees3', 'CJouees3b', 'LicenciesNationaux', 'CoherenceMatchs'];
         if ($profile > 6 && in_array($statType, $restrictedTypes)) {
             return $this->json(['message' => 'Access denied for this stat type'], 403);
         }
@@ -425,6 +426,7 @@ class AdminStatsController extends AbstractController
             'CJouees' => $this->getCJouees($compets, $codeSaison, $limit),
             'CJouees2' => $this->getCJouees2($compets, $codeSaison, $limit),
             'CJouees3' => $this->getCJouees3($compets, $codeSaison, $limit),
+            'CJouees3b' => $this->getCJouees3b($compets, $codeSaison, $limit),
             'CJoueesN' => $this->getCJoueesN($codeSaison, $limit),
             'CJoueesCF' => $this->getCJoueesCF($codeSaison, $limit),
             'OfficielsJournees' => $this->getOfficielsJournees($compets, $codeSaison, $limit),
@@ -1067,6 +1069,65 @@ class AdminStatsController extends AbstractController
     }
 
     /**
+     * CJouees3b - Team roster check (restricted to profile <= 6)
+     */
+    private function getCJouees3b(array $compets, string $codeSaison, int $limit): array
+    {
+        $sql = "SELECT ce.Libelle AS nomEquipe, ce.Code_compet AS competition,
+                lc.Matric AS matric, lc.Nom AS nom, lc.Prenom AS prenom,
+                cej.Capitaine AS capitaine,
+                lc.Origine AS origine, lc.Pagaie_ECA AS pagaieEca,
+                lc.Etat_certificat_CK AS etatCertificatCk, lc.Etat_certificat_APS AS etatCertificatAps
+                FROM kp_competition_equipe_joueur cej
+                INNER JOIN kp_competition_equipe ce ON cej.Id_equipe = ce.Id
+                INNER JOIN kp_licence lc ON cej.Matric = lc.Matric
+                WHERE ce.Code_compet IN (:compets)
+                AND ce.Code_saison = :saison
+                AND (lc.Origine <> :saison
+                    OR lc.Pagaie_ECA = '' OR lc.Pagaie_ECA = 'PAGJ'
+                    OR lc.Pagaie_ECA = 'PAGB' OR lc.Etat_certificat_CK = 'NON')
+                ORDER BY lc.Nom, lc.Prenom, competition
+                LIMIT $limit";
+
+        $result = $this->connection->executeQuery($sql, [
+            'compets' => $compets,
+            'saison' => $codeSaison,
+        ], [
+            'compets' => ArrayParameterType::STRING,
+        ]);
+
+        $roles = ['-' => '', 'C' => '', 'E' => 'Entraîneur', 'A' => 'Arbitre', 'X' => 'Inactif'];
+
+        return array_map(function($row) use ($codeSaison, $roles) {
+            $irreg = '';
+            if ($row['origine'] != $codeSaison) {
+                $irreg = 'Licence ' . $row['origine'];
+            }
+            if ($row['pagaieEca'] == '' || $row['pagaieEca'] == 'PAGJ' || $row['pagaieEca'] == 'PAGB') {
+                if ($irreg != '') $irreg .= ' | ';
+                $irreg .= $row['pagaieEca'] != '' ? $row['pagaieEca'] : 'PAG ?';
+            }
+            if ($row['etatCertificatCk'] == 'NON') {
+                if ($irreg != '') $irreg .= ' | ';
+                $irreg .= 'Certif CK';
+            }
+
+            $role = $roles[$row['capitaine']] ?? '';
+
+            return [
+                'competition' => $row['competition'],
+                'matric' => $row['matric'],
+                'nom' => mb_strtoupper($row['nom']),
+                'prenom' => mb_convert_case(strtolower($row['prenom']), MB_CASE_TITLE, "UTF-8"),
+                'role' => $role,
+                'isNonJoueur' => in_array($row['capitaine'], ['E', 'A', 'X']),
+                'nomEquipe' => $row['nomEquipe'],
+                'irregularite' => $irreg
+            ];
+        }, $result->fetchAllAssociative());
+    }
+
+    /**
      * CJoueesN - National competitions
      */
     private function getCJoueesN(string $codeSaison, int $limit): array
@@ -1696,6 +1757,7 @@ class AdminStatsController extends AbstractController
             'CJouees' => ['competition', 'matric', 'nom', 'prenom', 'numeroClub', 'nomClub', 'nbMatchs'],
             'CJouees2', 'CJoueesN', 'CJoueesCF' => ['competition', 'matric', 'nom', 'prenom', 'nomEquipe', 'nbMatchs'],
             'CJouees3' => ['competition', 'matric', 'nom', 'prenom', 'nomEquipe', 'nbMatchs', 'irregularite'],
+            'CJouees3b' => ['competition', 'matric', 'nom', 'prenom', 'role', 'nomEquipe', 'irregularite'],
             'OfficielsJournees' => ['id', 'competition', 'libelle', 'lieu', 'departement', 'dateDebut', 'dateFin', 'responsableInsc', 'responsableR1', 'delegue', 'chefArbitre'],
             'OfficielsMatchs' => ['id', 'competition', 'lieu', 'dateMatch', 'heureMatch', 'numeroOrdre', 'equipeA', 'equipeB', 'arbitrePrincipal', 'arbitreSecondaire', 'ligne1', 'ligne2', 'secretaire', 'chronometre', 'timeshoot'],
             'ListeArbitres' => ['matric', 'nom', 'prenom', 'sexe', 'codeClub', 'club', 'arbitre', 'niveau', 'saison'],
@@ -1774,6 +1836,7 @@ class AdminStatsController extends AbstractController
                 'categoryLabelKey' => 'stats.categories.analyses',
                 'types' => [
                     ['value' => 'CJouees3', 'labelKey' => 'stats.types.irregularites', 'restricted' => true],
+                    ['value' => 'CJouees3b', 'labelKey' => 'stats.types.irregularites_presence', 'restricted' => true],
                     ['value' => 'LicenciesNationaux', 'labelKey' => 'stats.types.licencies_nationaux', 'restricted' => true],
                     ['value' => 'CoherenceMatchs', 'labelKey' => 'stats.types.coherence_matchs', 'restricted' => true],
                 ],

@@ -265,6 +265,7 @@ const columnLabels = computed<Record<string, string>>(() => ({
   numeroClub: t('stats.columns.numero_club'),
   nomClub: t('stats.columns.nom_club'),
   irregularite: t('stats.columns.irregularite'),
+  role: t('stats.columns.role'),
   matchs: t('stats.columns.matchs'),
   id: t('stats.columns.id'),
   libelle: t('stats.columns.libelle'),
@@ -598,6 +599,7 @@ const exportPdf = async () => {
               v-for="(row, index) in data"
               :key="index"
               class="hover:bg-gray-50"
+              :class="{ 'bg-gray-100 italic text-gray-500': row.isNonJoueur }"
             >
               <!-- Ranking cell -->
               <td
@@ -633,6 +635,7 @@ const exportPdf = async () => {
       <AdminCard
         v-for="(row, index) in data"
         :key="index"
+        :class="{ 'opacity-60 italic': row.isNonJoueur }"
       >
         <template #header>
           <h3 class="font-semibold text-gray-900 truncate">
