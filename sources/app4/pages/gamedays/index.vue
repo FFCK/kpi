@@ -203,8 +203,9 @@ watch(searchQuery, () => {
 
 // ─── Format helpers ───
 const formatDate = (date: string | null) => {
-  if (!date) return '-'
+  if (!date || date === '0000-00-00') return '-'
   const d = new Date(date)
+  if (isNaN(d.getTime())) return '-'
   if (locale.value === 'fr') {
     return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' })
   }

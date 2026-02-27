@@ -622,6 +622,9 @@ export const useWorkContextStore = defineStore('workContext', {
           this.pageCompetitionCodes = [code]
           localStorage.setItem(STORAGE_KEYS.pageCompetitionCodes, JSON.stringify([code]))
         }
+        // Sync: keep pageCompetitionCodeAll in sync
+        this.pageCompetitionCodeAll = code
+        localStorage.setItem(STORAGE_KEYS.pageCompetitionCodeAll, code)
       }
       else {
         localStorage.removeItem(STORAGE_KEYS.pageCompetitionCode)
@@ -633,6 +636,13 @@ export const useWorkContextStore = defineStore('workContext', {
       this.pageCompetitionCodeAll = code
       if (code) {
         localStorage.setItem(STORAGE_KEYS.pageCompetitionCodeAll, code)
+        // Sync: keep pageCompetitionCode in sync
+        this.pageCompetitionCode = code
+        localStorage.setItem(STORAGE_KEYS.pageCompetitionCode, code)
+        if (!this.pageCompetitionCodes.includes(code)) {
+          this.pageCompetitionCodes = [code]
+          localStorage.setItem(STORAGE_KEYS.pageCompetitionCodes, JSON.stringify([code]))
+        }
       }
       else {
         localStorage.removeItem(STORAGE_KEYS.pageCompetitionCodeAll)

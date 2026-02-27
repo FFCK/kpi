@@ -68,7 +68,7 @@ watch(() => workContext.pageCompetitionCodeAll, () => {
       <div class="min-w-48 max-w-96">
         <label class="block text-xs font-medium text-gray-500 mb-1">{{ t(workContext.competitionFilterLabelKey) }}</label>
         <AdminCompetitionSingleSelect
-          :show-all-option="showAllOption && !!workContext.pageEventGroupSelection"
+          :show-all-option="showAllOption"
           :filtered-codes="competitionFilteredCodes"
           @change="emit('competition-change')"
         />
