@@ -427,13 +427,29 @@ Mode consultation :
 
 ### 6.4 Édition inline des arbitres (détail)
 
-1. Clic sur le nom d'arbitre → crée un `<input id="inputZone2">` avec autocomplete
-2. Autocomplete via `Autocompl_arb.php` avec params `{journee, sessionMatch}`
-3. L'autocomplete retourne : `{matric, nom, prenom, libelle, arbitre, label, value}`
-4. Format résultat : `"NOM Prénom (Club) [niveau]"` ou `"NOM Prénom [niveau]"` si pas de club
-5. Trois boutons : **Valider** (sauve), **Annuler** (ferme), **Vider** (efface l'arbitre)
-6. Sauvegarde via POST vers `v2/saveArbitres.php` avec `{idMatch, id: 'Arbitre_principal'|'Arbitre_secondaire', value: 'nomComplet|matricule'}`
-7. Si matricule = 0 → ajoute la classe `pbArb` (arbitre non identifié)
+#### Principes généraux
+
+- L'arbitre principal est associé à une équipe en charge de fournir les juges de ligne.
+- L'arbitre secondaire est associé à une équipe en charge de la table de marque.
+- L'équipe associée à chaque arbitre est généralement son équipe d'appartenance, mais elle peut être changée (pool arbitres, arbitre en évaluation, etc.).
+
+#### Modes d'affectation
+
+1. **Affectation nominative** : un arbitre est désigné par son nom. Le matricule (`Matric_arbitre_principal` ou `Matric_arbitre_secondaire`) est renseigné (≠ 0). Affichage : `NOM Prénom (Équipe) NIVEAU` en texte normal.
+2. **Affectation par équipe seule** : seule l'équipe est désignée, sans arbitre nominatif. Le matricule = 0. Affichage en *italique grisé*.
+3. **Saisie libre** : un texte arbitraire est saisi sans sélection dans l'autocomplete. Le matricule = 0. Affichage en *italique grisé*.
+4. **Champ vide avec bracket** : aucun arbitre n'est désigné, mais le libellé du match contient un code bracket `[PART1-PART2/PART3-PART4]`. L'affichage est calculé par bracket parsing (ex: "3ème poule C", "Vainqueur match 125") et affiché entre parenthèses en *italique orange*.
+
+#### Édition inline (tableau)
+
+1. Clic sur le nom d'arbitre → ouvre un `<input>` autocomplete directement dans la cellule
+2. Autocomplete via `GET /admin/games/autocomplete/referees?q=...&journeeId=...`
+3. L'autocomplete retourne des résultats groupés : Équipes, Joueurs, Pool Arbitres, Autres Arbitres
+4. Format résultat : `{type, matric, nom, prenom, libelle, arbitre, label, value}`
+5. Sélection d'un résultat → enregistre le label + matricule ; saisie libre → enregistre le texte + matricule = 0
+6. Bouton X (vider) → efface l'arbitre et remet le matricule à 0
+7. Sauvegarde via `PATCH /admin/games/{id}/inline` avec `{field: 'Arbitre_principal'|'Arbitre_secondaire', value, matric}`
+8. Dès que le nom d'arbitre est modifié manuellement ou supprimé, le matricule est vidé (= 0). C'est le critère pour distinguer une affectation nominative d'une affectation non nominative.
 
 ### 6.5 Édition inline de la phase/journée (détail)
 
@@ -456,7 +472,9 @@ PATCH /api2/admin/games/{id}/inline
   &value={newValue}
 ```
 
-Champs autorisés en inline : `Numero_ordre`, `Date_match`, `Heure_match`, `Libelle`, `Terrain`, `ScoreA`, `ScoreB`.
+Champs autorisés en inline : `Numero_ordre`, `Date_match`, `Heure_match`, `Libelle`, `Terrain`, `ScoreA`, `ScoreB`, `Arbitre_principal`, `Arbitre_secondaire`.
+
+Pour les champs arbitres, le body inclut un paramètre `matric` (int) en plus de `field` et `value`. Le endpoint met à jour simultanément le champ texte et le champ matricule correspondant.
 
 ---
 
@@ -483,13 +501,16 @@ Champs autorisés en inline : `Numero_ordre`, `Date_match`, `Heure_match`, `Libe
 
 ### 7.2 Sélection des arbitres
 
-Chaque champ arbitre dispose de 3 modes de saisie :
+Chaque champ arbitre dispose de :
 
-1. **Autocomplete** : Saisie libre avec suggestion (recherche dans `Autocompl_arb.php`)
-2. **Dropdown "Principal"/"Secondaire"** : Sélection rapide parmi les arbitres connus de la journée (depuis `kp_arbitre`)
-3. **Dropdown "Équipe"** : Sélection parmi les joueurs d'une équipe (pour remplacer le club entre parenthèses)
+1. **Autocomplete** : Saisie libre avec suggestion via `GET /admin/games/autocomplete/referees`. Les résultats sont groupés dans l'ordre suivant :
+   - Noms d'équipes engagées dans la compétition
+   - Noms des joueurs engagés (depuis les feuilles de présence équipe, incluant les arbitres non joueurs)
+   - Arbitres du pool arbitres
+   - Autres licenciés ayant une qualification arbitre
+2. **Sélecteur d'équipe** (visible uniquement si un arbitre nominatif est sélectionné) : Permet de changer l'équipe entre parenthèses sans modifier le nom de l'arbitre. L'équipe associée est son équipe d'appartenance par défaut (sa nation pour le pool arbitre, son club pour les autres).
 
-Le format stocké est : `"NOM Prénom (Club) [niveau]"` avec le matricule séparé.
+Le format stocké est : `"NOM Prénom (Club) NIVEAU"` avec le matricule séparé dans `Matric_arbitre_principal` / `Matric_arbitre_secondaire`.
 
 ### 7.3 Comportement du formulaire
 

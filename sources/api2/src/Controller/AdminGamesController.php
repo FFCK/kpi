@@ -575,12 +575,13 @@ class AdminGamesController extends AbstractController
         // Score fields editable by profile <= 9, other fields by <= 6
         $scoreFields = ['ScoreA', 'ScoreB'];
         $otherFields = ['Numero_ordre', 'Date_match', 'Heure_match', 'Libelle', 'Terrain'];
+        $refereeFields = ['Arbitre_principal', 'Arbitre_secondaire'];
 
         if (in_array($field, $scoreFields)) {
             if ($user && $user->getNiveau() > 9) {
                 return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
             }
-        } elseif (in_array($field, $otherFields)) {
+        } elseif (in_array($field, $otherFields) || in_array($field, $refereeFields)) {
             if ($user && $user->getNiveau() > 6) {
                 return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
             }
@@ -618,9 +619,20 @@ class AdminGamesController extends AbstractController
             $value = $value !== '' ? substr($value, 0, 30) : null;
         } elseif (in_array($field, ['ScoreA', 'ScoreB'])) {
             $value = $value !== '' ? substr($value, 0, 4) : null;
+        } elseif (in_array($field, $refereeFields)) {
+            $value = $value !== '' ? substr($value, 0, 60) : null;
         }
 
-        $this->connection->update('kp_match', [$field => $value, 'Code_uti' => $user?->getUserIdentifier()], ['Id' => $id]);
+        $updateData = [$field => $value, 'Code_uti' => $user?->getUserIdentifier()];
+
+        // For referee fields, also update the associated matricule
+        if (in_array($field, $refereeFields)) {
+            $matric = isset($data['matric']) ? (int) $data['matric'] : 0;
+            $matricField = $field === 'Arbitre_principal' ? 'Matric_arbitre_principal' : 'Matric_arbitre_secondaire';
+            $updateData[$matricField] = $matric;
+        }
+
+        $this->connection->update('kp_match', $updateData, ['Id' => $id]);
 
         return $this->json(['id' => $id, 'field' => $field, 'value' => $value]);
     }
@@ -1358,6 +1370,160 @@ class AdminGamesController extends AbstractController
         ], $rows);
 
         return $this->json(['items' => $items]);
+    }
+
+    /**
+     * Autocomplete referees for a journee
+     */
+    #[Route('/autocomplete/referees', name: 'admin_games_autocomplete_referees', methods: ['GET'])]
+    #[IsGranted('ROLE_ORGANIZER')]
+    public function autocompleteReferees(Request $request): JsonResponse
+    {
+        $q = trim($request->query->get('q', ''));
+        $q = ltrim($q, '0');
+        $journeeId = (int) $request->query->get('journeeId', 0);
+        $lang = $request->query->get('lang', 'fr');
+
+        if ($journeeId <= 0) {
+            $msg = $lang === 'en' ? 'Select a gameday / phase' : 'Sélectionnez une journée / phase';
+            return $this->json([['type' => 'error', 'label' => $msg, 'value' => '']]);
+        }
+        if (mb_strlen($q) < 2) {
+            $msg = $lang === 'en' ? '2 characters minimum' : '2 caractères minimum';
+            return $this->json([['type' => 'error', 'label' => $msg, 'value' => '']]);
+        }
+
+        $results = [];
+        $likeQ = '%' . $q . '%';
+
+        $sepTeams = $lang === 'en' ? '---------- Teams ----------' : '---------- Équipes ----------';
+        $sepPlayers = $lang === 'en' ? '---------- Players ----------' : '---------- Joueurs ----------';
+        $sepPool = $lang === 'en' ? '---------- Referee Pool ----------' : '---------- Pool Arbitres ----------';
+        $sepOther = $lang === 'en' ? '---------- Other Referees ----------' : '---------- Autres Arbitres ----------';
+
+        // 1. Équipes engagées
+        $results[] = ['type' => 'separator', 'label' => $sepTeams];
+        $sql = "SELECT a.Id, a.Libelle, a.Poule, a.Tirage, a.Code_compet
+                FROM kp_competition_equipe a
+                INNER JOIN kp_journee b ON a.Code_compet = b.Code_competition AND a.Code_saison = b.Code_saison
+                WHERE b.Id = ? AND UPPER(a.Libelle) LIKE UPPER(?)
+                GROUP BY a.Libelle
+                ORDER BY a.Poule, a.Tirage, a.Libelle";
+        $rows = $this->connection->prepare($sql)->executeQuery([$journeeId, $likeQ])->fetchAllAssociative();
+        foreach ($rows as $row) {
+            $results[] = [
+                'type' => 'equipe',
+                'matric' => '',
+                'nom' => $row['Libelle'],
+                'prenom' => '',
+                'libelle' => '',
+                'arbitre' => '',
+                'label' => $row['Libelle'],
+                'value' => $row['Libelle'],
+            ];
+        }
+
+        // 2. Joueurs engagés
+        $results[] = ['type' => 'separator', 'label' => $sepPlayers];
+        $sql = "SELECT DISTINCT a.Matric, a.Nom, a.Prenom, b.Libelle, c.arbitre, c.niveau,
+                    (c.arbitre IS NULL) AS sortCol
+                FROM kp_competition_equipe b
+                INNER JOIN kp_journee d ON b.Code_compet = d.Code_competition AND b.Code_saison = d.Code_saison
+                INNER JOIN kp_match e ON d.Id = e.Id_journee
+                INNER JOIN kp_competition_equipe_joueur a ON a.Id_equipe = b.Id
+                LEFT JOIN kp_arbitre c ON a.Matric = c.Matric
+                WHERE d.Id = ?
+                AND a.Capitaine <> 'X'
+                AND (a.Matric LIKE ? OR UPPER(CONCAT_WS(' ', a.Nom, a.Prenom)) LIKE UPPER(?)
+                     OR UPPER(CONCAT_WS(' ', a.Prenom, a.Nom)) LIKE UPPER(?) OR UPPER(b.Libelle) LIKE UPPER(?))
+                ORDER BY b.Libelle, sortCol, c.arbitre, a.Nom, a.Prenom";
+        $rows = $this->connection->prepare($sql)->executeQuery([$journeeId, $likeQ, $likeQ, $likeQ, $likeQ])->fetchAllAssociative();
+        foreach ($rows as $row) {
+            $arb = strtoupper($row['arbitre'] ?? '');
+            if (!empty($row['niveau'])) {
+                $arb .= '-' . $row['niveau'];
+            }
+            $nom = mb_strtoupper($row['Nom'] ?? '');
+            $prenom = mb_convert_case(strtolower($row['Prenom'] ?? ''), MB_CASE_TITLE, 'UTF-8');
+            $libelle = $row['Libelle'];
+            $arbSuffix = $arb !== '' ? " $arb" : '';
+            $results[] = [
+                'type' => 'joueur',
+                'matric' => $row['Matric'],
+                'nom' => $nom,
+                'prenom' => $prenom,
+                'libelle' => $libelle,
+                'arbitre' => $arb,
+                'label' => "($libelle) $nom $prenom$arbSuffix",
+                'value' => "$nom $prenom ($libelle)$arbSuffix",
+            ];
+        }
+
+        // 3. Pool Arbitres
+        $results[] = ['type' => 'separator', 'label' => $sepPool];
+        $sql = "SELECT a.Matric, a.Nom, a.Prenom, b.Libelle, c.arbitre, c.niveau
+                FROM kp_competition_equipe b
+                INNER JOIN kp_competition_equipe_joueur a ON a.Id_equipe = b.Id
+                LEFT JOIN kp_arbitre c ON a.Matric = c.Matric
+                WHERE b.Code_compet = 'POOL'
+                AND (a.Matric LIKE ? OR UPPER(CONCAT_WS(' ', a.Nom, a.Prenom)) LIKE UPPER(?)
+                     OR UPPER(CONCAT_WS(' ', a.Prenom, a.Nom)) LIKE UPPER(?) OR UPPER(b.Libelle) LIKE UPPER(?))
+                ORDER BY a.Nom, a.Prenom";
+        $rows = $this->connection->prepare($sql)->executeQuery([$likeQ, $likeQ, $likeQ, $likeQ])->fetchAllAssociative();
+        foreach ($rows as $row) {
+            $libelle = substr($row['Libelle'], 0, 3);
+            $libelle = str_replace('Poo', 'Pool', $libelle);
+            $arb = strtoupper($row['arbitre'] ?? '');
+            if (!empty($row['niveau'])) {
+                $arb .= '-' . $row['niveau'];
+            }
+            $nom = mb_strtoupper($row['Nom'] ?? '');
+            $prenom = mb_convert_case(strtolower($row['Prenom'] ?? ''), MB_CASE_TITLE, 'UTF-8');
+            $arbSuffix = $arb !== '' ? " $arb" : '';
+            $results[] = [
+                'type' => 'pool',
+                'matric' => $row['Matric'],
+                'nom' => $nom,
+                'prenom' => $prenom,
+                'libelle' => $libelle,
+                'arbitre' => $arb,
+                'label' => "$nom $prenom ($libelle)$arbSuffix",
+                'value' => "$nom $prenom ($libelle)$arbSuffix",
+            ];
+        }
+
+        // 4. Autres arbitres licenciés
+        $results[] = ['type' => 'separator', 'label' => $sepOther];
+        $sql = "SELECT lc.Matric, lc.Nom, lc.Prenom, lc.Numero_club, c.Libelle, b.arbitre, b.niveau
+                FROM kp_licence lc
+                INNER JOIN kp_arbitre b ON lc.Matric = b.Matric
+                INNER JOIN kp_club c ON lc.Numero_club = c.Code
+                WHERE (lc.Matric LIKE ? OR UPPER(CONCAT_WS(' ', lc.Nom, lc.Prenom)) LIKE UPPER(?)
+                       OR UPPER(CONCAT_WS(' ', lc.Prenom, lc.Nom)) LIKE UPPER(?))
+                ORDER BY lc.Nom, lc.Prenom";
+        $rows = $this->connection->prepare($sql)->executeQuery([$likeQ, $likeQ, $likeQ])->fetchAllAssociative();
+        foreach ($rows as $row) {
+            $libelle = mb_convert_case(strtolower($row['Libelle'] ?? ''), MB_CASE_TITLE, 'UTF-8');
+            $arb = strtoupper($row['arbitre'] ?? '');
+            if (!empty($row['niveau'])) {
+                $arb .= '-' . $row['niveau'];
+            }
+            $nom = mb_strtoupper($row['Nom'] ?? '');
+            $prenom = mb_convert_case(strtolower($row['Prenom'] ?? ''), MB_CASE_TITLE, 'UTF-8');
+            $arbSuffix = $arb !== '' ? " $arb" : '';
+            $results[] = [
+                'type' => 'autre',
+                'matric' => $row['Matric'],
+                'nom' => $nom,
+                'prenom' => $prenom,
+                'libelle' => $libelle,
+                'arbitre' => $arb,
+                'label' => "$nom $prenom ($libelle)$arbSuffix",
+                'value' => "$nom $prenom ($libelle)$arbSuffix",
+            ];
+        }
+
+        return $this->json($results);
     }
 
     /**
