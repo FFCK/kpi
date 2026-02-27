@@ -497,10 +497,56 @@ class FeuilleStats extends MyPage
                     array_push($arrayStats, $row);
                 }
                 break;
+            case 'CJouees3b': // Contrôle feuilles de présence
+                $NomStat = 'Team roster check';
+                $sql = "SELECT ce.Libelle nomEquipe, ce.Code_compet Competition,
+                    lc.Matric, lc.Nom, lc.Prenom,
+                    cej.Capitaine,
+                    lc.Origine, lc.Pagaie_ECA, lc.Etat_certificat_CK, lc.Etat_certificat_APS
+                    FROM kp_competition_equipe_joueur cej
+                    INNER JOIN kp_competition_equipe ce ON cej.Id_equipe = ce.Id
+                    INNER JOIN kp_licence lc ON cej.Matric = lc.Matric
+                    WHERE ce.Code_compet IN ($in)
+                    AND ce.Code_saison = ?
+                    AND (lc.Origine <> ?
+                        OR lc.Pagaie_ECA = '' OR lc.Pagaie_ECA = 'PAGJ'
+                        OR lc.Pagaie_ECA = 'PAGB' OR lc.Etat_certificat_CK = 'NON')
+                    ORDER BY lc.Nom, lc.Prenom, Competition
+                    LIMIT 0,$nbLignes ";
+                $result = $myBdd->pdo->prepare($sql);
+                $result->execute(array_merge($Compets, [$codeSaison], [$codeSaison]));
+                while ($row = $result->fetch()) {
+                    $row['Irreg'] = '';
+                    if ($row['Origine'] < $codeSaison) {
+                        $row['Irreg'] = 'Licence ' . $row['Origine'];
+                    }
+                    if ($row['Pagaie_ECA'] == '' or $row['Pagaie_ECA'] == 'PAGJ' or $row['Pagaie_ECA'] == 'PAGB') {
+                        if ($row['Irreg'] != '') {
+                            $row['Irreg'] .= '<br>';
+                        }
+                        if ($row['Pagaie_ECA'] != '') {
+                            $row['Irreg'] .= $row['Pagaie_ECA'];
+                        } else {
+                            $row['Irreg'] .= 'PAG ?';
+                        }
+                    }
+                    if ($row['Etat_certificat_CK'] == 'NON') {
+                        if ($row['Irreg'] != '') {
+                            $row['Irreg'] .= '/';
+                        }
+                        $row['Irreg'] .= 'Certif CK';
+                    }
+                    $row['Nom'] = mb_strtoupper($row['Nom']);
+                    $row['Prenom'] = mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8");
+                    $roles = ['-' => '', 'C' => '', 'E' => 'Coach', 'A' => 'Ref.', 'X' => 'Inactive'];
+                    $row['Role'] = $roles[$row['Capitaine']] ?? '';
+                    array_push($arrayStats, $row);
+                }
+                break;
             case 'CJoueesN': // Compétitions jouées dans la saison en cours (par équipe)
                 $NomStat = 'Games played in French championship';
-                $sql = "SELECT ce.Libelle nomEquipe, lc.Matric, lc.Nom, lc.Prenom, 
-                    j.Code_competition Competition, COUNT(DISTINCT mj.Id_match) Nb_matchs 
+                $sql = "SELECT ce.Libelle nomEquipe, lc.Matric, lc.Nom, lc.Prenom,
+                    j.Code_competition Competition, COUNT(DISTINCT mj.Id_match) Nb_matchs
                     FROM kp_match_joueur mj, kp_match m, kp_journee j, 
                     kp_licence lc, kp_competition_equipe ce 
                     WHERE lc.Matric = mj.Matric 
@@ -1051,6 +1097,29 @@ class FeuilleStats extends MyPage
                     $pdf->Cell(35, 7, $arrayStats[$i]['Prenom'], 'B', 0, 'C');
                     $pdf->Cell(60, 7, $arrayStats[$i]['nomEquipe'], 'B', 0, 'C');
                     $pdf->Cell(35, 7, $arrayStats[$i]['Irreg'], 'B', 1, 'C');
+                }
+                break;
+            case 'CJouees3b':
+                $pdf->SetFont('Arial', 'BI', 10);
+                $pdf->Cell(8, 7, '#', 'B', 0, 'C');
+                $pdf->Cell(15, 7, 'Cat.', 'B', 0, 'C');
+                $pdf->Cell(30, 7, 'Family name', 'B', 0, 'C');
+                $pdf->Cell(30, 7, 'First name', 'B', 0, 'C');
+                $pdf->Cell(18, 7, 'Role', 'B', 0, 'C');
+                $pdf->Cell(55, 7, 'Team', 'B', 0, 'C');
+                $pdf->Cell(32, 7, 'Problem', 'B', 1, 'C');
+                $pdf->SetFont('Arial', '', 8);
+
+                for ($i = 0; $i < count($arrayStats); $i++) {
+                    $fontStyle = ($arrayStats[$i]['Role'] != '') ? 'I' : '';
+                    $pdf->SetFont('Arial', $fontStyle, 8);
+                    $pdf->Cell(8, 7, $i + 1, 'B', 0, 'C');
+                    $pdf->Cell(15, 7, $arrayStats[$i]['Competition'], 'B', 0, 'C');
+                    $pdf->Cell(30, 7, $arrayStats[$i]['Nom'], 'B', 0, 'C');
+                    $pdf->Cell(30, 7, $arrayStats[$i]['Prenom'], 'B', 0, 'C');
+                    $pdf->Cell(18, 7, $arrayStats[$i]['Role'], 'B', 0, 'C');
+                    $pdf->Cell(55, 7, $arrayStats[$i]['nomEquipe'], 'B', 0, 'C');
+                    $pdf->Cell(32, 7, $arrayStats[$i]['Irreg'], 'B', 1, 'C');
                 }
                 break;
             case 'CJoueesN':

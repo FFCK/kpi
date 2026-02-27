@@ -1,7 +1,8 @@
 <?php
 // Paramètres de connexion
 
-define('URL_SITE', 'https://www.kayak-polo.info');
+define('URL_SITE', 'https://kpi.localhost');
+define('URL_APP', 'https://app.kpi.localhost');
 
 define("PRODUCTION", FALSE);
 define("DEV", FALSE); // Development environment flag (set to TRUE for dev environment)
@@ -24,7 +25,6 @@ define('PARAM_LOCAL_PASSWORD', '');
 define('PARAM_LOCAL_DB', '');
 define('PARAM_LOCAL_SERVER', '');
 
-
 // Ftp
 define('FTP_SERVER', '');
 define('FTP_USER_NAME', '');
@@ -37,9 +37,12 @@ define('MAIN_DIRECTORY', '');
 
 // Destinataires alertes cartons
 define('CARD_ALERT_RECIPIENTS', '');
+define('SEND_MAIL', true);
 
 // URL FFCK PCE (licences)
 define('FFCK_PCE_URL', 'https://link.to.pce/');
+define('FFCK_PCE_USER', 'user');
+define('FFCK_PCE_PWD', 'password');
 
 // Matomo Analytics
 // Site ID pour la partie publique (frontend)
@@ -47,4 +50,4 @@ define('MATOMO_SITE_ID_PUBLIC', '1');
 // Site ID pour la partie administration (backend)
 define('MATOMO_SITE_ID_ADMIN', '2');
 // URL du serveur Matomo
-define('MATOMO_SERVER_URL', 'https://matomo.kayak-polo.info/');
+define('MATOMO_SERVER_URL', 'https://matomo.kpi.localhost/');
