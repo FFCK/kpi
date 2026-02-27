@@ -648,6 +648,54 @@ class GestionStats extends MyPageSecure
                 }
                 $this->m_tpl->assign('arrayCJouees3', $arrayStats);
                 break;
+            case 'CJouees3b': // Contrôle feuilles de présence
+                $sql = "SELECT ce.Libelle nomEquipe, ce.Code_compet Competition,
+                    lc.Matric, lc.Nom, lc.Prenom,
+                    cej.Capitaine,
+                    lc.Origine, lc.Pagaie_ECA, lc.Etat_certificat_CK, lc.Etat_certificat_APS
+                    FROM kp_competition_equipe_joueur cej
+                    INNER JOIN kp_competition_equipe ce ON cej.Id_equipe = ce.Id
+                    INNER JOIN kp_licence lc ON cej.Matric = lc.Matric
+                    WHERE ce.Code_compet IN ($in)
+                    AND ce.Code_saison = ?
+                    AND (lc.Origine <> ?
+                        OR lc.Pagaie_ECA = '' OR lc.Pagaie_ECA = 'PAGJ'
+                        OR lc.Pagaie_ECA = 'PAGB' OR lc.Etat_certificat_CK = 'NON')
+                    ORDER BY lc.Nom, lc.Prenom, Competition
+                    LIMIT 0,$nbLignes ";
+                $sql_total .= '<br><br>' . $sql;
+                $result = $myBdd->pdo->prepare($sql);
+                $result->execute(array_merge($Compets, [$codeSaison], [$codeSaison]));
+                while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+                    $row['Irreg'] = '';
+                    if ($row['Origine'] != $codeSaison) {
+                        $row['Irreg'] = 'Licence ' . $row['Origine'];
+                    }
+                    if ($row['Pagaie_ECA'] == '' or $row['Pagaie_ECA'] == 'PAGJ' or $row['Pagaie_ECA'] == 'PAGB') {
+                        if ($row['Irreg'] != '') {
+                            $row['Irreg'] .= '<br>';
+                        }
+                        if ($row['Pagaie_ECA'] != '') {
+                            $row['Irreg'] .= $row['Pagaie_ECA'];
+                        } else {
+                            $row['Irreg'] .= 'PAG ?';
+                        }
+                    }
+                    if ($row['Etat_certificat_CK'] == 'NON') {
+                        if ($row['Irreg'] != '') {
+                            $row['Irreg'] .= '<br>';
+                        }
+                        $row['Irreg'] .= 'Certif CK';
+                    }
+                    $row['Nom'] = mb_strtoupper($row['Nom']);
+                    $row['Prenom'] = mb_convert_case(strtolower($row['Prenom']), MB_CASE_TITLE, "UTF-8");
+                    $roles = ['-' => '', 'C' => '', 'E' => 'Entraîneur', 'A' => 'Arbitre', 'X' => 'Inactif'];
+                    $row['Role'] = $roles[$row['Capitaine']] ?? '';
+                    $row['isNonJoueur'] = in_array($row['Capitaine'], ['E', 'A', 'X']) ? 1 : 0;
+                    array_push($arrayStats, $row);
+                }
+                $this->m_tpl->assign('arrayCJouees3b', $arrayStats);
+                break;
             case 'CJoueesN': // Compétitions jouées dans la saison en cours (par équipe)
                 $sql = "SELECT ce.Libelle nomEquipe, lc.Matric, lc.Nom, lc.Prenom, 
                     j.Code_competition Competition, COUNT(DISTINCT mj.Id_match) Nb_matchs 

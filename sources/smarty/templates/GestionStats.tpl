@@ -30,6 +30,8 @@
 					<div class='titrePage'>{#Competitions_jouees_par_equipe#} ({#Matchs_verrouilles#} {#seulement#})</div>
 				{elseif $AfficheStat == 'CJouees3'}
 					<div class='titrePage'>{#Irregularites#} ({#Matchs_verrouilles#} {#seulement#})</div>
+				{elseif $AfficheStat == 'CJouees3b'}
+					<div class='titrePage'>{#Irregularites_presence#}</div>
 				{elseif $AfficheStat == 'OfficielsJournees'}
 					<div class='titrePage'>{#Officiels_des_journees#}</div>
 				{elseif $AfficheStat == 'OfficielsMatchs'}
@@ -164,6 +166,15 @@
 									<th>N°</th>
 									<th>{#Nom_de_famille#}</th>
 									<th>{#Prenom#}</th>
+									<th>{#Equipe#}</th>
+									<th>{#Competition#}</th>
+									<th>{#Irregularites#}</th>
+								{elseif $AfficheStat == 'CJouees3b'}
+									<th>#</th>
+									<th>N°</th>
+									<th>{#Nom_de_famille#}</th>
+									<th>{#Prenom#}</th>
+									<th>Rôle</th>
 									<th>{#Equipe#}</th>
 									<th>{#Competition#}</th>
 									<th>{#Irregularites#}</th>
@@ -442,6 +453,25 @@
 										<td>{$arrayCJouees3[i].Irreg}</td>
 									</tr>
 								{/section}
+							{elseif $AfficheStat == 'CJouees3b'}
+								{section name=i loop=$arrayCJouees3b}
+									<tr class='{cycle values="impair,pair"}{if $arrayCJouees3b[i].isNonJoueur} gris{/if}'
+										{if $arrayCJouees3b[i].isNonJoueur}style="font-style:italic"{/if}>
+										<td>{$smarty.section.i.iteration}</td>
+										<td>{$arrayCJouees3b[i].Matric}</td>
+										<td>{$arrayCJouees3b[i].Nom}
+											{if $profile <= 6}
+												<a href="GestionAthlete.php?Athlete={$arrayCJouees3b[i].Matric}"><img width="10" src="../img/b_plus.png"
+														alt="Détails" title="Détails" /></a>
+											{/if}
+										</td>
+										<td>{$arrayCJouees3b[i].Prenom}</td>
+										<td>{$arrayCJouees3b[i].Role}</td>
+										<td>{$arrayCJouees3b[i].nomEquipe}</td>
+										<td>{$arrayCJouees3b[i].Competition}</td>
+										<td>{$arrayCJouees3b[i].Irreg}</td>
+									</tr>
+								{/section}
 							{elseif $AfficheStat == 'OfficielsJournees'}
 								{section name=i loop=$arrayOfficielsJournees}
 									<tr class='{cycle values="impair,pair"}'>
@@ -629,6 +659,7 @@
 									<Option Value="CJouees2" {if $AfficheStat == 'CJouees2'} selected{/if}>{#Competitions_jouees_par_equipe#}
 									</Option>
 									<Option Value="CJouees3" {if $AfficheStat == 'CJouees3'} selected{/if}>{#Irregularites#}</Option>
+									<Option Value="CJouees3b" {if $AfficheStat == 'CJouees3b'} selected{/if}>{#Irregularites_presence#}</Option>
 									<Option Value="OfficielsJournees" {if $AfficheStat == 'OfficielsJournees'} selected{/if}>
 										{#Officiels_des_journees#}</Option>
 									<Option Value="OfficielsMatchs" {if $AfficheStat == 'OfficielsMatchs'} selected{/if}>

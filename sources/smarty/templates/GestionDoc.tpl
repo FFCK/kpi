@@ -411,6 +411,14 @@
 								</tr>
 								<tr class='{cycle values="impair,pair"}'>
 									<td class='rouge'>{#Controle#}</td>
+									<td>{#Irregularites_presence#}</td>
+									<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=200&Stat=CJouees3b"
+											Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+									<td><a href="FeuilleStatsEN.php?Compets={$detailsCompet.Code}&nbLignes=200&Stat=CJouees3b"
+											Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
+								</tr>
+								<tr class='{cycle values="impair,pair"}'>
+									<td class='rouge'>{#Controle#}</td>
 									<td>{#Matchs_joues_Championnat#}</td>
 									<td><a href="FeuilleStats.php?Compets={$detailsCompet.Code}&nbLignes=2000&Stat=CJoueesN"
 											Target="_blank"><img height="22" src="../img/pdf.png" /></a></td>
