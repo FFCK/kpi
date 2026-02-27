@@ -626,9 +626,15 @@ const getLevelColor = (level: CompetitionLevel) => {
   }
 }
 
-// Legacy links
-const getDocumentsUrl = (competition: AdminCompetition) => {
-  return `/admin/GestionDocuments.php?competition=${competition.code}`
+// Navigate to documents page with competition pre-selected
+const navigateToDocuments = (competition: AdminCompetition) => {
+  // Reset event/group filter if competition is not in current filter
+  const filteredCodes = workContext.pageFilteredCompetitionCodes
+  if (filteredCodes && !filteredCodes.includes(competition.code)) {
+    workContext.setPageEventGroupSelection('')
+  }
+  workContext.setPageCompetition(competition.code)
+  navigateTo('/documents')
 }
 
 // Tour options
@@ -784,13 +790,13 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
 
                   <!-- Code with link to documents -->
                   <td class="px-3 py-3 text-sm">
-                    <a
-                      :href="getDocumentsUrl(competition)"
+                    <button
                       class="text-blue-600 hover:text-blue-800 hover:underline font-medium"
                       :title="t('competitions.documents')"
+                      @click="navigateToDocuments(competition)"
                     >
                       {{ competition.code }}
-                    </a>
+                    </button>
                   </td>
 
                   <!-- Level badge -->
@@ -972,12 +978,12 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
                 >
                   {{ competition.codeNiveau }}
                 </span>
-                <a
-                  :href="getDocumentsUrl(competition)"
+                <button
                   class="font-semibold text-blue-600 hover:underline"
+                  @click="navigateToDocuments(competition)"
                 >
                   {{ competition.code }}
-                </a>
+                </button>
               </div>
             </template>
             <template #header-right>

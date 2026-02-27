@@ -193,9 +193,9 @@ class AdminCompetitionsController extends AbstractController
                 'logoActif' => $row['Logo_actif'] === 'O',
                 'sponsorActif' => $row['Sponsor_actif'] === 'O',
                 'kpiFfckActif' => $row['Kpi_ffck_actif'] === 'O',
-                'bandeauLink' => $this->buildImagePath('B', $row['Code_ref'], $season),
-                'logoLink' => $this->buildImagePath('L', $row['Code_ref'], $season),
-                'sponsorLink' => $this->buildImagePath('S', $row['Code_ref'], $season),
+                'bandeauLink' => $this->buildImageLink($row['BandeauLink']),
+                'logoLink' => $this->buildImageLink($row['LogoLink']),
+                'sponsorLink' => $this->buildImageLink($row['SponsorLink']),
                 'pointsGrid' => $row['points_grid'] ? json_decode($row['points_grid'], true) : null,
                 'multiCompetitions' => $row['multi_competitions'] ? json_decode($row['multi_competitions'], true) : null,
                 'rankingStructureType' => $row['ranking_structure_type'],
@@ -401,9 +401,9 @@ class AdminCompetitionsController extends AbstractController
             'logoActif' => $row['Logo_actif'] === 'O',
             'sponsorActif' => $row['Sponsor_actif'] === 'O',
             'kpiFfckActif' => $row['Kpi_ffck_actif'] === 'O',
-            'bandeauLink' => $this->buildImagePath('B', $row['Code_ref'], $season),
-            'logoLink' => $this->buildImagePath('L', $row['Code_ref'], $season),
-            'sponsorLink' => $this->buildImagePath('S', $row['Code_ref'], $season),
+            'bandeauLink' => $this->buildImageLink($row['BandeauLink']),
+            'logoLink' => $this->buildImageLink($row['LogoLink']),
+            'sponsorLink' => $this->buildImageLink($row['SponsorLink']),
             'pointsGrid' => $row['points_grid'] ? json_decode($row['points_grid'], true) : null,
             'multiCompetitions' => $row['multi_competitions'] ? json_decode($row['multi_competitions'], true) : null,
             'rankingStructureType' => $row['ranking_structure_type'],
@@ -980,14 +980,20 @@ class AdminCompetitionsController extends AbstractController
     }
 
     /**
-     * Build image path for competition
+     * Build image path from DB value (BandeauLink, LogoLink, SponsorLink)
+     * Legacy stores either a relative filename (e.g. "L-EC-2025.jpg") or a full URL
      */
-    private function buildImagePath(string $type, ?string $codeRef, string $season): ?string
+    private function buildImageLink(?string $dbValue): ?string
     {
-        if (empty($codeRef)) {
+        if (empty($dbValue)) {
             return null;
         }
-        return "/img/logo/{$type}-{$codeRef}-{$season}.jpg";
+        // Full URL: return as-is
+        if (str_starts_with($dbValue, 'http://') || str_starts_with($dbValue, 'https://')) {
+            return $dbValue;
+        }
+        // Relative filename: prepend /img/logo/
+        return "/img/logo/{$dbValue}";
     }
 
 }

@@ -453,6 +453,16 @@
       "national_licensees": "Licenciés nationaux",
       "match_consistency": "Cohérence matchs",
       "cumulated_cards": "Cartons cumulés"
+    },
+    "summary": {
+      "teams_count": "{count} équipe | {count} équipes",
+      "phases_count": "{count} phase | {count} phases",
+      "matches_count": "{count} match | {count} matchs",
+      "matches_short": "match | matchs",
+      "qualified": "Qualifiés : {count}",
+      "eliminated": "Éliminés : {count}",
+      "no_phases": "Aucune phase définie",
+      "multi_competition": "Compétition multi-compétitions"
     }
   },
   "operations": {

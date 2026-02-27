@@ -166,6 +166,14 @@ onMounted(async () => {
       </template>
     </AdminPageHeader>
 
+    <!-- Competition summary -->
+    <DocumentsCompetitionSummary
+      v-if="!loading && hasCompetition"
+      :competition-code="workContext.pageCompetitionCode"
+      :season="workContext.season"
+      class="mb-6"
+    />
+
     <!-- Loading state -->
     <div v-if="loading" class="text-center py-12 text-gray-500">
       <UIcon name="heroicons:arrow-path" class="w-8 h-8 animate-spin mx-auto mb-3" />

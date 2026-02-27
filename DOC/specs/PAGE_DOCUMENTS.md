@@ -45,6 +45,41 @@ Les documents sont organisés en cartes par catégorie :
 - **Page Statistiques** : Naviguent vers `/stats/:type/:saison/:competition` dans app4
 - **Documents non disponibles** : Affichés grisés avec mention "Bientôt disponible"
 
+### 2.4 Synthèse de compétition
+
+Affichée entre les filtres et la grille de documents, quand une compétition est sélectionnée. Carte blanche avec 3 zones :
+
+#### Zone A — Images
+- Bandeau, logo et sponsor de la compétition (si actifs et disponibles)
+- Images servies depuis le backend legacy (`legacyBase + bandeauLink/logoLink/sponsorLink`)
+- Masquées automatiquement en cas de 404 (handler `@error`)
+
+#### Zone B — Données clés
+- Titre de la compétition + sous-titre (lieu)
+- Badges : niveau (INT/NAT/REG), type (CP/CHPT/MULTI)
+- Compteurs : nombre d'équipes, de phases, de matchs
+- Qualifiés / éliminés (CP uniquement, si > 0)
+
+#### Zone C — Structure des phases
+Visualisation simplifiée de l'organisation de la compétition, sans équipes ni scores :
+
+- **CP** : Colonnes par étape (comme le Schéma de compétition), chaque phase affichée avec son nom, badge type (C/E) et nombre de matchs
+- **CHPT** : Liste horizontale des journées avec nombre de matchs
+- **MULTI** : Message « Compétition multi-compétitions »
+
+**Sources de données** : Deux appels API en parallèle :
+1. `GET /admin/competitions/{code}?season=...` — données, compteurs, images
+2. `GET /admin/schema?season=...&competition=...` — structure des phases
+
+**Composant** : `DocumentsCompetitionSummary.vue`
+
+### 2.5 Navigation depuis la page Compétitions
+
+Le code de chaque compétition dans la liste (page `/competitions`) est un lien cliquable qui :
+1. Sélectionne la compétition dans le `workContextStore` via `setPageCompetition()`
+2. Réinitialise le filtre événement/groupe si la compétition n'en fait pas partie
+3. Navigue vers `/documents`
+
 ---
 
 ## 3. Structure de la Page
@@ -60,11 +95,19 @@ Les documents sont organisés en cartes par catégorie :
 │  ┌──────────────────────────────────────┐                   │
 │  │ Compétition: N1H - Nationale 1 Masc. │  (du contexte)   │
 │  └──────────────────────────────────────┘                   │
-│                    ou                                        │
-│  ┌──────────────────────────────────────┐                   │
-│  │ Événement: Championnat de France     │                   │
-│  └──────────────────────────────────────┘                   │
 ├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  ┌─ Synthèse compétition ──────────────────────────────────┐│
+│  │  [Bandeau]  [Logo]  [Sponsor]                           ││
+│  │  ─────────────────────────────────────────────────────  ││
+│  │  Nationale 1 Masculine        INT  CHPT  12 éq  4 ph   ││
+│  │  ─────────────────────────────────────────────────────  ││
+│  │  ┌─Étape 1─┐ ┌─Étape 2─┐ ┌─Étape 3─┐ ┌─Étape 4─┐     ││
+│  │  │C Group A│ │E Repech. │ │E QF      │ │E SF      │     ││
+│  │  │C Group B│ │E Cl. 9-12│ │E Cl. 5-8 │ │E Final   │     ││
+│  │  │C Group C│ │          │ │          │ │E 3e place│     ││
+│  │  └─────────┘ └─────────┘ └─────────┘ └─────────┘     ││
+│  └─────────────────────────────────────────────────────────┘│
 │                                                              │
 │  ┌─────────────────────┐  ┌─────────────────────┐           │
 │  │ 👥 ÉQUIPES          │  │ ⚽ MATCHS            │           │
@@ -89,7 +132,7 @@ Les documents sont organisés en cartes par catégorie :
 │  │ 📅 ÉVÉNEMENT        │                                    │
 │  │   (profil ≤ 2)      │  ┌─────────────────────┐           │
 │  │                     │  │ 🔍 CONTRÔLE         │           │
-│  │ • Matchs événement  │  │   (profil ≤ 2)      │           │
+│  │ • Matchs événement  │  │   (profil ≤ 6)      │           │
 │  │ • QR Codes          │  │                     │           │
 │  │ • QR Code App       │  │ • Présence catégorie│           │
 │  └─────────────────────┘  │ • Présence U21      │           │
@@ -247,7 +290,23 @@ Doit retourner `enActif` et `codeTypeclt` pour chaque compétition :
 }
 ```
 
-### 6.2 Endpoint Liste Matchs (pour feuilles de marque)
+### 6.2 Endpoint Détail Compétition (existant, pour la synthèse)
+
+```
+GET /api2/admin/competitions/{code}?season=2025
+```
+
+Retourne les données complètes de la compétition incluant compteurs, images et flags d'activation.
+
+### 6.3 Endpoint Schéma (existant, pour la structure des phases)
+
+```
+GET /api2/admin/schema?season=2025&competition=N1M
+```
+
+Retourne la structure complète du schéma de compétition. Seules les métadonnées des phases sont utilisées par la synthèse (nom, type, étape, nombre de matchs).
+
+### 6.4 Endpoint Liste Matchs (pour feuilles de marque)
 
 ```
 GET /api2/admin/documents/match-ids?season=2025&competition=N1M
@@ -272,10 +331,11 @@ pages/documents/
 └── index.vue
 
 components/documents/
-├── DocumentCard.vue        # Carte de catégorie
-├── DocumentLink.vue        # Lien vers document
-├── FilterBar.vue           # Barre de filtres (saison/compet ou saison/event)
-└── CategoryGrid.vue        # Grille de cartes
+├── DocumentsCompetitionSummary.vue  # Synthèse compétition (images, données, phases)
+├── DocumentCard.vue                 # Carte de catégorie
+├── DocumentLink.vue                 # Lien vers document
+├── FilterBar.vue                    # Barre de filtres (saison/compet ou saison/event)
+└── CategoryGrid.vue                 # Grille de cartes
 ```
 
 ### 7.2 Props DocumentLink
