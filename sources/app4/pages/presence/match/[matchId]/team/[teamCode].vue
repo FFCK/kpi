@@ -514,7 +514,14 @@ const formatDate = (dateStr: string) => {
 
             <td class="px-3 py-1 text-sm font-medium text-gray-900">{{ player.nom }}</td>
             <td class="px-3 py-1 text-sm text-gray-900">{{ player.prenom }}</td>
-            <td class="px-3 py-1 text-sm text-gray-500 font-mono">{{ getLicenseDisplay(player) }}</td>
+            <td class="px-3 py-1 text-sm text-gray-500 font-mono">
+                <NuxtLink
+                  :to="`/athletes?matric=${player.matric}`"
+                  class="link-value"
+                >
+                  {{ getLicenseDisplay(player) }}
+                </NuxtLink>
+              </td>
             <td class="px-3 py-1 text-sm text-gray-500">
                 <NuxtLink
                   :to="`/clubs?code=${player.numeroClub}`"
@@ -567,7 +574,14 @@ const formatDate = (dateStr: string) => {
               <td class="px-3 py-1 text-sm">{{ player.capitaine }}</td>
               <td class="px-3 py-1 text-sm font-medium text-gray-900">{{ player.nom }}</td>
               <td class="px-3 py-1 text-sm text-gray-900">{{ player.prenom }}</td>
-              <td class="px-3 py-1 text-sm text-gray-500 font-mono">{{ getLicenseDisplay(player) }}</td>
+              <td class="px-3 py-1 text-sm text-gray-500 font-mono">
+                <NuxtLink
+                  :to="`/athletes?matric=${player.matric}`"
+                  class="link-value"
+                >
+                  {{ getLicenseDisplay(player) }}
+                </NuxtLink>
+              </td>
               <td class="px-3 py-1 text-sm text-gray-500">{{ player.numeroClub }}</td>
               <td class="px-3 py-1 text-sm text-gray-500">{{ player.categ }}-{{ player.sexe }}</td>
               <td class="px-3 py-1 text-sm text-gray-700">{{ player.pagaieLabel }}</td>
@@ -611,7 +625,12 @@ const formatDate = (dateStr: string) => {
             />
             <div>
               <div class="font-bold text-gray-900">{{ player.nom }} {{ player.prenom }}</div>
-              <div class="text-sm text-gray-500">{{ getLicenseDisplay(player) }}</div>
+              <NuxtLink
+                :to="`/athletes?matric=${player.matric}`"
+                class="link-value text-sm"
+              >
+                {{ getLicenseDisplay(player) }}
+              </NuxtLink>
             </div>
           </div>
           <div class="flex items-center gap-1.5">

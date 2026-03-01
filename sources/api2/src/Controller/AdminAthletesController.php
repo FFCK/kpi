@@ -62,15 +62,16 @@ class AdminAthletesController extends AbstractController
             return $this->json([]);
         }
 
-        // If query is numeric, search by Matric; otherwise search by name
+        // If query is numeric, search by Matric or ICF number (Reserve); otherwise search by name
         if (ctype_digit($q)) {
             $sql = "SELECT l.Matric, l.Nom, l.Prenom, l.Sexe, l.Naissance,
                            c.Libelle AS clubLibelle, l.Numero_club AS codeClub
                     FROM kp_licence l
                     LEFT JOIN kp_club c ON c.Code = l.Numero_club
-                    WHERE l.Matric = ?
-                    LIMIT 1";
-            $rows = $this->connection->fetchAllAssociative($sql, [(int) $q]);
+                    WHERE l.Matric = ? OR l.Reserve = ?
+                    ORDER BY l.Nom, l.Prenom
+                    LIMIT " . (int) $limit;
+            $rows = $this->connection->fetchAllAssociative($sql, [(int) $q, (int) $q]);
         } else {
             $sql = "SELECT l.Matric, l.Nom, l.Prenom, l.Sexe, l.Naissance,
                            c.Libelle AS clubLibelle, l.Numero_club AS codeClub

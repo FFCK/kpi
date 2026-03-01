@@ -615,7 +615,12 @@ const pdfLinks = computed(() => {
             <td class="px-3 py-1 text-sm font-medium text-gray-900">{{ player.nom }}</td>
             <td class="px-3 py-1 text-sm text-gray-900">{{ player.prenom }}</td>
             <td class="px-3 py-1 text-sm text-gray-500 font-mono">
-              {{ getLicenseDisplay(player) }}
+              <NuxtLink
+                :to="`/athletes?matric=${player.matric}`"
+                class="link-value"
+              >
+                {{ getLicenseDisplay(player) }}
+              </NuxtLink>
             </td>
             <td class="px-3 py-1 text-sm text-gray-500">
                 <NuxtLink
@@ -726,7 +731,14 @@ const pdfLinks = computed(() => {
               </td>
               <td class="px-3 py-1 text-sm font-medium text-gray-900">{{ player.nom }}</td>
               <td class="px-3 py-1 text-sm text-gray-900">{{ player.prenom }}</td>
-              <td class="px-3 py-1 text-sm text-gray-500 font-mono">{{ getLicenseDisplay(player) }}</td>
+              <td class="px-3 py-1 text-sm text-gray-500 font-mono">
+                <NuxtLink
+                  :to="`/athletes?matric=${player.matric}`"
+                  class="link-value"
+                >
+                  {{ getLicenseDisplay(player) }}
+                </NuxtLink>
+              </td>
               <td class="px-3 py-1 text-sm text-gray-500">
                 <NuxtLink
                   :to="`/clubs?code=${player.numeroClub}`"
@@ -810,7 +822,14 @@ const pdfLinks = computed(() => {
               </td>
               <td class="px-3 py-1 text-sm font-medium text-gray-900">{{ player.nom }}</td>
               <td class="px-3 py-1 text-sm text-gray-900">{{ player.prenom }}</td>
-              <td class="px-3 py-1 text-sm text-gray-500 font-mono">{{ getLicenseDisplay(player) }}</td>
+              <td class="px-3 py-1 text-sm text-gray-500 font-mono">
+                <NuxtLink
+                  :to="`/athletes?matric=${player.matric}`"
+                  class="link-value"
+                >
+                  {{ getLicenseDisplay(player) }}
+                </NuxtLink>
+              </td>
               <td class="px-3 py-1 text-sm text-gray-500">
                 <NuxtLink
                   :to="`/clubs?code=${player.numeroClub}`"
@@ -894,7 +913,14 @@ const pdfLinks = computed(() => {
               </td>
               <td class="px-3 py-1 text-sm font-medium text-gray-900">{{ player.nom }}</td>
               <td class="px-3 py-1 text-sm text-gray-900">{{ player.prenom }}</td>
-              <td class="px-3 py-1 text-sm text-gray-500 font-mono">{{ getLicenseDisplay(player) }}</td>
+              <td class="px-3 py-1 text-sm text-gray-500 font-mono">
+                <NuxtLink
+                  :to="`/athletes?matric=${player.matric}`"
+                  class="link-value"
+                >
+                  {{ getLicenseDisplay(player) }}
+                </NuxtLink>
+              </td>
               <td class="px-3 py-1 text-sm text-gray-500">
                 <NuxtLink
                   :to="`/clubs?code=${player.numeroClub}`"
@@ -952,7 +978,12 @@ const pdfLinks = computed(() => {
             />
             <div>
               <div class="font-bold text-gray-900">{{ player.nom }} {{ player.prenom }}</div>
-              <div class="text-sm text-gray-500">{{ getLicenseDisplay(player) }}</div>
+              <NuxtLink
+                :to="`/athletes?matric=${player.matric}`"
+                class="link-value text-sm"
+              >
+                {{ getLicenseDisplay(player) }}
+              </NuxtLink>
             </div>
           </div>
           <!-- Numero + Capitaine badges -->

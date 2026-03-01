@@ -1527,10 +1527,10 @@ const statusBtnClass = (game: Game) => {
                     v-if="g.idEquipeA"
                     :to="`/presence/match/${g.id}/team/A`"
                     class="block text-[10px] text-blue-500 hover:text-blue-700 hover:underline"
-                    :title="t('games.presence')"
+                    :title="t('presence.title_match')"
                     @click.stop
                   >
-                    <UIcon name="heroicons:user-group" class="w-4 h-4" />
+                    <UIcon name="heroicons:user-group" class="w-4 h-4 mt-2 me-4" />
                   </NuxtLink>
                 </template>
               </td>
@@ -1652,10 +1652,10 @@ const statusBtnClass = (game: Game) => {
                     v-if="g.idEquipeB"
                     :to="`/presence/match/${g.id}/team/B`"
                     class="block text-[10px] text-blue-500 hover:text-blue-700 hover:underline"
-                    :title="t('games.presence')"
+                    :title="t('presence.title_match')"
                     @click.stop
                   >
-                    <UIcon name="heroicons:user-group" class="w-4 h-4" />
+                    <UIcon name="heroicons:user-group" class="w-4 h-4 mt-2 ms-4" />
                   </NuxtLink>
                 </template>
               </td>

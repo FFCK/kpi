@@ -56,7 +56,7 @@
     "manage_events": "Manage events",
     "manage_documents": "Manage documents",
     "manage_games": "Manage games",
-    "manage_matches": "Manage matches",
+    "manage_matches": "Manage games",
     "view_statistics": "View statistics",
     "system_operations": "System operations",
     "beta_notice_title": "Beta Version",
@@ -611,7 +611,7 @@
       "source_season": "Source Season",
       "target_season": "Target Season",
       "select_competitions": "Select Competitions",
-      "copy_matches": "Copy Matches (CP competitions)",
+      "copy_matches": "Copy Games (CP competitions)",
       "add_button": "Add",
       "activate_button": "Activate this season",
       "copy_rc_button": "Copy RC",
@@ -631,10 +631,10 @@
       "title": "System Operations",
       "cache": "Cache Management",
       "purge_cache": "Purge Cache",
-      "purge_description": "Deletes match cache files (>1 year) and event cache files (>2 years).",
+      "purge_description": "Deletes game cache files (>1 year) and event cache files (>2 years).",
       "purge_button": "Purge Cache",
       "confirm_purge": "Confirm cache purge?",
-      "success_purge": "Cache purged: {matchFiles} match files, {eventFiles} event files deleted",
+      "success_purge": "Cache purged: {matchFiles} game files, {eventFiles} event files deleted",
       "error_purge": "Error purging cache"
     },
     "common": {
@@ -802,7 +802,7 @@
     "error_delete": "Error deleting competition",
     "error_has_teams": "Cannot delete: competition has teams",
     "error_has_gamedays": "Cannot delete: competition has gamedays",
-    "error_has_matches": "Cannot delete: competition has matches",
+    "error_has_matches": "Cannot delete: competition has games",
     "empty": "No competitions found",
     "total_competitions": "Total: {count} competition(s)"
   },
@@ -935,7 +935,7 @@
     "locked": "Competition locked",
     "unlocked": "Competition unlocked",
     "competition_locked_notice": "This competition is locked. Some modifications are restricted.",
-    "cannot_delete_has_matches": "Cannot delete: team has played matches"
+    "cannot_delete_has_matches": "Cannot delete: team has played games"
   },
   "errors": {
     "generic": {
@@ -1088,7 +1088,7 @@
     "referee_reg": "Regional",
     "referee_nat": "National",
     "referee_int": "International",
-    "referee_otm": "Match Official",
+    "referee_otm": "Game Official",
     "referee_jo": "Young Official"
   },
   "gamedays": {
@@ -1097,7 +1097,7 @@
     "edit": "Edit gameday",
     "delete_confirm_title": "Delete gameday",
     "delete_confirm_message": "Are you sure you want to delete gameday #{id} ({phase})?",
-    "delete_error_matches": "Matches still exist in this gameday! Cannot delete.",
+    "delete_error_matches": "Games still exist in this gameday! Cannot delete.",
     "delete_error_events": "This gameday is linked to an event! Cannot delete.",
     "duplicate_confirm": "Confirm duplication of gameday #{id}?",
     "publish_confirm": "Publish/unpublish selected gamedays?",
@@ -1157,7 +1157,7 @@
     "bulk_published": "Publication updated for {count} gameday(s).",
     "bulk_calendar_updated": "Calendar updated for {count} gameday(s).",
     "bulk_deleted": "{deleted} gameday(s) deleted.",
-    "bulk_deleted_partial": "{deleted} deleted, {skipped} skipped (linked matches or events).",
+    "bulk_deleted_partial": "{deleted} deleted, {skipped} skipped (linked games or events).",
     "event_linked": "Gameday linked to event.",
     "event_unlinked": "Gameday unlinked from event.",
     "manage_event_association": "Manage associations",
@@ -1462,7 +1462,7 @@
         "date": "Date",
         "heure": "Time",
         "competition": "Comp",
-        "match": "Match",
+        "match": "Game",
         "arb_principal": "Main Ref.",
         "arb_secondaire": "Sec. Ref.",
         "secretaire": "Sec",
@@ -1472,10 +1472,10 @@
         "empty": "No official role for this season."
       },
       "matchs": {
-        "title": "Matches",
+        "title": "Games",
         "date": "Date",
         "competition": "Comp",
-        "match": "Match",
+        "match": "Game",
         "equipes": "Teams",
         "score": "Score",
         "numero": "#",
@@ -1487,7 +1487,7 @@
         "rouge_def": "Red D.",
         "tir": "Shot",
         "arret": "Save",
-        "empty": "No match for this season."
+        "empty": "No game for this season."
       }
     },
     "roles": {
@@ -1666,11 +1666,11 @@
       "title": "Ranking computation",
       "date": "Computed",
       "by": "by",
-      "include_unlocked": "Include unlocked matches",
+      "include_unlocked": "Include unlocked games",
       "button": "Recalculate",
       "not_computed": "Ranking not computed",
-      "mode_all": "All matches",
-      "mode_locked": "Locked matches only",
+      "mode_all": "All games",
+      "mode_locked": "Locked games only",
       "computing": "Computing..."
     },
     "publish": {
@@ -1769,7 +1769,7 @@
       "detail": "Detail",
       "competition": "Comp.",
       "gameday": "Day",
-      "match": "Match"
+      "match": "Game"
     },
     "empty": "No entries in the log.",
     "empty_filtered": "No entries match the filters.",

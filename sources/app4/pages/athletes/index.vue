@@ -11,6 +11,7 @@ definePageMeta({
 })
 
 const { t, locale } = useI18n()
+const route = useRoute()
 const api = useApi()
 const authStore = useAuthStore()
 const workContext = useWorkContextStore()
@@ -169,6 +170,12 @@ onMounted(async () => {
   await workContext.initContext()
   participationsSeason.value = workContext.season || ''
   document.addEventListener('click', handleGlobalClick)
+
+  // Auto-load athlete from query param ?matric=
+  const matric = Number(route.query.matric)
+  if (matric) {
+    await loadAthlete(matric)
+  }
 })
 
 onBeforeUnmount(() => {
@@ -245,17 +252,27 @@ onBeforeUnmount(() => {
 
     <!-- ═══ Athlete Profile ═══ -->
     <template v-else>
-      <div class="bg-white border border-gray-200 rounded-lg p-6 mb-6">
+      <div class="bg-white border border-gray-200 rounded-lg p-3 mb-3">
         <!-- Identity header -->
         <div class="mb-5">
-          <h2 class="text-lg font-bold text-gray-900">
-            {{ t('athletes.licence') }}{{ athlete.matric }}
-            <span class="ml-3">{{ athlete.nom }} {{ athlete.prenom }}</span>
-            <span class="text-gray-500 font-normal ml-2">({{ athlete.sexe }})</span>
-            <span v-if="athlete.naissance" class="text-gray-500 font-normal ml-2">
-              {{ formatDate(athlete.naissance) }}
-            </span>
-          </h2>
+          <div class="flex items-center justify-between gap-4">
+            <h2 class="text-lg font-bold text-gray-900">
+              {{ t('athletes.licence') }}{{ athlete.matric }}
+              <span class="ml-3">{{ athlete.nom }} {{ athlete.prenom }}</span>
+              <span class="text-gray-500 font-normal ml-2">({{ athlete.sexe }})</span>
+              <span v-if="athlete.naissance" class="text-gray-500 font-normal ml-2">
+                {{ formatDate(athlete.naissance) }}
+              </span>
+            </h2>
+            <button
+              v-if="canEdit && athlete.editable"
+              class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 flex items-center gap-2 shrink-0"
+              @click="openEditModal"
+            >
+              <UIcon name="i-heroicons-pencil-square" class="w-4 h-4" />
+              {{ t('athletes.edit.submit') }}
+            </button>
+          </div>
           <div v-if="athlete.icf || athlete.surclassement" class="flex flex-wrap gap-4 mt-1 text-sm text-gray-600">
             <span v-if="athlete.icf">
               {{ t('athletes.icf_number') }}{{ athlete.icf }}
@@ -281,7 +298,7 @@ onBeforeUnmount(() => {
               <div v-if="athlete.comiteReg.code" class="text-gray-500 text-xs">
                 {{ athlete.comiteReg.code }} {{ athlete.comiteReg.libelle }}
               </div>
-              <div class="text-gray-500 text-xs mt-2">
+              <div class="text-gray-800 font-semibold mt-2">
                 {{ t('athletes.club.last_season') }} : {{ athlete.origine || '-' }}
               </div>
             </div>
@@ -347,16 +364,6 @@ onBeforeUnmount(() => {
           </div>
         </div>
 
-        <!-- Edit button -->
-        <div v-if="canEdit && athlete.editable" class="flex justify-end">
-          <button
-            class="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 flex items-center gap-2"
-            @click="openEditModal"
-          >
-            <UIcon name="i-heroicons-pencil-square" class="w-4 h-4" />
-            {{ t('athletes.edit.submit') }}
-          </button>
-        </div>
       </div>
 
       <!-- ═══ Participations ═══ -->
