@@ -120,6 +120,9 @@ const statusGame = ref<Game | null>(null)
 const bulkActionsOpen = ref(false)
 const bulkActionsRef = ref<HTMLDivElement | null>(null)
 
+// ─── Legacy base URL ───
+const legacyBase = computed(() => useRuntimeConfig().public.legacyBaseUrl || 'https://kpi.localhost')
+
 // ─── Permissions ───
 const canEdit = computed(() => authStore.profile <= 6)
 const canEditScores = computed(() => authStore.profile <= 9)
@@ -994,10 +997,8 @@ const confirmBulkChangeGroup = async () => {
 // ─── Bulk Match Sheets (PDF) ───
 const openBulkMatchSheets = () => {
   bulkActionsOpen.value = false
-  const config = useRuntimeConfig()
-  const legacyBase = config.public.legacyBaseUrl || 'https://kpi.localhost'
   const ids = selectedIds.value.join(',')
-  window.open(`${legacyBase}/admin/FeuilleMatchMulti.php?listMatch=${ids}`, '_blank')
+  window.open(`${legacyBase.value}/admin/FeuilleMatchMulti.php?listMatch=${ids}`, '_blank')
 }
 
 // ─── Journee label for dropdown ───
@@ -1246,7 +1247,7 @@ const statusBtnClass = (game: Game) => {
               <!-- N° -->
               <th class="w-10 px-1 py-2 text-center text-gray-500 font-medium">{{ t('games.field.number') }}</th>
               <!-- Actions -->
-              <th v-if="canEdit" class="w-16 px-1 py-2" />
+              <th v-if="canEdit" class="w-20 px-1 py-2 text-center text-gray-500 font-medium">{{ t('games.field.actions') }}</th>
               <!-- Time -->
               <th class="px-1 py-2 text-left text-gray-500 font-medium">{{ t('games.field.time') }}</th>
               <!-- Terrain -->
@@ -1353,11 +1354,26 @@ const statusBtnClass = (game: Game) => {
               </td>
 
               <!-- Actions -->
-              <td v-if="canEdit" class="px-1 py-1" @click.stop>
-                <div class="flex items-center gap-0.5">
-                  <button :title="t('common.edit')" class="p-0.5 text-blue-600 hover:text-blue-800" @click="openEditModal(g)">
+              <td v-if="canEdit" class="px-1 py-1 text-center" @click.stop>
+                <div class="flex items-center text-center gap-0.5">
+                  <button v-if="!isLocked(g)" :title="t('common.edit')" class="text-blue-600 hover:text-blue-800" @click="openEditModal(g)">
                     <UIcon name="heroicons:pencil" class="w-6 h-6" />
                   </button>
+                  <a :href="`${legacyBase}/admin/FeuilleMatchMulti.php?listMatch=${g.id}`" target="_blank" :title="t('games.scoresheet_pdf')" class="p-0.5 text-red-600 hover:text-red-800">
+                    <UIcon name="heroicons:document-text" class="w-6 h-6" />
+                    <br>
+                    <span class="text-xs text-gray-500">PDF</span>
+                  </a>
+                  <a v-if="authStore.profile <= 2" :href="`${legacyBase}/admin/FeuilleMarque2.php?idMatch=${g.id}`" target="_blank" :title="t('games.scoresheet_online_v2')" class="p-0.5 text-emerald-600 hover:text-emerald-800">
+                    <UIcon name="heroicons:device-tablet" class="w-6 h-6" />
+                    <br>
+                    <span class="text-xs text-gray-500">V2</span>
+                  </a>
+                  <a v-if="authStore.profile <= 2" :href="`${legacyBase}/admin/FeuilleMarque3.php?idMatch=${g.id}`" target="_blank" :title="t('games.scoresheet_online_v3')" class="p-0.5 text-purple-600 hover:text-purple-800">
+                    <UIcon name="heroicons:device-tablet" class="w-6 h-6" />
+                    <br>
+                    <span class="text-xs text-gray-500">V3</span>
+                  </a>
                 </div>
               </td>
 
@@ -2048,9 +2064,21 @@ const statusBtnClass = (game: Game) => {
         </div>
 
         <template #footer-right>
-          <AdminActionButton v-if="canEdit" icon="heroicons:pencil" @click="openEditModal(g)">
+          <AdminActionButton v-if="canEdit && !isLocked(g)" icon="heroicons:pencil" @click="openEditModal(g)">
             {{ t('common.edit') }}
           </AdminActionButton>
+          <a v-if="canEdit" :href="`${legacyBase}/admin/FeuilleMatchMulti.php?listMatch=${g.id}`" target="_blank" class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-red-600 hover:text-red-800">
+            <UIcon name="heroicons:document-text" class="w-4 h-4" />
+            {{ t('games.scoresheet_pdf') }}
+          </a>
+          <a v-if="canEdit && authStore.profile <= 6" :href="`${legacyBase}/admin/FeuilleMarque2.php?idMatch=${g.id}`" target="_blank" class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-emerald-600 hover:text-emerald-800">
+            <UIcon name="heroicons:device-tablet" class="w-4 h-4" />
+            v2
+          </a>
+          <a v-if="canEdit && authStore.profile <= 2" :href="`${legacyBase}/admin/FeuilleMarque3.php?idMatch=${g.id}`" target="_blank" class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-purple-600 hover:text-purple-800">
+            <UIcon name="heroicons:device-tablet" class="w-4 h-4" />
+            v3
+          </a>
           <AdminActionButton v-if="isDeletable(g)" variant="danger" icon="heroicons:trash" @click="openDeleteConfirm(g)">
             {{ t('common.delete') }}
           </AdminActionButton>
