@@ -293,8 +293,8 @@ class AdminGamedaysController extends AbstractController
             return $this->json(['message' => 'Competition not found'], Response::HTTP_NOT_FOUND);
         }
 
-        // Get next ID
-        $nextId = (int) $this->connection->executeQuery("SELECT COALESCE(MAX(Id), 0) + 1 FROM kp_journee")->fetchOne();
+        // Get next ID for journee (max + 1, with upper limit to avoid conflicts with existing federal IDs > 19000000)
+        $nextId = (int) $this->connection->executeQuery("SELECT COALESCE(MAX(Id), 0) + 1 FROM kp_journee WHERE Id < 19000001")->fetchOne();
 
         // Build insert data
         $insertData = [
@@ -583,8 +583,8 @@ class AdminGamedaysController extends AbstractController
             return $this->json(['message' => 'Gameday not found'], Response::HTTP_NOT_FOUND);
         }
 
-        // Get next ID
-        $nextId = (int) $this->connection->executeQuery("SELECT COALESCE(MAX(Id), 0) + 1 FROM kp_journee")->fetchOne();
+        // Get next ID for journee (max + 1, with upper limit to avoid conflicts with existing federal IDs > 19000000)
+        $nextId = (int) $this->connection->executeQuery("SELECT COALESCE(MAX(Id), 0) + 1 FROM kp_journee WHERE Id < 19000001")->fetchOne();
 
         $this->connection->beginTransaction();
         try {
@@ -937,5 +937,32 @@ class AdminGamedaysController extends AbstractController
         $rows = $this->connection->prepare($sql)->executeQuery(["%$q%"])->fetchAllAssociative();
 
         return $this->json(array_map(fn($r) => $r['nom'], $rows));
+    }
+
+    /**
+     * Autocomplete communes (villes_france_free)
+     */
+    #[Route('/autocomplete/communes', name: 'admin_gamedays_autocomplete_communes', methods: ['GET'])]
+    public function autocompleteCommunes(Request $request): JsonResponse
+    {
+        $q = trim($request->query->get('q', ''));
+        if (strlen($q) < 2) {
+            return $this->json([]);
+        }
+
+        $sql = "SELECT ville_nom_reel, ville_code_postal, ville_departement
+                FROM villes_france_free
+                WHERE ville_nom_reel LIKE ? OR ville_nom_simple LIKE ?
+                ORDER BY ville_nom_reel
+                LIMIT 20";
+
+        $likeQ = "%$q%";
+        $rows = $this->connection->fetchAllAssociative($sql, [$likeQ, $likeQ]);
+
+        return $this->json(array_map(fn(array $r) => [
+            'label' => $r['ville_nom_reel'],
+            'detail' => $r['ville_code_postal'] . ' - ' . $r['ville_departement'],
+            'departement' => $r['ville_departement'],
+        ], $rows));
     }
 }

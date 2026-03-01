@@ -73,14 +73,18 @@ class AdminAthletesController extends AbstractController
                     LIMIT " . (int) $limit;
             $rows = $this->connection->fetchAllAssociative($sql, [(int) $q, (int) $q]);
         } else {
+            $likeQ = "%$q%";
             $sql = "SELECT l.Matric, l.Nom, l.Prenom, l.Sexe, l.Naissance,
                            c.Libelle AS clubLibelle, l.Numero_club AS codeClub
                     FROM kp_licence l
                     LEFT JOIN kp_club c ON c.Code = l.Numero_club
-                    WHERE l.Nom LIKE ? OR l.Prenom LIKE ?
+                    WHERE l.Nom LIKE ?
+                       OR l.Prenom LIKE ?
+                       OR CONCAT(l.Nom, ' ', l.Prenom) LIKE ?
+                       OR CONCAT(l.Prenom, ' ', l.Nom) LIKE ?
                     ORDER BY l.Nom, l.Prenom
                     LIMIT " . (int) $limit;
-            $rows = $this->connection->fetchAllAssociative($sql, ["%$q%", "%$q%"]);
+            $rows = $this->connection->fetchAllAssociative($sql, [$likeQ, $likeQ, $likeQ, $likeQ]);
         }
 
         return $this->json(array_map(fn(array $row) => [

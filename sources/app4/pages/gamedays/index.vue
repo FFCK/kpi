@@ -341,8 +341,11 @@ const openAddModal = () => {
   editingGameday.value = null
   formData.value = getDefaultFormData()
   formData.value.codeSaison = workContext.season || ''
-  // Pre-select competition if only one in context
-  if (workContext.competitionCodes.length === 1) {
+  // Pre-select competition from current filter, or if only one in context
+  if (workContext.pageCompetitionCodeAll) {
+    formData.value.codeCompetition = workContext.pageCompetitionCodeAll
+  }
+  else if (workContext.competitionCodes.length === 1) {
     formData.value.codeCompetition = workContext.competitionCodes[0]
   }
   formError.value = ''
@@ -614,6 +617,7 @@ const getOfficialsSummary = (g: Gameday): string => {
   if (g.responsableInsc) parts.push(`RC: ${g.responsableInsc}`)
   if (g.responsableR1) parts.push(`R1: ${g.responsableR1}`)
   if (g.delegue) parts.push(`Del: ${g.delegue}`)
+  if (g.chefArbitre) parts.push(`Ref: ${g.chefArbitre}`)
   return parts.length > 0 ? parts.join(', ') : '-'
 }
 
@@ -1229,7 +1233,16 @@ const getOfficialsSummary = (g: Gameday): string => {
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('gamedays.field.lieu') }}</label>
-              <input v-model="formData.lieu" type="text" maxlength="40" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+              <AdminTextAutocomplete
+                :model-value="formData.lieu"
+                api-url="/admin/gamedays/autocomplete/communes"
+                label-field="label"
+                detail-field="detail"
+                :placeholder="t('gamedays.field.lieu')"
+                :maxlength="40"
+                @update:model-value="formData.lieu = $event"
+                @select="(item: any) => { if (item.departement) formData.departement = item.departement }"
+              />
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('gamedays.field.departement') }}</label>
@@ -1245,49 +1258,97 @@ const getOfficialsSummary = (g: Gameday): string => {
         <!-- Organisateur -->
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('gamedays.field.organisateur') }}</label>
-          <input v-model="formData.organisateur" type="text" maxlength="40" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+          <AdminTextAutocomplete
+            :model-value="formData.organisateur"
+            api-url="/admin/clubs/search-all"
+            label-field="libelle"
+            detail-field="code"
+            :placeholder="t('gamedays.field.organisateur')"
+            :maxlength="40"
+            @update:model-value="formData.organisateur = $event"
+          />
         </div>
 
-        <!-- Officials (collapsible) -->
-        <details class="border border-gray-200 rounded-lg">
-          <summary class="px-4 py-3 cursor-pointer text-sm font-medium text-gray-700 hover:bg-gray-50">
+        <!-- Officials (always visible) -->
+        <div class="border border-gray-200 rounded-lg">
+          <div class="px-4 py-3 text-sm font-medium text-gray-700 bg-gray-50 rounded-t-lg">
             {{ t('gamedays.field.officiels') }}
-          </summary>
+          </div>
           <div class="p-4 border-t border-gray-200 space-y-3">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('gamedays.field.responsable_insc') }}</label>
-                <input v-model="formData.responsableInsc" type="text" maxlength="80" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg">
+                <AdminAthleteAutocomplete
+                  :model-value="formData.responsableInsc"
+                  :placeholder="t('gamedays.field.responsable_insc')"
+                  @update:model-value="formData.responsableInsc = $event"
+                />
               </div>
               <div>
                 <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('gamedays.field.responsable_r1') }}</label>
-                <input v-model="formData.responsableR1" type="text" maxlength="80" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg">
+                <AdminAthleteAutocomplete
+                  :model-value="formData.responsableR1"
+                  :placeholder="t('gamedays.field.responsable_r1')"
+                  @update:model-value="formData.responsableR1 = $event"
+                />
               </div>
               <div>
                 <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('gamedays.field.delegue') }}</label>
-                <input v-model="formData.delegue" type="text" maxlength="80" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg">
+                <AdminAthleteAutocomplete
+                  :model-value="formData.delegue"
+                  :placeholder="t('gamedays.field.delegue')"
+                  @update:model-value="formData.delegue = $event"
+                />
               </div>
               <div>
                 <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('gamedays.field.chef_arbitre') }}</label>
-                <input v-model="formData.chefArbitre" type="text" maxlength="80" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg">
+                <AdminAthleteAutocomplete
+                  :model-value="formData.chefArbitre"
+                  :placeholder="t('gamedays.field.chef_arbitre')"
+                  @update:model-value="formData.chefArbitre = $event"
+                />
               </div>
               <div>
                 <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('gamedays.field.rep_athletes') }}</label>
-                <input v-model="formData.repAthletes" type="text" maxlength="80" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg">
+                <AdminAthleteAutocomplete
+                  :model-value="formData.repAthletes"
+                  :placeholder="t('gamedays.field.rep_athletes')"
+                  @update:model-value="formData.repAthletes = $event"
+                />
               </div>
             </div>
             <div class="border-t border-gray-100 pt-3">
               <label class="block text-xs font-medium text-gray-500 mb-2">{{ t('gamedays.field.arb_nj') }}</label>
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                <input v-model="formData.arbNj1" type="text" maxlength="80" placeholder="1" class="px-3 py-2 text-sm border border-gray-300 rounded-lg">
-                <input v-model="formData.arbNj2" type="text" maxlength="80" placeholder="2" class="px-3 py-2 text-sm border border-gray-300 rounded-lg">
-                <input v-model="formData.arbNj3" type="text" maxlength="80" placeholder="3" class="px-3 py-2 text-sm border border-gray-300 rounded-lg">
-                <input v-model="formData.arbNj4" type="text" maxlength="80" placeholder="4" class="px-3 py-2 text-sm border border-gray-300 rounded-lg">
-                <input v-model="formData.arbNj5" type="text" maxlength="80" placeholder="5" class="px-3 py-2 text-sm border border-gray-300 rounded-lg">
+                <AdminAthleteAutocomplete
+                  :model-value="formData.arbNj1"
+                  placeholder="1"
+                  @update:model-value="formData.arbNj1 = $event"
+                />
+                <AdminAthleteAutocomplete
+                  :model-value="formData.arbNj2"
+                  placeholder="2"
+                  @update:model-value="formData.arbNj2 = $event"
+                />
+                <AdminAthleteAutocomplete
+                  :model-value="formData.arbNj3"
+                  placeholder="3"
+                  @update:model-value="formData.arbNj3 = $event"
+                />
+                <AdminAthleteAutocomplete
+                  :model-value="formData.arbNj4"
+                  placeholder="4"
+                  @update:model-value="formData.arbNj4 = $event"
+                />
+                <AdminAthleteAutocomplete
+                  :model-value="formData.arbNj5"
+                  placeholder="5"
+                  @update:model-value="formData.arbNj5 = $event"
+                />
               </div>
             </div>
           </div>
-        </details>
+        </div>
 
         <!-- Actions -->
         <div class="flex justify-end gap-2 pt-4 border-t">
