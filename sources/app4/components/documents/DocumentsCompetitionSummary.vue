@@ -41,6 +41,29 @@ const isCp = computed(() => competition.value?.codeTypeclt === 'CP')
 const isChpt = computed(() => competition.value?.codeTypeclt === 'CHPT')
 const isMulti = computed(() => competition.value?.codeTypeclt === 'MULTI')
 
+// Computed: CHPT phases sorted by dateDebut then lieu
+const chptPhases = computed(() => {
+  if (!schemaData.value) return []
+  return [...schemaData.value.phases].sort((a, b) => {
+    const da = a.dateDebut ?? ''
+    const db = b.dateDebut ?? ''
+    if (da !== db) return da.localeCompare(db)
+    const la = a.lieu ?? ''
+    const lb = b.lieu ?? ''
+    return la.localeCompare(lb)
+  })
+})
+
+// Count distinct teams from matches in a phase
+const countTeamsFromMatches = (phase: SchemaPhase): number => {
+  const teamIds = new Set<number>()
+  for (const m of phase.matches) {
+    if (m.idEquipeA) teamIds.add(m.idEquipeA)
+    if (m.idEquipeB) teamIds.add(m.idEquipeB)
+  }
+  return teamIds.size
+}
+
 // Computed: has any visible image
 const hasImages = computed(() => {
   if (!competition.value) return false
@@ -72,6 +95,25 @@ const getTypeColor = (type: string) => {
 const imageUrl = (link: string | null) => {
   if (!link) return ''
   return `${legacyBase}${link}`
+}
+
+// Format date for display (YYYY-MM-DD → DD/MM/YYYY or locale format)
+const formatDate = (date: string | null): string => {
+  if (!date) return ''
+  const d = new Date(date)
+  if (isNaN(d.getTime())) return ''
+  return d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' })
+}
+
+// Format date range
+const formatDateRange = (debut: string | null, fin: string | null): string => {
+  const d = formatDate(debut)
+  const f = formatDate(fin)
+  if (!d && !f) return ''
+  if (d === f) return d
+  if (!f) return d
+  if (!d) return f
+  return `${d} → ${f}`
 }
 
 // Load data
@@ -162,7 +204,7 @@ onMounted(() => {
         <h3 class="text-lg font-semibold text-gray-900">
           {{ competition.libelle }}
         </h3>
-        <p v-if="competition.soustitre2" class="text-sm text-gray-500">
+        <p v-if="competition.soustitre2" class="text-sm text-gray-700">
           {{ competition.soustitre2 }}
         </p>
       </div>
@@ -207,10 +249,11 @@ onMounted(() => {
             :key="stage.etape"
             class="flex-1 min-w-36 bg-gray-50 rounded-lg p-3"
           >
-            <div
+            <NuxtLink
               v-for="phase in stage.phases"
               :key="phase.idJournee"
-              class="mb-2 last:mb-0"
+              :to="`/games?phase=${phase.idJournee}`"
+              class="block mb-2 last:mb-0 hover:bg-gray-100 rounded -mx-1 px-1 py-0.5 transition-colors"
             >
               <div class="flex items-center gap-1.5">
                 <span
@@ -222,25 +265,41 @@ onMounted(() => {
                 <span class="text-sm font-medium text-gray-700 truncate">{{ phase.phase }}</span>
               </div>
               <div class="text-xs text-gray-400 ml-6.5">
-                {{ phase.nbMatchs }} {{ t('documents.summary.matches_short', { count: phase.nbMatchs }, phase.nbMatchs) }}
+                <span v-if="phase.nbequipes">{{ phase.nbequipes }} {{ t('documents.summary.teams_short', { count: phase.nbequipes }, phase.nbequipes) }} - </span>{{ phase.nbMatchs }} {{ t('documents.summary.matches_short', { count: phase.nbMatchs }, phase.nbMatchs) }}
               </div>
-            </div>
+            </NuxtLink>
           </div>
         </div>
       </div>
 
-      <!-- CHPT: vertical list of gamedays -->
+      <!-- CHPT: vertical list of gamedays with details, sorted by date then lieu -->
       <div v-else-if="isChpt" class="flex flex-wrap gap-2">
-        <div
-          v-for="phase in schemaData.phases"
+        <NuxtLink
+          v-for="phase in chptPhases"
           :key="phase.idJournee"
-          class="flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 rounded-lg"
+          :to="`/games?phase=${phase.idJournee}`"
+          class="px-3 py-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
         >
-          <span class="text-sm font-medium text-gray-700">{{ phase.phase }}</span>
-          <span class="text-xs text-gray-400">
-            ({{ phase.nbMatchs }} {{ t('documents.summary.matches_short', { count: phase.nbMatchs }, phase.nbMatchs) }})
-          </span>
-        </div>
+          <div class="text-sm font-medium text-gray-800">{{ phase.phase }}</div>
+          <div class="text-xs text-gray-500 mt-0.5 space-y-0.5">
+            <div v-if="formatDateRange(phase.dateDebut, phase.dateFin)" class="flex items-center gap-1">
+              <UIcon name="heroicons:calendar" class="w-3 h-3 text-gray-400" />
+              {{ formatDateRange(phase.dateDebut, phase.dateFin) }}
+            </div>
+            <div v-if="phase.lieu || phase.departement" class="flex items-center gap-1">
+              <UIcon name="heroicons:map-pin" class="w-3 h-3 text-gray-400" />
+              <span v-if="phase.lieu">{{ phase.lieu }}</span>
+              <span v-if="phase.lieu && phase.departement"> · </span>
+              <span v-if="phase.departement">{{ phase.departement }}</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <UIcon name="heroicons:user-group" class="w-3 h-3 text-gray-400" />
+              {{ countTeamsFromMatches(phase) }} {{ t('documents.summary.teams_short', { count: countTeamsFromMatches(phase) }, countTeamsFromMatches(phase)) }}
+              -
+              {{ phase.nbMatchs }} {{ t('documents.summary.matches_short', { count: phase.nbMatchs }, phase.nbMatchs) }}
+            </div>
+          </div>
+        </NuxtLink>
       </div>
 
       <!-- MULTI -->

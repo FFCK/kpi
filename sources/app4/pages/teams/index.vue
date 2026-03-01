@@ -1066,8 +1066,14 @@ const getLogoUrl = (team: CompetitionTeam) => {
                   </td>
 
                   <!-- Club -->
-                  <td class="px-3 py-2 text-sm text-gray-500">
-                    {{ team.codeClub }}
+                  <td class="px-3 py-2 text-sm text-gray-500 text-center">
+                    <NuxtLink
+                      :to="`/clubs?code=${team.codeClub}`"
+                      class="link-value"
+                      :title="t('teams_page.columns.club')"
+                    >
+                      {{ team.codeClub }}
+                    </NuxtLink>
                   </td>
 
                   <!-- Matches -->

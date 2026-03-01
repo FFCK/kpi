@@ -7,6 +7,8 @@ definePageMeta({
 })
 
 const { t } = useI18n()
+const route = useRoute()
+const router = useRouter()
 const api = useApi()
 const authStore = useAuthStore()
 const toast = useToast()
@@ -424,8 +426,20 @@ function handleGlobalClick(e: MouseEvent) {
   }
 }
 
-onMounted(() => {
-  loadMapClubs()
+onMounted(async () => {
+  await loadMapClubs()
+
+  // Auto-select club from query param ?code=XXXX
+  const codeFromQuery = route.query.code as string
+  if (codeFromQuery) {
+    const club = mapClubs.value.find(c => c.code === codeFromQuery)
+    if (club) {
+      selectClub({ code: club.code, libelle: club.libelle, codeComiteDep: '' })
+    }
+    // Clean up URL
+    router.replace({ query: { ...route.query, code: undefined } })
+  }
+
   document.addEventListener('click', handleGlobalClick)
 })
 

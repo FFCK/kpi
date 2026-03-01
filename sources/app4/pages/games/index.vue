@@ -259,6 +259,9 @@ const loadTeamsForJournee = async (journeeId: number) => {
 
 // ─── Init from route query ───
 const router = useRouter()
+// Track whether initial load is complete (to distinguish mount-time vs user-driven changes)
+let initialLoadDone = false
+
 onMounted(async () => {
   await workContext.initContext()
 
@@ -267,7 +270,15 @@ onMounted(async () => {
     selectedJournee.value = phaseFromQuery
     // Remove query param from URL without triggering navigation
     router.replace({ query: { ...route.query, phase: undefined } })
+  } else {
+    // No explicit phase requested: reset competition-specific filters
+    // to avoid stale localStorage values from a different competition
+    selectedJournee.value = '*'
+    selectedDate.value = ''
+    selectedTerrain.value = ''
   }
+
+  initialLoadDone = true
 })
 
 // ─── Watchers ───
@@ -287,15 +298,12 @@ watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGrou
   loadGames()
 })
 
-// Reload journees when competition/event/tour changes
-// Skip the first trigger to preserve restored/query filters on init
-let journeeResetReady = false
+// Reset journee when competition/event/tour changes (user-driven, not initial load)
 watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGroupSelection, selectedTour], () => {
-  if (!journeeResetReady) {
-    journeeResetReady = true
-    return
-  }
+  if (!initialLoadDone) return
   selectedJournee.value = '*'
+  selectedDate.value = ''
+  selectedTerrain.value = ''
   loadJournees()
 })
 

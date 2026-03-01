@@ -644,12 +644,6 @@ const navigateToPage = (target: string, eventGroup: string = '', competition: st
   navigateTo(`/${target}`)
 }
 
-// Convenience wrapper for documents navigation
-const navigateToDocuments = (competition: AdminCompetition) => {
-  navigateToPage('documents', '', competition.code)
-}
-
-
 // Tour options
 const tourOptions = [
   { value: 1, label: t('competitions.tour_options.1') },

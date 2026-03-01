@@ -627,7 +627,15 @@ const pdfLinks = computed(() => {
             <td class="px-3 py-1 text-sm text-gray-500 font-mono">
               {{ getLicenseDisplay(player) }}
             </td>
-            <td class="px-3 py-1 text-sm text-gray-500">{{ player.numeroClub }}</td>
+            <td class="px-3 py-1 text-sm text-gray-500">
+                <NuxtLink
+                  :to="`/clubs?code=${player.numeroClub}`"
+                  class="link-value"
+                  :title="t('teams_page.columns.club')"
+                >
+                  {{ player.numeroClub }}
+                </NuxtLink>
+              </td>
             <td class="px-3 py-1 text-sm text-gray-500">{{ player.categ }}-{{ player.sexe }}</td>
 
             <!-- Pagaie with validation -->
@@ -729,7 +737,15 @@ const pdfLinks = computed(() => {
               <td class="px-3 py-1 text-sm font-medium text-gray-900">{{ player.nom }}</td>
               <td class="px-3 py-1 text-sm text-gray-900">{{ player.prenom }}</td>
               <td class="px-3 py-1 text-sm text-gray-500 font-mono">{{ getLicenseDisplay(player) }}</td>
-              <td class="px-3 py-1 text-sm text-gray-500">{{ player.numeroClub }}</td>
+              <td class="px-3 py-1 text-sm text-gray-500">
+                <NuxtLink
+                  :to="`/clubs?code=${player.numeroClub}`"
+                  class="link-value"
+                  :title="t('teams_page.columns.club')"
+                >
+                  {{ player.numeroClub }}
+                </NuxtLink>
+              </td>
               <td class="px-3 py-1 text-sm text-gray-500">{{ player.categ }}-{{ player.sexe }}</td>
               <td class="px-3 py-1 text-sm text-gray-700">{{ player.pagaieLabel }}</td>
               <td class="px-3 py-1 text-sm">
@@ -805,7 +821,15 @@ const pdfLinks = computed(() => {
               <td class="px-3 py-1 text-sm font-medium text-gray-900">{{ player.nom }}</td>
               <td class="px-3 py-1 text-sm text-gray-900">{{ player.prenom }}</td>
               <td class="px-3 py-1 text-sm text-gray-500 font-mono">{{ getLicenseDisplay(player) }}</td>
-              <td class="px-3 py-1 text-sm text-gray-500">{{ player.numeroClub }}</td>
+              <td class="px-3 py-1 text-sm text-gray-500">
+                <NuxtLink
+                  :to="`/clubs?code=${player.numeroClub}`"
+                  class="link-value"
+                  :title="t('teams_page.columns.club')"
+                >
+                  {{ player.numeroClub }}
+                </NuxtLink>
+              </td>
               <td class="px-3 py-1 text-sm text-gray-500">{{ player.categ }}-{{ player.sexe }}</td>
               <td class="px-3 py-1 text-sm text-gray-700">{{ player.pagaieLabel }}</td>
               <td class="px-3 py-1 text-sm">
@@ -881,7 +905,15 @@ const pdfLinks = computed(() => {
               <td class="px-3 py-1 text-sm font-medium text-gray-900">{{ player.nom }}</td>
               <td class="px-3 py-1 text-sm text-gray-900">{{ player.prenom }}</td>
               <td class="px-3 py-1 text-sm text-gray-500 font-mono">{{ getLicenseDisplay(player) }}</td>
-              <td class="px-3 py-1 text-sm text-gray-500">{{ player.numeroClub }}</td>
+              <td class="px-3 py-1 text-sm text-gray-500">
+                <NuxtLink
+                  :to="`/clubs?code=${player.numeroClub}`"
+                  class="link-value"
+                  :title="t('teams_page.columns.club')"
+                >
+                  {{ player.numeroClub }}
+                </NuxtLink>
+              </td>
               <td class="px-3 py-1 text-sm text-gray-500">{{ player.categ }}-{{ player.sexe }}</td>
               <td class="px-3 py-1 text-sm text-gray-700">{{ player.pagaieLabel }}</td>
               <td class="px-3 py-1 text-sm">

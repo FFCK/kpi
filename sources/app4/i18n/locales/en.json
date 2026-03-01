@@ -461,6 +461,7 @@
       "phases_count": "{count} phase | {count} phases",
       "matches_count": "{count} game | {count} games",
       "matches_short": "game | games",
+      "teams_short": "team | teams",
       "qualified": "Qualified: {count}",
       "eliminated": "Eliminated: {count}",
       "no_phases": "No phases defined",
