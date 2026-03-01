@@ -174,6 +174,7 @@
   "common": {
     "yes": "Oui",
     "no": "Non",
+    "back": "Retour",
     "cancel": "Annuler",
     "save": "Enregistrer",
     "delete": "Supprimer",

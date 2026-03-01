@@ -98,8 +98,6 @@ onMounted(async () => {
     <AdminPageHeader
       :title="t('schema.title')"
       :competition-filtered-codes="workContext.pageFilteredCompetitionCodes"
-      back-to="/gamedays"
-      :back-label="t('menu.gamedays')"
     >
       <template #badges>
         <div v-if="data?.competition" class="flex items-center gap-2 flex-wrap">

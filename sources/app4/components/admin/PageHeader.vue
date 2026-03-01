@@ -1,5 +1,6 @@
 <script setup lang="ts">
 const { t } = useI18n()
+const router = useRouter()
 const workContext = useWorkContextStore()
 const slots = useSlots()
 
@@ -8,16 +9,12 @@ interface Props {
   showFilters?: boolean
   showAllOption?: boolean
   competitionFilteredCodes?: string[] | null
-  backTo?: string
-  backLabel?: string
 }
 
 withDefaults(defineProps<Props>(), {
   showFilters: true,
   showAllOption: false,
   competitionFilteredCodes: null,
-  backTo: '',
-  backLabel: '',
 })
 
 const emit = defineEmits<{
@@ -43,14 +40,13 @@ watch(() => workContext.pageCompetitionCodeAll, () => {
     <!-- Row 1: Title + Work Context Summary -->
     <div class="mb-2 flex flex-wrap items-center justify-between gap-2">
       <div class="flex items-center gap-3">
-        <NuxtLink
-          v-if="backTo"
-          :to="backTo"
-          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 border border-gray-300 rounded-lg transition-colors"
+        <button
+          :title="t('common.back')"
+          class="inline-flex items-center p-1.5 text-gray-500 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+          @click="router.back()"
         >
-          <UIcon name="heroicons:arrow-left" class="w-4 h-4" />
-          {{ backLabel }}
-        </NuxtLink>
+          <UIcon name="heroicons:arrow-left" class="w-5 h-5" />
+        </button>
         <h1 class="text-2xl font-bold text-gray-900">{{ title }}</h1>
       </div>
       <AdminWorkContextSummary compact />

@@ -392,44 +392,33 @@ const pdfLinks = computed(() => {
 
 <template>
   <div>
-    <!-- Work Context Summary -->
-    <AdminWorkContextSummary />
-
     <!-- Page Header -->
-    <div class="mb-4 bg-white rounded-lg shadow p-4">
-      <div class="flex flex-wrap items-center justify-between gap-4">
-        <!-- Title + Team selector -->
-        <div class="flex-1">
-          <div class="flex items-center gap-3 mb-2">
-            <UIcon name="i-heroicons-clipboard-document-list" class="w-6 h-6 text-blue-600 shrink-0" />
-            <h1 class="text-xl font-bold text-gray-900">
-              {{ t('presence.title_team') }}
-            </h1>
-          </div>
-
-          <div v-if="presenceStore.team" class="flex flex-wrap items-center gap-2 text-sm">
-            <span class="text-gray-500">{{ presenceStore.competition?.code }} - {{ presenceStore.team.codeSaison }}</span>
-            <span class="text-gray-400">•</span>
-            <!-- Team dropdown selector -->
-            <select
-              v-if="siblingTeams.length >= 2"
-              :value="teamId"
-              class="font-semibold text-gray-900 border border-gray-300 rounded-md px-2 py-1 text-sm bg-white hover:border-blue-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 cursor-pointer max-w-xs"
-              @change="navigateToTeam(Number(($event.target as HTMLSelectElement).value))"
+    <AdminPageHeader
+      :title="t('presence.title_team')"
+      :show-filters="false"
+    >
+      <template #badges>
+        <div v-if="presenceStore.team" class="flex flex-wrap items-center gap-2 text-sm">
+          <span class="text-gray-500">{{ presenceStore.competition?.code }} - {{ presenceStore.team.codeSaison }}</span>
+          <span class="text-gray-400">&bull;</span>
+          <!-- Team dropdown selector -->
+          <select
+            v-if="siblingTeams.length >= 2"
+            :value="teamId"
+            class="font-semibold text-gray-900 border border-gray-300 rounded-md px-2 py-1 text-sm bg-white hover:border-blue-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 cursor-pointer max-w-xs"
+            @change="navigateToTeam(Number(($event.target as HTMLSelectElement).value))"
+          >
+            <option
+              v-for="st in siblingTeams"
+              :key="st.id"
+              :value="st.id"
             >
-              <option
-                v-for="st in siblingTeams"
-                :key="st.id"
-                :value="st.id"
-              >
-                {{ st.libelle }}
-              </option>
-            </select>
-            <span v-else class="font-semibold text-gray-900">{{ presenceStore.team.libelle }}</span>
-          </div>
+              {{ st.libelle }}
+            </option>
+          </select>
+          <span v-else class="font-semibold text-gray-900">{{ presenceStore.team.libelle }}</span>
         </div>
 
-        <!-- Competition badges and lock indicator -->
         <div v-if="presenceStore.competition" class="flex items-center gap-2 flex-wrap">
           <span
             v-if="presenceStore.competition.codeNiveau"
@@ -448,33 +437,34 @@ const pdfLinks = computed(() => {
             {{ t('common.national') }}
           </span>
 
-          <!-- Lock indicator (read-only) -->
+          <!-- Lock indicator -->
           <div
             v-if="presenceStore.isLocked"
             class="flex items-center gap-1 px-2 py-1 rounded bg-red-50 text-red-700"
             :title="t('presence.competition_locked')"
           >
-            <UIcon name="i-heroicons-lock-closed-solid" class="w-6 h-6" />
+            <UIcon name="heroicons:lock-closed-solid" class="w-6 h-6" />
             <span class="text-xs font-medium">{{ t('common.locked') }}</span>
           </div>
           <UIcon
             v-else
-            name="i-heroicons-lock-open-solid"
+            name="heroicons:lock-open-solid"
             class="w-6 h-6 text-gray-400"
             :title="t('common.unlocked')"
           />
         </div>
-      </div>
+      </template>
 
-      <!-- Lock notice -->
-      <div
-        v-if="presenceStore.isLocked"
-        class="mt-3 flex items-center gap-2 p-2 bg-amber-50 border border-amber-200 rounded text-sm text-amber-800"
-      >
-        <UIcon name="i-heroicons-exclamation-triangle" class="w-4 h-4 shrink-0" />
-        {{ t('presence.competition_locked_notice') }}
-      </div>
-    </div>
+      <template #notices>
+        <div
+          v-if="presenceStore.isLocked"
+          class="flex items-center gap-2 p-2 bg-amber-50 border border-amber-200 rounded text-sm text-amber-800"
+        >
+          <UIcon name="heroicons:exclamation-triangle" class="w-4 h-4 shrink-0" />
+          {{ t('presence.competition_locked_notice') }}
+        </div>
+      </template>
+    </AdminPageHeader>
 
     <!-- Toolbar -->
     <AdminToolbar
