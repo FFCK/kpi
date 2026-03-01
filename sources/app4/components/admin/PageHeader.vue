@@ -73,7 +73,12 @@ watch(() => workContext.pageCompetitionCodeAll, () => {
       <!-- Extra filters slot -->
       <slot name="filters" />
 
-      <!-- Badges slot -->
+      <!-- Badges slot (inside filters row) -->
+      <slot name="badges" />
+    </div>
+
+    <!-- Badges slot (standalone when filters hidden) -->
+    <div v-else-if="slots.badges" class="flex flex-wrap gap-3 items-center">
       <slot name="badges" />
     </div>
 

@@ -321,6 +321,7 @@ const saveInlineEdit = async () => {
         }
       }
     }
+    toast.add({ title: t('common.saved'), color: 'success', timeout: 2000 })
   } catch {
     // Error already shown by useApi
   }

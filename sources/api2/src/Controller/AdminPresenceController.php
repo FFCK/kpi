@@ -581,8 +581,658 @@ class AdminPresenceController extends AbstractController
     }
 
     // ============================================
+    // MATCH MODE - Match Player Management
+    // ============================================
+
+    /**
+     * Get match players for a team (A or B)
+     */
+    #[Route('/admin/matches/{matchId}/players', name: 'admin_match_players_list', methods: ['GET'])]
+    #[OA\Parameter(name: 'matchId', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))]
+    #[OA\Parameter(name: 'teamCode', in: 'query', required: true, schema: new OA\Schema(type: 'string', enum: ['A', 'B']))]
+    public function getMatchPlayers(int $matchId, Request $request): JsonResponse
+    {
+        $teamCode = $request->query->get('teamCode', 'A');
+        if (!in_array($teamCode, ['A', 'B'])) {
+            return $this->json(['message' => 'teamCode must be A or B'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Get match info
+        $sql = "SELECT m.Id, m.Date_match, m.Heure_match, m.Terrain, m.Numero_ordre,
+                       m.Validation, m.Libelle, m.Id_journee,
+                       m.Id_equipeA, m.Id_equipeB
+                FROM kp_match m
+                WHERE m.Id = ?";
+        $stmt = $this->connection->prepare($sql);
+        $result = $stmt->executeQuery([$matchId]);
+        $matchRow = $result->fetchAssociative();
+
+        if (!$matchRow) {
+            return $this->json(['message' => 'Match not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        // Determine the team ID based on team code
+        $teamId = $teamCode === 'A' ? $matchRow['Id_equipeA'] : $matchRow['Id_equipeB'];
+
+        if (!$teamId) {
+            return $this->json(['message' => "Team {$teamCode} not assigned to this match"], Response::HTTP_NOT_FOUND);
+        }
+
+        // Get team info
+        $sql = "SELECT ce.Id, ce.Libelle, ce.Code_compet, ce.Code_saison, ce.Code_club,
+                       comp.Libelle AS comp_libelle, comp.Code
+                FROM kp_competition_equipe ce
+                LEFT JOIN kp_competition comp ON ce.Code_compet = comp.Code
+                    AND ce.Code_saison = comp.Code_saison
+                WHERE ce.Id = ?";
+        $stmt = $this->connection->prepare($sql);
+        $result = $stmt->executeQuery([$teamId]);
+        $teamRow = $result->fetchAssociative();
+
+        if (!$teamRow) {
+            return $this->json(['message' => 'Team not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        // Check user access
+        /** @var User|null $user */
+        $user = $this->getUser();
+        $allowedCompetitions = $user?->getAllowedCompetitions();
+
+        if ($allowedCompetitions !== null && !in_array($teamRow['Code_compet'], $allowedCompetitions)) {
+            return $this->json(['message' => 'Access denied to this competition'], Response::HTTP_FORBIDDEN);
+        }
+
+        // Get match players for this team
+        $sql = "SELECT mj.Matric, mj.Numero, mj.Capitaine,
+                       lc.Nom, lc.Prenom, lc.Sexe, lc.Naissance, lc.Origine,
+                       lc.Numero_club, lc.Club,
+                       lc.Pagaie_ECA, lc.Pagaie_EVI, lc.Pagaie_MER,
+                       lc.Etat_certificat_CK, lc.Date_certificat_CK,
+                       lc.Etat_certificat_APS, lc.Date_certificat_APS,
+                       arb.arbitre, arb.niveau,
+                       s.Date AS date_surclassement,
+                       lc.Reserve AS icf
+                FROM kp_match_joueur mj
+                LEFT JOIN kp_licence lc ON mj.Matric = lc.Matric
+                LEFT JOIN kp_arbitre arb ON mj.Matric = arb.Matric
+                    AND arb.saison = ?
+                LEFT JOIN kp_surclassement s ON mj.Matric = s.Matric
+                    AND s.Saison = ?
+                WHERE mj.Id_match = ?
+                AND mj.Equipe = ?
+                ORDER BY
+                    FIELD(IF(mj.Capitaine='C', '-', IF(mj.Capitaine='', '-', mj.Capitaine)), '-', 'E', 'A', 'X'),
+                    mj.Numero,
+                    lc.Nom,
+                    lc.Prenom";
+
+        $stmt = $this->connection->prepare($sql);
+        $result = $stmt->executeQuery([
+            $teamRow['Code_saison'],
+            $teamRow['Code_saison'],
+            $matchId,
+            $teamCode
+        ]);
+        $playerRows = $result->fetchAllAssociative();
+
+        $players = array_map(function ($row) {
+            return $this->formatMatchPlayer($row);
+        }, $playerRows);
+
+        return $this->json([
+            'match' => [
+                'id' => (int) $matchRow['Id'],
+                'idJournee' => (int) $matchRow['Id_journee'],
+                'dateMatch' => $matchRow['Date_match'] ?? '',
+                'heureMatch' => $matchRow['Heure_match'] ?? '',
+                'terrain' => $matchRow['Terrain'] ?? '',
+                'numeroOrdre' => (int) ($matchRow['Numero_ordre'] ?? 0),
+                'validation' => $matchRow['Validation'] === 'O',
+                'libelle' => $matchRow['Libelle'] ?? ''
+            ],
+            'team' => [
+                'id' => (int) $teamRow['Id'],
+                'libelle' => $teamRow['Libelle'],
+                'codeCompet' => $teamRow['Code_compet'],
+                'codeSaison' => $teamRow['Code_saison'],
+                'codeClub' => $teamRow['Code_club']
+            ],
+            'competition' => [
+                'code' => $teamRow['Code_compet'],
+                'libelle' => $teamRow['comp_libelle'] ?? ''
+            ],
+            'players' => $players
+        ]);
+    }
+
+    /**
+     * Add player to match
+     */
+    #[Route('/admin/matches/{matchId}/players/add', name: 'admin_match_players_add', methods: ['POST'])]
+    public function addMatchPlayer(int $matchId, Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $teamCode = $data['teamCode'] ?? null;
+        $matric = $data['matric'] ?? null;
+
+        if (!in_array($teamCode, ['A', 'B'])) {
+            return $this->json(['message' => 'teamCode must be A or B'], Response::HTTP_BAD_REQUEST);
+        }
+        if (!$matric) {
+            return $this->json(['message' => 'matric is required'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Check match lock
+        $matchInfo = $this->getMatchInfo($matchId);
+        if (!$matchInfo) {
+            return $this->json(['message' => 'Match not found'], Response::HTTP_NOT_FOUND);
+        }
+        if ($matchInfo['validation'] === 'O') {
+            return $this->json(['message' => 'Match is locked'], Response::HTTP_FORBIDDEN);
+        }
+
+        /** @var User|null $user */
+        $user = $this->getUser();
+        if (!$user || $user->getNiveau() > 8) {
+            return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
+        }
+
+        // Get player info from kp_licence
+        $sql = "SELECT Nom, Prenom, Sexe FROM kp_licence WHERE Matric = ?";
+        $stmt = $this->connection->prepare($sql);
+        $result = $stmt->executeQuery([$matric]);
+        $licenceRow = $result->fetchAssociative();
+
+        if (!$licenceRow) {
+            return $this->json(['message' => 'Player not found in license database'], Response::HTTP_NOT_FOUND);
+        }
+
+        $numero = $data['numero'] ?? 0;
+        $capitaine = $data['capitaine'] ?? '-';
+
+        try {
+            // REPLACE INTO to handle re-adding
+            $sql = "REPLACE INTO kp_match_joueur (Id_match, Matric, Numero, Equipe, Capitaine)
+                    VALUES (?, ?, ?, ?, ?)";
+            $this->connection->executeStatement($sql, [
+                $matchId, $matric, $numero, $teamCode, $capitaine
+            ]);
+        } catch (\Exception $e) {
+            return $this->json(['message' => 'Failed to add player: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        $this->logAction('Ajout joueur match', "Match:{$matchId} - Equipe:{$teamCode} - Joueur:{$matric}");
+
+        return $this->json(['success' => true, 'matric' => $matric], Response::HTTP_CREATED);
+    }
+
+    /**
+     * Initialize match players from team composition
+     */
+    #[Route('/admin/matches/{matchId}/players/initialize', name: 'admin_match_players_initialize', methods: ['POST'])]
+    public function initializeMatchPlayers(int $matchId, Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $teamCode = $data['teamCode'] ?? null;
+
+        if (!in_array($teamCode, ['A', 'B'])) {
+            return $this->json(['message' => 'teamCode must be A or B'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $matchInfo = $this->getMatchInfo($matchId);
+        if (!$matchInfo) {
+            return $this->json(['message' => 'Match not found'], Response::HTTP_NOT_FOUND);
+        }
+        if ($matchInfo['validation'] === 'O') {
+            return $this->json(['message' => 'Match is locked'], Response::HTTP_FORBIDDEN);
+        }
+
+        /** @var User|null $user */
+        $user = $this->getUser();
+        if (!$user || $user->getNiveau() > 8) {
+            return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
+        }
+
+        // Get the team ID from match
+        $teamId = $teamCode === 'A' ? $matchInfo['id_equipe_a'] : $matchInfo['id_equipe_b'];
+        if (!$teamId) {
+            return $this->json(['message' => "Team {$teamCode} not assigned to this match"], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Copy from kp_competition_equipe_joueur (excluding X and A statuses)
+        $sql = "REPLACE INTO kp_match_joueur (Id_match, Matric, Numero, Equipe, Capitaine)
+                SELECT ?, Matric, Numero, ?, Capitaine
+                FROM kp_competition_equipe_joueur
+                WHERE Id_equipe = ?
+                AND Capitaine <> 'X'
+                AND Capitaine <> 'A'";
+
+        $this->connection->executeStatement($sql, [$matchId, $teamCode, $teamId]);
+
+        $this->logAction('Ajout titulaires match', "Match:{$matchId} - Equipe:{$teamId}");
+
+        return $this->json(['success' => true]);
+    }
+
+    /**
+     * Update match player inline (numero or capitaine)
+     */
+    #[Route('/admin/matches/{matchId}/players/{matric}', name: 'admin_match_players_update', methods: ['PATCH'])]
+    public function updateMatchPlayer(int $matchId, int $matric, Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $teamCode = $data['teamCode'] ?? null;
+
+        if (!in_array($teamCode, ['A', 'B'])) {
+            return $this->json(['message' => 'teamCode must be A or B'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $matchInfo = $this->getMatchInfo($matchId);
+        if (!$matchInfo) {
+            return $this->json(['message' => 'Match not found'], Response::HTTP_NOT_FOUND);
+        }
+        if ($matchInfo['validation'] === 'O') {
+            return $this->json(['message' => 'Match is locked'], Response::HTTP_FORBIDDEN);
+        }
+
+        /** @var User|null $user */
+        $user = $this->getUser();
+        if (!$user || $user->getNiveau() > 8) {
+            return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
+        }
+
+        $updateData = [];
+        if (isset($data['numero'])) {
+            $updateData['Numero'] = (int) $data['numero'];
+        }
+        if (isset($data['capitaine'])) {
+            $updateData['Capitaine'] = $data['capitaine'];
+        }
+
+        if (empty($updateData)) {
+            return $this->json(['message' => 'No fields to update'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $this->connection->update(
+            'kp_match_joueur',
+            $updateData,
+            ['Id_match' => $matchId, 'Matric' => $matric, 'Equipe' => $teamCode]
+        );
+
+        $this->logAction('Modification kp_match_joueur', "Match:{$matchId} - Equipe:{$teamCode} - Joueur:{$matric}");
+
+        return $this->json(['success' => true]);
+    }
+
+    /**
+     * Delete players from match
+     */
+    #[Route('/admin/matches/{matchId}/players', name: 'admin_match_players_delete', methods: ['DELETE'])]
+    public function deleteMatchPlayers(int $matchId, Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $teamCode = $data['teamCode'] ?? null;
+        $matricIds = $data['matricIds'] ?? [];
+
+        if (!in_array($teamCode, ['A', 'B'])) {
+            return $this->json(['message' => 'teamCode must be A or B'], Response::HTTP_BAD_REQUEST);
+        }
+        if (empty($matricIds)) {
+            return $this->json(['message' => 'No players to delete'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $matchInfo = $this->getMatchInfo($matchId);
+        if (!$matchInfo) {
+            return $this->json(['message' => 'Match not found'], Response::HTTP_NOT_FOUND);
+        }
+        if ($matchInfo['validation'] === 'O') {
+            return $this->json(['message' => 'Match is locked'], Response::HTTP_FORBIDDEN);
+        }
+
+        /** @var User|null $user */
+        $user = $this->getUser();
+        if (!$user || $user->getNiveau() > 8) {
+            return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
+        }
+
+        $placeholders = implode(',', array_fill(0, count($matricIds), '?'));
+        $sql = "DELETE FROM kp_match_joueur
+                WHERE Id_match = ? AND Equipe = ? AND Matric IN ($placeholders)";
+
+        $params = array_merge([$matchId, $teamCode], $matricIds);
+        $this->connection->executeStatement($sql, $params);
+
+        $this->logAction('Suppression joueurs match', "Match:{$matchId} - Equipe:{$teamCode} - Joueurs:" . implode(',', $matricIds));
+
+        return $this->json(['success' => true, 'deleted' => count($matricIds)]);
+    }
+
+    /**
+     * Clear all players from match for a team
+     */
+    #[Route('/admin/matches/{matchId}/players/clear', name: 'admin_match_players_clear', methods: ['DELETE'])]
+    public function clearMatchPlayers(int $matchId, Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $teamCode = $data['teamCode'] ?? null;
+
+        if (!in_array($teamCode, ['A', 'B'])) {
+            return $this->json(['message' => 'teamCode must be A or B'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $matchInfo = $this->getMatchInfo($matchId);
+        if (!$matchInfo) {
+            return $this->json(['message' => 'Match not found'], Response::HTTP_NOT_FOUND);
+        }
+        if ($matchInfo['validation'] === 'O') {
+            return $this->json(['message' => 'Match is locked'], Response::HTTP_FORBIDDEN);
+        }
+
+        /** @var User|null $user */
+        $user = $this->getUser();
+        if (!$user || $user->getNiveau() > 8) {
+            return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
+        }
+
+        $sql = "DELETE FROM kp_match_joueur WHERE Id_match = ? AND Equipe = ?";
+        $this->connection->executeStatement($sql, [$matchId, $teamCode]);
+
+        $this->logAction('Suppression joueurs match', "Match:{$matchId} - Equipe:{$teamCode} - Tous");
+
+        return $this->json(['success' => true]);
+    }
+
+    /**
+     * Get copyable matches (same team in same journee or competition)
+     */
+    #[Route('/admin/matches/{matchId}/copyable-matches', name: 'admin_match_copyable', methods: ['GET'])]
+    #[OA\Parameter(name: 'matchId', in: 'path', required: true, schema: new OA\Schema(type: 'integer'))]
+    #[OA\Parameter(name: 'teamCode', in: 'query', required: true, schema: new OA\Schema(type: 'string', enum: ['A', 'B']))]
+    #[OA\Parameter(name: 'scope', in: 'query', required: true, schema: new OA\Schema(type: 'string', enum: ['day', 'competition']))]
+    public function getCopyableMatches(int $matchId, Request $request): JsonResponse
+    {
+        $teamCode = $request->query->get('teamCode', 'A');
+        $scope = $request->query->get('scope', 'day');
+
+        if (!in_array($teamCode, ['A', 'B'])) {
+            return $this->json(['message' => 'teamCode must be A or B'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Get match info to find the team
+        $matchInfo = $this->getMatchInfo($matchId);
+        if (!$matchInfo) {
+            return $this->json(['message' => 'Match not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $teamId = $teamCode === 'A' ? $matchInfo['id_equipe_a'] : $matchInfo['id_equipe_b'];
+        if (!$teamId) {
+            return $this->json(['message' => "Team {$teamCode} not assigned"], Response::HTTP_BAD_REQUEST);
+        }
+
+        if ($scope === 'day') {
+            // Same journee
+            $sql = "SELECT m.Id, m.Date_match, m.Heure_match, m.Terrain, m.Numero_ordre,
+                           m.Validation,
+                           ceA.Libelle AS equipeA, ceB.Libelle AS equipeB,
+                           (SELECT COUNT(*) FROM kp_match_joueur mj
+                            WHERE mj.Id_match = m.Id
+                            AND mj.Equipe = IF(m.Id_equipeA = ?, 'A', 'B')) AS playerCount
+                    FROM kp_match m
+                    LEFT JOIN kp_competition_equipe ceA ON m.Id_equipeA = ceA.Id
+                    LEFT JOIN kp_competition_equipe ceB ON m.Id_equipeB = ceB.Id
+                    WHERE m.Id_journee = ?
+                    AND m.Validation != 'O'
+                    AND m.Id != ?
+                    AND (m.Id_equipeA = ? OR m.Id_equipeB = ?)
+                    ORDER BY m.Date_match, m.Heure_match";
+
+            $stmt = $this->connection->prepare($sql);
+            $result = $stmt->executeQuery([$teamId, $matchInfo['id_journee'], $matchId, $teamId, $teamId]);
+        } else {
+            // Same competition (all journees)
+            $sql = "SELECT j.Id FROM kp_journee j
+                    WHERE j.Code_competition = (
+                        SELECT Code_competition FROM kp_journee WHERE Id = ?
+                    )";
+            $stmt = $this->connection->prepare($sql);
+            $result = $stmt->executeQuery([$matchInfo['id_journee']]);
+            $journeeIds = array_column($result->fetchAllAssociative(), 'Id');
+
+            if (empty($journeeIds)) {
+                return $this->json(['matches' => []]);
+            }
+
+            $placeholders = implode(',', array_fill(0, count($journeeIds), '?'));
+            $sql = "SELECT m.Id, m.Date_match, m.Heure_match, m.Terrain, m.Numero_ordre,
+                           m.Validation,
+                           ceA.Libelle AS equipeA, ceB.Libelle AS equipeB,
+                           (SELECT COUNT(*) FROM kp_match_joueur mj
+                            WHERE mj.Id_match = m.Id
+                            AND mj.Equipe = IF(m.Id_equipeA = ?, 'A', 'B')) AS playerCount
+                    FROM kp_match m
+                    LEFT JOIN kp_competition_equipe ceA ON m.Id_equipeA = ceA.Id
+                    LEFT JOIN kp_competition_equipe ceB ON m.Id_equipeB = ceB.Id
+                    WHERE m.Id_journee IN ($placeholders)
+                    AND m.Validation != 'O'
+                    AND m.Id != ?
+                    AND (m.Id_equipeA = ? OR m.Id_equipeB = ?)
+                    ORDER BY m.Date_match, m.Heure_match";
+
+            $params = array_merge([$teamId], $journeeIds, [$matchId, $teamId, $teamId]);
+            $stmt = $this->connection->prepare($sql);
+            $result = $stmt->executeQuery($params);
+        }
+
+        $rows = $result->fetchAllAssociative();
+        $matches = array_map(function ($row) {
+            return [
+                'id' => (int) $row['Id'],
+                'dateMatch' => $row['Date_match'] ?? '',
+                'heureMatch' => $row['Heure_match'] ?? '',
+                'terrain' => $row['Terrain'] ?? '',
+                'numeroOrdre' => (int) ($row['Numero_ordre'] ?? 0),
+                'equipeA' => $row['equipeA'] ?? '',
+                'equipeB' => $row['equipeB'] ?? '',
+                'playerCount' => (int) ($row['playerCount'] ?? 0)
+            ];
+        }, $rows);
+
+        return $this->json(['matches' => $matches]);
+    }
+
+    /**
+     * Copy match players to other matches (same journee)
+     */
+    #[Route('/admin/matches/{matchId}/players/copy-to-day', name: 'admin_match_players_copy_day', methods: ['POST'])]
+    public function copyMatchPlayersToDayMatches(int $matchId, Request $request): JsonResponse
+    {
+        return $this->copyMatchPlayersToMatches($matchId, $request, 'day');
+    }
+
+    /**
+     * Copy match players to other matches (same competition)
+     */
+    #[Route('/admin/matches/{matchId}/players/copy-to-competition', name: 'admin_match_players_copy_competition', methods: ['POST'])]
+    public function copyMatchPlayersToCompetitionMatches(int $matchId, Request $request): JsonResponse
+    {
+        return $this->copyMatchPlayersToMatches($matchId, $request, 'competition');
+    }
+
+    private function copyMatchPlayersToMatches(int $matchId, Request $request, string $scope): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+        $teamCode = $data['teamCode'] ?? null;
+        $targetMatchIds = $data['matchIds'] ?? [];
+
+        if (!in_array($teamCode, ['A', 'B'])) {
+            return $this->json(['message' => 'teamCode must be A or B'], Response::HTTP_BAD_REQUEST);
+        }
+        if (empty($targetMatchIds)) {
+            return $this->json(['message' => 'No target matches specified'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $matchInfo = $this->getMatchInfo($matchId);
+        if (!$matchInfo) {
+            return $this->json(['message' => 'Match not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        /** @var User|null $user */
+        $user = $this->getUser();
+        if (!$user || $user->getNiveau() > 8) {
+            return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
+        }
+
+        $teamId = $teamCode === 'A' ? $matchInfo['id_equipe_a'] : $matchInfo['id_equipe_b'];
+        if (!$teamId) {
+            return $this->json(['message' => "Team {$teamCode} not assigned"], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Get source players
+        $sql = "SELECT Matric, Numero, Capitaine FROM kp_match_joueur
+                WHERE Id_match = ? AND Equipe = ?";
+        $stmt = $this->connection->prepare($sql);
+        $result = $stmt->executeQuery([$matchId, $teamCode]);
+        $sourcePlayers = $result->fetchAllAssociative();
+
+        if (empty($sourcePlayers)) {
+            return $this->json(['message' => 'No players to copy'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $copied = 0;
+        foreach ($targetMatchIds as $targetMatchId) {
+            // Get target match to find correct A/B assignment
+            $sql = "SELECT Id_equipeA, Id_equipeB, `Validation`
+                    FROM kp_match WHERE Id = ?";
+            $stmt = $this->connection->prepare($sql);
+            $result = $stmt->executeQuery([$targetMatchId]);
+            $targetMatch = $result->fetchAssociative();
+
+            if (!$targetMatch || $targetMatch['Validation'] === 'O') {
+                continue; // Skip locked or non-existent matches
+            }
+
+            // Determine team code in target match
+            $targetTeamCode = null;
+            if ((int) $targetMatch['Id_equipeA'] === (int) $teamId) {
+                $targetTeamCode = 'A';
+            } elseif ((int) $targetMatch['Id_equipeB'] === (int) $teamId) {
+                $targetTeamCode = 'B';
+            }
+            if (!$targetTeamCode) {
+                continue; // Team not in this match
+            }
+
+            // Clear existing players for this team in target match
+            $this->connection->executeStatement(
+                "DELETE FROM kp_match_joueur WHERE Id_match = ? AND Equipe = ?",
+                [$targetMatchId, $targetTeamCode]
+            );
+
+            // Insert source players
+            foreach ($sourcePlayers as $player) {
+                $this->connection->executeStatement(
+                    "INSERT INTO kp_match_joueur (Id_match, Matric, Numero, Equipe, Capitaine) VALUES (?, ?, ?, ?, ?)",
+                    [$targetMatchId, $player['Matric'], $player['Numero'], $targetTeamCode, $player['Capitaine']]
+                );
+            }
+            $copied++;
+        }
+
+        $this->logAction(
+            "Copie Compo sur " . ($scope === 'day' ? 'Journée' : 'Compet'),
+            "Match:{$matchId} - Equipe:{$teamId} - {$copied} match(s)"
+        );
+
+        return $this->json(['success' => true, 'copied' => $copied]);
+    }
+
+    // ============================================
     // HELPER METHODS
     // ============================================
+
+    private function getMatchInfo(int $matchId): ?array
+    {
+        $sql = "SELECT Id, Id_journee, Id_equipeA, Id_equipeB, `Validation`
+                FROM kp_match WHERE Id = ?";
+        $stmt = $this->connection->prepare($sql);
+        $result = $stmt->executeQuery([$matchId]);
+        $row = $result->fetchAssociative();
+
+        if (!$row) {
+            return null;
+        }
+
+        return [
+            'id' => (int) $row['Id'],
+            'id_journee' => (int) $row['Id_journee'],
+            'id_equipe_a' => $row['Id_equipeA'] ? (int) $row['Id_equipeA'] : null,
+            'id_equipe_b' => $row['Id_equipeB'] ? (int) $row['Id_equipeB'] : null,
+            'validation' => $row['Validation']
+        ];
+    }
+
+    private function formatMatchPlayer(array $row): array
+    {
+        $pagaieValide = 0;
+        $pagaieLabel = '';
+
+        if (!empty($row['Pagaie_ECA']) && !in_array($row['Pagaie_ECA'], ['', 'PAGJ', 'PAGB'])) {
+            $pagaieValide = 1;
+            $pagaieLabel = $this->getPagaieLabel($row['Pagaie_ECA']);
+        } elseif (!empty($row['Pagaie_EVI'])) {
+            $pagaieValide = 2;
+            $pagaieLabel = $this->getPagaieLabel($row['Pagaie_EVI']);
+        } elseif (!empty($row['Pagaie_MER'])) {
+            $pagaieValide = 3;
+            $pagaieLabel = $this->getPagaieLabel($row['Pagaie_MER']);
+        }
+
+        $capitaine = $row['Capitaine'] ?? '-';
+        if ($capitaine === '') {
+            $capitaine = '-';
+        }
+
+        return [
+            'matric' => (int) $row['Matric'],
+            'nom' => $row['Nom'] ?? '',
+            'prenom' => $row['Prenom'] ?? '',
+            'sexe' => $row['Sexe'] ?? 'M',
+            'categ' => $row['Naissance'] ? $this->calculateCategory($row['Naissance'], date('Y')) : '',
+            'naissance' => $row['Naissance'] ?? null,
+            'numero' => (int) ($row['Numero'] ?? 0),
+            'capitaine' => $capitaine,
+            'origine' => $row['Origine'] ?? '',
+            'numeroClub' => $row['Numero_club'] ?? '',
+            'clubLibelle' => $row['Club'] ?? '',
+            'pagaieECA' => $row['Pagaie_ECA'] ?? '',
+            'pagaieEVI' => $row['Pagaie_EVI'] ?? '',
+            'pagaieMER' => $row['Pagaie_MER'] ?? '',
+            'pagaieLabel' => $pagaieLabel,
+            'pagaieValide' => $pagaieValide,
+            'certifCK' => $row['Etat_certificat_CK'] ?? 'NON',
+            'certifAPS' => $row['Etat_certificat_APS'] ?? 'NON',
+            'dateCertifCK' => $row['Date_certificat_CK'] ?? null,
+            'dateCertifAPS' => $row['Date_certificat_APS'] ?? null,
+            'arbitre' => $row['arbitre'] ?? '',
+            'niveau' => $row['niveau'] ?? '',
+            'dateSurclassement' => $row['date_surclassement'] ?? null,
+            'icf' => ($row['icf'] ?? null) ? (int) $row['icf'] : null
+        ];
+    }
+
+    private function logAction(string $action, string $detail): void
+    {
+        /** @var User|null $user */
+        $user = $this->getUser();
+        $username = $user?->getUserIdentifier() ?? 'unknown';
+
+        $this->connection->insert('kp_journal', [
+            'Dates' => (new \DateTime())->format('Y-m-d H:i:s'),
+            'Users' => $username,
+            'Actions' => $action,
+            'Journal' => $detail
+        ]);
+    }
 
     private function formatPlayer(array $row): array
     {

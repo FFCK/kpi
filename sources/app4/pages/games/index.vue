@@ -513,6 +513,7 @@ const saveInlineEdit = async () => {
         }
       }
     }
+    toast.add({ title: t('common.saved'), color: 'success', timeout: 2000 })
   } catch {
     // Error already shown by useApi
   }
@@ -565,6 +566,7 @@ const saveTeamEdit = async () => {
         game.equipeB = response.equipe
       }
     }
+    toast.add({ title: t('common.saved'), color: 'success', timeout: 2000 })
   } catch {
     // Error already shown
   }
@@ -625,6 +627,7 @@ const saveRefereeEdit = async (value: string, matric: number) => {
         game.matricArbitreSecondaire = matric
       }
     }
+    toast.add({ title: t('common.saved'), color: 'success', timeout: 2000 })
   }
   catch {
     // Error already shown by useApi
@@ -659,6 +662,7 @@ const savePhaseEdit = async () => {
     await api.patch(`/admin/games/${id}/journee`, { idJournee: newJourneeId })
     // Reload to get updated data
     await loadGames()
+    toast.add({ title: t('common.saved'), color: 'success', timeout: 2000 })
   } catch {
     // Error already shown
   }
@@ -1519,6 +1523,15 @@ const statusBtnClass = (game: Game) => {
                     :class="isGameEditable(g) ? 'editable-cell' : ''"
                     @click="startTeamEdit(g, 'A')"
                   >{{ t('games.team_undefined') }}</span>
+                  <NuxtLink
+                    v-if="g.idEquipeA"
+                    :to="`/presence/match/${g.id}/team/A`"
+                    class="block text-[10px] text-blue-500 hover:text-blue-700 hover:underline"
+                    :title="t('games.presence')"
+                    @click.stop
+                  >
+                    <UIcon name="heroicons:user-group" class="w-4 h-4" />
+                  </NuxtLink>
                 </template>
               </td>
 
@@ -1635,6 +1648,15 @@ const statusBtnClass = (game: Game) => {
                     :class="isGameEditable(g) ? 'editable-cell' : ''"
                     @click="startTeamEdit(g, 'B')"
                   >{{ t('games.team_undefined') }}</span>
+                  <NuxtLink
+                    v-if="g.idEquipeB"
+                    :to="`/presence/match/${g.id}/team/B`"
+                    class="block text-[10px] text-blue-500 hover:text-blue-700 hover:underline"
+                    :title="t('games.presence')"
+                    @click.stop
+                  >
+                    <UIcon name="heroicons:user-group" class="w-4 h-4" />
+                  </NuxtLink>
                 </template>
               </td>
 
@@ -1924,9 +1946,17 @@ const statusBtnClass = (game: Game) => {
 
           <!-- Score: centered, team names close to score -->
           <div class="flex items-center justify-center gap-2 py-1">
-            <span v-if="g.equipeA" class="text-right flex-1 truncate font-medium">{{ g.equipeA }}</span>
-            <span v-else-if="bracketLabels(g.libelle).teamA" class="text-right flex-1 truncate font-medium text-orange-400 italic">({{ bracketLabels(g.libelle).teamA }})</span>
-            <span v-else class="text-right flex-1 truncate font-medium text-red-400 italic">{{ t('games.team_undefined') }}</span>
+            <span class="text-right flex-1 truncate">
+              <span v-if="g.equipeA" class="font-medium">{{ g.equipeA }}</span>
+              <span v-else-if="bracketLabels(g.libelle).teamA" class="font-medium text-orange-400 italic">({{ bracketLabels(g.libelle).teamA }})</span>
+              <span v-else class="font-medium text-red-400 italic">{{ t('games.team_undefined') }}</span>
+              <NuxtLink
+                v-if="g.idEquipeA"
+                :to="`/presence/match/${g.id}/team/A`"
+                class="block text-[10px] text-blue-500 hover:text-blue-700 hover:underline"
+                @click.stop
+              >{{ t('games.presence') }}</NuxtLink>
+            </span>
             <!-- Score A inline -->
             <template v-if="editingCell?.id === g.id && editingCell.field === 'ScoreA'">
               <input
@@ -1964,9 +1994,17 @@ const statusBtnClass = (game: Game) => {
               :class="isScoreEditable(g) ? 'editable-cell' : ''"
               @click="startInlineEdit(g, 'ScoreB')"
             >{{ g.scoreB || '-' }}</span>
-            <span v-if="g.equipeB" class="text-left flex-1 truncate font-medium">{{ g.equipeB }}</span>
-            <span v-else-if="bracketLabels(g.libelle).teamB" class="text-left flex-1 truncate font-medium text-orange-400 italic">({{ bracketLabels(g.libelle).teamB }})</span>
-            <span v-else class="text-left flex-1 truncate font-medium text-red-400 italic">{{ t('games.team_undefined') }}</span>
+            <span class="text-left flex-1 truncate">
+              <span v-if="g.equipeB" class="font-medium">{{ g.equipeB }}</span>
+              <span v-else-if="bracketLabels(g.libelle).teamB" class="font-medium text-orange-400 italic">({{ bracketLabels(g.libelle).teamB }})</span>
+              <span v-else class="font-medium text-red-400 italic">{{ t('games.team_undefined') }}</span>
+              <NuxtLink
+                v-if="g.idEquipeB"
+                :to="`/presence/match/${g.id}/team/B`"
+                class="block text-[10px] text-blue-500 hover:text-blue-700 hover:underline"
+                @click.stop
+              >{{ t('games.presence') }}</NuxtLink>
+            </span>
           </div>
 
           <!-- Type + Status -->
