@@ -653,7 +653,7 @@
     "select_all": "Tout sélectionner",
     "reset_sort": "Tri par défaut",
     "documents": "Documents",
-    "rc": "RC",
+    "rc": "Resp. Compétition",
     "copy": "Copier",
     "columns": {
       "code": "Code",
@@ -668,7 +668,9 @@
       "journees": "J.",
       "phases": "Ph.",
       "matchs": "Matchs",
-      "actions": "Actions"
+      "actions": "Actions",
+      "edit": "Edit.",
+      "stage": "Etape"
     },
     "search_previous_placeholder": "Rechercher une compétition des saisons précédentes",
     "min_2_chars": "Tapez au moins 2 caractères pour rechercher",

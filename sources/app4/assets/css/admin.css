@@ -73,7 +73,6 @@ table button {
 
 table button:hover {
   background-color: rgba(0, 0, 0, 0.05);
-  border-radius: 0.375rem;
 }
 
 /* Toggle buttons (publication, app) should be more visible */
@@ -492,7 +491,7 @@ label[for] {
   cursor: pointer;
   position: relative;
   padding: 2px 6px;
-  border-radius: 4px;
+  border-radius: 1px;
   border: 1.5px dashed rgb(190, 200, 213);
   background-color: rgb(246, 250, 253);
   transition: all 0.15s ease;
@@ -508,4 +507,25 @@ label[for] {
   .editable-cell {
     padding: 1px 4px;
   }
+}
+
+/* ===== Link Value ===== */
+.link-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  background-color: rgb(249 250 251);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: black;
+  text-decoration: none;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.link-value:hover {
+  background-color: rgb(229 231 235);
 }

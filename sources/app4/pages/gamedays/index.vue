@@ -1003,7 +1003,7 @@ const getOfficialsSummary = (g: Gameday): string => {
                 <NuxtLink
                   v-if="g.matchCount > 0"
                   :to="`/games?phase=${g.id}`"
-                  class="text-blue-600 hover:underline font-medium"
+                  class="link-value"
                 >
                   {{ g.matchCount }}
                 </NuxtLink>

@@ -651,7 +651,7 @@
     "delete_selected": "Delete selected",
     "select_all": "Select all",
     "documents": "Documents",
-    "rc": "RC",
+    "rc": "Comp. Managers",
     "copy": "Copy",
     "columns": {
       "code": "Code",
@@ -666,7 +666,9 @@
       "journees": "Days",
       "phases": "Phases",
       "matchs": "Games",
-      "actions": "Actions"
+      "actions": "Actions",
+      "edit": "Edit.",
+      "stage": "Stage"
     },
     "form": {
       "add_title": "Add competition",

@@ -626,16 +626,29 @@ const getLevelColor = (level: CompetitionLevel) => {
   }
 }
 
-// Navigate to documents page with competition pre-selected
-const navigateToDocuments = (competition: AdminCompetition) => {
+// Generic navigation function
+const navigateToPage = (target: string, eventGroup: string = '', competition: string = '') => {
   // Reset event/group filter if competition is not in current filter
   const filteredCodes = workContext.pageFilteredCompetitionCodes
-  if (filteredCodes && !filteredCodes.includes(competition.code)) {
+  if (competition && filteredCodes && !filteredCodes.includes(competition)) {
     workContext.setPageEventGroupSelection('')
   }
-  workContext.setPageCompetition(competition.code)
-  navigateTo('/documents')
+  
+  if (competition) {
+    workContext.setPageCompetition(competition)
+  }
+  if (eventGroup) {
+    workContext.setPageEventGroupSelection(eventGroup)
+  }
+  
+  navigateTo(`/${target}`)
 }
+
+// Convenience wrapper for documents navigation
+const navigateToDocuments = (competition: AdminCompetition) => {
+  navigateToPage('documents', '', competition.code)
+}
+
 
 // Tour options
 const tourOptions = [
@@ -725,25 +738,34 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
               <thead class="bg-gray-50">
                 <tr>
                   <!-- Checkbox column -->
-                  <th v-if="canDelete" class="px-3 py-2 w-10">
+                  <!-- <th v-if="canDelete" class="px-3 py-2 w-10">
                     <input
                       type="checkbox"
                       class="w-6 h-6 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
                       :checked="section.competitions.every(c => isSelected(c.code))"
                       @change="section.competitions.forEach(c => { if (($event.target as HTMLInputElement).checked !== isSelected(c.code)) toggleSelect(c.code) })"
                     >
+                  </th> -->
+                  <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {{ t('competitions.columns.publication') }}
                   </th>
                   <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {{ t('competitions.columns.code') }}
                   </th>
                   <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {{ t('competitions.columns.niveau') }}
+                    {{ t('competitions.columns.edit') }}
                   </th>
                   <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {{ t('competitions.columns.libelle') }}
                   </th>
                   <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {{ t('competitions.columns.niveau') }}
+                  </th>
+                  <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {{ t('competitions.columns.groupe') }}
+                  </th>
+                  <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    {{ t('competitions.columns.stage') }}
                   </th>
                   <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {{ t('competitions.columns.type') }}
@@ -752,13 +774,10 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
                     {{ t('competitions.columns.statut') }}
                   </th>
                   <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {{ t('competitions.columns.publication') }}
+                    {{ t('competitions.columns.equipes') }}
                   </th>
                   <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {{ t('competitions.columns.verrou') }}
-                  </th>
-                  <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    {{ t('competitions.columns.equipes') }}
                   </th>
                   <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                     {{ t('competitions.columns.journees') }}
@@ -779,69 +798,17 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
                   :class="{ 'bg-blue-50': isSelected(competition.code) }"
                 >
                   <!-- Checkbox -->
-                  <td v-if="canDelete" class="px-3 py-3">
+                  <!-- <td v-if="canDelete" class="px-3 py-1">
                     <input
                       :checked="isSelected(competition.code)"
                       type="checkbox"
                       class="w-6 h-6 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
                       @change="toggleSelect(competition.code)"
                     >
-                  </td>
-
-                  <!-- Code with link to documents -->
-                  <td class="px-3 py-3 text-sm">
-                    <button
-                      class="text-blue-600 hover:text-blue-800 hover:underline font-medium"
-                      :title="t('competitions.documents')"
-                      @click="navigateToDocuments(competition)"
-                    >
-                      {{ competition.code }}
-                    </button>
-                  </td>
-
-                  <!-- Level badge -->
-                  <td class="px-3 py-3 text-sm">
-                    <span
-                      class="px-2 py-1 text-xs font-medium rounded"
-                      :class="getLevelColor(competition.codeNiveau)"
-                    >
-                      {{ competition.codeNiveau }}
-                    </span>
-                  </td>
-
-                  <!-- Libelle -->
-                  <td class="px-3 py-3 text-sm text-gray-900">
-                    <div class="font-medium">{{ competition.libelle }}</div>
-                    <div v-if="competition.soustitre" class="text-xs text-gray-500">{{ competition.soustitre }}</div>
-                  </td>
-
-                  <!-- Groupe -->
-                  <td class="px-3 py-3 text-sm text-gray-500">
-                    {{ competition.codeRef || '-' }}
-                  </td>
-
-                  <!-- Type -->
-                  <td class="px-3 py-3 text-sm text-gray-500">
-                    {{ competition.codeTypeclt }}
-                  </td>
-
-                  <!-- Status -->
-                  <td class="px-3 py-3 text-center">
-                    <span
-                      class="px-2 py-1 text-xs font-medium rounded uppercase"
-                      :class="[
-                        getStatusColor(competition.statut),
-                        canToggleLock ? 'cursor-pointer' : ''
-                      ]"
-                      :title="canToggleLock ? t('competitions.click_to_change_status') : ''"
-                      @click="cycleStatus(competition)"
-                    >
-                      {{ t(`competitions.status.${competition.statut}`) }}
-                    </span>
-                  </td>
+                  </td> -->
 
                   <!-- Publication toggle -->
-                  <td class="px-3 py-3 text-center">
+                  <td class="px-3 py-1 text-center">
                     <AdminToggleButton
                       v-if="canTogglePublish"
                       :active="competition.publication"
@@ -861,8 +828,95 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
                     />
                   </td>
 
+                  <!-- Code with link to documents -->
+                  <td class="px-3 py-1 text-sm">
+                    <button
+                      class="link-value"
+                      :title="t('competitions.documents')"
+                      @click="navigateToPage('documents', '', competition.code)"
+                    >
+                      {{ competition.code }}
+                    </button>
+                  </td>
+
+                  <!-- Edit -->
+                  <td class="px-3 py-1 text-sm">
+                    <button
+                      v-if="canEdit"
+                      class="p-1.5 text-blue-600"
+                      :title="t('common.edit')"
+                      @click="openEditModal(competition)"
+                    >
+                      <UIcon name="heroicons:pencil-solid" class="w-6 h-6" />
+                    </button>
+                  </td>
+
+                  <!-- Libelle -->
+                  <td class="px-3 py-1 text-sm text-gray-900">
+                    <div class="font-medium">{{ competition.libelle }}</div>
+                    <div v-if="competition.soustitre" class="text-xs text-gray-500">{{ competition.soustitre }}</div>
+                  </td>
+
+                  <!-- Level badge -->
+                  <td class="px-3 py-1 text-sm">
+                    <span
+                      class="px-2 py-1 text-xs font-medium rounded"
+                      :class="getLevelColor(competition.codeNiveau)"
+                    >
+                      {{ competition.codeNiveau }}
+                    </span>
+                  </td>
+
+                  <!-- Group -->
+                  <td class="px-3 py-1 text-sm text-gray-500">
+                    <button
+                      class="link-value"
+                      :title="t('competitions.columns.groupe')"
+                      @click="navigateToPage('gamedays', `group:${competition.codeRef}`, competition.code)"
+                    >
+                      {{ competition.codeRef || '-' }}
+                    </button>
+                  </td>
+
+                  <!-- Tour -->
+                  <td class="px-3 py-1 text-sm text-gray-500">
+                    {{ competition.codeTour === 10 ? 'F' : competition.codeTour || '-' }}
+                  </td>
+
+                  <!-- Type -->
+                  <td class="px-3 py-1 text-sm text-gray-500">
+                    {{ competition.codeTypeclt }}
+                  </td>
+
+                  <!-- Status -->
+                  <td class="px-3 py-1 text-center">
+                    <span
+                      class="px-2 py-1 text-xs font-medium rounded uppercase"
+                      :class="[
+                        getStatusColor(competition.statut),
+                        canToggleLock ? 'cursor-pointer' : ''
+                      ]"
+                      :title="canToggleLock ? t('competitions.click_to_change_status') : ''"
+                      @click="cycleStatus(competition)"
+                    >
+                      {{ t(`competitions.status.${competition.statut}`) }}
+                    </span>
+                  </td>
+
+                  <!-- Teams count -->
+                  <td class="px-3 py-1 text-sm text-center text-gray-500">
+                    <NuxtLink
+                        :to="`/teams?competition=${competition.code}`"
+                        class="link-value"
+                        :title="t('competitions.columns.equipes')"
+                      >
+                        {{ competition.nbEquipes }}
+                      </NuxtLink>
+                    
+                  </td>
+
                   <!-- Lock toggle -->
-                  <td class="px-3 py-3 text-center">
+                  <td class="px-3 py-1 text-center">
                     <AdminToggleButton
                       v-if="canToggleLock"
                       :active="competition.verrou"
@@ -882,23 +936,30 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
                     />
                   </td>
 
-                  <!-- Teams count -->
-                  <td class="px-3 py-3 text-sm text-center text-gray-500">
-                    {{ competition.nbEquipes }}
-                  </td>
-
                   <!-- Journées/Phases count -->
-                  <td class="px-3 py-3 text-sm text-center text-gray-500">
-                    {{ competition.nbJournees }}
+                  <td class="px-3 py-1 text-sm text-center text-gray-500">
+                    <button
+                      class="link-value"
+                      :title="t('competitions.columns.journees')"
+                      @click="navigateToPage('gamedays', '', competition.code)"
+                    >
+                      {{ competition.nbJournees }}
+                    </button>
                   </td>
 
                   <!-- Matches count -->
-                  <td class="px-3 py-3 text-sm text-center text-gray-500">
-                    {{ competition.nbMatchs }}
+                  <td class="px-3 py-1 text-sm text-center text-gray-500">
+                    <button
+                      class="link-value"
+                      :title="t('competitions.columns.matchs')"
+                      @click="navigateToPage('games', '', competition.code)"
+                    >
+                      {{ competition.nbMatchs }}
+                    </button>
                   </td>
 
                   <!-- Actions -->
-                  <td class="px-3 py-3">
+                  <td class="px-3 py-1">
                     <div class="flex items-center justify-end gap-1">
                       <NuxtLink
                         :to="`/rc?competition=${competition.code}`"
@@ -907,14 +968,6 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
                       >
                         <UIcon name="heroicons:users-solid" class="w-6 h-6" />
                       </NuxtLink>
-                      <button
-                        v-if="canEdit"
-                        class="p-1.5 text-blue-600"
-                        :title="t('common.edit')"
-                        @click="openEditModal(competition)"
-                      >
-                        <UIcon name="heroicons:pencil-solid" class="w-6 h-6" />
-                      </button>
                       <button
                         v-if="canDelete && competition.nbEquipes === 0 && competition.nbJournees === 0 && competition.nbMatchs === 0"
                         class="p-1.5 text-red-600"
@@ -932,7 +985,7 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
         </div>
 
         <!-- Total -->
-        <div class="px-4 py-3 bg-gray-50 text-sm text-gray-600">
+        <div class="px-4 py-1 bg-gray-50 text-sm text-gray-600">
           {{ t('competitions.total_competitions', { count: totalCompetitions }) }}
         </div>
       </div>
@@ -980,7 +1033,7 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
                 </span>
                 <button
                   class="font-semibold text-blue-600 hover:underline"
-                  @click="navigateToDocuments(competition)"
+                  @click="navigateToPage(competition)"
                 >
                   {{ competition.code }}
                 </button>
