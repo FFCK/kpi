@@ -433,9 +433,12 @@ onMounted(async () => {
   const codeFromQuery = route.query.code as string
   if (codeFromQuery) {
     const club = mapClubs.value.find(c => c.code === codeFromQuery)
-    if (club) {
-      selectClub({ code: club.code, libelle: club.libelle, codeComiteDep: '' })
-    }
+    // Select from map if geolocated, otherwise fetch directly by code
+    selectClub({
+      code: club?.code ?? codeFromQuery,
+      libelle: club?.libelle ?? '',
+      codeComiteDep: ''
+    })
     // Clean up URL
     router.replace({ query: { ...route.query, code: undefined } })
   }
