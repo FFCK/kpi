@@ -799,13 +799,23 @@ class AdminGamesController extends AbstractController
             return $this->json(['message' => 'Invalid team (A or B)'], Response::HTTP_BAD_REQUEST);
         }
 
-        $row = $this->connection->prepare("SELECT Id FROM kp_match WHERE Id = ?")->executeQuery([$id])->fetchAssociative();
+        $column = $team === 'A' ? 'Id_equipeA' : 'Id_equipeB';
+        $row = $this->connection->prepare("SELECT Id, {$column} AS currentTeamId FROM kp_match WHERE Id = ?")->executeQuery([$id])->fetchAssociative();
         if (!$row) {
             return $this->json(['message' => 'Game not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $column = $team === 'A' ? 'Id_equipeA' : 'Id_equipeB';
         $updateVal = $idEquipe && $idEquipe > 0 ? $idEquipe : null;
+        $currentTeamId = $row['currentTeamId'] ? (int) $row['currentTeamId'] : null;
+
+        // If team changed or was removed, clear the roster for that side
+        if ($updateVal !== $currentTeamId) {
+            $this->connection->executeStatement(
+                "DELETE FROM kp_match_joueur WHERE Id_match = ? AND Equipe = ?",
+                [$id, $team]
+            );
+        }
+
         $this->connection->update('kp_match', [$column => $updateVal, 'Code_uti' => $user?->getUserIdentifier()], ['Id' => $id]);
 
         // Get team name
