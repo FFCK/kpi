@@ -146,7 +146,10 @@ class AdminSchemaController extends AbstractController
     {
         $sql = "SELECT Code, Code_saison, Libelle, Soustitre, Soustitre2,
                        Code_typeclt, Code_niveau, Code_ref, Titre_actif,
-                       Qualifies, Elimines
+                       Qualifies, Elimines,
+                       BandeauLink, Bandeau_actif,
+                       LogoLink, Logo_actif,
+                       SponsorLink, Sponsor_actif
                 FROM kp_competition
                 WHERE Code = ? AND Code_saison = ?";
         $row = $this->connection->prepare($sql)->executeQuery([$code, $season])->fetchAssociative();
@@ -166,6 +169,12 @@ class AdminSchemaController extends AbstractController
             'titreActif' => $row['Titre_actif'] === 'O',
             'qualifies' => (int) $row['Qualifies'],
             'elimines' => (int) $row['Elimines'],
+            'bandeauLink' => $row['BandeauLink'] ?: null,
+            'bandeauActif' => ($row['Bandeau_actif'] ?? 'N') === 'O',
+            'logoLink' => $row['LogoLink'] ?: null,
+            'logoActif' => ($row['Logo_actif'] ?? 'N') === 'O',
+            'sponsorLink' => $row['SponsorLink'] ?: null,
+            'sponsorActif' => ($row['Sponsor_actif'] ?? 'N') === 'O',
         ];
     }
 

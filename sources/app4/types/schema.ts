@@ -13,6 +13,12 @@ export interface SchemaCompetition {
   titreActif: boolean
   qualifies: number
   elimines: number
+  bandeauLink: string | null
+  bandeauActif: boolean
+  logoLink: string | null
+  logoActif: boolean
+  sponsorLink: string | null
+  sponsorActif: boolean
 }
 
 export interface SchemaPhaseTeam {

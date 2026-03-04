@@ -8,8 +8,12 @@ definePageMeta({
 
 const { t, locale } = useI18n()
 const api = useApi()
-const workContext = useWorkContextStore()
+const route = useRoute()
 const toast = useToast()
+
+// Read params from URL (no workContext filters)
+const competitionCode = computed(() => (route.query.competition as string) || '')
+const season = computed(() => (route.query.season as string) || '')
 
 // State
 const loading = ref(false)
@@ -48,15 +52,20 @@ const getLevelColor = (level: string) => {
   }
 }
 
+// Close button: close the tab/window
+function closeWindow() {
+  window.close()
+}
+
 // Load data
 const loadSchema = async () => {
-  if (!workContext.initialized || !workContext.season || !workContext.pageCompetitionCode) return
+  if (!competitionCode.value || !season.value) return
 
   loading.value = true
   try {
     const params: Record<string, string> = {
-      season: workContext.season,
-      competition: workContext.pageCompetitionCode,
+      season: season.value,
+      competition: competitionCode.value,
       lang: locale.value,
     }
     data.value = await api.get<SchemaResponse>('/admin/schema', params)
@@ -70,23 +79,9 @@ const loadSchema = async () => {
   }
 }
 
-// Watch competition changes
-watch(
-  () => workContext.pageCompetitionCode,
-  (code) => {
-    if (code) {
-      loadSchema()
-    }
-    else {
-      data.value = null
-    }
-  },
-)
-
 // Load on mount
 onMounted(async () => {
-  await workContext.initContext()
-  if (workContext.pageCompetitionCode) {
+  if (competitionCode.value && season.value) {
     await loadSchema()
   }
 })
@@ -94,12 +89,10 @@ onMounted(async () => {
 
 <template>
   <div>
-    <!-- Page header -->
-    <AdminPageHeader
-      :title="t('schema.title')"
-      :competition-filtered-codes="workContext.pageFilteredCompetitionCodes"
-    >
-      <template #badges>
+    <!-- Toolbar (non-printable) -->
+    <div class="mb-2 flex flex-wrap items-center justify-between gap-2 print:hidden">
+      <div class="flex items-center gap-3">
+        <h1 class="text-2xl font-bold text-gray-900">{{ t('schema.title') }}</h1>
         <div v-if="data?.competition" class="flex items-center gap-2 flex-wrap">
           <span
             class="px-2 py-1 text-xs font-medium rounded uppercase"
@@ -111,11 +104,45 @@ onMounted(async () => {
             {{ data.competition.codeTypeclt }}
           </span>
         </div>
-      </template>
-    </AdminPageHeader>
+      </div>
 
-    <!-- No competition selected -->
-    <div v-if="!workContext.pageCompetitionCode" class="bg-white rounded-lg shadow p-8 text-center text-gray-500">
+      <!-- Right side: toggles + close -->
+      <div class="flex items-center gap-3">
+        <!-- Toggles (CP only) -->
+        <template v-if="isCp">
+          <label class="inline-flex items-center gap-1.5 text-xs text-gray-600 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              :checked="showMatchCount"
+              class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              @change="showMatchCount = !showMatchCount"
+            >
+            {{ t('schema.show_game_count') }}
+          </label>
+          <label class="inline-flex items-center gap-1.5 text-xs text-gray-600 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              :checked="showTimeSlots"
+              class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              @change="showTimeSlots = !showTimeSlots"
+            >
+            {{ t('schema.show_time_slots') }}
+          </label>
+        </template>
+
+        <!-- Close button -->
+        <button
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          @click="closeWindow"
+        >
+          <UIcon name="heroicons:x-mark" class="w-4 h-4" />
+          {{ t('schema.close') }}
+        </button>
+      </div>
+    </div>
+
+    <!-- No params provided -->
+    <div v-if="!competitionCode || !season" class="bg-white rounded-lg shadow p-8 text-center text-gray-500">
       {{ t('schema.no_competition') }}
     </div>
 
@@ -126,15 +153,13 @@ onMounted(async () => {
 
     <!-- Content -->
     <div v-else-if="data">
-      <!-- Header -->
+      <!-- Header (with images, printable) -->
       <SchemaHeader
         :competition="data.competition"
         :total-matches="data.totalMatches"
         :show-match-count="showMatchCount"
         :show-time-slots="showTimeSlots"
         :is-cp="isCp"
-        @toggle-match-count="showMatchCount = !showMatchCount"
-        @toggle-time-slots="showTimeSlots = !showTimeSlots"
       />
 
       <!-- CP Layout -->
@@ -164,3 +189,12 @@ onMounted(async () => {
     </div>
   </div>
 </template>
+
+<style scoped>
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 10mm;
+  }
+}
+</style>

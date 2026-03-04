@@ -72,10 +72,10 @@ const canEdit = computed(() => authStore.profile <= 4)
 const canSelect = computed(() => authStore.profile <= 3)
 const canAssociateEvents = computed(() => authStore.profile <= 3)
 
-// Navigate to schema page, setting competition from gameday row
+// Open schema page in a new tab with competition and season params
 function goToSchema(competitionCode: string) {
-  workContext.setPageCompetition(competitionCode)
-  navigateTo('/gamedays/schema')
+  const season = workContext.season || ''
+  window.open(`/gamedays/schema?competition=${competitionCode}&season=${season}`, '_blank')
 }
 
 // ─── Computed ───

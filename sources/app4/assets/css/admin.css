@@ -529,3 +529,44 @@ label[for] {
 .link-value:hover {
   background-color: rgb(229 231 235);
 }
+
+/* ===== Print Styles ===== */
+@media print {
+  /* Hide admin header, footer, mobile backdrop */
+  header.sticky,
+  footer,
+  .fixed.inset-0.z-30 {
+    display: none !important;
+  }
+
+  /* Remove page padding/margins for print */
+  main.flex-1 {
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* Remove bg-gray-50 on body wrapper */
+  .flex.flex-col.min-h-screen {
+    background: white !important;
+    min-height: auto !important;
+  }
+
+  /* Ensure white backgrounds print */
+  .bg-white {
+    background-color: white !important;
+    box-shadow: none !important;
+  }
+
+  /* Remove shadows in print */
+  .shadow,
+  .shadow-sm {
+    box-shadow: none !important;
+  }
+
+  /* Print images */
+  img {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

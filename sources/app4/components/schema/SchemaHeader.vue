@@ -9,12 +9,19 @@ const props = defineProps<{
   isCp: boolean
 }>()
 
-const emit = defineEmits<{
-  toggleMatchCount: []
-  toggleTimeSlots: []
-}>()
-
 const { t } = useI18n()
+const config = useRuntimeConfig()
+const legacyBase = config.public.legacyBaseUrl as string
+
+// Image visibility (hidden on 404)
+const showBandeau = ref(true)
+const showLogo = ref(true)
+const showSponsor = ref(true)
+
+const imageUrl = (link: string | null) => {
+  if (!link) return ''
+  return `${legacyBase}${link}`
+}
 
 const title = computed(() => {
   let s = props.competition.libelle
@@ -23,11 +30,46 @@ const title = computed(() => {
   }
   return s
 })
+
+const hasImages = computed(() => {
+  return (props.competition.bandeauActif && props.competition.bandeauLink && showBandeau.value)
+    || (props.competition.logoActif && props.competition.logoLink && showLogo.value)
+    || (props.competition.sponsorActif && props.competition.sponsorLink && showSponsor.value)
+})
 </script>
 
 <template>
-  <div class="mb-4 bg-white rounded-lg shadow p-4">
-    <div class="flex flex-wrap items-center justify-between gap-3">
+  <div class="mb-4 bg-white rounded-lg shadow">
+    <!-- Images zone (printable) -->
+    <div
+      v-if="hasImages"
+      class="flex flex-wrap items-center justify-center gap-6 px-6 py-4 bg-gray-50 border-b"
+    >
+      <img
+        v-if="competition.bandeauActif && competition.bandeauLink && showBandeau"
+        :src="imageUrl(competition.bandeauLink)"
+        :alt="competition.libelle"
+        class="max-h-20 object-contain"
+        @error="showBandeau = false"
+      >
+      <img
+        v-if="competition.logoActif && competition.logoLink && showLogo"
+        :src="imageUrl(competition.logoLink)"
+        :alt="competition.libelle"
+        class="max-h-16 object-contain"
+        @error="showLogo = false"
+      >
+      <img
+        v-if="competition.sponsorActif && competition.sponsorLink && showSponsor"
+        :src="imageUrl(competition.sponsorLink)"
+        alt="Sponsor"
+        class="max-h-16 object-contain"
+        @error="showSponsor = false"
+      >
+    </div>
+
+    <!-- Title and info -->
+    <div class="flex flex-wrap items-center justify-between gap-3 p-4">
       <!-- Title -->
       <h2 class="text-lg font-semibold text-gray-900">
         {{ title }}
@@ -37,36 +79,10 @@ const title = computed(() => {
         </span>
       </h2>
 
-      <!-- Right side: badges + toggles -->
-      <div class="flex items-center gap-3 flex-wrap">
-
-        <!-- Game count badge -->
-        <span class="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-700">
-          {{ t('schema.games_count', { count: totalMatches }, totalMatches) }}
-        </span>
-
-        <!-- Toggles (CP only) -->
-        <template v-if="isCp">
-          <label class="inline-flex items-center gap-1.5 text-xs text-gray-600 cursor-pointer select-none">
-            <input
-              type="checkbox"
-              :checked="showMatchCount"
-              class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              @change="emit('toggleMatchCount')"
-            >
-            {{ t('schema.show_game_count') }}
-          </label>
-          <label class="inline-flex items-center gap-1.5 text-xs text-gray-600 cursor-pointer select-none">
-            <input
-              type="checkbox"
-              :checked="showTimeSlots"
-              class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              @change="emit('toggleTimeSlots')"
-            >
-            {{ t('schema.show_time_slots') }}
-          </label>
-        </template>
-      </div>
+      <!-- Game count badge -->
+      <span class="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-700">
+        {{ t('schema.games_count', { count: totalMatches }, totalMatches) }}
+      </span>
     </div>
   </div>
 </template>
