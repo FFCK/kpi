@@ -694,6 +694,15 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
           {{ t('common.expand_all') }}
         </button>
       </template>
+      <template v-if="canEdit" #right>
+        <NuxtLink
+          to="/competitions/copy"
+          class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-gray-600 hover:text-gray-900 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+        >
+          <UIcon name="heroicons:document-duplicate" class="w-3.5 h-3.5" />
+          {{ t('competitions.copy') }}
+        </NuxtLink>
+      </template>
     </AdminToolbar>
 
     <!-- Desktop Table -->

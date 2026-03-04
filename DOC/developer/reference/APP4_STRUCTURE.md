@@ -50,6 +50,7 @@ sources/app4/
 │   ├── index.vue                   # Page d'accueil (/)
 │   ├── login.vue                   # Connexion (/login)
 │   ├── competitions/index.vue      # Gestion compétitions (/competitions)
+│   ├── competitions/copy.vue       # Copie système de jeu (/competitions/copy)
 │   ├── documents/index.vue         # Documents (/documents)
 │   ├── events/index.vue            # Événements (/events)
 │   ├── games/index.vue             # Matchs (/games)
@@ -506,6 +507,7 @@ Ajouter un listener `click` global pour fermer le dropdown lors d'un clic en deh
 | Accueil | `/` | Implémentée |
 | Connexion | `/login` | Implémentée |
 | Compétitions | `/competitions` | Implémentée (contexte) |
+| Copie compétition | `/competitions/copy` | Implémentée (recherche schémas, copie structure) |
 | Documents | `/documents` | Implémentée (contexte) |
 | Événements | `/events` | Implémentée |
 | Statistiques | `/stats` | Implémentée (contexte) |
@@ -523,4 +525,4 @@ Ajouter un listener `click` global pour fermer le dropdown lors d'un clic en deh
 ---
 
 **Document créé le** : 2026-02-03
-**Dernière mise à jour** : 2026-02-22
+**Dernière mise à jour** : 2026-03-02

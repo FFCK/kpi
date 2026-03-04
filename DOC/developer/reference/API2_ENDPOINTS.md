@@ -406,6 +406,11 @@ GET    /admin/competitions-groups                            List groups for sel
 GET    /admin/competitions-for-multi                         List competitions for MULTI select
 GET    /admin/competitions/-search-previous-seasons          Search competitions from previous seasons
 GET    /admin/competitions/-from-previous-season/{code}/{seasonCode}  Get competition from previous season
+GET    /admin/competitions/-schemas                         Search competition schemas by nb teams (profile <=3)
+GET    /admin/competitions/{season}/{code}/copy-detail      Get competition copy detail (profile <=3)
+GET    /admin/competitions/-options                         List competitions for destination dropdown (profile <=3)
+POST   /admin/competitions/-copy                            Copy competition structure (profile <=3)
+PATCH  /admin/competitions/{season}/{code}/comments         Update competition comments (profile <=3)
 ```
 
 **Query Parameters (GET list):**

@@ -106,21 +106,12 @@ const adminMenuItems = computed<MenuItem[]>(() => {
   const profile = authStore.user?.profile ?? 99
   const items: MenuItem[] = []
 
-  // Événements - profile <= 2
+  // RC - profile <= 2
   if (profile <= 2) {
     items.push({
-      to: '/events',
-      icon: 'heroicons:calendar-days',
-      label: t('menu.events')
-    })
-  }
-
-  // Athlètes - profile <= 8
-  if (profile <= 8) {
-    items.push({
-      to: '/athletes',
-      icon: 'heroicons:user',
-      label: t('menu.athletes')
+      to: '/rc',
+      icon: 'heroicons:identification',
+      label: t('menu.rc')
     })
   }
 
@@ -132,13 +123,13 @@ const adminMenuItems = computed<MenuItem[]>(() => {
       label: t('menu.clubs')
     })
   }
-
-  // RC - profile <= 2
+  
+  // Événements - profile <= 2
   if (profile <= 2) {
     items.push({
-      to: '/rc',
-      icon: 'heroicons:identification',
-      label: t('menu.rc')
+      to: '/events',
+      icon: 'heroicons:calendar-days',
+      label: t('menu.events')
     })
   }
 
@@ -151,6 +142,24 @@ const adminMenuItems = computed<MenuItem[]>(() => {
     })
   }
 
+  // Copie competition - profile <= 2
+  if (profile <= 2) {
+    items.push({
+      to: '/competitions/copy',
+      icon: 'heroicons:document-duplicate',
+      label: t('menu.copy')
+    })
+  }
+
+  // Athlètes - profile <= 8
+  if (profile <= 8) {
+    items.push({
+      to: '/athletes',
+      icon: 'heroicons:user',
+      label: t('menu.athletes')
+    })
+  }
+
   // Utilisateurs - profile <= 4
   if (profile <= 4) {
     items.push({
@@ -160,21 +169,21 @@ const adminMenuItems = computed<MenuItem[]>(() => {
     })
   }
 
-  // Opérations - profile === 1
-  if (profile === 1) {
-    items.push({
-      to: '/operations',
-      icon: 'heroicons:wrench-screwdriver',
-      label: t('menu.operations')
-    })
-  }
-
   // Journal - profile <= 2
   if (profile <= 2) {
     items.push({
       to: '/journal',
       icon: 'heroicons:document-text',
       label: t('menu.journal')
+    })
+  }
+
+  // Opérations - profile === 1
+  if (profile === 1) {
+    items.push({
+      to: '/operations',
+      icon: 'heroicons:wrench-screwdriver',
+      label: t('menu.operations')
     })
   }
 

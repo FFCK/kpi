@@ -28,7 +28,8 @@
     "operations": "Opérations",
     "groups": "Groupes",
     "rc": "Resp. Compétition",
-    "journal": "Journal"
+    "journal": "Journal",
+    "copy": "Copie système de jeu"
   },
   "profile": "Profil",
   "logout": "Déconnexion",
@@ -1802,6 +1803,7 @@
     "phase_games": "match | matchs",
     "show_game_count": "Matchs",
     "show_time_slots": "Horaires",
+    "close": "Fermer",
     "no_competition": "Sélectionnez une compétition pour afficher le schéma",
     "no_data": "Aucune donnée disponible pour cette compétition",
     "stage": "Étape",
@@ -1811,6 +1813,83 @@
       "pts": "Pts",
       "played": "J",
       "diff": "+/-"
+    }
+  },
+  "competitionCopy": {
+    "title": "Recherche / Copie de système de jeu",
+    "search": {
+      "nbEquipes": "Nombre d'équipes",
+      "type": "Type",
+      "typeAll": "Tous",
+      "sortBy": "Trier par",
+      "sortSeason": "Saison",
+      "sortMatches": "Nb matchs",
+      "search": "Rechercher",
+      "disclaimer": "Certains schémas anciens ne sont peut-être pas totalement encodés"
+    },
+    "table": {
+      "season": "Saison",
+      "code": "Code",
+      "type": "Type",
+      "level": "Niv.",
+      "label": "Libellé",
+      "pitches": "Terrains",
+      "rounds": "Tours",
+      "phases": "Phases",
+      "teams": "Éq.",
+      "matches": "Matchs",
+      "encoded": "Encodés",
+      "info": "Info",
+      "actions": "Actions",
+      "switchTo": "Basculer vers...",
+      "viewSchema": "Voir le schéma",
+      "copyTo": "Copier vers...",
+      "final": "F",
+      "noResults": "Aucun résultat"
+    },
+    "confirm": {
+      "switchTo": "Basculer vers la compétition {code} (saison {season}) ?"
+    },
+    "copy": {
+      "title": "Copier la structure de compétition",
+      "origin": "Origine",
+      "destination": "Destination",
+      "season": "Saison",
+      "competition": "Compétition",
+      "type": "Type",
+      "teams": "équipes",
+      "matches": "matchs",
+      "qualified": "Qualifiées",
+      "eliminated": "Éliminées",
+      "phases": "Phases",
+      "commonValues": "Valeurs communes (appliquées à toutes les journées/phases)",
+      "commonValuesHelp": "Laisser vide pour reprendre les valeurs individuelles de chaque journée",
+      "publicParams": "Paramètres calendrier public",
+      "dateDebut": "Date début",
+      "dateFin": "Date fin",
+      "lieu": "Lieu",
+      "departement": "Département",
+      "nom": "Nom journée",
+      "planEau": "Plan d'eau",
+      "responsables": "Responsables",
+      "organisateur": "Club organisateur",
+      "responsableR1": "Responsable R1",
+      "responsableInsc": "Responsable inscriptions",
+      "delegue": "Délégué fédéral",
+      "initFirstRound": "Encoder les équipes au premier tour (préparer le tirage au sort)",
+      "initFirstRoundWarning": "Uniquement si ces matchs ne sont pas déjà encodés !",
+      "submit": "Dupliquer la structure des matchs",
+      "cancel": "Annuler",
+      "confirmCopy": "Copier la structure de {origin} vers {destination} ?",
+      "success": "{journees} journée(s) et {matchs} match(s) créé(s)",
+      "error": "Erreur lors de la copie"
+    },
+    "comments": {
+      "title": "Commentaires - {code} ({season})",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "success": "Commentaire enregistré",
+      "error": "Erreur lors de l'enregistrement"
     }
   }
 }

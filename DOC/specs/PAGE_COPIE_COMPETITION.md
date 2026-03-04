@@ -1,6 +1,6 @@
 # Spécification - Page Recherche / Copie de Système de Jeu
 
-## Statut : 📋 À implémenter
+## Statut : ✅ Implémenté
 
 ## 1. Vue d'ensemble
 
@@ -994,5 +994,5 @@ L'accès se fait via un bouton dans la page `/competitions` (profil ≤ 3), pas 
 
 **Document créé le** : 2026-03-01
 **Dernière mise à jour** : 2026-03-01
-**Statut** : 📋 À implémenter (backend API2 + frontend App4)
+**Statut** : ✅ Implémenté (backend API2 + frontend App4)
 **Auteur** : Claude Code

@@ -28,7 +28,8 @@
     "operations": "Operations",
     "groups": "Groups",
     "rc": "Competition Officials",
-    "journal": "Activity Log"
+    "journal": "Activity Log",
+    "copy": "Game system copy"
   },
   "profile": "Profile",
   "logout": "Logout",
@@ -1790,6 +1791,7 @@
     "phase_games": "game | games",
     "show_game_count": "Games",
     "show_time_slots": "Time slots",
+    "close": "Close",
     "no_competition": "Select a competition to display the chart",
     "no_data": "No data available for this competition",
     "stage": "Stage",
@@ -1799,6 +1801,83 @@
       "pts": "Pts",
       "played": "P",
       "diff": "+/-"
+    }
+  },
+  "competitionCopy": {
+    "title": "Game System Search / Copy",
+    "search": {
+      "nbEquipes": "Number of teams",
+      "type": "Type",
+      "typeAll": "All",
+      "sortBy": "Sort by",
+      "sortSeason": "Season",
+      "sortMatches": "Nb games",
+      "search": "Search",
+      "disclaimer": "Some old schemas may not be fully encoded"
+    },
+    "table": {
+      "season": "Season",
+      "code": "Code",
+      "type": "Type",
+      "level": "Lev.",
+      "label": "Label",
+      "pitches": "Pitches",
+      "rounds": "Rounds",
+      "phases": "Phases",
+      "teams": "Teams",
+      "matches": "Games",
+      "encoded": "Encoded",
+      "info": "Info",
+      "actions": "Actions",
+      "switchTo": "Switch to...",
+      "viewSchema": "View schema",
+      "copyTo": "Copy to...",
+      "final": "F",
+      "noResults": "No results"
+    },
+    "confirm": {
+      "switchTo": "Switch to competition {code} (season {season})?"
+    },
+    "copy": {
+      "title": "Copy competition structure",
+      "origin": "Origin",
+      "destination": "Destination",
+      "season": "Season",
+      "competition": "Competition",
+      "type": "Type",
+      "teams": "teams",
+      "matches": "games",
+      "qualified": "Qualified",
+      "eliminated": "Eliminated",
+      "phases": "Phases",
+      "commonValues": "Common values (applied to all gamedays/phases)",
+      "commonValuesHelp": "Leave empty to keep individual values from each gameday",
+      "publicParams": "Public calendar parameters",
+      "dateDebut": "Start date",
+      "dateFin": "End date",
+      "lieu": "Location",
+      "departement": "Department",
+      "nom": "Gameday name",
+      "planEau": "Waterway",
+      "responsables": "Officials",
+      "organisateur": "Organising club",
+      "responsableR1": "Local official R1",
+      "responsableInsc": "Registration official",
+      "delegue": "Federal delegate",
+      "initFirstRound": "Encode teams in first round (prepare draw)",
+      "initFirstRoundWarning": "Only if these games are not already encoded!",
+      "submit": "Duplicate game structure",
+      "cancel": "Cancel",
+      "confirmCopy": "Copy structure from {origin} to {destination}?",
+      "success": "{journees} gameday(s) and {matchs} game(s) created",
+      "error": "Error during copy"
+    },
+    "comments": {
+      "title": "Comments - {code} ({season})",
+      "save": "Save",
+      "cancel": "Cancel",
+      "success": "Comment saved",
+      "error": "Error saving comment"
     }
   }
 }
