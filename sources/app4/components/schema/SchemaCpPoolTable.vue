@@ -31,8 +31,8 @@ const isHighlighted = (team: string) => {
     <!-- Ranking table -->
     <div v-if="hasRanking" class="overflow-x-auto">
       <table class="w-full text-sm">
-        <thead class="bg-gray-50">
-          <tr>
+        <thead>
+          <tr class="bg-gray-200">
             <th class="px-1 py-1 text-left text-xs">{{ t('schema.table.rank') }}</th>
             <th class="px-1 py-1 text-left text-xs">{{ t('schema.table.teams') }}</th>
             <th class="px-1 py-1 text-center text-xs">{{ t('schema.table.pts') }}</th>
@@ -47,7 +47,7 @@ const isHighlighted = (team: string) => {
             class="border-t transition-colors duration-100"
             :class="{
               'bg-yellow-100 text-black': isHighlighted(team.libelle),
-              'bg-gray-200 text-black': !isHighlighted(team.libelle)
+              'bg-gray-50 text-black': !isHighlighted(team.libelle),
             }"
             @mouseenter="emit('hoverTeam', team.libelle)"
             @mouseleave="emit('hoverTeam', null)"

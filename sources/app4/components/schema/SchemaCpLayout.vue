@@ -30,7 +30,7 @@ const formatTimeRange = (start: string | null, end: string | null) => {
       <article
         v-for="stage in stages"
         :key="stage.etape"
-        class="min-w-80 max-w-110 flex-1 flex flex-col justify-center bg-gray-50 p-4 rounded-lg border"
+        class="min-w-80 max-w-110 flex-1 flex flex-col justify-center bg-gray-50 p-2 rounded-lg border border-gray-200"
       >
         <!-- Phases in this column -->
         <div v-for="phase in stage.phases" :key="phase.idJournee" class="mb-4 last:mb-0">

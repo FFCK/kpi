@@ -14,75 +14,68 @@ const config = useRuntimeConfig()
 const legacyBase = config.public.legacyBaseUrl as string
 
 // Image visibility (hidden on 404)
-const showBandeau = ref(true)
 const showLogo = ref(true)
-const showSponsor = ref(true)
 
 const imageUrl = (link: string | null) => {
   if (!link) return ''
   return `${legacyBase}${link}`
 }
 
-const title = computed(() => {
-  let s = props.competition.libelle
-  if (props.competition.soustitre2) {
-    s += ' - ' + props.competition.soustitre2
-  }
-  return s
-})
+const hasLogo = computed(() => props.competition.logoActif && props.competition.logoLink && showLogo.value)
 
-const hasImages = computed(() => {
-  return (props.competition.bandeauActif && props.competition.bandeauLink && showBandeau.value)
-    || (props.competition.logoActif && props.competition.logoLink && showLogo.value)
-    || (props.competition.sponsorActif && props.competition.sponsorLink && showSponsor.value)
-})
+// Badge helpers
+const getLevelColor = (level: string) => {
+  switch (level) {
+    case 'INT': return 'bg-purple-100 text-purple-800'
+    case 'NAT': return 'bg-blue-100 text-blue-800'
+    case 'REG': return 'bg-orange-100 text-orange-800'
+    default: return 'bg-gray-100 text-gray-800'
+  }
+}
 </script>
 
 <template>
   <div class="mb-4 bg-white rounded-lg shadow">
-    <!-- Images zone (printable) -->
-    <div
-      v-if="hasImages"
-      class="flex flex-wrap items-center justify-center gap-6 px-6 py-4 bg-gray-50 border-b"
-    >
-      <img
-        v-if="competition.bandeauActif && competition.bandeauLink && showBandeau"
-        :src="imageUrl(competition.bandeauLink)"
-        :alt="competition.libelle"
-        class="max-h-20 object-contain"
-        @error="showBandeau = false"
-      >
-      <img
-        v-if="competition.logoActif && competition.logoLink && showLogo"
-        :src="imageUrl(competition.logoLink)"
-        :alt="competition.libelle"
-        class="max-h-16 object-contain"
-        @error="showLogo = false"
-      >
-      <img
-        v-if="competition.sponsorActif && competition.sponsorLink && showSponsor"
-        :src="imageUrl(competition.sponsorLink)"
-        alt="Sponsor"
-        class="max-h-16 object-contain"
-        @error="showSponsor = false"
-      >
-    </div>
-
     <!-- Title and info -->
     <div class="flex flex-wrap items-center justify-between gap-3 p-4">
-      <!-- Title -->
-      <h2 class="text-lg font-semibold text-gray-900">
-        {{ title }}
-        <!-- Season badge -->
-        <span class="px-2 py-1 text-xs font-medium rounded bg-blue-50 text-blue-700">
-          {{ competition.season }}
-        </span>
-      </h2>
+      <!-- Logo + Title -->
+      <div class="flex items-center gap-3">
+        <img
+          v-if="hasLogo"
+          :src="imageUrl(competition.logoLink)"
+          :alt="competition.libelle"
+          class="max-h-16 object-contain"
+          @error="showLogo = false"
+        >
+        <div>
+          <h2 class="text-lg font-semibold text-gray-900">
+            {{ competition.libelle }}
+            <!-- Season badge -->
+            <span class="px-2 py-1 text-xs font-medium rounded bg-blue-50 text-blue-700">
+              {{ competition.season }}
+            </span>
+          </h2>
+          <p v-if="competition.soustitre2" class="text-sm text-gray-700">
+            {{ competition.soustitre2 }}
+          </p>
+        </div>
+      </div>
 
-      <!-- Game count badge -->
-      <span class="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-700">
-        {{ t('schema.games_count', { count: totalMatches }, totalMatches) }}
-      </span>
+      <div class="flex items-center gap-2 flex-wrap">
+        <span
+          class="px-2 py-1 text-xs font-medium rounded uppercase"
+          :class="getLevelColor(competition.codeNiveau)"
+        >
+          {{ competition.codeNiveau }}
+        </span>
+        <span class="px-2 py-1 text-xs font-medium rounded uppercase bg-gray-100 text-gray-800">
+          {{ competition.codeTypeclt }}
+        </span>
+        <!-- Game count badge -->
+        <span class="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-700">
+          {{ t('schema.games_count', { count: totalMatches }, totalMatches) }}
+        </span>
+      </div>
     </div>
   </div>
 </template>

@@ -838,6 +838,7 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
                       :title="t('competitions.documents')"
                       @click="navigateToPage('documents', '', competition.code)"
                     >
+                      <UIcon name="heroicons:document-magnifying-glass" class="w-6 h-6" />
                       {{ competition.code }}
                     </button>
                   </td>

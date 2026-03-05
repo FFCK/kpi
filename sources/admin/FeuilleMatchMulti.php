@@ -29,8 +29,38 @@ class FeuilleMatch extends MyPage
             $forceLangEn = false;
         }
 
-        $listMatch = utyGetGet('listMatch', -1);
-        if ($listMatch == -1 || $listMatch == '') {
+        $listMatch = utyGetGet('listMatch', '');
+        // Si pas de listMatch, résoudre les IDs depuis les filtres Compet/idEvenement/S
+        if ($listMatch == '' || $listMatch == '-1') {
+            $laCompet = utyGetGet('Compet', '');
+            $idEvenement = utyGetGet('idEvenement', '');
+            $codeSaison = utyGetGet('S', '');
+            if ($laCompet != '' || $idEvenement != '' || $codeSaison != '') {
+                if ($codeSaison == '') {
+                    $codeSaison = $myBdd->GetActiveSaison();
+                }
+                $sqlIds = "SELECT m.Id FROM kp_match m
+                    INNER JOIN kp_journee j ON m.Id_journee = j.Id
+                    WHERE j.Code_saison = ? ";
+                $paramsIds = [$codeSaison];
+                if ($idEvenement != '' && $idEvenement > 0) {
+                    $sqlIds .= "AND m.Id_journee IN (SELECT Id_journee FROM kp_evenement_journee WHERE Id_evenement = ?) ";
+                    $paramsIds[] = (int) $idEvenement;
+                } elseif ($laCompet != '' && $laCompet != '*' && $laCompet != '0') {
+                    $sqlIds .= "AND j.Code_competition = ? ";
+                    $paramsIds[] = $laCompet;
+                }
+                $sqlIds .= "ORDER BY m.Date_match, m.Heure_match, m.Terrain";
+                $stmtIds = $myBdd->pdo->prepare($sqlIds);
+                $stmtIds->execute($paramsIds);
+                $ids = [];
+                while ($r = $stmtIds->fetch()) {
+                    $ids[] = $r['Id'];
+                }
+                $listMatch = implode(',', $ids);
+            }
+        }
+        if ($listMatch == '' || $listMatch == '-1') {
             die('Aucun match à afficher !');
         }
         $chaqueMatch = explode(',', $listMatch);

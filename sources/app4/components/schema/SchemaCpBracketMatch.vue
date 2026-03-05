@@ -66,7 +66,7 @@ const teamNameClass = (side: 'A' | 'B') => {
       <!-- First team (winner if decided) -->
       <div class="flex items-center gap-1">
         <span
-          class="text-xs flex-1 truncate px-1 py-0.5 rounded transition-colors duration-100"
+          class="text-xs flex-1 truncate px-1 py-0.5 rounded transition-colors duration-100 text-end"
           :class="teamNameClass(firstTeam)"
           :title="getLabel(firstTeam)"
           @mouseenter="emit('hoverTeam', getLabel(firstTeam))"
@@ -86,7 +86,7 @@ const teamNameClass = (side: 'A' | 'B') => {
       <!-- Second team (loser if decided) -->
       <div class="flex items-center gap-1">
         <span
-          class="text-xs flex-1 truncate px-1 py-0.5 rounded transition-colors duration-100"
+          class="text-xs flex-1 truncate px-1 py-0.5 rounded transition-colors duration-100 text-end"
           :class="teamNameClass(secondTeam)"
           :title="getLabel(secondTeam)"
           @mouseenter="emit('hoverTeam', getLabel(secondTeam))"

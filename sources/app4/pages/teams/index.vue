@@ -938,31 +938,33 @@ const getLogoUrl = (team: CompetitionTeam) => {
             <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50">
                 <tr>
-                  <th v-if="canAddDelete" class="px-3 py-2 w-10">
+                  <th v-if="canAddDelete" class="px-3 py-2">
                     <span class="sr-only">Select</span>
                   </th>
-                  <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase w-16">
+                  <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
                     {{ t('teams_page.columns.poule') }}
                   </th>
-                  <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase w-16">
+                  <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
                     {{ t('teams_page.columns.tirage') }}
                   </th>
-                  <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase w-20">
+                  <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                     {{ t('teams_page.columns.logo') }}
                   </th>
                   <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
                     {{ t('teams_page.columns.equipe') }}
                   </th>
-                  <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase w-24">
+                  <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                     {{ t('teams_page.columns.club') }}
                   </th>
-                  <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase w-16">
+                  <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">
                     {{ t('teams_page.columns.matchs') }}
                   </th>
-                  <th class="px-3 py-2 text-right text-xs font-medium text-gray-500 uppercase w-40">
-                    {{ t('teams_page.columns.actions') }}
+                  <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                    {{ t('teams_page.columns.joueurs') }}
                   </th>
-                </tr>
+                  <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                    {{ t('teams_page.columns.pdf') }}
+                  </th>                </tr>
               </thead>
               <tbody class="divide-y divide-gray-200">
                 <tr
@@ -1083,20 +1085,23 @@ const getLogoUrl = (team: CompetitionTeam) => {
 
                   <!-- Actions -->
                   <td class="px-3 py-2">
-                    <div class="flex items-center justify-end gap-1">
+                    <div class="flex items-center justify-center gap-1">
                       <!-- Players link -->
                       <NuxtLink
                         :to="`/presence/team/${team.id}`"
                         class="p-1 text-purple-600 hover:bg-purple-50 rounded"
-                        :title="t('teams_page.players')"
+                        :title="t('teams_page.presence_sheet')"
                       >
                         <UIcon name="heroicons:user-group" class="w-6 h-6" />
                       </NuxtLink>
-
+                    </div>
+                  </td>
+                  <td class="px-3 py-2">
+                    <div class="flex items-center justify-center gap-1">
                       <!-- Presence sheet dropdown -->
                       <button
                         class="presence-dropdown-trigger p-1 text-gray-600 hover:bg-gray-50 rounded"
-                        :title="t('teams_page.presence_sheet')"
+                        :title="t('teams_page.columns.pdf')"
                         @click="togglePresenceDropdown(team.id, $event)"
                       >
                         <UIcon name="heroicons:document-text" class="w-6 h-6" />

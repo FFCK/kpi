@@ -869,7 +869,9 @@
       "couleurs": "Colors",
       "club": "Club",
       "matchs": "Games",
-      "actions": "Actions"
+      "actions": "Actions",
+      "joueurs": "Players",
+      "pdf": "PDF"
     },
     "add_modal": {
       "title": "Add a team",
@@ -1176,6 +1178,11 @@
     "bulk_officials_select_source": "Select source phase...",
     "bulk_officials_preview": "Data that will be copied:",
     "bulk_officials_updated": "Officials and calendar copied to {count} phase(s).",
+    "bulk": {
+      "actions": "Actions",
+      "toggle_section": "Publication",
+      "edit_section": "Edit"
+    },
     "officials_title": "Gameday officials",
     "officials_comite": "Competition committee",
     "officials_jury": "Appeal jury",
@@ -1313,12 +1320,20 @@
       "match_sheets": "Score sheets (PDF)"
     },
     "documents": {
+      "title": "Documents",
+      "admin_section": "Administration",
+      "public_section": "Public",
       "game_list_fr": "Game list (FR)",
       "game_list_en": "Game list (EN)",
       "scoresheets_all": "Score sheets",
       "export_ods": "Export (ODS)",
       "public_list_fr": "Public list (FR)",
-      "public_list_en": "Public list (EN)"
+      "public_list_en": "Public list (EN)",
+      "pitches_section": "Pitches (tables)",
+      "pitches_1_4_teams": "Pitches 1-4 (Teams)",
+      "pitches_5_8_teams": "Pitches 5-8 (Teams)",
+      "pitches_1_4_phases": "Pitches 1-4 (Phases)",
+      "pitches_5_8_phases": "Pitches 5-8 (Phases)"
     },
     "added": "Game created.",
     "updated": "Game updated.",

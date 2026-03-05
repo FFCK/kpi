@@ -81,6 +81,10 @@ const officialsFormData = ref({
 // Legacy base URL for PDF
 const legacyBaseUrl = computed(() => useRuntimeConfig().public.legacyBaseUrl || 'https://kpi.localhost')
 
+// Bulk actions dropdown
+const bulkActionsOpen = ref(false)
+const bulkActionsRef = ref<HTMLDivElement | null>(null)
+
 // Inline editing
 const editingCell = ref<{ id: number; field: string } | null>(null)
 const editingValue = ref('')
@@ -193,10 +197,17 @@ const loadGamedays = async () => {
   }
 }
 
-// ─── Init ───
+// ─── Close dropdown on outside click ───
+const onClickOutside = (e: MouseEvent) => {
+  if (bulkActionsRef.value && !bulkActionsRef.value.contains(e.target as Node)) {
+    bulkActionsOpen.value = false
+  }
+}
 onMounted(() => {
   workContext.initContext()
+  document.addEventListener('click', onClickOutside)
 })
+onUnmounted(() => document.removeEventListener('click', onClickOutside))
 
 // ─── Watchers ───
 watch(() => [workContext.initialized, workContext.season], () => {
@@ -775,49 +786,76 @@ const printJurySheet = (gamedayId: number) => {
       :search-placeholder="t('gamedays.search_placeholder')"
       :add-label="t('gamedays.add')"
       :show-add="canEdit"
-      :show-bulk-delete="canSelect"
-      :bulk-delete-label="t('common.delete_selected')"
       :selected-count="selectedIds.length"
       @add="openAddModal"
-      @bulk-delete="bulkDeleteConfirmOpen = true"
     >
-      <template #after-search>
-        <!-- Bulk publish -->
-        <button
-          v-if="canEdit && selectedIds.length > 0"
-          class="px-3 py-2 text-sm font-medium text-green-700 bg-green-50 border border-green-200 rounded-lg hover:bg-green-100"
-          @click="bulkPublishConfirmOpen = true"
-        >
-          <UIcon name="heroicons:eye" class="w-6 h-6 inline mr-1" />
-          {{ t('gamedays.field.publication') }}
-        </button>
-        <!-- Bulk calendar edit -->
-        <button
-          v-if="canEdit && selectedIds.length > 0"
-          class="px-3 py-2 text-sm font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100"
-          @click="openBulkCalendarModal"
-        >
-          <UIcon name="heroicons:calendar-days" class="w-6 h-6 inline mr-1" />
-          {{ t('gamedays.calendar_public') }}
-        </button>
-        <!-- Bulk officials copy (CP competitions only) -->
-        <button
-          v-if="canEdit && selectedIds.length > 0 && showCPColumns"
-          class="px-3 py-2 text-sm font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-lg hover:bg-amber-100"
-          @click="openBulkOfficialsModal"
-        >
-          <UIcon name="heroicons:user-group" class="w-6 h-6 inline mr-1" />
-          {{ t('gamedays.bulk_officials_title') }}
-        </button>
-        <!-- Event association -->
-        <button
-          v-if="canAssociateEvents && selectedEventId"
-          class="px-3 py-2 text-sm font-medium text-purple-700 bg-purple-50 border border-purple-200 rounded-lg hover:bg-purple-100"
-          @click="openEventAssociation"
-        >
-          <UIcon name="heroicons:link" class="w-6 h-6 inline mr-1" />
-          {{ t('gamedays.manage_event_association') }}
-        </button>
+      <template #left>
+        <!-- Bulk actions dropdown -->
+        <div v-if="canSelect && selectedIds.length > 0" ref="bulkActionsRef" class="relative">
+          <button
+            class="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100"
+            @click="bulkActionsOpen = !bulkActionsOpen"
+          >
+            <UIcon name="heroicons:bolt" class="w-6 h-6" />
+            {{ t('gamedays.bulk.actions') }}
+            <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+              {{ selectedIds.length }}
+            </span>
+            <UIcon name="heroicons:chevron-down" class="w-6 h-6 transition-transform" :class="{ 'rotate-180': bulkActionsOpen }" />
+          </button>
+          <div v-show="bulkActionsOpen" class="absolute z-20 mt-1 w-72 bg-white border border-gray-200 rounded-lg shadow-lg py-1 left-0">
+            <!-- ── Toggle section ── -->
+            <div class="px-3 py-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{{ t('gamedays.bulk.toggle_section') }}</div>
+            <button
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              @click="bulkPublishConfirmOpen = true; bulkActionsOpen = false"
+            >
+              <UIcon name="heroicons:eye" class="w-5 h-5 text-green-600" />
+              {{ t('gamedays.field.publication') }}
+            </button>
+
+            <!-- ── Edit section ── -->
+            <div class="border-t border-gray-100 my-1" />
+            <div class="px-3 py-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{{ t('gamedays.bulk.edit_section') }}</div>
+            <button
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              @click="openBulkCalendarModal(); bulkActionsOpen = false"
+            >
+              <UIcon name="heroicons:calendar-days" class="w-5 h-5 text-blue-600" />
+              {{ t('gamedays.calendar_public') }}
+            </button>
+            <button
+              v-if="showCPColumns"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              @click="openBulkOfficialsModal(); bulkActionsOpen = false"
+            >
+              <UIcon name="heroicons:user-group" class="w-5 h-5 text-amber-600" />
+              {{ t('gamedays.bulk_officials_title') }}
+            </button>
+
+            <!-- ── Event association ── -->
+            <template v-if="canAssociateEvents && selectedEventId">
+              <div class="border-t border-gray-100 my-1" />
+              <button
+                class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                @click="openEventAssociation(); bulkActionsOpen = false"
+              >
+                <UIcon name="heroicons:link" class="w-5 h-5 text-purple-600" />
+                {{ t('gamedays.manage_event_association') }}
+              </button>
+            </template>
+
+            <!-- ── Danger section ── -->
+            <div class="border-t border-gray-100 my-1" />
+            <button
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+              @click="bulkDeleteConfirmOpen = true; bulkActionsOpen = false"
+            >
+              <UIcon name="heroicons:trash" class="w-5 h-5" />
+              {{ t('common.delete_selected') }}
+            </button>
+          </div>
+        </div>
       </template>
     </AdminToolbar>
 

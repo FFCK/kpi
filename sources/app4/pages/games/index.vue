@@ -120,6 +120,10 @@ const statusGame = ref<Game | null>(null)
 const bulkActionsOpen = ref(false)
 const bulkActionsRef = ref<HTMLDivElement | null>(null)
 
+// Documents dropdown
+const documentsOpen = ref(false)
+const documentsRef = ref<HTMLDivElement | null>(null)
+
 // ─── Legacy base URL ───
 const legacyBase = computed(() => useRuntimeConfig().public.legacyBaseUrl || 'https://kpi.localhost')
 
@@ -329,6 +333,9 @@ watch(searchQuery, () => {
 const onClickOutside = (e: MouseEvent) => {
   if (bulkActionsRef.value && !bulkActionsRef.value.contains(e.target as Node)) {
     bulkActionsOpen.value = false
+  }
+  if (documentsRef.value && !documentsRef.value.contains(e.target as Node)) {
+    documentsOpen.value = false
   }
 }
 onMounted(() => document.addEventListener('click', onClickOutside))
@@ -1001,6 +1008,30 @@ const openBulkMatchSheets = () => {
   window.open(`${legacyBase.value}/admin/FeuilleMatchMulti.php?listMatch=${ids}`, '_blank')
 }
 
+// ─── Document export URLs (all games with current filters) ───
+// Les fichiers PHP cibles utilisent $urlMode pour ignorer les variables de session
+// lorsque des paramètres GET de filtre sont présents (Compet, idEvenement, S).
+const docBaseParams = computed(() => {
+  const params = new URLSearchParams()
+  params.set('S', workContext.season || '')
+
+  if (workContext.pageEventGroupType === 'event') {
+    // Event selected → pass idEvenement only (no Compet, it would override)
+    params.set('idEvenement', workContext.pageEventGroupValue)
+  } else if (workContext.pageCompetitionCodeAll) {
+    // A specific single competition selected
+    params.set('Compet', workContext.pageCompetitionCodeAll)
+  }
+  // When "All competitions" with a group or no specific filter: pass S alone to trigger urlMode
+
+  return params.toString()
+})
+
+const docUrl = (file: string, isPublic = false) => {
+  const folder = isPublic ? '' : 'admin/'
+  return `${legacyBase.value}/${folder}${file}?${docBaseParams.value}`
+}
+
 // ─── Journee label for dropdown ───
 const journeeLabel = (j: GameJournee) => {
   if (j.codeTypeclt === 'CP') {
@@ -1224,6 +1255,116 @@ const statusBtnClass = (game: Game) => {
           </div>
         </div>
       </template>
+      <template #before-search>
+        <!-- Documents dropdown (all games with current filters) -->
+        <div ref="documentsRef" class="relative">
+          <button
+            class="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+            @click="documentsOpen = !documentsOpen"
+          >
+            <UIcon name="heroicons:document-arrow-down" class="w-5 h-5 text-gray-500" />
+            {{ t('games.documents.title') }}
+            <UIcon name="heroicons:chevron-down" class="w-4 h-4 transition-transform" :class="{ 'rotate-180': documentsOpen }" />
+          </button>
+          <div v-show="documentsOpen" class="absolute z-20 mt-1 w-64 bg-white border border-gray-200 rounded-lg shadow-lg py-1 right-0">
+            <div class="px-3 py-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{{ t('games.documents.admin_section') }}</div>
+            <a
+              :href="docUrl('FeuilleListeMatchs.php')"
+              target="_blank"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              @click="documentsOpen = false"
+            >
+              <UIcon name="heroicons:document-text" class="w-5 h-5 text-blue-600" />
+              {{ t('games.documents.game_list_fr') }}
+            </a>
+            <a
+              :href="docUrl('FeuilleListeMatchsEN.php')"
+              target="_blank"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              @click="documentsOpen = false"
+            >
+              <UIcon name="heroicons:document-text" class="w-5 h-5 text-blue-600" />
+              {{ t('games.documents.game_list_en') }}
+            </a>
+            <a
+              :href="docUrl('FeuilleMatchMulti.php')"
+              target="_blank"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              @click="documentsOpen = false"
+            >
+              <UIcon name="heroicons:document-duplicate" class="w-5 h-5 text-red-600" />
+              {{ t('games.documents.scoresheets_all') }}
+            </a>
+            <a
+              :href="docUrl('tableau_openspout.php')"
+              target="_blank"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              @click="documentsOpen = false"
+            >
+              <UIcon name="heroicons:table-cells" class="w-5 h-5 text-green-600" />
+              {{ t('games.documents.export_ods') }}
+            </a>
+            <div class="border-t border-gray-100 my-1" />
+            <div class="px-3 py-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{{ t('games.documents.public_section') }}</div>
+            <a
+              :href="docUrl('PdfListeMatchs.php', true)"
+              target="_blank"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              @click="documentsOpen = false"
+            >
+              <UIcon name="heroicons:document-text" class="w-5 h-5 text-gray-500" />
+              {{ t('games.documents.public_list_fr') }}
+            </a>
+            <a
+              :href="docUrl('PdfListeMatchsEN.php', true)"
+              target="_blank"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              @click="documentsOpen = false"
+            >
+              <UIcon name="heroicons:document-text" class="w-5 h-5 text-gray-500" />
+              {{ t('games.documents.public_list_en') }}
+            </a>
+            <div class="border-t border-gray-100 my-1" />
+            <div class="px-3 py-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{{ t('games.documents.pitches_section') }}</div>
+            <a
+              :href="docUrl('PdfListeMatchs4TerrainsEn.php', true)"
+              target="_blank"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              @click="documentsOpen = false"
+            >
+              <UIcon name="heroicons:table-cells" class="w-5 h-5 text-gray-500" />
+              {{ t('games.documents.pitches_1_4_teams') }}
+            </a>
+            <a
+              :href="docUrl('PdfListeMatchs4TerrainsEn3.php', true)"
+              target="_blank"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              @click="documentsOpen = false"
+            >
+              <UIcon name="heroicons:table-cells" class="w-5 h-5 text-gray-500" />
+              {{ t('games.documents.pitches_5_8_teams') }}
+            </a>
+            <a
+              :href="docUrl('PdfListeMatchs4TerrainsEn2.php', true)"
+              target="_blank"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              @click="documentsOpen = false"
+            >
+              <UIcon name="heroicons:table-cells" class="w-5 h-5 text-gray-500" />
+              {{ t('games.documents.pitches_1_4_phases') }}
+            </a>
+            <a
+              :href="docUrl('PdfListeMatchs4TerrainsEn4.php', true)"
+              target="_blank"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              @click="documentsOpen = false"
+            >
+              <UIcon name="heroicons:table-cells" class="w-5 h-5 text-gray-500" />
+              {{ t('games.documents.pitches_5_8_phases') }}
+            </a>
+          </div>
+        </div>
+      </template>
     </AdminToolbar>
 
     <!-- ═══════ DESKTOP TABLE ═══════ -->
@@ -1247,7 +1388,7 @@ const statusBtnClass = (game: Game) => {
               <!-- N° -->
               <th class="w-10 px-1 py-2 text-center text-gray-500 font-medium">{{ t('games.field.number') }}</th>
               <!-- Actions -->
-              <th v-if="canEdit" class="w-20 px-1 py-2 text-center text-gray-500 font-medium">{{ t('games.field.actions') }}</th>
+              <th v-if="canEdit" colspan="2" class="w-20 px-1 py-2 text-center text-gray-500 font-medium">{{ t('games.field.actions') }}</th>
               <!-- Time -->
               <th class="px-1 py-2 text-left text-gray-500 font-medium">{{ t('games.field.time') }}</th>
               <!-- Terrain -->
@@ -1355,10 +1496,14 @@ const statusBtnClass = (game: Game) => {
 
               <!-- Actions -->
               <td v-if="canEdit" class="px-1 py-1 text-center" @click.stop>
+                <button v-if="!isLocked(g)" :title="t('common.edit')" class="text-blue-600 hover:text-blue-800" @click="openEditModal(g)">
+                  <UIcon name="heroicons:pencil" class="w-6 h-6" />
+                  <br>
+                  <span class="text-xs text-gray-500">Edit</span>
+                </button>
+              </td>
+              <td v-if="canEdit" class="px-1 py-1 text-center" @click.stop>
                 <div class="flex items-center text-center gap-0.5">
-                  <button v-if="!isLocked(g)" :title="t('common.edit')" class="text-blue-600 hover:text-blue-800" @click="openEditModal(g)">
-                    <UIcon name="heroicons:pencil" class="w-6 h-6" />
-                  </button>
                   <a :href="`${legacyBase}/admin/FeuilleMatchMulti.php?listMatch=${g.id}`" target="_blank" :title="t('games.scoresheet_pdf')" class="p-0.5 text-red-600 hover:text-red-800">
                     <UIcon name="heroicons:document-text" class="w-6 h-6" />
                     <br>
@@ -1591,13 +1736,13 @@ const statusBtnClass = (game: Game) => {
                 <div class="mt-0.5">
                   <button
                     v-if="isGameEditable(g)"
-                    class="px-1.5 py-0 text-[10px] font-medium rounded-full border leading-tight text-nowrap"
+                    class="px-1.5 py-1 text-[10px] font-medium rounded-full border leading-tight text-nowrap"
                     :class="statusBtnClass(g)"
                     @click="openStatusConfirm(g)"
                   >{{ statusLabel(g) }}</button>
                   <span
                     v-else
-                    class="px-1.5 py-0 text-[10px] font-medium rounded-full border leading-tight inline-block text-nowrap"
+                    class="px-1.5 py-1 text-[10px] font-medium rounded-full border leading-tight inline-block text-nowrap"
                     :class="statusBtnClass(g)"
                   >{{ statusLabel(g) }}</span>
                 </div>

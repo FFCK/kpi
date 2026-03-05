@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// KPI Admin - Root component
+// KPI Manager - Root component
 const { locale } = useI18n()
 
 // Initialize online status monitoring at app level

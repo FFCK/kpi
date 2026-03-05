@@ -470,7 +470,7 @@ const exportPdf = async () => {
 <template>
   <div>
     <!-- Work Context Summary -->
-    <AdminWorkContextSummary />
+    <!-- <AdminWorkContextSummary /> -->
 
     <!-- Page header -->
     <div class="mb-6">

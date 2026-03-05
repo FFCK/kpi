@@ -64,13 +64,10 @@ const countTeamsFromMatches = (phase: SchemaPhase): number => {
   return teamIds.size
 }
 
-// Computed: has any visible image
-const hasImages = computed(() => {
-  if (!competition.value) return false
-  return (competition.value.bandeauActif && competition.value.bandeauLink && showBandeau.value)
-    || (competition.value.logoActif && competition.value.logoLink && showLogo.value)
-    || (competition.value.sponsorActif && competition.value.sponsorLink && showSponsor.value)
-})
+// Computed: image visibility
+const hasLogo = computed(() => competition.value?.logoActif && competition.value?.logoLink && showLogo.value)
+const hasBandeau = computed(() => competition.value?.bandeauActif && competition.value?.bandeauLink && showBandeau.value)
+const hasSponsor = computed(() => competition.value?.sponsorActif && competition.value?.sponsorLink && showSponsor.value)
 
 // Badge helpers
 const getLevelColor = (level: string) => {
@@ -169,74 +166,74 @@ onMounted(() => {
   </div>
 
   <div v-else-if="competition" class="bg-white rounded-lg shadow overflow-hidden">
-    <!-- Zone A: Images -->
-    <div
-      v-if="hasImages"
-      class="flex flex-wrap items-center justify-center gap-6 px-6 py-4 bg-gray-50 border-b"
-    >
+    <!-- Zone B: Key Data -->
+    <div class="flex flex-wrap items-center gap-3 px-6 py-4 border-b">
+      <!-- Title -->
+      <div class="mr-auto">
+        <div class="flex items-center gap-3">
+          <!-- Logo -->
+          <img
+            v-if="hasLogo"
+            :src="imageUrl(competition.logoLink)"
+            :alt="competition.libelle"
+            class="max-h-16 object-contain inline mr-3"
+            @error="showLogo = false"
+          >
+          <div>
+            <h2 class="text-lg font-semibold text-gray-900">
+              {{ competition.libelle }}
+              <!-- Season badge -->
+              <span class="px-2 py-1 text-xs font-medium rounded bg-blue-50 text-blue-700">
+                {{ competition.codeSaison }}
+              </span>
+            </h2>
+            <p v-if="competition.soustitre2" class="text-sm text-gray-700">
+              {{ competition.soustitre2 }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Badges -->
+      <div class="flex flex-wrap items-center gap-2 ml-auto">
+        <span class="px-2 py-1 text-xs font-medium rounded" :class="getLevelColor(competition.codeNiveau)">
+          {{ competition.codeNiveau }}
+        </span>
+        <span class="px-2 py-1 text-xs font-medium rounded" :class="getTypeColor(competition.codeTypeclt)">
+          {{ competition.codeTypeclt }}
+        </span>
+        <span class="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-700">
+          {{ t('documents.summary.teams_count', { count: competition.nbEquipes }, competition.nbEquipes) }}
+        </span>
+        <span class="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-700">
+          {{ t('documents.summary.phases_count', { count: competition.nbJournees }, competition.nbJournees) }}
+        </span>
+        <span class="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-700">
+          {{ t('documents.summary.matches_count', { count: competition.nbMatchs }, competition.nbMatchs) }}
+        </span>
+        <span
+          v-if="isCp && competition.qualifies > 0"
+          class="px-2 py-1 text-xs font-medium rounded bg-emerald-50 text-emerald-700"
+        >
+          {{ t('documents.summary.qualified', { count: competition.qualifies }) }}
+        </span>
+        <span
+          v-if="isCp && competition.elimines > 0"
+          class="px-2 py-1 text-xs font-medium rounded bg-red-50 text-red-700"
+        >
+          {{ t('documents.summary.eliminated', { count: competition.elimines }) }}
+        </span>
+      </div>
+    </div>
+
+    <!-- Bandeau (above phases) -->
+    <div v-if="hasBandeau" class="flex justify-center px-6 pt-4">
       <img
-        v-if="competition.bandeauActif && competition.bandeauLink && showBandeau"
         :src="imageUrl(competition.bandeauLink)"
         :alt="competition.libelle"
         class="max-h-20 object-contain"
         @error="showBandeau = false"
       >
-      <img
-        v-if="competition.logoActif && competition.logoLink && showLogo"
-        :src="imageUrl(competition.logoLink)"
-        :alt="competition.libelle"
-        class="max-h-16 object-contain"
-        @error="showLogo = false"
-      >
-      <img
-        v-if="competition.sponsorActif && competition.sponsorLink && showSponsor"
-        :src="imageUrl(competition.sponsorLink)"
-        alt="Sponsor"
-        class="max-h-16 object-contain"
-        @error="showSponsor = false"
-      >
-    </div>
-
-    <!-- Zone B: Key Data -->
-    <div class="flex flex-wrap items-center gap-3 px-6 py-4 border-b">
-      <!-- Title -->
-      <div class="mr-auto">
-        <h3 class="text-lg font-semibold text-gray-900">
-          {{ competition.libelle }}
-        </h3>
-        <p v-if="competition.soustitre2" class="text-sm text-gray-700">
-          {{ competition.soustitre2 }}
-        </p>
-      </div>
-
-      <!-- Badges -->
-      <span class="px-2 py-1 text-xs font-medium rounded" :class="getLevelColor(competition.codeNiveau)">
-        {{ competition.codeNiveau }}
-      </span>
-      <span class="px-2 py-1 text-xs font-medium rounded" :class="getTypeColor(competition.codeTypeclt)">
-        {{ competition.codeTypeclt }}
-      </span>
-      <span class="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-700">
-        {{ t('documents.summary.teams_count', { count: competition.nbEquipes }, competition.nbEquipes) }}
-      </span>
-      <span class="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-700">
-        {{ t('documents.summary.phases_count', { count: competition.nbJournees }, competition.nbJournees) }}
-      </span>
-      <span class="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-700">
-        {{ t('documents.summary.matches_count', { count: competition.nbMatchs }, competition.nbMatchs) }}
-      </span>
-      <span
-        v-if="isCp && competition.qualifies > 0"
-        class="px-2 py-1 text-xs font-medium rounded bg-emerald-50 text-emerald-700"
-      >
-        {{ t('documents.summary.qualified', { count: competition.qualifies }) }}
-      </span>
-      <span
-        v-if="isCp && competition.elimines > 0"
-        class="px-2 py-1 text-xs font-medium rounded bg-red-50 text-red-700"
-      >
-        {{ t('documents.summary.eliminated', { count: competition.elimines }) }}
-      </span>
     </div>
 
     <!-- Zone C: Phase Structure -->
@@ -247,15 +244,15 @@ onMounted(() => {
           <div
             v-for="stage in stageColumns"
             :key="stage.etape"
-            class="flex-1 min-w-36 bg-gray-50 rounded-lg p-3"
+            class="flex-1 min-w-36 rounded-lg p-3 border border-gray-200"
           >
             <NuxtLink
               v-for="phase in stage.phases"
               :key="phase.idJournee"
               :to="`/games?phase=${phase.idJournee}`"
-              class="block mb-2 last:mb-0 hover:bg-gray-100 rounded -mx-1 px-1 py-0.5 transition-colors"
+              class="block mb-2 last:mb-0 hover:bg-gray-100 rounded px-1 py-0.5 transition-colors"
             >
-              <div class="flex items-center gap-1.5">
+                <div class="flex items-center justify-center gap-1.5">
                 <span
                   class="inline-block w-5 h-5 text-center text-xs font-bold leading-5 rounded"
                   :class="phase.type === 'C' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'"
@@ -263,8 +260,8 @@ onMounted(() => {
                   {{ phase.type }}
                 </span>
                 <span class="text-sm font-medium text-gray-700 truncate">{{ phase.phase }}</span>
-              </div>
-              <div class="text-xs text-gray-400 ml-6.5">
+                </div>
+              <div class="flex items-center justify-center text-xs text-gray-400">
                 <span v-if="phase.nbequipes">{{ phase.nbequipes }} {{ t('documents.summary.teams_short', { count: phase.nbequipes }, phase.nbequipes) }} - </span>{{ phase.nbMatchs }} {{ t('documents.summary.matches_short', { count: phase.nbMatchs }, phase.nbMatchs) }}
               </div>
             </NuxtLink>
@@ -311,6 +308,16 @@ onMounted(() => {
     <!-- No phases -->
     <div v-else-if="!loading && !isMulti" class="px-6 py-4">
       <p class="text-sm text-gray-400 italic">{{ t('documents.summary.no_phases') }}</p>
+    </div>
+
+    <!-- Sponsor (below phases) -->
+    <div v-if="hasSponsor" class="flex justify-center px-6 pb-4">
+      <img
+        :src="imageUrl(competition.sponsorLink)"
+        alt="Sponsor"
+        class="max-h-16 object-contain"
+        @error="showSponsor = false"
+      >
     </div>
   </div>
 </template>

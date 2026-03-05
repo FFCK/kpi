@@ -169,11 +169,11 @@ class AdminSchemaController extends AbstractController
             'titreActif' => $row['Titre_actif'] === 'O',
             'qualifies' => (int) $row['Qualifies'],
             'elimines' => (int) $row['Elimines'],
-            'bandeauLink' => $row['BandeauLink'] ?: null,
+            'bandeauLink' => $this->buildImageLink($row['BandeauLink']),
             'bandeauActif' => ($row['Bandeau_actif'] ?? 'N') === 'O',
-            'logoLink' => $row['LogoLink'] ?: null,
+            'logoLink' => $this->buildImageLink($row['LogoLink']),
             'logoActif' => ($row['Logo_actif'] ?? 'N') === 'O',
-            'sponsorLink' => $row['SponsorLink'] ?: null,
+            'sponsorLink' => $this->buildImageLink($row['SponsorLink']),
             'sponsorActif' => ($row['Sponsor_actif'] ?? 'N') === 'O',
         ];
     }
@@ -424,5 +424,16 @@ class AdminSchemaController extends AbstractController
         }
 
         return $result;
+    }
+
+    private function buildImageLink(?string $dbValue): ?string
+    {
+        if (empty($dbValue)) {
+            return null;
+        }
+        if (str_starts_with($dbValue, 'http://') || str_starts_with($dbValue, 'https://')) {
+            return $dbValue;
+        }
+        return "/img/logo/{$dbValue}";
     }
 }

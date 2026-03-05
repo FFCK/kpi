@@ -10,6 +10,8 @@ const { t, locale } = useI18n()
 const api = useApi()
 const route = useRoute()
 const toast = useToast()
+const config = useRuntimeConfig()
+const legacyBase = config.public.legacyBaseUrl as string
 
 // Read params from URL (no workContext filters)
 const competitionCode = computed(() => (route.query.competition as string) || '')
@@ -22,6 +24,18 @@ const data = ref<SchemaResponse | null>(null)
 // Display toggles
 const showMatchCount = ref(true)
 const showTimeSlots = ref(true)
+
+// Image visibility (hidden on 404)
+const showBandeau = ref(true)
+const showSponsor = ref(true)
+
+const imageUrl = (link: string | null) => {
+  if (!link) return ''
+  return `${legacyBase}${link}`
+}
+
+const hasBandeau = computed(() => data.value?.competition.bandeauActif && data.value?.competition.bandeauLink && showBandeau.value)
+const hasSponsor = computed(() => data.value?.competition.sponsorActif && data.value?.competition.sponsorLink && showSponsor.value)
 
 // Hover highlight
 const hoveredTeam = ref<string | null>(null)
@@ -41,16 +55,6 @@ const stageColumns = computed(() => {
     .sort((a, b) => a[0] - b[0])
     .map(([etape, phases]) => ({ etape, phases }))
 })
-
-// Badge helpers
-const getLevelColor = (level: string) => {
-  switch (level) {
-    case 'INT': return 'bg-purple-100 text-purple-800'
-    case 'NAT': return 'bg-blue-100 text-blue-800'
-    case 'REG': return 'bg-orange-100 text-orange-800'
-    default: return 'bg-gray-100 text-gray-800'
-  }
-}
 
 // Close button: close the tab/window
 function closeWindow() {
@@ -93,17 +97,6 @@ onMounted(async () => {
     <div class="mb-2 flex flex-wrap items-center justify-between gap-2 print:hidden">
       <div class="flex items-center gap-3">
         <h1 class="text-2xl font-bold text-gray-900">{{ t('schema.title') }}</h1>
-        <div v-if="data?.competition" class="flex items-center gap-2 flex-wrap">
-          <span
-            class="px-2 py-1 text-xs font-medium rounded uppercase"
-            :class="getLevelColor(data.competition.codeNiveau)"
-          >
-            {{ data.competition.codeNiveau }}
-          </span>
-          <span class="px-2 py-1 text-xs font-medium rounded uppercase bg-gray-100 text-gray-800">
-            {{ data.competition.codeTypeclt }}
-          </span>
-        </div>
       </div>
 
       <!-- Right side: toggles + close -->
@@ -162,6 +155,16 @@ onMounted(async () => {
         :is-cp="isCp"
       />
 
+      <!-- Bandeau (above schema) -->
+      <div v-if="hasBandeau" class="flex justify-center py-4">
+        <img
+          :src="imageUrl(data.competition.bandeauLink)"
+          :alt="data.competition.libelle"
+          class="max-h-20 object-contain"
+          @error="showBandeau = false"
+        >
+      </div>
+
       <!-- CP Layout -->
       <SchemaCpLayout
         v-if="isCp"
@@ -181,6 +184,16 @@ onMounted(async () => {
         :hovered-team="hoveredTeam"
         @hover-team="hoveredTeam = $event"
       />
+
+      <!-- Sponsor (below schema) -->
+      <div v-if="hasSponsor" class="flex justify-center py-4">
+        <img
+          :src="imageUrl(data.competition.sponsorLink)"
+          alt="Sponsor"
+          class="max-h-16 object-contain"
+          @error="showSponsor = false"
+        >
+      </div>
     </div>
 
     <!-- No data -->

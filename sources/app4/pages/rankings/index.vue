@@ -354,7 +354,7 @@ const unpublishRanking = async () => {
 
   unpublishing.value = true
   try {
-    await api.delete('/admin/rankings/publish', {
+    await api.del('/admin/rankings/publish', {
       season: workContext.season,
       competition: competitionInfo.value.code
     })
@@ -389,7 +389,7 @@ const removePhaseTeam = async (phase: RankingPhase, team: RankingPhaseTeam) => {
   if (!canEditInline.value) return
 
   try {
-    await api.delete(`/admin/rankings/phase-team/${phase.idJournee}/${team.id}`)
+    await api.del(`/admin/rankings/phase-team/${phase.idJournee}/${team.id}`)
     phase.teams = phase.teams.filter(t => t.id !== team.id)
     toast.add({ title: t('common.success'), description: t('rankings.success_team_removed'), color: 'success', duration: 2000 })
   } catch (error: unknown) {
@@ -672,25 +672,26 @@ const editValueForField = (field: string, value: number): string => {
 
         <!-- ═══ COMPUTED TAB ═══ -->
         <div v-if="activeTab === 'computed'" class="p-4">
-          <!-- Compute info -->
-          <div class="mb-4 p-3 bg-gray-50 rounded-lg">
-            <div v-if="competitionInfo.dateCalcul" class="text-sm text-gray-700">
-              <span class="font-medium">{{ t('rankings.compute.date') }}</span> :
-              {{ formatDate(competitionInfo.dateCalcul) }}
-              ({{ t('rankings.compute.by') }} {{ competitionInfo.userNameCalcul }})
-              <span v-if="competitionInfo.modeCalcul" class="ml-2 text-xs text-gray-500">
-                — {{ competitionInfo.modeCalcul === 'tous' ? t('rankings.compute.mode_all') : t('rankings.compute.mode_locked') }}
-              </span>
-            </div>
-            <div v-else class="text-sm text-gray-500 italic">
-              {{ t('rankings.compute.not_computed') }}
-            </div>
-          </div>
-
-          <!-- ── Toolbar (above ranking) ── -->
+          <!-- Compute info + Toolbar on same line -->
           <div class="mb-4 flex flex-wrap items-center gap-3">
+            <!-- LEFT: Compute info -->
+            <div class="p-3 bg-gray-50 rounded-lg">
+              <div v-if="competitionInfo.dateCalcul" class="text-sm text-gray-700">
+                <span class="font-medium">{{ t('rankings.compute.date') }}</span> :
+                {{ formatDate(competitionInfo.dateCalcul) }}
+                ({{ t('rankings.compute.by') }} {{ competitionInfo.userNameCalcul }})
+                <span v-if="competitionInfo.modeCalcul" class="ml-2 text-xs text-gray-500">
+                  — {{ competitionInfo.modeCalcul === 'tous' ? t('rankings.compute.mode_all') : t('rankings.compute.mode_locked') }}
+                </span>
+              </div>
+              <div v-else class="text-sm text-gray-500 italic">
+                {{ t('rankings.compute.not_computed') }}
+              </div>
+            </div>
+
             <div class="flex-1" />
 
+            <!-- RIGHT: Action buttons -->
             <!-- PDF dropdown -->
             <div v-if="pdfUrls" class="relative">
               <button
@@ -702,8 +703,6 @@ const editValueForField = (field: string, value: number): string => {
                 <UIcon name="heroicons:chevron-down" class="w-3 h-3" />
               </button>
             </div>
-
-            <!-- RIGHT: Action buttons -->
 
             <NuxtLink
               v-if="canAccessInitial && effectiveType === 'CHPT'"
@@ -764,7 +763,8 @@ const editValueForField = (field: string, value: number): string => {
                 <table class="min-w-full divide-y divide-gray-200 bg-blue-100">
                   <thead>
                     <tr class="bg-blue-200">
-                      <th v-if="isInternational" class="px-2 py-2" />
+                      <th v-if="isInternational" class="px-2 py-2"></th>
+                      <th></th>
                       <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase">{{ t('rankings.table.rank') }}</th>
                       <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">
                         {{ effectiveType === 'MULTI' ? structureLabel : t('rankings.table.team') }}
@@ -821,6 +821,10 @@ const editValueForField = (field: string, value: number): string => {
                             class="text-red-600 text-xs"
                             :title="t('rankings.eliminated')"
                           >▼</span>
+                        </div>
+                      </td>
+                      <td class="px-2 py-1.5 text-center text-sm">
+                        <div class="px-2 py-1.5 text-center text-sm">
                           <!-- Rank value -->
                           <template v-if="editingCell?.id === team.id && editingCell.field === (effectiveType === 'CP' ? 'CltNiveau' : 'Clt') && !editingCell.journeeId">
                             <input
@@ -1025,7 +1029,7 @@ const editValueForField = (field: string, value: number): string => {
                     <table class="min-w-full divide-y divide-gray-200 bg-blue-100">
                       <thead class="bg-gray-50">
                         <tr class="bg-blue-200">
-                          <th v-if="canEditInline && !phase.consolidation" class="px-2 py-2" />
+                          <th v-if="canEditInline && !phase.consolidation" class="px-2 py-2"></th>
                           <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase">{{ t('rankings.table.rank') }}</th>
                           <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">{{ t('rankings.table.team') }}</th>
                           <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase">{{ t('rankings.table.pts') }}</th>
@@ -1241,74 +1245,74 @@ const editValueForField = (field: string, value: number): string => {
 
         <!-- ═══ PUBLISHED TAB ═══ -->
         <div v-if="activeTab === 'published'" class="p-4">
-          <!-- Publication info -->
-          <div class="mb-1 p-3 bg-gray-50 rounded-lg">
-            <template v-if="competitionInfo.datePublication">
-              <div class="text-sm text-gray-700">
-                <span class="font-medium">{{ t('rankings.publish.date_compute') }}</span> :
-                {{ formatDate(competitionInfo.datePublicationCalcul) }}
-                <span v-if="competitionInfo.modePublicationCalcul" class="ml-2 text-xs text-gray-500">
-                  — {{ competitionInfo.modePublicationCalcul === 'tous' ? t('rankings.compute.mode_all') : t('rankings.compute.mode_locked') }}
-                </span>
+          <!-- Publication info + Toolbar on same line -->
+          <div class="mb-4 flex flex-wrap items-center gap-3">
+            <!-- LEFT: Publication info -->
+            <div class="p-3 bg-gray-50 rounded-lg">
+              <template v-if="competitionInfo.datePublication">
+                <div class="text-sm text-gray-700">
+                  <span class="font-medium">{{ t('rankings.publish.date_compute') }}</span> :
+                  {{ formatDate(competitionInfo.datePublicationCalcul) }}
+                  <span v-if="competitionInfo.modePublicationCalcul" class="ml-2 text-xs text-gray-500">
+                    — {{ competitionInfo.modePublicationCalcul === 'tous' ? t('rankings.compute.mode_all') : t('rankings.compute.mode_locked') }}
+                  </span>
+                </div>
+                <div class="text-sm text-gray-700 mt-1">
+                  <span class="font-medium">{{ t('rankings.publish.date_publish') }}</span> :
+                  {{ formatDate(competitionInfo.datePublication) }}
+                  ({{ t('rankings.compute.by') }} {{ competitionInfo.userNamePublication }})
+                </div>
+                <!-- Alert if different -->
+                <div
+                  v-if="isRankingDifferent"
+                  class="mt-1 flex items-center gap-2 p-2 bg-amber-50 border border-amber-200 rounded text-sm text-amber-800"
+                >
+                  <UIcon name="heroicons:exclamation-triangle" class="w-5 h-5 shrink-0" />
+                  {{ t('rankings.publish.different') }}
+                </div>
+              </template>
+              <div v-else class="text-sm text-gray-500 italic">
+                {{ t('rankings.publish.not_published') }}
               </div>
-              <div class="text-sm text-gray-700 mt-1">
-                <span class="font-medium">{{ t('rankings.publish.date_publish') }}</span> :
-                {{ formatDate(competitionInfo.datePublication) }}
-                ({{ t('rankings.compute.by') }} {{ competitionInfo.userNamePublication }})
-              </div>
-              <!-- Alert if different -->
-              <div
-                v-if="isRankingDifferent"
-                class="mt-2 flex items-center gap-2 p-2 bg-amber-50 border border-amber-200 rounded text-sm text-amber-800"
-              >
-                <UIcon name="heroicons:exclamation-triangle" class="w-5 h-5 shrink-0" />
-                {{ t('rankings.publish.different') }}
-              </div>
-            </template>
-            <div v-else class="text-sm text-gray-500 italic">
-              {{ t('rankings.publish.not_published') }}
             </div>
+
+            <div class="flex-1" />
+
+            <!-- RIGHT: Action buttons -->
+            <button
+              v-if="canTransfer && selectedIds.length > 0"
+              class="px-3 py-1.5 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm flex items-center gap-1"
+              @click="transferModalOpen = true"
+            >
+              <UIcon name="heroicons:arrow-right-circle" class="w-4 h-4" />
+              {{ t('rankings.transfer.button') }} ({{ selectedIds.length }})
+            </button>
+
+            <!-- PDF dropdown (public) -->
+            <div v-if="pdfUrls" class="relative">
+              <button
+                class="pdf-dropdown-trigger px-3 py-1.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm flex items-center gap-1"
+                @click="togglePdfDropdown($event, 'public')"
+              >
+                <UIcon name="heroicons:document-text" class="w-4 h-4" />
+                {{ t('rankings.pdf.title') }}
+                <UIcon name="heroicons:chevron-down" class="w-3 h-3" />
+              </button>
+            </div>
+
+            <button
+              v-if="canUnpublish"
+              class="px-3 py-1.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+              :disabled="unpublishing"
+              @click="showConfirm(t('rankings.publish.title'), t('rankings.confirm_unpublish'), unpublishRanking)"
+            >
+              <template v-if="unpublishing">{{ t('rankings.publish.unpublishing') }}</template>
+              <template v-else>{{ t('rankings.publish.unpublish') }}</template>
+            </button>
           </div>
 
           <!-- Published ranking content -->
           <template v-if="competitionInfo.datePublication && ranking.length > 0">
-            <!-- ── Toolbar (published tab) ── -->
-            <div class="mb-4 flex flex-wrap items-center gap-3">
-              <!-- LEFT: Selection actions -->
-              <button
-                v-if="canTransfer && selectedIds.length > 0"
-                class="px-3 py-1.5 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition-colors text-sm flex items-center gap-1"
-                @click="transferModalOpen = true"
-              >
-                <UIcon name="heroicons:arrow-right-circle" class="w-4 h-4" />
-                {{ t('rankings.transfer.button') }} ({{ selectedIds.length }})
-              </button>
-
-              <div class="flex-1" />
-
-              <!-- PDF dropdown (public) -->
-              <div v-if="pdfUrls" class="relative">
-                <button
-                  class="pdf-dropdown-trigger px-3 py-1.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm flex items-center gap-1"
-                  @click="togglePdfDropdown($event, 'public')"
-                >
-                  <UIcon name="heroicons:document-text" class="w-4 h-4" />
-                  {{ t('rankings.pdf.title') }}
-                  <UIcon name="heroicons:chevron-down" class="w-3 h-3" />
-                </button>
-              </div>
-
-              <!-- RIGHT: Actions -->
-              <button
-                v-if="canUnpublish"
-                class="px-3 py-1.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                :disabled="unpublishing"
-                @click="showConfirm(t('rankings.publish.title'), t('rankings.confirm_unpublish'), unpublishRanking)"
-              >
-                <template v-if="unpublishing">{{ t('rankings.publish.unpublishing') }}</template>
-                <template v-else>{{ t('rankings.publish.unpublish') }}</template>
-              </button>
-            </div>
 
             <div class="lg:flex lg:gap-4 lg:items-start">
             <!-- Published general ranking table -->
@@ -1320,7 +1324,7 @@ const editValueForField = (field: string, value: number): string => {
                 <table class="min-w-full divide-y divide-gray-200 bg-green-100">
                   <thead>
                     <tr class="bg-green-200">
-                      <th v-if="canTransfer" class="px-2 py-2">
+                      <th v-if="canTransfer" class="px-2 py-2 text-left">
                         <input
                           v-model="selectAll"
                           type="checkbox"
@@ -1328,7 +1332,8 @@ const editValueForField = (field: string, value: number): string => {
                           @change="toggleSelectAll()"
                         >
                       </th>
-                      <th v-if="isInternational" class="px-2 py-2" />
+                      <th v-if="isInternational" class="px-2 py-2"></th>
+                      <th></th>
                       <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase">{{ t('rankings.table.rank') }}</th>
                       <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">
                         {{ effectiveType === 'MULTI' ? structureLabel : t('rankings.table.team') }}
@@ -1387,6 +1392,10 @@ const editValueForField = (field: string, value: number): string => {
                             v-else-if="getQualifiedStatus(idx, ranking.length) === 'eliminated'"
                             class="text-red-600 text-xs"
                           >▼</span>
+                        </div>
+                      </td>
+                      <td class="px-2 py-1.5 text-center text-sm">
+                        <div class="flex items-center justify-center gap-1">
                           {{ effectiveType === 'CP' ? team.cltNiveauPubli : team.cltPubli }}
                         </div>
                       </td>
