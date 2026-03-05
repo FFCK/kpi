@@ -802,6 +802,79 @@ class AdminGamedaysController extends AbstractController
     }
 
     /**
+     * Bulk copy officials + calendar from a source gameday to target gamedays
+     */
+    #[Route('/bulk/officials', name: 'admin_gamedays_bulk_officials', methods: ['PATCH'])]
+    #[IsGranted('ROLE_COMPETITION')]
+    public function bulkOfficials(Request $request): JsonResponse
+    {
+        /** @var User|null $user */
+        $user = $this->getUser();
+        if ($user && $user->getNiveau() > 4) {
+            return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $sourceId = (int) ($data['sourceId'] ?? 0);
+        $ids = array_filter(array_map('intval', $data['ids'] ?? []), fn($id) => $id > 0);
+
+        if ($sourceId <= 0) {
+            return $this->json(['message' => 'Source gameday ID required'], Response::HTTP_BAD_REQUEST);
+        }
+        if (empty($ids)) {
+            return $this->json(['message' => 'No target IDs provided'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Remove source from targets if present
+        $ids = array_values(array_filter($ids, fn($id) => $id !== $sourceId));
+        if (empty($ids)) {
+            return $this->json(['message' => 'No target IDs after excluding source'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Fetch source gameday
+        $source = $this->connection->prepare(
+            "SELECT Nom, Date_debut, Date_fin, Lieu, Departement, Plan_eau,
+                    Responsable_insc, Responsable_R1, Organisateur, Delegue, ChefArbitre,
+                    Rep_athletes, Arb_nj1, Arb_nj2, Arb_nj3, Arb_nj4, Arb_nj5,
+                    Code_saison, Code_competition
+             FROM kp_journee WHERE Id = ?"
+        )->executeQuery([$sourceId])->fetchAssociative();
+
+        if (!$source) {
+            return $this->json(['message' => 'Source gameday not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $sql = "UPDATE kp_journee SET
+                    Nom = ?, Date_debut = ?, Date_fin = ?, Lieu = ?, Departement = ?, Plan_eau = ?,
+                    Responsable_insc = ?, Responsable_R1 = ?, Organisateur = ?,
+                    Delegue = ?, ChefArbitre = ?, Rep_athletes = ?,
+                    Arb_nj1 = ?, Arb_nj2 = ?, Arb_nj3 = ?, Arb_nj4 = ?, Arb_nj5 = ?,
+                    Code_uti = ?
+                WHERE Id IN ($placeholders)";
+
+        $params = [
+            $source['Nom'], $source['Date_debut'], $source['Date_fin'],
+            $source['Lieu'], $source['Departement'], $source['Plan_eau'],
+            $source['Responsable_insc'], $source['Responsable_R1'], $source['Organisateur'],
+            $source['Delegue'], $source['ChefArbitre'], $source['Rep_athletes'],
+            $source['Arb_nj1'], $source['Arb_nj2'], $source['Arb_nj3'],
+            $source['Arb_nj4'], $source['Arb_nj5'],
+            $user?->getUserIdentifier(),
+        ];
+
+        $this->connection->prepare($sql)->executeStatement(array_merge($params, $ids));
+
+        $this->logActionForSeason(
+            'Copie officiels+calendrier',
+            $source['Code_saison'],
+            "{$source['Code_competition']}: source $sourceId -> " . count($ids) . ' cibles'
+        );
+
+        return $this->json(['updated' => count($ids)]);
+    }
+
+    /**
      * Bulk delete gamedays
      */
     #[Route('/bulk', name: 'admin_gamedays_bulk_delete', methods: ['DELETE'])]

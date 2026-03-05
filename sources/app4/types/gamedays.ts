@@ -73,6 +73,12 @@ export interface GamedayBulkCalendarData {
   departement: string
 }
 
+// Bulk officials + calendar copy
+export interface GamedayBulkOfficialsData {
+  sourceId: number
+  ids: number[]
+}
+
 // Event item for filter dropdown
 export interface GamedayEvent {
   id: number

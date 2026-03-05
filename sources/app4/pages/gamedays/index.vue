@@ -36,6 +36,8 @@ const duplicateConfirmOpen = ref(false)
 const bulkDeleteConfirmOpen = ref(false)
 const bulkPublishConfirmOpen = ref(false)
 const bulkCalendarModalOpen = ref(false)
+const bulkOfficialsModalOpen = ref(false)
+const officialsModalOpen = ref(false)
 const eventAssociationOpen = ref(false)
 
 // Form
@@ -57,6 +59,27 @@ const bulkCalendarData = ref<Omit<GamedayBulkCalendarData, 'ids'>>({
   lieu: '',
   departement: '',
 })
+
+// Bulk officials
+const bulkOfficialsSourceId = ref<number | null>(null)
+
+// Officials modal
+const officialsGameday = ref<Gameday | null>(null)
+const officialsFormData = ref({
+  responsableInsc: '',
+  responsableR1: '',
+  delegue: '',
+  chefArbitre: '',
+  repAthletes: '',
+  arbNj1: '',
+  arbNj2: '',
+  arbNj3: '',
+  arbNj4: '',
+  arbNj5: '',
+})
+
+// Legacy base URL for PDF
+const legacyBaseUrl = computed(() => useRuntimeConfig().public.legacyBaseUrl || 'https://kpi.localhost')
 
 // Inline editing
 const editingCell = ref<{ id: number; field: string } | null>(null)
@@ -621,6 +644,93 @@ const getOfficialsSummary = (g: Gameday): string => {
   return parts.length > 0 ? parts.join(', ') : '-'
 }
 
+// ─── Bulk Officials Copy (Feature 1) ───
+const bulkOfficialsSource = computed(() => {
+  if (!bulkOfficialsSourceId.value) return null
+  return gamedays.value.find(g => g.id === bulkOfficialsSourceId.value) ?? null
+})
+
+const openBulkOfficialsModal = () => {
+  bulkOfficialsSourceId.value = null
+  bulkOfficialsModalOpen.value = true
+}
+
+const submitBulkOfficials = async () => {
+  if (!bulkOfficialsSourceId.value) return
+  formSaving.value = true
+  try {
+    const targetIds = selectedIds.value.filter(id => id !== bulkOfficialsSourceId.value)
+    const response = await api.patch<{ updated: number }>('/admin/gamedays/bulk/officials', {
+      sourceId: bulkOfficialsSourceId.value,
+      ids: targetIds,
+    })
+    toast.add({
+      title: t('common.success'),
+      description: t('gamedays.bulk_officials_updated', { count: response.updated }),
+      color: 'success',
+    })
+    bulkOfficialsModalOpen.value = false
+    selectedIds.value = []
+    await loadGamedays()
+  } catch {
+    // Error already shown by useApi
+  } finally {
+    formSaving.value = false
+  }
+}
+
+// ─── Officials Modal (Feature 2) ───
+const openOfficialsModal = (g: Gameday) => {
+  officialsGameday.value = g
+  officialsFormData.value = {
+    responsableInsc: g.responsableInsc || '',
+    responsableR1: g.responsableR1 || '',
+    delegue: g.delegue || '',
+    chefArbitre: g.chefArbitre || '',
+    repAthletes: g.repAthletes || '',
+    arbNj1: g.arbNj1 || '',
+    arbNj2: g.arbNj2 || '',
+    arbNj3: g.arbNj3 || '',
+    arbNj4: g.arbNj4 || '',
+    arbNj5: g.arbNj5 || '',
+  }
+  officialsModalOpen.value = true
+}
+
+const saveOfficials = async () => {
+  if (!officialsGameday.value) return
+  formSaving.value = true
+  try {
+    await api.put(`/admin/gamedays/${officialsGameday.value.id}`, officialsFormData.value)
+    // Update local data
+    const g = gamedays.value.find(gd => gd.id === officialsGameday.value!.id)
+    if (g) {
+      Object.assign(g, {
+        responsableInsc: officialsFormData.value.responsableInsc || null,
+        responsableR1: officialsFormData.value.responsableR1 || null,
+        delegue: officialsFormData.value.delegue || null,
+        chefArbitre: officialsFormData.value.chefArbitre || null,
+        repAthletes: officialsFormData.value.repAthletes || null,
+        arbNj1: officialsFormData.value.arbNj1 || null,
+        arbNj2: officialsFormData.value.arbNj2 || null,
+        arbNj3: officialsFormData.value.arbNj3 || null,
+        arbNj4: officialsFormData.value.arbNj4 || null,
+        arbNj5: officialsFormData.value.arbNj5 || null,
+      })
+    }
+    toast.add({ title: t('common.success'), description: t('gamedays.updated'), color: 'success' })
+    officialsModalOpen.value = false
+  } catch {
+    // Error already shown
+  } finally {
+    formSaving.value = false
+  }
+}
+
+const printJurySheet = (gamedayId: number) => {
+  window.open(`${legacyBaseUrl.value}/admin/FeuilleInstances.php?idJournee=${gamedayId}`, '_blank')
+}
+
 </script>
 
 <template>
@@ -659,7 +769,7 @@ const getOfficialsSummary = (g: Gameday): string => {
       </template>
     </AdminPageHeader>
 
-    <!-- Toolbar (search + add + bulk) -->
+    <!-- Toolbar (search + add) -->
     <AdminToolbar
       v-model:search="searchQuery"
       :search-placeholder="t('gamedays.search_placeholder')"
@@ -689,6 +799,15 @@ const getOfficialsSummary = (g: Gameday): string => {
         >
           <UIcon name="heroicons:calendar-days" class="w-6 h-6 inline mr-1" />
           {{ t('gamedays.calendar_public') }}
+        </button>
+        <!-- Bulk officials copy (CP competitions only) -->
+        <button
+          v-if="canEdit && selectedIds.length > 0 && showCPColumns"
+          class="px-3 py-2 text-sm font-medium text-amber-700 bg-amber-50 border border-amber-200 rounded-lg hover:bg-amber-100"
+          @click="openBulkOfficialsModal"
+        >
+          <UIcon name="heroicons:user-group" class="w-6 h-6 inline mr-1" />
+          {{ t('gamedays.bulk_officials_title') }}
         </button>
         <!-- Event association -->
         <button
@@ -1015,8 +1134,14 @@ const getOfficialsSummary = (g: Gameday): string => {
                 <span v-else class="text-gray-400">0</span>
               </td>
               <!-- Officials -->
-              <td class="px-2 py-2 text-xs text-gray-600 max-w-48 truncate" :title="getOfficialsSummary(g)">
-                {{ getOfficialsSummary(g) }}
+              <td class="px-2 py-2 text-xs text-gray-600 max-w-48" @click.stop>
+                <button
+                  class="text-left hover:text-blue-600 truncate max-w-full"
+                  :title="getOfficialsSummary(g)"
+                  @click="openOfficialsModal(g)"
+                >
+                  {{ getOfficialsSummary(g) }}
+                </button>
               </td>
               <!-- Delete -->
               <td v-if="canEdit && g.matchCount === 0" class="px-2 py-2" @click.stop>
@@ -1085,9 +1210,9 @@ const getOfficialsSummary = (g: Gameday): string => {
             <span>{{ g.type === 'C' ? t('gamedays.field.type_c') : t('gamedays.field.type_e') }}</span>
             <span v-if="g.matchCount > 0">{{ g.matchCount }} {{ t('gamedays.field.matches').toLowerCase() }}</span>
           </div>
-          <div v-if="g.responsableInsc" class="text-xs text-gray-500">
+          <button v-if="g.responsableInsc" class="text-xs text-gray-500 hover:text-blue-600" @click.stop="openOfficialsModal(g)">
             RC: {{ g.responsableInsc }}
-          </div>
+          </button>
         </div>
 
         <template #footer-right>
@@ -1518,6 +1643,230 @@ const getOfficialsSummary = (g: Gameday): string => {
               <span v-if="g.nom" class="text-gray-500 ml-1">| {{ g.nom }}</span>
             </div>
           </label>
+        </div>
+      </div>
+    </AdminModal>
+
+    <!-- ═══════ BULK OFFICIALS COPY MODAL (Feature 1) ═══════ -->
+    <AdminModal
+      :open="bulkOfficialsModalOpen"
+      :title="t('gamedays.bulk_officials_title')"
+      max-width="lg"
+      @close="bulkOfficialsModalOpen = false"
+    >
+      <div class="space-y-4">
+        <p class="text-sm text-gray-600">
+          {{ t('gamedays.bulk_officials_hint', { count: selectedIds.length }) }}
+        </p>
+
+        <!-- Source phase selector -->
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('gamedays.bulk_officials_source') }}</label>
+          <select
+            v-model.number="bulkOfficialsSourceId"
+            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+          >
+            <option :value="null">{{ t('gamedays.bulk_officials_select_source') }}</option>
+            <option v-for="g in gamedays" :key="g.id" :value="g.id">
+              #{{ g.id }} - {{ g.phase || '?' }} ({{ g.nom || '-' }})
+            </option>
+          </select>
+        </div>
+
+        <!-- Preview of source data -->
+        <div v-if="bulkOfficialsSource" class="p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm space-y-1">
+          <p class="font-medium text-amber-800 mb-2">{{ t('gamedays.bulk_officials_preview') }}</p>
+          <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-gray-700">
+            <div class="text-green-700 font-medium col-span-2 mt-1">{{ t('gamedays.calendar_public') }}</div>
+            <div>{{ t('gamedays.field.nom') }}: <span class="font-medium">{{ bulkOfficialsSource.nom || '-' }}</span></div>
+            <div>{{ t('gamedays.field.lieu') }}: <span class="font-medium">{{ bulkOfficialsSource.lieu || '-' }} {{ bulkOfficialsSource.departement ? `(${bulkOfficialsSource.departement})` : '' }}</span></div>
+            <div>{{ t('gamedays.field.date_debut') }}: <span class="font-medium">{{ formatDate(bulkOfficialsSource.dateDebut) }}</span></div>
+            <div>{{ t('gamedays.field.date_fin') }}: <span class="font-medium">{{ formatDate(bulkOfficialsSource.dateFin) }}</span></div>
+            <div class="text-amber-800 font-medium col-span-2 mt-1">{{ t('gamedays.field.officiels') }}</div>
+            <div v-if="bulkOfficialsSource.responsableInsc">{{ t('gamedays.field.responsable_insc') }}: {{ bulkOfficialsSource.responsableInsc }}</div>
+            <div v-if="bulkOfficialsSource.responsableR1">{{ t('gamedays.field.responsable_r1') }}: {{ bulkOfficialsSource.responsableR1 }}</div>
+            <div v-if="bulkOfficialsSource.delegue">{{ t('gamedays.field.delegue') }}: {{ bulkOfficialsSource.delegue }}</div>
+            <div v-if="bulkOfficialsSource.chefArbitre">{{ t('gamedays.field.chef_arbitre') }}: {{ bulkOfficialsSource.chefArbitre }}</div>
+            <div v-if="bulkOfficialsSource.repAthletes">{{ t('gamedays.field.rep_athletes') }}: {{ bulkOfficialsSource.repAthletes }}</div>
+            <div v-if="bulkOfficialsSource.arbNj1">{{ t('gamedays.field.arb_nj') }} 1: {{ bulkOfficialsSource.arbNj1 }}</div>
+            <div v-if="bulkOfficialsSource.arbNj2">{{ t('gamedays.field.arb_nj') }} 2: {{ bulkOfficialsSource.arbNj2 }}</div>
+            <div v-if="bulkOfficialsSource.arbNj3">{{ t('gamedays.field.arb_nj') }} 3: {{ bulkOfficialsSource.arbNj3 }}</div>
+            <div v-if="bulkOfficialsSource.arbNj4">{{ t('gamedays.field.arb_nj') }} 4: {{ bulkOfficialsSource.arbNj4 }}</div>
+            <div v-if="bulkOfficialsSource.arbNj5">{{ t('gamedays.field.arb_nj') }} 5: {{ bulkOfficialsSource.arbNj5 }}</div>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-4 border-t">
+          <button
+            type="button"
+            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+            @click="bulkOfficialsModalOpen = false"
+          >
+            {{ t('common.cancel') }}
+          </button>
+          <button
+            class="px-4 py-2 text-sm font-medium text-white bg-amber-600 rounded-lg hover:bg-amber-700 disabled:opacity-50"
+            :disabled="formSaving || !bulkOfficialsSourceId"
+            @click="submitBulkOfficials"
+          >
+            {{ formSaving ? t('common.loading') : t('common.confirm') }}
+          </button>
+        </div>
+      </div>
+    </AdminModal>
+
+    <!-- ═══════ OFFICIALS MODAL (Feature 2) ═══════ -->
+    <AdminModal
+      :open="officialsModalOpen"
+      :title="t('gamedays.officials_title')"
+      max-width="xl"
+      @close="officialsModalOpen = false"
+    >
+      <div v-if="officialsGameday" class="space-y-4">
+        <!-- Header info -->
+        <div class="text-sm text-gray-600">
+          <span class="font-medium text-gray-900">{{ officialsGameday.codeCompetition }} - {{ officialsGameday.phase }}</span>
+          <span v-if="officialsGameday.nom" class="ml-2">| {{ officialsGameday.nom }}</span>
+          <span v-if="officialsGameday.lieu" class="ml-2">| {{ officialsGameday.lieu }}</span>
+        </div>
+
+        <!-- Competition Committee -->
+        <div class="border border-gray-200 rounded-lg">
+          <div class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 rounded-t-lg">
+            {{ t('gamedays.officials_comite') }}
+          </div>
+          <div class="p-4 border-t border-gray-200 space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('gamedays.field.responsable_insc') }}</label>
+                <AdminAthleteAutocomplete
+                  :model-value="officialsFormData.responsableInsc"
+                  :placeholder="t('gamedays.field.responsable_insc')"
+                  @update:model-value="officialsFormData.responsableInsc = $event"
+                />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('gamedays.field.responsable_r1') }}</label>
+                <AdminAthleteAutocomplete
+                  :model-value="officialsFormData.responsableR1"
+                  :placeholder="t('gamedays.field.responsable_r1')"
+                  @update:model-value="officialsFormData.responsableR1 = $event"
+                />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('gamedays.field.delegue') }}</label>
+                <AdminAthleteAutocomplete
+                  :model-value="officialsFormData.delegue"
+                  :placeholder="t('gamedays.field.delegue')"
+                  @update:model-value="officialsFormData.delegue = $event"
+                />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('gamedays.field.chef_arbitre') }}</label>
+                <AdminAthleteAutocomplete
+                  :model-value="officialsFormData.chefArbitre"
+                  :placeholder="t('gamedays.field.chef_arbitre')"
+                  @update:model-value="officialsFormData.chefArbitre = $event"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Appeal Jury -->
+        <div class="border border-gray-200 rounded-lg">
+          <div class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 rounded-t-lg">
+            {{ t('gamedays.officials_jury') }}
+          </div>
+          <div class="p-4 border-t border-gray-200 space-y-3">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('gamedays.field.delegue') }} ({{ t('gamedays.field.delegue') }})</label>
+                <div class="px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg text-gray-600">
+                  {{ officialsFormData.delegue || '-' }}
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('gamedays.field.responsable_r1') }}</label>
+                <div class="px-3 py-2 text-sm bg-gray-50 border border-gray-200 rounded-lg text-gray-600">
+                  {{ officialsFormData.responsableR1 || '-' }}
+                </div>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('gamedays.field.rep_athletes') }}</label>
+                <AdminAthleteAutocomplete
+                  :model-value="officialsFormData.repAthletes"
+                  :placeholder="t('gamedays.field.rep_athletes')"
+                  @update:model-value="officialsFormData.repAthletes = $event"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Non-player referees -->
+        <div class="border border-gray-200 rounded-lg">
+          <div class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-50 rounded-t-lg">
+            {{ t('gamedays.field.arb_nj') }}
+          </div>
+          <div class="p-4 border-t border-gray-200">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+              <AdminAthleteAutocomplete
+                :model-value="officialsFormData.arbNj1"
+                placeholder="1"
+                @update:model-value="officialsFormData.arbNj1 = $event"
+              />
+              <AdminAthleteAutocomplete
+                :model-value="officialsFormData.arbNj2"
+                placeholder="2"
+                @update:model-value="officialsFormData.arbNj2 = $event"
+              />
+              <AdminAthleteAutocomplete
+                :model-value="officialsFormData.arbNj3"
+                placeholder="3"
+                @update:model-value="officialsFormData.arbNj3 = $event"
+              />
+              <AdminAthleteAutocomplete
+                :model-value="officialsFormData.arbNj4"
+                placeholder="4"
+                @update:model-value="officialsFormData.arbNj4 = $event"
+              />
+              <AdminAthleteAutocomplete
+                :model-value="officialsFormData.arbNj5"
+                placeholder="5"
+                @update:model-value="officialsFormData.arbNj5 = $event"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex justify-between pt-4 border-t">
+          <button
+            type="button"
+            class="px-4 py-2 text-sm font-medium text-red-700 bg-white border border-red-300 rounded-lg hover:bg-red-50"
+            @click="printJurySheet(officialsGameday.id)"
+          >
+            <UIcon name="heroicons:document-text" class="w-5 h-5 inline mr-1" />
+            {{ t('gamedays.officials_print') }}
+          </button>
+          <div class="flex gap-2">
+            <button
+              type="button"
+              class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+              @click="officialsModalOpen = false"
+            >
+              {{ t('common.cancel') }}
+            </button>
+            <button
+              v-if="canEdit"
+              class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+              :disabled="formSaving"
+              @click="saveOfficials"
+            >
+              {{ formSaving ? t('common.loading') : t('common.save') }}
+            </button>
+          </div>
         </div>
       </div>
     </AdminModal>
