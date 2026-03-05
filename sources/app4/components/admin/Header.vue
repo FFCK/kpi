@@ -9,6 +9,13 @@ interface MenuItem {
   children?: MenuItem[]
 }
 
+interface MenuGroup {
+  key: string
+  label: string
+  icon: string
+  items: MenuItem[]
+}
+
 defineProps<{
   user: User | null
   mobileMenuOpen: boolean
@@ -101,102 +108,124 @@ const competitionMenuItems = computed<MenuItem[]>(() => {
   return items
 })
 
-// Administration menu items (global, not linked to a specific competition)
-const adminMenuItems = computed<MenuItem[]>(() => {
+// Administration menu groups (global, not linked to a specific competition)
+const adminMenuGroups = computed<MenuGroup[]>(() => {
   const profile = authStore.user?.profile ?? 99
-  const items: MenuItem[] = []
+  const groups: MenuGroup[] = []
 
-  // RC - profile <= 2
+  // Référentiels: groupes, événements, clubs, athlètes, resp. compétitions
+  const referentials: MenuItem[] = []
   if (profile <= 2) {
-    items.push({
-      to: '/rc',
-      icon: 'heroicons:identification',
-      label: t('menu.rc')
+    referentials.push({
+      to: '/groups',
+      icon: 'heroicons:rectangle-group',
+      label: t('menu.groups')
     })
-  }
-
-  // Clubs - profile <= 9
-  if (profile <= 9) {
-    items.push({
-      to: '/clubs',
-      icon: 'heroicons:building-office-2',
-      label: t('menu.clubs')
-    })
-  }
-  
-  // Événements - profile <= 2
-  if (profile <= 2) {
-    items.push({
+    referentials.push({
       to: '/events',
       icon: 'heroicons:calendar-days',
       label: t('menu.events')
     })
   }
-
-  // Groupes - profile <= 2
-  if (profile <= 2) {
-    items.push({
-      to: '/groups',
-      icon: 'heroicons:rectangle-group',
-      label: t('menu.groups')
+  if (profile <= 9) {
+    referentials.push({
+      to: '/clubs',
+      icon: 'heroicons:building-office-2',
+      label: t('menu.clubs')
     })
   }
-
-  // Copie competition - profile <= 2
-  if (profile <= 2) {
-    items.push({
-      to: '/competitions/copy',
-      icon: 'heroicons:document-duplicate',
-      label: t('menu.copy')
-    })
-  }
-
-  // Athlètes - profile <= 8
   if (profile <= 8) {
-    items.push({
+    referentials.push({
       to: '/athletes',
       icon: 'heroicons:user',
       label: t('menu.athletes')
     })
   }
+  if (profile <= 2) {
+    referentials.push({
+      to: '/rc',
+      icon: 'heroicons:identification',
+      label: t('menu.rc')
+    })
+  }
+  if (referentials.length > 0) {
+    groups.push({
+      key: 'referentials',
+      label: t('menu.referentials'),
+      icon: 'heroicons:book-open',
+      items: referentials
+    })
+  }
 
-  // Utilisateurs - profile <= 4
+  // Droits: utilisateurs, journal
+  const rights: MenuItem[] = []
   if (profile <= 4) {
-    items.push({
+    rights.push({
       to: '/users',
       icon: 'heroicons:users',
       label: t('menu.users')
     })
   }
-
-  // TV Control - profile <= 2
   if (profile <= 2) {
-    items.push({
-      to: '/tv',
-      icon: 'heroicons:tv',
-      label: t('menu.tv')
-    })
-  }
-
-  // Journal - profile <= 2
-  if (profile <= 2) {
-    items.push({
+    rights.push({
       to: '/journal',
       icon: 'heroicons:document-text',
       label: t('menu.journal')
     })
   }
+  if (rights.length > 0) {
+    groups.push({
+      key: 'rights',
+      label: t('menu.rights'),
+      icon: 'heroicons:shield-check',
+      items: rights
+    })
+  }
 
-  // Opérations - profile === 1
+  // Live: TV
+  const live: MenuItem[] = []
+  if (profile <= 2) {
+    live.push({
+      to: '/tv',
+      icon: 'heroicons:tv',
+      label: t('menu.tv')
+    })
+  }
+  if (live.length > 0) {
+    groups.push({
+      key: 'live',
+      label: t('menu.live'),
+      icon: 'heroicons:signal',
+      items: live
+    })
+  }
+
+  // Opérations: copie système de jeu, opérations
+  const operations: MenuItem[] = []
+  if (profile <= 2) {
+    operations.push({
+      to: '/competitions/copy',
+      icon: 'heroicons:document-duplicate',
+      label: t('menu.copy')
+    })
+  }
   if (profile === 1) {
-    items.push({
+    operations.push({
       to: '/operations',
       icon: 'heroicons:wrench-screwdriver',
       label: t('menu.operations')
     })
   }
+  if (operations.length > 0) {
+    groups.push({
+      key: 'operations',
+      label: t('menu.operations_group'),
+      icon: 'heroicons:cog-6-tooth',
+      items: operations
+    })
+  }
 
-  return items
+  return groups
 })
 
 const handleLogout = async () => {
@@ -292,10 +321,10 @@ onMounted(() => {
           </template>
 
           <!-- Separator between sections -->
-          <div v-if="adminMenuItems.length > 0" class="h-6 w-px bg-gray-700 mx-2" />
+          <div v-if="adminMenuGroups.length > 0" class="h-6 w-px bg-gray-700 mx-2" />
 
           <!-- Section: Administration (dropdown) -->
-          <div v-if="adminMenuItems.length > 0" class="relative">
+          <div v-if="adminMenuGroups.length > 0" class="relative">
             <button
               :class="[
                 'flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium transition-colors',
@@ -325,18 +354,25 @@ onMounted(() => {
             >
               <div
                 v-if="openDropdown === 'admin'"
-                class="absolute left-0 mt-1 w-52 bg-gray-800 rounded-lg shadow-lg border border-gray-700 py-1 z-50"
+                class="absolute left-0 mt-1 w-56 bg-gray-800 rounded-lg shadow-lg border border-gray-700 py-1 z-50"
               >
-                <NuxtLink
-                  v-for="item in adminMenuItems"
-                  :key="item.to"
-                  :to="item.to!"
-                  class="flex items-center gap-2 px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 hover:text-white transition-colors"
-                  @click="openDropdown = null"
-                >
-                  <UIcon :name="item.icon" class="w-4 h-4" />
-                  <span>{{ item.label }}</span>
-                </NuxtLink>
+                <template v-for="(group, gIndex) in adminMenuGroups" :key="group.key">
+                  <div v-if="gIndex > 0" class="border-t border-gray-700 my-1" />
+                  <div class="px-4 py-1.5 text-xs font-semibold text-gray-400 uppercase italic tracking-wider flex items-center gap-1.5">
+                    <UIcon :name="group.icon" class="w-3.5 h-3.5" />
+                    {{ group.label }}
+                  </div>
+                  <NuxtLink
+                    v-for="item in group.items"
+                    :key="item.to"
+                    :to="item.to!"
+                    class="flex items-center gap-2 px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 hover:text-white transition-colors"
+                    @click="openDropdown = null"
+                  >
+                    <UIcon :name="item.icon" class="w-4 h-4" />
+                    <span>{{ item.label }}</span>
+                  </NuxtLink>
+                </template>
               </div>
             </Transition>
           </div>
@@ -465,10 +501,10 @@ onMounted(() => {
           </template>
 
           <!-- Separator -->
-          <div v-if="adminMenuItems.length > 0" class="border-t border-gray-700 my-3" />
+          <div v-if="adminMenuGroups.length > 0" class="border-t border-gray-700 my-3" />
 
           <!-- Section: Administration (accordion) -->
-          <div v-if="adminMenuItems.length > 0">
+          <div v-if="adminMenuGroups.length > 0">
             <button
               type="button"
               :class="[
@@ -488,15 +524,22 @@ onMounted(() => {
               />
             </button>
             <div v-if="mobileExpanded === 'admin'" class="ml-6 space-y-1 border-l border-gray-700 pl-3">
-              <NuxtLink
-                v-for="item in adminMenuItems"
-                :key="item.to"
-                :to="item.to!"
-                class="flex items-center gap-2 py-1.5 text-sm text-gray-300 hover:text-white transition-colors"
-              >
-                <UIcon :name="item.icon" class="w-4 h-4" />
-                {{ item.label }}
-              </NuxtLink>
+              <template v-for="(group, gIndex) in adminMenuGroups" :key="group.key">
+                <div v-if="gIndex > 0" class="border-t border-gray-700 my-2" />
+                <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-1.5 py-1">
+                  <UIcon :name="group.icon" class="w-3.5 h-3.5" />
+                  {{ group.label }}
+                </div>
+                <NuxtLink
+                  v-for="item in group.items"
+                  :key="item.to"
+                  :to="item.to!"
+                  class="flex items-center gap-2 py-1.5 text-sm text-gray-300 hover:text-white transition-colors"
+                >
+                  <UIcon :name="item.icon" class="w-4 h-4" />
+                  {{ item.label }}
+                </NuxtLink>
+              </template>
             </div>
           </div>
         </div>

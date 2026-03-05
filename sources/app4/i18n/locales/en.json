@@ -30,7 +30,11 @@
     "rc": "Competition Officials",
     "journal": "Activity Log",
     "copy": "Game system copy",
-    "tv": "TV Control"
+    "tv": "TV Control",
+    "referentials": "Referentials",
+    "rights": "Rights",
+    "live": "Live",
+    "operations_group": "Operations"
   },
   "profile": "Profile",
   "logout": "Logout",

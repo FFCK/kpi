@@ -30,7 +30,11 @@
     "rc": "Resp. Compétition",
     "journal": "Journal",
     "copy": "Copie système de jeu",
-    "tv": "Contrôle TV"
+    "tv": "Contrôle TV",
+    "referentials": "Référentiels",
+    "rights": "Droits",
+    "live": "Live",
+    "operations_group": "Opérations"
   },
   "profile": "Profil",
   "logout": "Déconnexion",
