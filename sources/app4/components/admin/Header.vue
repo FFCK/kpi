@@ -169,6 +169,15 @@ const adminMenuItems = computed<MenuItem[]>(() => {
     })
   }
 
+  // TV Control - profile <= 2
+  if (profile <= 2) {
+    items.push({
+      to: '/tv',
+      icon: 'heroicons:tv',
+      label: t('menu.tv')
+    })
+  }
+
   // Journal - profile <= 2
   if (profile <= 2) {
     items.push({

@@ -29,7 +29,8 @@
     "groups": "Groups",
     "rc": "Competition Officials",
     "journal": "Activity Log",
-    "copy": "Game system copy"
+    "copy": "Game system copy",
+    "tv": "TV Control"
   },
   "profile": "Profile",
   "logout": "Logout",
@@ -1878,6 +1879,111 @@
       "cancel": "Cancel",
       "success": "Comment saved",
       "error": "Error saving comment"
+    }
+  },
+  "tv": {
+    "title": "TV Control",
+    "tabs": {
+      "channels": "Channels",
+      "scenarios": "Scenarios"
+    },
+    "global": {
+      "event": "Event",
+      "date": "Date",
+      "style": "Style",
+      "language": "Language",
+      "all_dates": "All",
+      "select": "Select"
+    },
+    "panel": {
+      "channel": "Channel",
+      "presentation": "Presentation",
+      "competition": "Competition",
+      "match": "Game",
+      "team": "Team",
+      "player": "Player",
+      "pitch": "Pitch",
+      "pitchs": "Pitches",
+      "medal": "Medal",
+      "zone": "Zone",
+      "mode": "Mode",
+      "round": "Round",
+      "start": "Start",
+      "animate": "Animate",
+      "speaker": "Speaker",
+      "count": "Count",
+      "first_game": "First game",
+      "game_count": "Game count",
+      "competitions": "Competitions",
+      "format": "Format",
+      "option": "Option",
+      "navbar": "Navbar"
+    },
+    "actions": {
+      "activate": "Activate",
+      "blank": "Blank",
+      "url": "URL",
+      "control": "Control",
+      "report": "Report",
+      "add_panel": "Add panel",
+      "remove_panel": "Remove"
+    },
+    "presentations": {
+      "groups": {
+        "general": "General",
+        "before_game": "Before game inlays",
+        "running_nations": "Running game (nations)",
+        "running_clubs": "Running game (clubs)",
+        "running_ws": "Live game (WS)",
+        "match_presentation": "Game presentation",
+        "after_game": "After game inlays",
+        "screen": "Screen display",
+        "web": "Website / Smartphone",
+        "api": "API",
+        "cache": "Cache build",
+        "debug": "Debug"
+      }
+    },
+    "scenario": {
+      "title": "Scenario",
+      "channel": "Channel",
+      "url": "URL",
+      "delay": "Delay (ms)",
+      "update": "Update",
+      "test": "Test",
+      "refresh": "Refresh",
+      "updated": "Scenario {scenario} updated"
+    },
+    "labels": {
+      "title": "Channel and scenario labels",
+      "channels": "Channels",
+      "scenarios": "Scenarios",
+      "save": "Save",
+      "cancel": "Cancel",
+      "saved": "Labels saved",
+      "manage": "Manage labels"
+    },
+    "messages": {
+      "activated": "Channel {channel} activated",
+      "blanked": "Channel {channel} blanked",
+      "select_event": "Select an event",
+      "select_channel": "Select a channel",
+      "select_presentation": "Select a presentation"
+    },
+    "links": {
+      "event_cache": "Event cache generator",
+      "split_url": "Split URL",
+      "scenario_live": "Scenario Live"
+    },
+    "speaker_options": {
+      "no": "No",
+      "yes": "Yes",
+      "maybe": "Maybe"
+    },
+    "option_players": {
+      "with_stats": "Players with stats",
+      "all": "All players",
+      "without_stats": "All without stats"
     }
   }
 }

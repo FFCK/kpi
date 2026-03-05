@@ -29,7 +29,8 @@
     "groups": "Groupes",
     "rc": "Resp. Compétition",
     "journal": "Journal",
-    "copy": "Copie système de jeu"
+    "copy": "Copie système de jeu",
+    "tv": "Contrôle TV"
   },
   "profile": "Profil",
   "logout": "Déconnexion",
@@ -1890,6 +1891,111 @@
       "cancel": "Annuler",
       "success": "Commentaire enregistré",
       "error": "Erreur lors de l'enregistrement"
+    }
+  },
+  "tv": {
+    "title": "Contrôle TV",
+    "tabs": {
+      "channels": "Channels",
+      "scenarios": "Scénarios"
+    },
+    "global": {
+      "event": "Événement",
+      "date": "Date",
+      "style": "Style",
+      "language": "Langue",
+      "all_dates": "Toutes",
+      "select": "Sélectionnez"
+    },
+    "panel": {
+      "channel": "Channel",
+      "presentation": "Présentation",
+      "competition": "Compétition",
+      "match": "Match",
+      "team": "Équipe",
+      "player": "Joueur",
+      "pitch": "Terrain",
+      "pitchs": "Terrains",
+      "medal": "Médaille",
+      "zone": "Zone",
+      "mode": "Mode",
+      "round": "Tour",
+      "start": "Début",
+      "animate": "Animer",
+      "speaker": "Speaker",
+      "count": "Nombre",
+      "first_game": "Premier match",
+      "game_count": "Nombre de matchs",
+      "competitions": "Compétitions",
+      "format": "Format",
+      "option": "Option",
+      "navbar": "Barre de navigation"
+    },
+    "actions": {
+      "activate": "Activer",
+      "blank": "Vide",
+      "url": "URL",
+      "control": "Contrôle",
+      "report": "Rapport",
+      "add_panel": "Ajouter un panneau",
+      "remove_panel": "Retirer"
+    },
+    "presentations": {
+      "groups": {
+        "general": "Général",
+        "before_game": "Avant match",
+        "running_nations": "Match en cours (nations)",
+        "running_clubs": "Match en cours (clubs)",
+        "running_ws": "Match en cours (WS)",
+        "match_presentation": "Présentation match",
+        "after_game": "Après match",
+        "screen": "Écran d'affichage",
+        "web": "Site / Mobile",
+        "api": "API",
+        "cache": "Cache",
+        "debug": "Debug"
+      }
+    },
+    "scenario": {
+      "title": "Scénario",
+      "channel": "Channel",
+      "url": "URL",
+      "delay": "Délai (ms)",
+      "update": "Mettre à jour",
+      "test": "Tester",
+      "refresh": "Rafraîchir",
+      "updated": "Scénario {scenario} mis à jour"
+    },
+    "labels": {
+      "title": "Labels des channels et scénarios",
+      "channels": "Channels",
+      "scenarios": "Scénarios",
+      "save": "Sauvegarder",
+      "cancel": "Annuler",
+      "saved": "Labels sauvegardés",
+      "manage": "Gérer les labels"
+    },
+    "messages": {
+      "activated": "Channel {channel} activé",
+      "blanked": "Channel {channel} vidé",
+      "select_event": "Sélectionnez un événement",
+      "select_channel": "Sélectionnez un channel",
+      "select_presentation": "Sélectionnez une présentation"
+    },
+    "links": {
+      "event_cache": "Event cache generator",
+      "split_url": "Split URL",
+      "scenario_live": "Scenario Live"
+    },
+    "speaker_options": {
+      "no": "Non",
+      "yes": "Oui",
+      "maybe": "Peut-être"
+    },
+    "option_players": {
+      "with_stats": "Joueurs avec stats",
+      "all": "Tous les joueurs",
+      "without_stats": "Tous sans stats"
     }
   }
 }
