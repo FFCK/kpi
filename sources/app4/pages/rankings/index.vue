@@ -102,7 +102,6 @@ const effectiveType = computed<CompetitionType>(() => {
 })
 
 // Is international competition?
-const isInternational = computed(() => competitionInfo.value?.codeNiveau === 'INT')
 
 // Is ranking different from published?
 const isRankingDifferent = computed(() => {
@@ -136,10 +135,20 @@ const getLevelColor = (level: string) => {
   }
 }
 
-// Flag URL for international competitions
-const getFlagUrl = (team: RankingTeam) => {
-  if (!isInternational.value || !team.codeClub) return null
-  return `${legacyBase.value}/img/Nations/${team.codeClub.substring(0, 3)}.png`
+// Logo URL - club logos and international flags
+const getLogoUrl = (team: RankingTeam) => {
+  if (team.logo) {
+    if (team.logo.includes('/')) return `${legacyBase.value}/img/${team.logo}`
+    if (team.codeClub && team.codeClub.length !== 4) {
+      return `${legacyBase.value}/img/Nations/${team.codeClub.substring(0, 3)}.png`
+    }
+    return `${legacyBase.value}/img/KIP/logo/${team.logo}`
+  }
+  if (team.codeClub) {
+    if (team.codeClub.length === 4) return `${legacyBase.value}/img/KIP/logo/${team.codeClub}-logo.png`
+    return `${legacyBase.value}/img/Nations/${team.codeClub.substring(0, 3)}.png`
+  }
+  return null
 }
 
 // Qualified/eliminated indicator
@@ -713,12 +722,12 @@ const editValueForField = (field: string, value: number): string => {
             </NuxtLink>
             <template v-if="canCompute && isStatusOn">
               <label class="flex items-center gap-2 text-sm">
+                {{ t('rankings.compute.include_unlocked') }}
                 <input
                   v-model="includeUnlocked"
                   type="checkbox"
                   class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500"
                 >
-                {{ t('rankings.compute.include_unlocked') }}
               </label>
               <button
                 class="px-3 py-1.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
@@ -763,7 +772,7 @@ const editValueForField = (field: string, value: number): string => {
                 <table class="min-w-full divide-y divide-gray-200 bg-blue-100">
                   <thead>
                     <tr class="bg-blue-200">
-                      <th v-if="isInternational" class="px-2 py-2"></th>
+                      <th class="px-2 py-2"></th>
                       <th></th>
                       <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase">{{ t('rankings.table.rank') }}</th>
                       <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">
@@ -799,10 +808,10 @@ const editValueForField = (field: string, value: number): string => {
                       class="hover:bg-gray-50"
                     >
                       <!-- Flag -->
-                      <td v-if="isInternational" class="px-2 py-1.5">
+                      <td class="px-2 py-1.5">
                         <img
-                          v-if="getFlagUrl(team)"
-                          :src="getFlagUrl(team)!"
+                          v-if="getLogoUrl(team)"
+                          :src="getLogoUrl(team)!"
                           :alt="team.codeClub"
                           class="w-6 h-6 object-contain"
                           @error="($event.target as HTMLImageElement).style.display = 'none'"
@@ -953,8 +962,8 @@ const editValueForField = (field: string, value: number): string => {
                 >
                   <div class="flex items-start gap-2">
                     <img
-                      v-if="isInternational && getFlagUrl(team)"
-                      :src="getFlagUrl(team)!"
+                      v-if="getLogoUrl(team)"
+                      :src="getLogoUrl(team)!"
                       :alt="team.codeClub"
                       class="w-6 h-6 object-contain mt-0.5"
                       @error="($event.target as HTMLImageElement).style.display = 'none'"
@@ -1332,7 +1341,7 @@ const editValueForField = (field: string, value: number): string => {
                           @change="toggleSelectAll()"
                         >
                       </th>
-                      <th v-if="isInternational" class="px-2 py-2"></th>
+                      <th class="px-2 py-2"></th>
                       <th></th>
                       <th class="px-2 py-2 text-center text-xs font-medium text-gray-500 uppercase">{{ t('rankings.table.rank') }}</th>
                       <th class="px-2 py-2 text-left text-xs font-medium text-gray-500 uppercase">
@@ -1373,10 +1382,10 @@ const editValueForField = (field: string, value: number): string => {
                           @change="toggleSelect(team.id)"
                         >
                       </td>
-                      <td v-if="isInternational" class="px-2 py-1.5">
+                      <td class="px-2 py-1.5">
                         <img
-                          v-if="getFlagUrl(team)"
-                          :src="getFlagUrl(team)!"
+                          v-if="getLogoUrl(team)"
+                          :src="getLogoUrl(team)!"
                           :alt="team.codeClub"
                           class="w-6 h-6 object-contain"
                           @error="($event.target as HTMLImageElement).style.display = 'none'"
@@ -1440,8 +1449,8 @@ const editValueForField = (field: string, value: number): string => {
                       @change="toggleSelect(team.id)"
                     >
                     <img
-                      v-if="isInternational && getFlagUrl(team)"
-                      :src="getFlagUrl(team)!"
+                      v-if="getLogoUrl(team)"
+                      :src="getLogoUrl(team)!"
                       :alt="team.codeClub"
                       class="w-6 h-6 object-contain mt-0.5"
                       @error="($event.target as HTMLImageElement).style.display = 'none'"

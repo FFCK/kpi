@@ -829,7 +829,7 @@ class AdminRankingsController extends AbstractController
 
     private function loadRanking(string $competition, string $season, string $type): array
     {
-        $sql = "SELECT ce.Id, ce.Libelle, ce.Code_club, COALESCE(cl.Code_comite_dep, '') AS codeComiteDep,
+        $sql = "SELECT ce.Id, ce.Libelle, ce.Code_club, COALESCE(ce.logo, '') AS logo, COALESCE(cl.Code_comite_dep, '') AS codeComiteDep,
                        ce.Clt, ce.Pts, ce.J, ce.G, ce.N, ce.P, ce.F,
                        ce.Plus, ce.Moins, ce.Diff, ce.PtsNiveau, ce.CltNiveau,
                        ce.Clt_publi, ce.Pts_publi, ce.J_publi, ce.G_publi, ce.N_publi,
@@ -855,6 +855,7 @@ class AdminRankingsController extends AbstractController
             'id' => (int) $r['Id'],
             'libelle' => $r['Libelle'],
             'codeClub' => $r['Code_club'] ?: '',
+            'logo' => $r['logo'],
             'codeComiteDep' => $r['codeComiteDep'],
             'clt' => (int) $r['Clt'],
             'pts' => (int) $r['Pts'],

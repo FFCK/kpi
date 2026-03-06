@@ -37,6 +37,7 @@ export interface RankingTeam {
   id: number
   libelle: string
   codeClub: string
+  logo: string
   codeComiteDep: string
   // Computed ranking
   clt: number

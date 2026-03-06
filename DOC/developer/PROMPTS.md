@@ -68,17 +68,13 @@ TODO :
 * Matchs : saisie arbitres ? (inline + formulaire)
 * gamesday et games : manque toast de confirmation lors d'une modification en ligne.
 * Journées/Phases : autocomplete sur les officiels, etc...
+* Schéma de progression /gamedays/schema : imprimabe en pdf
+* Page/Rubrique TV (Tv control panel)
+* Recherche/Copie système de jeu : ✅ Spécifié dans DOC/specs/PAGE_COPIE_COMPETITION.md
+* Journées/Phases : 
+  * copier les officiels et les paramètres du calendrier public depuis une phase sur toutes les autres phases de la compétition (type CP) (depuis le formulaire ? depuis une action sur la liste ? )
+  * Générer la feuille de jury d'appel à partir des officiels de la compétition, avec possibilité de modifier les données avant impression
 
-
-- Journées/Phases : 
-  - copier les officiels et les paramètres du calendrier public depuis une phase sur toutes les autres phases de la compétition (type CP) (depuis le formulaire ? depuis une action sur la liste ? )
-  - Générer la feuille de jury d'appel à partir des officiels de la compétition, avec possibilité de modifier les données avant impression
-
-- Recherche/Copie système de jeu : ✅ Spécifié dans DOC/specs/PAGE_COPIE_COMPETITION.md
-
-- Schéma de progression /gamedays/schema : imprimabe en pdf
-
-- Page/Rubrique TV (Tv control panel)
 
 - Reproduire les pdf en stateless ?
 

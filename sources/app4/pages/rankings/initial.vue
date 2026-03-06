@@ -203,17 +203,17 @@ const fieldLabel = (field: string) => {
         <table class="min-w-full divide-y divide-gray-200">
           <thead class="bg-gray-50">
             <tr>
-              <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase w-10">{{ t('rankings.table.rank') }}</th>
+              <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">{{ t('rankings.table.rank') }}</th>
               <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">{{ t('rankings.table.team') }}</th>
-              <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase w-12">{{ t('rankings.table.pts') }}</th>
-              <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase w-8">{{ t('rankings.table.j') }}</th>
-              <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase w-8">{{ t('rankings.table.g') }}</th>
-              <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase w-8">{{ t('rankings.table.n') }}</th>
-              <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase w-8">{{ t('rankings.table.p') }}</th>
-              <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase w-8">{{ t('rankings.table.f') }}</th>
-              <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase w-8">{{ t('rankings.table.plus') }}</th>
-              <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase w-8">{{ t('rankings.table.minus') }}</th>
-              <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase w-10">{{ t('rankings.table.diff') }}</th>
+              <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">{{ t('rankings.table.pts') }}</th>
+              <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">{{ t('rankings.table.j') }}</th>
+              <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">{{ t('rankings.table.g') }}</th>
+              <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">{{ t('rankings.table.n') }}</th>
+              <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">{{ t('rankings.table.p') }}</th>
+              <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">{{ t('rankings.table.f') }}</th>
+              <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">{{ t('rankings.table.plus') }}</th>
+              <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">{{ t('rankings.table.minus') }}</th>
+              <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">{{ t('rankings.table.diff') }}</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200">
