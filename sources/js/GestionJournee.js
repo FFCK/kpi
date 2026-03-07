@@ -879,7 +879,10 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 		} else if (jq(this).hasClass('terrain')) {
 			jq(this).before('<input type="tel" id="inputZone" class="directInputSpan" tabindex="' + tabindexVal + '" size="2" maxlength="2" value="' + valeur + '">')
 		} else if (jq(this).hasClass('score')) {
-			jq(this).before('<input type="tel" id="inputZone" class="directInputSpan" tabindex="' + tabindexVal + '" size="2" maxlength="2" value="' + valeur + '">')
+			jq(this).before('<input type="text" inputmode="numeric" id="inputZone" class="directInputSpan" tabindex="' + tabindexVal + '" size="2" maxlength="2" pattern="[0-9Ff]{1,2}" value="' + valeur + '">')
+			jq('#inputZone').on('input', function () {
+				this.value = this.value.toUpperCase()
+			})
 		} else if (jq(this).hasClass('equipe')) {
 			jq('#selectZoneAnnul').click()
 			jq(this).before('<select id="selectZone" class="directInputSpan" tabindex="' + tabindexVal + '"></select>')
