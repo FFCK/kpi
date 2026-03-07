@@ -538,6 +538,10 @@ const handleInlineKeydown = (e: KeyboardEvent) => {
   else if (e.key === 'Escape') cancelInlineEdit()
 }
 
+const onScoreInput = () => {
+  editingValue.value = editingValue.value.toUpperCase().replace(/[^0-9F]/g, '')
+}
+
 // ─── Inline Team editing ───
 const startTeamEdit = async (game: Game, team: 'A' | 'B') => {
   if (!isGameEditable(game)) return
@@ -1702,9 +1706,10 @@ const statusBtnClass = (game: Game) => {
                   <input
                     :id="`inline-${g.id}-ScoreA`"
                     v-model="editingValue" v-inline-focus
-                    type="tel"
+                    type="text" inputmode="numeric"
                     maxlength="4"
                     class="w-10 px-0.5 py-0 text-xs text-center border border-blue-400 rounded"
+                    @input="onScoreInput"
                     @keydown="handleInlineKeydown"
                     @blur="saveInlineEdit"
                   >
@@ -1759,9 +1764,10 @@ const statusBtnClass = (game: Game) => {
                   <input
                     :id="`inline-${g.id}-ScoreB`"
                     v-model="editingValue" v-inline-focus
-                    type="tel"
+                    type="text" inputmode="numeric"
                     maxlength="4"
                     class="w-10 px-0.5 py-0 text-xs text-center border border-blue-400 rounded"
+                    @input="onScoreInput"
                     @keydown="handleInlineKeydown"
                     @blur="saveInlineEdit"
                   >
@@ -2123,9 +2129,10 @@ const statusBtnClass = (game: Game) => {
               <input
                 :id="`inline-${g.id}-ScoreA`"
                 v-model="editingValue" v-inline-focus
-                type="tel"
+                type="text" inputmode="numeric"
                 maxlength="4"
                 class="w-10 px-0.5 py-0 text-center font-bold text-lg border border-blue-400 rounded"
+                @input="onScoreInput"
                 @keydown="handleInlineKeydown"
                 @blur="saveInlineEdit"
               >
@@ -2142,9 +2149,10 @@ const statusBtnClass = (game: Game) => {
               <input
                 :id="`inline-${g.id}-ScoreB`"
                 v-model="editingValue" v-inline-focus
-                type="tel"
+                type="text" inputmode="numeric"
                 maxlength="4"
                 class="w-10 px-0.5 py-0 text-center font-bold text-lg border border-blue-400 rounded"
+                @input="onScoreInput"
                 @keydown="handleInlineKeydown"
                 @blur="saveInlineEdit"
               >
