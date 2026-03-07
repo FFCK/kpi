@@ -380,7 +380,7 @@ class GestionUtilisateur extends MyPageSecure
 		$filtreJournee = utyGetPost('filtre_journee');
 		$limitclub = utyGetPost('limitclub');
 
-		$comboEvenement = utyGetPost('comboEvenement');
+		$comboEvenement = utyGetPost('comboEvenement', []);
 		$Date_debut = utyDateFrToUs(utyGetPost('Date_debut'));
 		$Date_fin = utyDateFrToUs(utyGetPost('Date_fin'));
 		$Date_debut = ($Date_debut != '') ? $Date_debut : null;
