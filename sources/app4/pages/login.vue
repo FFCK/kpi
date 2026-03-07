@@ -49,20 +49,20 @@ const handleSubmit = async () => {
     <div class="w-full max-w-md">
       <!-- Logo -->
       <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-blue-600">KPI Admin</h1>
-        <p class="mt-2 text-gray-600">{{ t('login.subtitle') }}</p>
+        <h1 class="text-3xl font-bold text-primary-600">KPI Admin</h1>
+        <p class="mt-2 text-header-600">{{ t('login.subtitle') }}</p>
       </div>
 
       <!-- Login form -->
       <div class="bg-white rounded-lg shadow-lg p-8">
-        <h2 class="text-xl font-semibold text-gray-900 mb-6">
+        <h2 class="text-xl font-semibold text-header-900 mb-6">
           {{ t('login.title') }}
         </h2>
 
         <!-- Error message -->
         <div
           v-if="error"
-          class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm"
+          class="mb-4 p-3 bg-danger-50 border border-danger-200 rounded-lg text-danger-700 text-sm"
         >
           {{ error }}
         </div>
@@ -70,13 +70,14 @@ const handleSubmit = async () => {
         <form class="space-y-4" @submit.prevent="handleSubmit">
           <!-- Username -->
           <div>
-            <label for="username" class="block text-sm font-medium text-gray-700 mb-1">
+            <label for="username" class="block text-sm font-medium text-header-700 mb-1">
               {{ t('login.username') }}
             </label>
             <UInput
               id="username"
               v-model="form.username"
               type="text"
+              variant="outline"
               :placeholder="t('login.username_placeholder')"
               required
               autofocus
@@ -85,13 +86,14 @@ const handleSubmit = async () => {
 
           <!-- Password -->
           <div>
-            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
+            <label for="password" class="block text-sm font-medium text-header-700 mb-1">
               {{ t('login.password') }}
             </label>
             <UInput
               id="password"
               v-model="form.password"
               type="password"
+              variant="outline"
               :placeholder="t('login.password_placeholder')"
               required
             />
@@ -110,7 +112,7 @@ const handleSubmit = async () => {
         </form>
 
         <!-- Beta notice -->
-        <div class="mt-6 p-3 bg-yellow-50 border border-yellow-200 rounded text-sm text-yellow-700">
+        <div class="mt-6 p-3 bg-warning-50 border border-warning-200 rounded text-sm text-warning-700">
           <strong>{{ t('login.beta_title') }}</strong>
           {{ t('login.beta_message') }}
         </div>
@@ -118,3 +120,10 @@ const handleSubmit = async () => {
     </div>
   </div>
 </template>
+
+<style>
+#username,
+#password {
+  background-color: var(--color-primary-50) !important;
+}
+</style>
