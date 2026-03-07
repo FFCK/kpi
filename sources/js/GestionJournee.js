@@ -881,7 +881,7 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 		} else if (jq(this).hasClass('score')) {
 			jq(this).before('<input type="text" inputmode="numeric" id="inputZone" class="directInputSpan" tabindex="' + tabindexVal + '" size="2" maxlength="2" pattern="[0-9Ff]{1,2}" value="' + valeur + '">')
 			jq('#inputZone').bind('input', function () {
-				this.value = this.value.toUpperCase()
+				this.value = this.value.toUpperCase().replace(/[^0-9F]/g, '')
 			})
 		} else if (jq(this).hasClass('equipe')) {
 			jq('#selectZoneAnnul').click()
