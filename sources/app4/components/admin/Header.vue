@@ -276,7 +276,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <header class="sticky top-0 z-30 bg-gray-900 text-white border-b border-gray-800 shadow-lg">
+  <header class="sticky top-0 z-30 bg-header-950 text-header-50 border-b border-header-800 shadow-lg">
     <!-- Top bar -->
     <div class="px-4 lg:px-6">
       <div class="flex items-center justify-between h-16">
@@ -284,18 +284,18 @@ onMounted(() => {
         <div class="flex items-center gap-4">
           <NuxtLink to="/" class="flex items-center gap-2">
             <img src="/img/logo_kp.png" width="30" height="30" alt="logo" class="inline-block align-middle" >
-            <span class="text-xl font-bold text-blue-400">KPI</span>
+            <span class="text-xl font-bold text-primary-400">KPI</span>
             <span class="text-sm text-gray-300">Admin</span>
           </NuxtLink>
           <!-- Online/Offline indicator -->
           <ClientOnly>
             <UTooltip :text="isOnline ? t('status.online') : t('status.offline')">
-              <span :class="isOnline ? 'text-green-400' : 'text-red-500 animate-pulse'">
+              <span :class="isOnline ? 'text-success-400' : 'text-danger-500 animate-pulse'">
                 <UIcon :name="isOnline ? 'i-heroicons-wifi' : 'i-heroicons-signal-slash'" class="h-5 w-5" />
               </span>
             </UTooltip>
             <template #fallback>
-              <span class="text-green-400">
+              <span class="text-success-400">
                 <UIcon name="i-heroicons-wifi" class="h-5 w-5" />
               </span>
             </template>
@@ -311,8 +311,8 @@ onMounted(() => {
               :class="[
                 'flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium transition-colors',
                 isActive(item.to!)
-                  ? 'text-blue-400 bg-gray-800'
-                  : 'text-gray-300 hover:text-white hover:bg-gray-800'
+                  ? 'text-light-50 bg-header-800'
+                  : 'text-header-300 hover:text-light-50 hover:bg-header-800'
               ]"
             >
               <UIcon :name="item.icon" class="w-4 h-4" />
@@ -321,7 +321,7 @@ onMounted(() => {
           </template>
 
           <!-- Separator between sections -->
-          <div v-if="adminMenuGroups.length > 0" class="h-6 w-px bg-gray-700 mx-2" />
+          <div v-if="adminMenuGroups.length > 0" class="h-6 w-px bg-header-700 mx-2" />
 
           <!-- Section: Administration (dropdown) -->
           <div v-if="adminMenuGroups.length > 0" class="relative">
@@ -329,8 +329,8 @@ onMounted(() => {
               :class="[
                 'flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium transition-colors',
                 openDropdown === 'admin'
-                  ? 'text-blue-400 bg-gray-800'
-                  : 'text-gray-300 hover:text-white hover:bg-gray-800'
+                  ? 'text-light-50 bg-header-800'
+                  : 'text-header-300 hover:text-light-50 hover:bg-header-800'
               ]"
               @click="toggleDropdown('admin')"
             >
@@ -354,11 +354,11 @@ onMounted(() => {
             >
               <div
                 v-if="openDropdown === 'admin'"
-                class="absolute left-0 mt-1 w-56 bg-gray-800 rounded-lg shadow-lg border border-gray-700 py-1 z-50"
+                class="absolute left-0 mt-1 w-56 bg-header-950 rounded-lg shadow-lg border border-header-700 py-1 z-50"
               >
                 <template v-for="(group, gIndex) in adminMenuGroups" :key="group.key">
-                  <div v-if="gIndex > 0" class="border-t border-gray-700 my-1" />
-                  <div class="px-4 py-1.5 text-xs font-semibold text-gray-400 uppercase italic tracking-wider flex items-center gap-1.5">
+                  <div v-if="gIndex > 0" class="border-t border-header-700 my-1" />
+                  <div class="px-4 py-1.5 text-xs font-semibold text-header-700 uppercase italic tracking-wider flex items-center gap-1.5">
                     <UIcon :name="group.icon" class="w-3.5 h-3.5" />
                     {{ group.label }}
                   </div>
@@ -366,7 +366,7 @@ onMounted(() => {
                     v-for="item in group.items"
                     :key="item.to"
                     :to="item.to!"
-                    class="flex items-center gap-2 px-4 py-2 text-sm text-gray-200 hover:bg-gray-700 hover:text-white transition-colors"
+                    class="flex items-center gap-2 px-4 py-2 text-sm text-header-300 hover:bg-header-800 hover:text-light-50 transition-colors"
                     @click="openDropdown = null"
                   >
                     <UIcon :name="item.icon" class="w-4 h-4" />
@@ -401,15 +401,15 @@ onMounted(() => {
           <!-- User menu (desktop) -->
           <div ref="userMenuRef" class="hidden lg:block relative">
             <button
-              class="flex items-center gap-2 px-3 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg transition-colors"
+              class="flex items-center gap-2 px-3 py-2 bg-gray-800 hover:bg-header-700 rounded-lg transition-colors"
               @click="userMenuOpen = !userMenuOpen"
             >
-              <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-sm font-medium">
+              <div class="w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center text-sm font-medium">
                 {{ user?.firstname?.[0] ?? 'U' }}{{ user?.name?.[0] ?? '' }}
               </div>
               <UIcon
                 name="heroicons:chevron-down"
-                class="w-4 h-4 text-gray-400 transition-transform"
+                class="w-4 h-4 text-header-400 transition-transform"
                 :class="{ 'rotate-180': userMenuOpen }"
               />
             </button>
