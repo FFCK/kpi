@@ -160,54 +160,54 @@ const canImport = computed(() => importEventId.value !== null && importEventId.v
   <div class="space-y-8">
     <!-- Export section -->
     <section>
-      <h2 class="text-lg font-semibold text-gray-900 mb-4">
+      <h2 class="text-lg font-semibold text-header-900 mb-4">
         {{ t('operations.import_export.export_title') }}
       </h2>
 
       <div class="max-w-xl space-y-4">
         <div class="relative">
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('operations.import_export.select_event') }}
           </label>
           <input
             v-model="searchEvent"
             type="text"
             :placeholder="t('operations.import_export.search_event')"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             @focus="showEventDropdown = events.length > 0"
             @blur="onBlur"
           >
           <!-- Dropdown -->
           <div
             v-if="showEventDropdown && events.length > 0"
-            class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto"
+            class="absolute z-10 w-full mt-1 bg-white border border-header-200 rounded-lg shadow-lg max-h-60 overflow-auto"
           >
             <button
               v-for="event in events"
               :key="event.id"
               type="button"
-              class="w-full px-4 py-2 text-left hover:bg-gray-50 text-sm"
+              class="w-full px-4 py-2 text-left hover:bg-header-50 text-sm"
               @click="selectExportEvent(event)"
             >
               <div class="font-medium">{{ event.libelle }}</div>
-              <div class="text-xs text-gray-500">
+              <div class="text-xs text-header-500">
                 ID: {{ event.id }} - {{ event.lieu || 'Sans lieu' }}
               </div>
             </button>
           </div>
           <!-- Selected indicator -->
-          <div v-if="selectedExportEvent" class="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
+          <div v-if="selectedExportEvent" class="mt-2 p-2 bg-primary-50 border border-primary-200 rounded-lg">
             <div class="flex items-center gap-2">
-              <UIcon name="i-heroicons-check-circle" class="w-5 h-5 text-blue-600" />
+              <UIcon name="i-heroicons-check-circle" class="w-5 h-5 text-primary-600" />
               <span class="text-sm font-medium">{{ selectedExportEvent.libelle }}</span>
-              <span class="text-xs text-gray-500">(ID: {{ selectedExportEvent.id }})</span>
+              <span class="text-xs text-header-500">(ID: {{ selectedExportEvent.id }})</span>
             </div>
           </div>
         </div>
 
         <button
           :disabled="!canExport || loading"
-          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           @click="exportEvent"
         >
           <UIcon v-if="loading" name="i-heroicons-arrow-path" class="w-4 h-4 animate-spin" />
@@ -219,21 +219,21 @@ const canImport = computed(() => importEventId.value !== null && importEventId.v
 
     <!-- Import section -->
     <section>
-      <h2 class="text-lg font-semibold text-gray-900 mb-4">
+      <h2 class="text-lg font-semibold text-header-900 mb-4">
         {{ t('operations.import_export.import_title') }}
       </h2>
 
-      <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
+      <div class="bg-warning-50 border border-warning-200 rounded-lg p-4 mb-4">
         <div class="flex items-start gap-3">
-          <UIcon name="i-heroicons-exclamation-triangle" class="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" />
-          <p class="text-sm text-yellow-800">{{ t('operations.import_export.import_warning') }}</p>
+          <UIcon name="i-heroicons-exclamation-triangle" class="w-5 h-5 text-warning-600 mt-0.5 flex-shrink-0" />
+          <p class="text-sm text-warning-800">{{ t('operations.import_export.import_warning') }}</p>
         </div>
       </div>
 
       <div class="max-w-xl space-y-4">
         <!-- Event ID input -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('operations.import_export.event_id') }}
           </label>
           <input
@@ -241,13 +241,13 @@ const canImport = computed(() => importEventId.value !== null && importEventId.v
             type="number"
             min="1"
             :placeholder="t('operations.import_export.event_id_placeholder')"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
           >
         </div>
 
         <!-- File input -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('operations.import_export.json_file') }}
           </label>
           <div class="flex items-center gap-3">
@@ -255,25 +255,25 @@ const canImport = computed(() => importEventId.value !== null && importEventId.v
               ref="importFileInput"
               type="file"
               accept="application/json"
-              class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-1 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              class="flex-1 px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 file:mr-4 file:py-1 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
               @change="onImportFileSelected"
             >
             <button
               v-if="importFile"
-              class="px-3 py-2 text-gray-600 hover:text-gray-900"
+              class="px-3 py-2 text-header-600 hover:text-header-900"
               @click="clearImportFile"
             >
               <UIcon name="i-heroicons-x-mark" class="w-5 h-5" />
             </button>
           </div>
-          <p v-if="importFile" class="mt-1 text-sm text-gray-500">
+          <p v-if="importFile" class="mt-1 text-sm text-header-500">
             {{ importFile.name }} ({{ Math.round(importFile.size / 1024) }} Ko)
           </p>
         </div>
 
         <button
           :disabled="!canImport || loading"
-          class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          class="px-4 py-2 bg-danger-600 text-white rounded-lg hover:bg-danger-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           @click="openImportModal"
         >
           <UIcon v-if="loading" name="i-heroicons-arrow-path" class="w-4 h-4 animate-spin" />

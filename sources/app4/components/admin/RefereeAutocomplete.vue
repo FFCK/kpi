@@ -201,9 +201,9 @@ onUnmounted(() => {
         :placeholder="placeholder || t('games.referee_placeholder')"
         :class="[
           compact
-            ? 'w-full px-1 py-0 text-xs border border-blue-400 rounded bg-white'
-            : 'w-full px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
-          disabled ? 'bg-gray-100 cursor-not-allowed' : '',
+            ? 'w-full px-1 py-0 text-xs border border-primary-400 rounded bg-white'
+            : 'w-full px-3 py-2 text-sm border border-header-300 rounded-lg bg-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500',
+          disabled ? 'bg-header-100 cursor-not-allowed' : '',
         ]"
         @focus="isOpen = results.length > 0"
         @keydown="handleKeydown"
@@ -212,12 +212,12 @@ onUnmounted(() => {
       <div v-if="!compact" class="absolute inset-y-0 right-0 flex items-center pr-2">
         <div
           v-if="isLoading"
-          class="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full"
+          class="animate-spin h-4 w-4 border-2 border-primary-500 border-t-transparent rounded-full"
         />
         <button
           v-else-if="searchQuery && !disabled"
           type="button"
-          class="text-gray-400 hover:text-gray-600"
+          class="text-header-400 hover:text-header-600"
           @mousedown.prevent="clearSelection"
         >
           <UIcon name="i-heroicons-x-mark" class="w-4 h-4" />
@@ -227,7 +227,7 @@ onUnmounted(() => {
       <button
         v-if="compact && searchQuery && !disabled"
         type="button"
-        class="absolute right-0.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+        class="absolute right-0.5 top-1/2 -translate-y-1/2 text-header-400 hover:text-header-600"
         @mousedown.prevent="clearSelection"
       >
         <UIcon name="i-heroicons-x-mark" class="w-3 h-3" />
@@ -237,20 +237,20 @@ onUnmounted(() => {
     <!-- Dropdown results -->
     <div
       v-if="isOpen && !disabled && results.length > 0"
-      class="absolute z-50 w-64 mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+      class="absolute z-50 w-64 mt-1 bg-white border border-header-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"
     >
       <template v-for="(item, idx) in results" :key="idx">
         <!-- Separator -->
         <div
           v-if="item.type === 'separator'"
-          class="px-3 py-1 text-[10px] font-semibold text-gray-400 bg-gray-50 uppercase tracking-wider"
+          class="px-3 py-1 text-[10px] font-semibold text-header-400 bg-header-50 uppercase tracking-wider"
         >
           {{ item.label }}
         </div>
         <!-- Error -->
         <div
           v-else-if="item.type === 'error'"
-          class="px-3 py-2 text-xs text-red-500 text-center"
+          class="px-3 py-2 text-xs text-danger-500 text-center"
         >
           {{ item.label }}
         </div>
@@ -258,7 +258,7 @@ onUnmounted(() => {
         <button
           v-else
           type="button"
-          class="w-full px-3 py-1.5 text-left hover:bg-blue-50 border-b border-gray-50 transition-colors text-xs"
+          class="w-full px-3 py-1.5 text-left hover:bg-primary-50 border-b border-header-50 transition-colors text-xs"
           @mousedown.prevent="selectItem(item)"
         >
           <span class="font-medium">{{ item.label }}</span>

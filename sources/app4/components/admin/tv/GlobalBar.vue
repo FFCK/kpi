@@ -35,13 +35,13 @@ watch(filters, (val) => {
 </script>
 
 <template>
-  <div class="flex flex-wrap items-end gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+  <div class="flex flex-wrap items-end gap-4 p-4 bg-header-50 rounded-lg border border-header-200">
     <!-- Event -->
     <div class="flex flex-col gap-1">
-      <label class="text-xs font-medium text-gray-600">{{ t('tv.global.event') }}</label>
+      <label class="text-xs font-medium text-header-600">{{ t('tv.global.event') }}</label>
       <select
         v-model.number="filters.eventId"
-        class="px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white min-w-[250px]"
+        class="px-3 py-2 text-sm border border-header-300 rounded-lg bg-white min-w-[250px]"
       >
         <option :value="null">{{ t('tv.global.select') }}</option>
         <option v-for="e in events" :key="e.id" :value="e.id">
@@ -52,10 +52,10 @@ watch(filters, (val) => {
 
     <!-- Date -->
     <div class="flex flex-col gap-1">
-      <label class="text-xs font-medium text-gray-600">{{ t('tv.global.date') }}</label>
+      <label class="text-xs font-medium text-header-600">{{ t('tv.global.date') }}</label>
       <select
         v-model="filters.date"
-        class="px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white min-w-[140px]"
+        class="px-3 py-2 text-sm border border-header-300 rounded-lg bg-white min-w-[140px]"
       >
         <option value="">{{ t('tv.global.all_dates') }}</option>
         <option v-for="d in matchData?.dates ?? []" :key="d" :value="d">{{ d }}</option>
@@ -64,10 +64,10 @@ watch(filters, (val) => {
 
     <!-- Style -->
     <div class="flex flex-col gap-1">
-      <label class="text-xs font-medium text-gray-600">{{ t('tv.global.style') }}</label>
+      <label class="text-xs font-medium text-header-600">{{ t('tv.global.style') }}</label>
       <select
         v-model="filters.css"
-        class="px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white min-w-[180px]"
+        class="px-3 py-2 text-sm border border-header-300 rounded-lg bg-white min-w-[180px]"
       >
         <option v-for="s in TV_STYLES" :key="s.value" :value="s.value">{{ s.label }}</option>
       </select>
@@ -75,10 +75,10 @@ watch(filters, (val) => {
 
     <!-- Language -->
     <div class="flex flex-col gap-1">
-      <label class="text-xs font-medium text-gray-600">{{ t('tv.global.language') }}</label>
+      <label class="text-xs font-medium text-header-600">{{ t('tv.global.language') }}</label>
       <select
         v-model="filters.lang"
-        class="px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white min-w-[80px]"
+        class="px-3 py-2 text-sm border border-header-300 rounded-lg bg-white min-w-[80px]"
       >
         <option value="en">EN</option>
         <option value="fr">FR</option>

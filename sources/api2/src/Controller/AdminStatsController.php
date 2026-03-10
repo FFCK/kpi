@@ -1835,8 +1835,8 @@ class AdminStatsController extends AbstractController
                 'category' => 'analyses',
                 'categoryLabelKey' => 'stats.categories.analyses',
                 'types' => [
-                    ['value' => 'CJouees3', 'labelKey' => 'stats.types.irregularites', 'restricted' => true],
                     ['value' => 'CJouees3b', 'labelKey' => 'stats.types.irregularites_presence', 'restricted' => true],
+                    ['value' => 'CJouees3', 'labelKey' => 'stats.types.irregularites', 'restricted' => true],
                     ['value' => 'LicenciesNationaux', 'labelKey' => 'stats.types.licencies_nationaux', 'restricted' => true],
                     ['value' => 'CoherenceMatchs', 'labelKey' => 'stats.types.coherence_matchs', 'restricted' => true],
                 ],

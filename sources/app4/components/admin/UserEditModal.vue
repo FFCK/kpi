@@ -523,27 +523,27 @@ onBeforeUnmount(() => {
   >
     <div class="space-y-5">
       <!-- Error banner -->
-      <div v-if="formError" class="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+      <div v-if="formError" class="p-3 bg-danger-50 border border-danger-200 rounded-lg text-sm text-danger-700">
         {{ formError }}
       </div>
 
       <!-- Licence autocomplete (create mode only) -->
       <div v-if="!isEditing" ref="licenceDropdownRef" class="relative">
-        <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('users.modal.search_licence') }}</label>
+        <label class="block text-sm font-medium text-header-700 mb-1">{{ t('users.modal.search_licence') }}</label>
         <div class="relative">
           <input
             v-model="licenceQuery"
             type="text"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             :placeholder="t('users.modal.search_licence')"
           >
-          <UIcon v-if="licenceLoading" name="i-heroicons-arrow-path" class="absolute right-3 top-2.5 w-4 h-4 animate-spin text-gray-400" />
+          <UIcon v-if="licenceLoading" name="i-heroicons-arrow-path" class="absolute right-3 top-2.5 w-4 h-4 animate-spin text-header-400" />
         </div>
-        <div v-if="showLicenceDropdown" class="absolute z-30 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+        <div v-if="showLicenceDropdown" class="absolute z-30 mt-1 w-full bg-white border border-header-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
           <button
             v-for="athlete in licenceResults"
             :key="athlete.matric"
-            class="w-full px-3 py-2 text-left text-sm hover:bg-blue-50"
+            class="w-full px-3 py-2 text-left text-sm hover:bg-primary-50"
             @click="selectLicence(athlete)"
           >
             {{ athlete.label }}
@@ -554,76 +554,76 @@ onBeforeUnmount(() => {
       <!-- Licence + Identity row -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            {{ t('users.modal.licence') }} <span class="text-red-500">*</span>
+          <label class="block text-sm font-medium text-header-700 mb-1">
+            {{ t('users.modal.licence') }} <span class="text-danger-500">*</span>
           </label>
           <input
             v-model="form.code"
             type="text"
             maxlength="8"
             :readonly="isEditing"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            :class="{ 'bg-gray-100': isEditing }"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            :class="{ 'bg-header-100': isEditing }"
           >
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
-            {{ t('users.modal.identity') }} <span class="text-red-500">*</span>
+          <label class="block text-sm font-medium text-header-700 mb-1">
+            {{ t('users.modal.identity') }} <span class="text-danger-500">*</span>
           </label>
           <input
             v-model="form.identite"
             type="text"
             maxlength="80"
             :readonly="isEditing && adminNiveau > 1"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            :class="{ 'bg-gray-100': isEditing && adminNiveau > 1 }"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            :class="{ 'bg-header-100': isEditing && adminNiveau > 1 }"
           >
         </div>
       </div>
 
       <!-- Email -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
-          {{ t('users.modal.email') }} <span class="text-red-500">*</span>
+        <label class="block text-sm font-medium text-header-700 mb-1">
+          {{ t('users.modal.email') }} <span class="text-danger-500">*</span>
         </label>
         <input
           v-model="form.mail"
           type="email"
           maxlength="100"
-          class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
         >
       </div>
 
       <!-- Phone + Function -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('users.modal.phone') }}</label>
+          <label class="block text-sm font-medium text-header-700 mb-1">{{ t('users.modal.phone') }}</label>
           <input
             v-model="form.tel"
             type="text"
             maxlength="15"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
           >
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('users.modal.function') }}</label>
+          <label class="block text-sm font-medium text-header-700 mb-1">{{ t('users.modal.function') }}</label>
           <input
             v-model="form.fonction"
             type="text"
             maxlength="100"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
           >
         </div>
       </div>
 
       <!-- Profile -->
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">
-          {{ t('users.modal.profile') }} <span class="text-red-500">*</span>
+        <label class="block text-sm font-medium text-header-700 mb-1">
+          {{ t('users.modal.profile') }} <span class="text-danger-500">*</span>
         </label>
         <select
           v-model="form.niveau"
-          class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
         >
           <option v-for="opt in profileOptions" :key="opt.value" :value="opt.value">
             {{ opt.label }}
@@ -633,14 +633,14 @@ onBeforeUnmount(() => {
 
       <!-- Access Filters section -->
       <div class="border-t pt-4">
-        <h3 class="text-sm font-semibold text-gray-800 mb-3">{{ t('users.modal.filters_title') }}</h3>
+        <h3 class="text-sm font-semibold text-header-800 mb-3">{{ t('users.modal.filters_title') }}</h3>
 
         <!-- Seasons + Competitions side by side -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <!-- Seasons -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('users.modal.filter_seasons') }}</label>
-            <div class="border border-gray-300 rounded-lg max-h-36 overflow-y-auto p-2">
+            <label class="block text-sm font-medium text-header-700 mb-1">{{ t('users.modal.filter_seasons') }}</label>
+            <div class="border border-header-300 rounded-lg max-h-36 overflow-y-auto p-2">
               <label class="flex items-center gap-2 text-sm mb-1 cursor-pointer">
                 <input type="checkbox" :checked="allSeasons" @change="toggleAllSeasons">
                 <span class="font-medium">{{ t('users.modal.filter_seasons_all') }}</span>
@@ -663,14 +663,14 @@ onBeforeUnmount(() => {
 
           <!-- Competitions -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('users.modal.filter_competitions') }}</label>
-            <div class="border border-gray-300 rounded-lg max-h-36 overflow-y-auto p-2">
+            <label class="block text-sm font-medium text-header-700 mb-1">{{ t('users.modal.filter_competitions') }}</label>
+            <div class="border border-header-300 rounded-lg max-h-36 overflow-y-auto p-2">
               <label class="flex items-center gap-2 text-sm mb-1 cursor-pointer">
                 <input type="checkbox" :checked="allCompetitions" @change="toggleAllCompetitions">
                 <span class="font-medium">{{ t('users.modal.filter_competitions_all') }}</span>
               </label>
               <template v-for="(group, key) in groupedCompetitions" :key="key">
-                <div class="text-xs font-semibold text-gray-500 mt-2 mb-1">— {{ group.label }} —</div>
+                <div class="text-xs font-semibold text-header-500 mt-2 mb-1">— {{ group.label }} —</div>
                 <label
                   v-for="c in group.items"
                   :key="c.code"
@@ -691,8 +691,8 @@ onBeforeUnmount(() => {
 
         <!-- Events (profile <= 2 only) -->
         <div v-if="adminNiveau <= 2 && events.length > 0" class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('users.modal.filter_events') }}</label>
-          <div class="border border-gray-300 rounded-lg max-h-36 overflow-y-auto p-2">
+          <label class="block text-sm font-medium text-header-700 mb-1">{{ t('users.modal.filter_events') }}</label>
+          <div class="border border-header-300 rounded-lg max-h-36 overflow-y-auto p-2">
             <label
               v-for="evt in events"
               :key="evt.id"
@@ -710,20 +710,20 @@ onBeforeUnmount(() => {
 
         <!-- Clubs autocomplete -->
         <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('users.modal.filter_clubs') }}</label>
+          <label class="block text-sm font-medium text-header-700 mb-1">{{ t('users.modal.filter_clubs') }}</label>
           <div ref="clubDropdownRef" class="relative">
             <input
               v-model="clubQuery"
               type="text"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               :placeholder="t('users.modal.filter_clubs_placeholder')"
             >
-            <UIcon v-if="clubLoading" name="i-heroicons-arrow-path" class="absolute right-3 top-2.5 w-4 h-4 animate-spin text-gray-400" />
-            <div v-if="showClubDropdown" class="absolute z-30 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg max-h-36 overflow-y-auto">
+            <UIcon v-if="clubLoading" name="i-heroicons-arrow-path" class="absolute right-3 top-2.5 w-4 h-4 animate-spin text-header-400" />
+            <div v-if="showClubDropdown" class="absolute z-30 mt-1 w-full bg-white border border-header-200 rounded-lg shadow-lg max-h-36 overflow-y-auto">
               <button
                 v-for="club in clubResults"
                 :key="club.code"
-                class="w-full px-3 py-2 text-left text-sm hover:bg-blue-50"
+                class="w-full px-3 py-2 text-left text-sm hover:bg-primary-50"
                 @click="selectClub(club)"
               >
                 {{ club.code }} - {{ club.libelle }}
@@ -735,21 +735,21 @@ onBeforeUnmount(() => {
             <span
               v-for="club in selectedClubs"
               :key="club.code"
-              class="inline-flex items-center gap-1 px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded-full"
+              class="inline-flex items-center gap-1 px-2 py-0.5 bg-primary-100 text-primary-800 text-xs rounded-full"
             >
               {{ club.code }} - {{ club.libelle }}
-              <button class="text-blue-600 hover:text-blue-800" @click="removeClub(club.code)">×</button>
+              <button class="text-primary-600 hover:text-primary-800" @click="removeClub(club.code)">×</button>
             </span>
           </div>
         </div>
 
         <!-- Journées -->
         <div class="mb-4">
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('users.modal.filter_gamedays') }}</label>
+          <label class="block text-sm font-medium text-header-700 mb-1">{{ t('users.modal.filter_gamedays') }}</label>
           <input
             v-model="form.filtreJournee"
             type="text"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             :placeholder="t('users.modal.filter_gamedays_placeholder')"
           >
         </div>
@@ -757,13 +757,13 @@ onBeforeUnmount(() => {
 
       <!-- Mandates section (profile <= 3 and edit mode only) -->
       <div v-if="adminNiveau <= 3 && isEditing" class="border-t pt-4">
-        <h3 class="text-sm font-semibold text-gray-800 mb-3">{{ t('users.modal.mandates_title') }}</h3>
+        <h3 class="text-sm font-semibold text-header-800 mb-3">{{ t('users.modal.mandates_title') }}</h3>
 
         <div v-if="mandatesLoading" class="flex justify-center py-4">
-          <UIcon name="i-heroicons-arrow-path" class="w-5 h-5 animate-spin text-gray-400" />
+          <UIcon name="i-heroicons-arrow-path" class="w-5 h-5 animate-spin text-header-400" />
         </div>
 
-        <div v-else-if="mandates.length === 0" class="text-sm text-gray-500 mb-3">
+        <div v-else-if="mandates.length === 0" class="text-sm text-header-500 mb-3">
           {{ t('users.modal.mandates_empty') }}
         </div>
 
@@ -772,20 +772,20 @@ onBeforeUnmount(() => {
           <div
             v-for="mandate in mandates"
             :key="mandate.id"
-            class="flex items-center justify-between p-2 bg-gray-50 rounded-lg text-sm"
+            class="flex items-center justify-between p-2 bg-header-50 rounded-lg text-sm"
           >
             <div>
               <span class="font-medium">{{ mandate.libelle }}</span>
-              <span class="text-gray-500 ml-2">P{{ mandate.niveau }}</span>
-              <span v-if="mandate.filtreSaison" class="text-gray-400 ml-2 text-xs">
+              <span class="text-header-500 ml-2">P{{ mandate.niveau }}</span>
+              <span v-if="mandate.filtreSaison" class="text-header-400 ml-2 text-xs">
                 {{ mandate.filtreSaison.split('|').filter(v => v).join(', ') }}
               </span>
-              <span v-if="mandate.filtreCompetition" class="text-gray-400 ml-2 text-xs">
+              <span v-if="mandate.filtreCompetition" class="text-header-400 ml-2 text-xs">
                 {{ mandate.filtreCompetition.split('|').filter(v => v).join(', ') }}
               </span>
             </div>
             <button
-              class="p-1 text-red-500 hover:text-red-700"
+              class="p-1 text-danger-500 hover:text-danger-700"
               @click="deleteMandate(mandate.id)"
             >
               <UIcon name="i-heroicons-trash" class="w-4 h-4" />
@@ -806,7 +806,7 @@ onBeforeUnmount(() => {
 
       <!-- Email section -->
       <div class="border-t pt-4">
-        <h3 class="text-sm font-semibold text-gray-800 mb-3">{{ t('users.modal.email_section') }}</h3>
+        <h3 class="text-sm font-semibold text-header-800 mb-3">{{ t('users.modal.email_section') }}</h3>
         <div class="space-y-2">
           <label class="flex items-center gap-2 text-sm cursor-pointer">
             <input v-model="form.sendResetEmail" type="checkbox">
@@ -818,9 +818,9 @@ onBeforeUnmount(() => {
           </label>
           <div>
             <div class="flex items-center justify-between mb-1">
-              <label class="text-sm font-medium text-gray-700">{{ t('users.modal.complementary_message') }}</label>
+              <label class="text-sm font-medium text-header-700">{{ t('users.modal.complementary_message') }}</label>
               <button
-                class="text-xs text-blue-600 hover:text-blue-800"
+                class="text-xs text-primary-600 hover:text-primary-800"
                 @click="form.complementaryMessage = standardMessage"
               >
                 {{ t('users.modal.standard_message') }}
@@ -830,7 +830,7 @@ onBeforeUnmount(() => {
               v-model="form.complementaryMessage"
               rows="3"
               maxlength="2000"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
           </div>
         </div>
@@ -839,13 +839,13 @@ onBeforeUnmount(() => {
 
     <template #footer>
       <button
-        class="px-4 py-2 text-sm text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200"
+        class="px-4 py-2 text-sm text-header-700 bg-header-100 rounded-lg hover:bg-header-200"
         @click="emit('close')"
       >
         {{ t('users.modal.cancel') }}
       </button>
       <button
-        class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2"
+        class="px-4 py-2 text-sm text-white bg-primary-600 rounded-lg hover:bg-primary-700 disabled:opacity-50 flex items-center gap-2"
         :disabled="submitting"
         @click="handleSubmit"
       >

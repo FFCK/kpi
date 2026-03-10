@@ -272,7 +272,7 @@ input:-webkit-autofill:focus {
 /* ===== Nuxt UI Component Improvements ===== */
 
 /* Buttons - removed overly broad [class*="bg-*"] selectors that
-   were overriding Tailwind utility classes (e.g. bg-blue-100 vs bg-blue-700).
+   were overriding Tailwind utility classes (e.g. bg-primary-100 vs bg-primary-700).
    Tailwind classes handle button colors correctly on their own. */
 
 /* Input fields improvements - only for native inputs NOT inside Nuxt UI components */

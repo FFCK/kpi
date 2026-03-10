@@ -42,8 +42,8 @@ const localLimit = computed({
 </script>
 
 <template>
-  <div class="px-4 py-3 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white">
-    <div class="text-sm text-gray-500">
+  <div class="px-4 py-3 border-t border-header-200 flex flex-col sm:flex-row items-center justify-between gap-4 bg-white">
+    <div class="text-sm text-header-500">
       <span v-if="total > 0">
         {{ showingTextFormatted }}
       </span>
@@ -52,10 +52,10 @@ const localLimit = computed({
     <div class="flex items-center gap-4">
       <!-- Items per page -->
       <div class="flex items-center gap-2">
-        <span class="text-sm text-gray-600">{{ itemsPerPageText }}</span>
+        <span class="text-sm text-header-600">{{ itemsPerPageText }}</span>
         <select
           v-model.number="localLimit"
-          class="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+          class="px-3 py-1.5 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 bg-white"
         >
           <option v-for="opt in limitOptions" :key="opt" :value="opt">{{ opt }}</option>
           <option v-if="showAll" :value="0">{{ t('common.all') }}</option>
@@ -66,18 +66,18 @@ const localLimit = computed({
       <div v-if="!isShowAll" class="flex items-center gap-2">
         <button
           type="button"
-          class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          class="p-2 text-header-600 hover:bg-header-100 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           :disabled="page <= 1"
           @click="emit('update:page', page - 1)"
         >
           <UIcon name="heroicons:chevron-left" class="w-5 h-5" />
         </button>
-        <span class="text-sm text-gray-700 px-2 min-w-[4rem] text-center">
+        <span class="text-sm text-header-700 px-2 min-w-[4rem] text-center">
           {{ page }} / {{ totalPages || 1 }}
         </span>
         <button
           type="button"
-          class="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          class="p-2 text-header-600 hover:bg-header-100 rounded-lg transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
           :disabled="page >= totalPages"
           @click="emit('update:page', page + 1)"
         >

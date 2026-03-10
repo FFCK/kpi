@@ -16,10 +16,10 @@ withDefaults(defineProps<Props>(), {
 })
 
 const variantClasses = {
-  primary: 'text-white bg-blue-600 border-blue-600 hover:bg-blue-700',
-  secondary: 'text-gray-700 bg-white border-gray-300 hover:bg-gray-50',
-  danger: 'text-red-700 bg-white border-red-300 hover:bg-red-50',
-  ghost: 'text-gray-600 bg-transparent border-transparent hover:bg-gray-100'
+  primary: 'text-white bg-primary-600 border-primary-600 hover:bg-primary-700',
+  secondary: 'text-header-700 bg-white border-header-300 hover:bg-header-50',
+  danger: 'text-danger-700 bg-white border-danger-300 hover:bg-danger-50',
+  ghost: 'text-header-600 bg-transparent border-transparent hover:bg-header-100'
 }
 
 const sizeClasses = {

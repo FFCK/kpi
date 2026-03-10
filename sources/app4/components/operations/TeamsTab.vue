@@ -281,58 +281,58 @@ const confirmMove = async () => {
   <div class="space-y-8">
     <!-- Rename team -->
     <section>
-      <h2 class="text-lg font-semibold text-gray-900 mb-4">
+      <h2 class="text-lg font-semibold text-header-900 mb-4">
         {{ t('operations.teams.rename') }}
       </h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Team search -->
         <div class="relative">
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('operations.teams.team') }}
           </label>
           <input
             v-model="renameSearch"
             type="text"
             :placeholder="t('operations.teams.search_team')"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             @focus="showRenameDropdown = renameResults.length > 0"
             @blur="setTimeout(() => showRenameDropdown = false, 200)"
           >
           <div
             v-if="showRenameDropdown && renameResults.length > 0"
-            class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto"
+            class="absolute z-10 w-full mt-1 bg-white border border-header-200 rounded-lg shadow-lg max-h-60 overflow-auto"
           >
             <button
               v-for="team in renameResults"
               :key="team.numero"
               type="button"
-              class="w-full px-4 py-2 text-left hover:bg-gray-50 text-sm"
+              class="w-full px-4 py-2 text-left hover:bg-header-50 text-sm"
               @click="selectRenameTeam(team)"
             >
               <div class="font-medium">{{ team.libelle }}</div>
-              <div class="text-xs text-gray-500">{{ team.numero }} - {{ team.club }}</div>
+              <div class="text-xs text-header-500">{{ team.numero }} - {{ team.club }}</div>
             </button>
           </div>
         </div>
 
         <!-- New name -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('operations.teams.new_name') }}
           </label>
           <input
             v-model="newTeamName"
             type="text"
             :disabled="!selectedRenameTeam"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 disabled:bg-header-100"
           >
         </div>
       </div>
 
       <button
         :disabled="!selectedRenameTeam || !newTeamName.trim() || loading"
-        class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="mt-4 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
         @click="openRenameModal"
       >
         {{ t('operations.teams.rename_button') }}
@@ -341,67 +341,67 @@ const confirmMove = async () => {
 
     <!-- Merge teams -->
     <section>
-      <h2 class="text-lg font-semibold text-gray-900 mb-4">
+      <h2 class="text-lg font-semibold text-header-900 mb-4">
         {{ t('operations.teams.merge') }}
       </h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Source team -->
         <div class="relative">
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('operations.teams.source_team') }}
           </label>
           <input
             v-model="mergeSourceSearch"
             type="text"
             :placeholder="t('operations.teams.search_team')"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             @focus="showMergeSourceDropdown = mergeSourceResults.length > 0"
             @blur="setTimeout(() => showMergeSourceDropdown = false, 200)"
           >
           <div
             v-if="showMergeSourceDropdown && mergeSourceResults.length > 0"
-            class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto"
+            class="absolute z-10 w-full mt-1 bg-white border border-header-200 rounded-lg shadow-lg max-h-60 overflow-auto"
           >
             <button
               v-for="team in mergeSourceResults"
               :key="team.numero"
               type="button"
-              class="w-full px-4 py-2 text-left hover:bg-gray-50 text-sm"
+              class="w-full px-4 py-2 text-left hover:bg-header-50 text-sm"
               @click="selectMergeSource(team)"
             >
               <div class="font-medium">{{ team.libelle }}</div>
-              <div class="text-xs text-gray-500">{{ team.numero }} - {{ team.club }}</div>
+              <div class="text-xs text-header-500">{{ team.numero }} - {{ team.club }}</div>
             </button>
           </div>
         </div>
 
         <!-- Target team -->
         <div class="relative">
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('operations.teams.target_team') }}
           </label>
           <input
             v-model="mergeTargetSearch"
             type="text"
             :placeholder="t('operations.teams.search_team')"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             @focus="showMergeTargetDropdown = mergeTargetResults.length > 0"
             @blur="setTimeout(() => showMergeTargetDropdown = false, 200)"
           >
           <div
             v-if="showMergeTargetDropdown && mergeTargetResults.length > 0"
-            class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto"
+            class="absolute z-10 w-full mt-1 bg-white border border-header-200 rounded-lg shadow-lg max-h-60 overflow-auto"
           >
             <button
               v-for="team in mergeTargetResults"
               :key="team.numero"
               type="button"
-              class="w-full px-4 py-2 text-left hover:bg-gray-50 text-sm"
+              class="w-full px-4 py-2 text-left hover:bg-header-50 text-sm"
               @click="selectMergeTarget(team)"
             >
               <div class="font-medium">{{ team.libelle }}</div>
-              <div class="text-xs text-gray-500">{{ team.numero }} - {{ team.club }}</div>
+              <div class="text-xs text-header-500">{{ team.numero }} - {{ team.club }}</div>
             </button>
           </div>
         </div>
@@ -409,7 +409,7 @@ const confirmMove = async () => {
 
       <button
         :disabled="!selectedMergeSource || !selectedMergeTarget || loading"
-        class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="mt-4 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
         @click="openMergeModal"
       >
         {{ t('operations.teams.merge_button') }}
@@ -418,67 +418,67 @@ const confirmMove = async () => {
 
     <!-- Move team -->
     <section>
-      <h2 class="text-lg font-semibold text-gray-900 mb-4">
+      <h2 class="text-lg font-semibold text-header-900 mb-4">
         {{ t('operations.teams.move') }}
       </h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Team search -->
         <div class="relative">
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('operations.teams.team') }}
           </label>
           <input
             v-model="moveTeamSearch"
             type="text"
             :placeholder="t('operations.teams.search_team')"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             @focus="showMoveTeamDropdown = moveTeamResults.length > 0"
             @blur="setTimeout(() => showMoveTeamDropdown = false, 200)"
           >
           <div
             v-if="showMoveTeamDropdown && moveTeamResults.length > 0"
-            class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto"
+            class="absolute z-10 w-full mt-1 bg-white border border-header-200 rounded-lg shadow-lg max-h-60 overflow-auto"
           >
             <button
               v-for="team in moveTeamResults"
               :key="team.numero"
               type="button"
-              class="w-full px-4 py-2 text-left hover:bg-gray-50 text-sm"
+              class="w-full px-4 py-2 text-left hover:bg-header-50 text-sm"
               @click="selectMoveTeam(team)"
             >
               <div class="font-medium">{{ team.libelle }}</div>
-              <div class="text-xs text-gray-500">{{ team.numero }} - {{ team.club }}</div>
+              <div class="text-xs text-header-500">{{ team.numero }} - {{ team.club }}</div>
             </button>
           </div>
         </div>
 
         <!-- Club search -->
         <div class="relative">
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('operations.teams.target_club') }}
           </label>
           <input
             v-model="moveClubSearch"
             type="text"
             :placeholder="t('operations.teams.search_club')"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             @focus="showMoveClubDropdown = moveClubResults.length > 0"
             @blur="setTimeout(() => showMoveClubDropdown = false, 200)"
           >
           <div
             v-if="showMoveClubDropdown && moveClubResults.length > 0"
-            class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto"
+            class="absolute z-10 w-full mt-1 bg-white border border-header-200 rounded-lg shadow-lg max-h-60 overflow-auto"
           >
             <button
               v-for="club in moveClubResults"
               :key="club.numero"
               type="button"
-              class="w-full px-4 py-2 text-left hover:bg-gray-50 text-sm"
+              class="w-full px-4 py-2 text-left hover:bg-header-50 text-sm"
               @click="selectMoveClub(club)"
             >
               <div class="font-medium">{{ club.nom }}</div>
-              <div class="text-xs text-gray-500">{{ club.numero }} - {{ club.departement }}</div>
+              <div class="text-xs text-header-500">{{ club.numero }} - {{ club.departement }}</div>
             </button>
           </div>
         </div>
@@ -486,7 +486,7 @@ const confirmMove = async () => {
 
       <button
         :disabled="!selectedMoveTeam || !selectedMoveClub || loading"
-        class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="mt-4 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
         @click="openMoveModal"
       >
         {{ t('operations.teams.move_button') }}

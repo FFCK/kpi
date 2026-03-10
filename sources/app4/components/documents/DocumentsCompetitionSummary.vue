@@ -73,18 +73,18 @@ const hasSponsor = computed(() => competition.value?.sponsorActif && competition
 const getLevelColor = (level: string) => {
   switch (level) {
     case 'INT': return 'bg-purple-100 text-purple-800'
-    case 'NAT': return 'bg-blue-100 text-blue-800'
+    case 'NAT': return 'bg-primary-100 text-primary-800'
     case 'REG': return 'bg-orange-100 text-orange-800'
-    default: return 'bg-gray-100 text-gray-800'
+    default: return 'bg-header-100 text-header-800'
   }
 }
 
 const getTypeColor = (type: string) => {
   switch (type) {
-    case 'CP': return 'bg-green-100 text-green-800'
-    case 'CHPT': return 'bg-blue-100 text-blue-800'
+    case 'CP': return 'bg-success-100 text-success-800'
+    case 'CHPT': return 'bg-primary-100 text-primary-800'
     case 'MULTI': return 'bg-amber-100 text-amber-800'
-    default: return 'bg-gray-100 text-gray-800'
+    default: return 'bg-header-100 text-header-800'
   }
 }
 
@@ -162,7 +162,7 @@ onMounted(() => {
 
 <template>
   <div v-if="loading" class="bg-white rounded-lg shadow p-6 text-center">
-    <UIcon name="heroicons:arrow-path" class="w-6 h-6 animate-spin text-gray-400 mx-auto" />
+    <UIcon name="heroicons:arrow-path" class="w-6 h-6 animate-spin text-header-400 mx-auto" />
   </div>
 
   <div v-else-if="competition" class="bg-white rounded-lg shadow overflow-hidden">
@@ -180,14 +180,14 @@ onMounted(() => {
             @error="showLogo = false"
           >
           <div>
-            <h2 class="text-lg font-semibold text-gray-900">
+            <h2 class="text-lg font-semibold text-header-900">
               {{ competition.libelle }}
               <!-- Season badge -->
-              <span class="px-2 py-1 text-xs font-medium rounded bg-blue-50 text-blue-700">
+              <span class="px-2 py-1 text-xs font-medium rounded bg-primary-50 text-primary-700">
                 {{ competition.codeSaison }}
               </span>
             </h2>
-            <p v-if="competition.soustitre2" class="text-sm text-gray-700">
+            <p v-if="competition.soustitre2" class="text-sm text-header-700">
               {{ competition.soustitre2 }}
             </p>
           </div>
@@ -202,13 +202,13 @@ onMounted(() => {
         <span class="px-2 py-1 text-xs font-medium rounded" :class="getTypeColor(competition.codeTypeclt)">
           {{ competition.codeTypeclt }}
         </span>
-        <span class="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-700">
+        <span class="px-2 py-1 text-xs font-medium rounded bg-header-100 text-header-700">
           {{ t('documents.summary.teams_count', { count: competition.nbEquipes }, competition.nbEquipes) }}
         </span>
-        <span class="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-700">
+        <span class="px-2 py-1 text-xs font-medium rounded bg-header-100 text-header-700">
           {{ t('documents.summary.phases_count', { count: competition.nbJournees }, competition.nbJournees) }}
         </span>
-        <span class="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-700">
+        <span class="px-2 py-1 text-xs font-medium rounded bg-header-100 text-header-700">
           {{ t('documents.summary.matches_count', { count: competition.nbMatchs }, competition.nbMatchs) }}
         </span>
         <span
@@ -219,7 +219,7 @@ onMounted(() => {
         </span>
         <span
           v-if="isCp && competition.elimines > 0"
-          class="px-2 py-1 text-xs font-medium rounded bg-red-50 text-red-700"
+          class="px-2 py-1 text-xs font-medium rounded bg-danger-50 text-danger-700"
         >
           {{ t('documents.summary.eliminated', { count: competition.elimines }) }}
         </span>
@@ -244,24 +244,24 @@ onMounted(() => {
           <div
             v-for="stage in stageColumns"
             :key="stage.etape"
-            class="flex-1 min-w-36 rounded-lg p-3 border border-gray-200"
+            class="flex-1 min-w-36 rounded-lg p-3 border border-header-200"
           >
             <NuxtLink
               v-for="phase in stage.phases"
               :key="phase.idJournee"
               :to="`/games?phase=${phase.idJournee}`"
-              class="block mb-2 last:mb-0 hover:bg-gray-100 rounded px-1 py-0.5 transition-colors"
+              class="block mb-2 last:mb-0 hover:bg-header-100 rounded px-1 py-0.5 transition-colors"
             >
                 <div class="flex items-center justify-center gap-1.5">
                 <span
                   class="inline-block w-5 h-5 text-center text-xs font-bold leading-5 rounded"
-                  :class="phase.type === 'C' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'"
+                  :class="phase.type === 'C' ? 'bg-primary-100 text-primary-700' : 'bg-amber-100 text-amber-700'"
                 >
                   {{ phase.type }}
                 </span>
-                <span class="text-sm font-medium text-gray-700 truncate">{{ phase.phase }}</span>
+                <span class="text-sm font-medium text-header-700 truncate">{{ phase.phase }}</span>
                 </div>
-              <div class="flex items-center justify-center text-xs text-gray-400">
+              <div class="flex items-center justify-center text-xs text-header-400">
                 <span v-if="phase.nbequipes">{{ phase.nbequipes }} {{ t('documents.summary.teams_short', { count: phase.nbequipes }, phase.nbequipes) }} - </span>{{ phase.nbMatchs }} {{ t('documents.summary.matches_short', { count: phase.nbMatchs }, phase.nbMatchs) }}
               </div>
             </NuxtLink>
@@ -275,22 +275,22 @@ onMounted(() => {
           v-for="phase in chptPhases"
           :key="phase.idJournee"
           :to="`/games?phase=${phase.idJournee}`"
-          class="px-3 py-2 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+          class="px-3 py-2 bg-header-50 rounded-lg hover:bg-header-100 transition-colors"
         >
-          <div class="text-sm font-medium text-gray-800">{{ phase.phase }}</div>
-          <div class="text-xs text-gray-500 mt-0.5 space-y-0.5">
+          <div class="text-sm font-medium text-header-800">{{ phase.phase }}</div>
+          <div class="text-xs text-header-500 mt-0.5 space-y-0.5">
             <div v-if="formatDateRange(phase.dateDebut, phase.dateFin)" class="flex items-center gap-1">
-              <UIcon name="heroicons:calendar" class="w-3 h-3 text-gray-400" />
+              <UIcon name="heroicons:calendar" class="w-3 h-3 text-header-400" />
               {{ formatDateRange(phase.dateDebut, phase.dateFin) }}
             </div>
             <div v-if="phase.lieu || phase.departement" class="flex items-center gap-1">
-              <UIcon name="heroicons:map-pin" class="w-3 h-3 text-gray-400" />
+              <UIcon name="heroicons:map-pin" class="w-3 h-3 text-header-400" />
               <span v-if="phase.lieu">{{ phase.lieu }}</span>
               <span v-if="phase.lieu && phase.departement"> · </span>
               <span v-if="phase.departement">{{ phase.departement }}</span>
             </div>
             <div class="flex items-center gap-1">
-              <UIcon name="heroicons:user-group" class="w-3 h-3 text-gray-400" />
+              <UIcon name="heroicons:user-group" class="w-3 h-3 text-header-400" />
               {{ countTeamsFromMatches(phase) }} {{ t('documents.summary.teams_short', { count: countTeamsFromMatches(phase) }, countTeamsFromMatches(phase)) }}
               -
               {{ phase.nbMatchs }} {{ t('documents.summary.matches_short', { count: phase.nbMatchs }, phase.nbMatchs) }}
@@ -300,14 +300,14 @@ onMounted(() => {
       </div>
 
       <!-- MULTI -->
-      <p v-else-if="isMulti" class="text-sm text-gray-500 italic">
+      <p v-else-if="isMulti" class="text-sm text-header-500 italic">
         {{ t('documents.summary.multi_competition') }}
       </p>
     </div>
 
     <!-- No phases -->
     <div v-else-if="!loading && !isMulti" class="px-6 py-4">
-      <p class="text-sm text-gray-400 italic">{{ t('documents.summary.no_phases') }}</p>
+      <p class="text-sm text-header-400 italic">{{ t('documents.summary.no_phases') }}</p>
     </div>
 
     <!-- Sponsor (below phases) -->

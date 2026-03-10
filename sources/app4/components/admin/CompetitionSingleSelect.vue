@@ -112,14 +112,14 @@ function formatCompetitionLabel(comp: { code: string; libelle: string; soustitre
 
 <template>
   <div>
-    <div v-if="!hasCompetitions" class="text-sm text-gray-500 italic">
+    <div v-if="!hasCompetitions" class="text-sm text-header-500 italic">
       {{ t('context.no_competitions') }}
     </div>
 
     <select
       v-else
       :value="currentCode"
-      class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+      class="w-full px-3 py-2 border border-header-300 rounded-lg bg-white text-header-900 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
       @change="onSelect(($event.target as HTMLSelectElement).value)"
     >
       <!-- "All competitions" option -->

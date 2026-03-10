@@ -327,27 +327,27 @@ const formatDate = (dateStr: string) => {
     >
       <template #badges>
         <div v-if="presenceStore.match" class="flex flex-wrap items-center gap-2 text-sm">
-          <span class="text-gray-500">{{ presenceStore.competition?.code }}</span>
-          <span class="text-gray-400">&bull;</span>
-          <span class="text-gray-500">{{ formatDate(presenceStore.match.dateMatch) }} {{ presenceStore.match.heureMatch }}</span>
-          <span class="text-gray-400">&bull;</span>
-          <span class="text-gray-500">{{ t('games.field.terrain') }} {{ presenceStore.match.terrain }}</span>
-          <span class="text-gray-400">&bull;</span>
-          <span class="font-mono text-gray-500">#{{ presenceStore.match.numeroOrdre }}</span>
-          <span class="text-gray-400">&bull;</span>
-          <span v-if="presenceStore.team" class="font-semibold text-gray-900">
+          <span class="text-header-500">{{ presenceStore.competition?.code }}</span>
+          <span class="text-header-400">&bull;</span>
+          <span class="text-header-500">{{ formatDate(presenceStore.match.dateMatch) }} {{ presenceStore.match.heureMatch }}</span>
+          <span class="text-header-400">&bull;</span>
+          <span class="text-header-500">{{ t('games.field.terrain') }} {{ presenceStore.match.terrain }}</span>
+          <span class="text-header-400">&bull;</span>
+          <span class="font-mono text-header-500">#{{ presenceStore.match.numeroOrdre }}</span>
+          <span class="text-header-400">&bull;</span>
+          <span v-if="presenceStore.team" class="font-semibold text-header-900">
             {{ teamCode === 'A' ? t('common.team_a') : t('common.team_b') }}: {{ presenceStore.team.libelle }}
           </span>
           <UIcon
             v-if="presenceStore.isLocked"
             name="heroicons:lock-closed-solid"
-            class="w-5 h-5 text-blue-500"
+            class="w-5 h-5 text-primary-500"
             :title="t('presence.match_validated')"
           />
           <UIcon
             v-else
             name="heroicons:lock-open"
-            class="w-5 h-5 text-gray-400"
+            class="w-5 h-5 text-header-400"
             :title="t('common.unlocked')"
           />
         </div>
@@ -378,7 +378,7 @@ const formatDate = (dateStr: string) => {
       <template #right>
         <button
           v-if="canInitializeFromTeam"
-          class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg transition-colors"
+          class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-white bg-success-500 hover:bg-success-700 rounded-lg transition-colors"
           @click="initializeFromTeam"
         >
           <UIcon name="heroicons:arrow-down-tray" class="w-4 h-4" />
@@ -387,7 +387,7 @@ const formatDate = (dateStr: string) => {
 
         <button
           v-if="canClearAll && presenceStore.players.length > 0"
-          class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-red-700 bg-red-50 hover:bg-red-100 rounded-lg transition-colors"
+          class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-danger-700 bg-danger-50 hover:bg-danger-100 rounded-lg transition-colors"
           @click="confirmClearAll"
         >
           <UIcon name="heroicons:trash" class="w-4 h-4" />
@@ -396,7 +396,7 @@ const formatDate = (dateStr: string) => {
 
         <button
           v-if="canCopy && presenceStore.players.length > 0"
-          class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+          class="inline-flex items-center gap-1 px-3 py-2 text-sm font-medium text-primary-700 bg-primary-50 hover:bg-primary-100 rounded-lg transition-colors"
           @click="openCopyToMatchesModal"
         >
           <UIcon name="heroicons:document-duplicate" class="w-4 h-4" />
@@ -407,17 +407,17 @@ const formatDate = (dateStr: string) => {
 
     <!-- Loading state -->
     <div v-if="presenceStore.loading" class="text-center py-12">
-      <UIcon name="i-heroicons-arrow-path" class="w-8 h-8 animate-spin mx-auto text-green-600" />
-      <p class="mt-2 text-sm text-gray-500">{{ t('common.loading') }}</p>
+      <UIcon name="i-heroicons-arrow-path" class="w-8 h-8 animate-spin mx-auto text-success-500" />
+      <p class="mt-2 text-sm text-header-500">{{ t('common.loading') }}</p>
     </div>
 
     <!-- Empty state -->
     <div v-else-if="filteredPlayers.length === 0" class="text-center py-12 bg-white rounded-lg shadow">
-      <UIcon name="i-heroicons-user-group" class="w-12 h-12 mx-auto text-gray-400" />
-      <p class="mt-2 text-sm text-gray-500">{{ t('presence.no_players') }}</p>
+      <UIcon name="i-heroicons-user-group" class="w-12 h-12 mx-auto text-header-400" />
+      <p class="mt-2 text-sm text-header-500">{{ t('presence.no_players') }}</p>
       <button
         v-if="canInitializeFromTeam"
-        class="mt-4 px-4 py-2 text-sm font-medium text-white bg-green-600 hover:bg-green-700 rounded-lg"
+        class="mt-4 px-4 py-2 text-sm font-medium text-white bg-success-500 hover:bg-success-700 rounded-lg"
         @click="initializeFromTeam"
       >
         {{ t('presence.initialize_from_team') }}
@@ -426,49 +426,49 @@ const formatDate = (dateStr: string) => {
 
     <!-- Desktop Table -->
     <div v-else class="hidden lg:block bg-white rounded-lg shadow overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
+      <table class="min-w-full divide-y divide-header-200">
+        <thead class="bg-header-50">
           <tr>
             <th v-if="canEdit" class="w-10 px-3 py-1">
               <input
                 v-model="selectAll"
                 type="checkbox"
-                class="rounded border-gray-300"
+                class="rounded border-header-300"
                 @change="toggleSelectAll"
               />
             </th>
-            <th class="w-16 px-3 py-1 text-left text-xs font-medium text-gray-500 uppercase">#</th>
-            <th class="w-12 px-3 py-1 text-left text-xs font-medium text-gray-500 uppercase">Cap</th>
-            <th class="px-3 py-1 text-left text-xs font-medium text-gray-500 uppercase">{{ t('common.last_name') }}</th>
-            <th class="px-3 py-1 text-left text-xs font-medium text-gray-500 uppercase">{{ t('common.first_name') }}</th>
-            <th class="px-3 py-1 text-left text-xs font-medium text-gray-500 uppercase">{{ t('common.license') }}</th>
-            <th class="px-3 py-1 text-left text-xs font-medium text-gray-500 uppercase">{{ t('common.club') }}</th>
-            <th class="px-3 py-1 text-left text-xs font-medium text-gray-500 uppercase">{{ t('common.category') }}</th>
-            <th class="px-3 py-1 text-left text-xs font-medium text-gray-500 uppercase">{{ t('common.paddle') }}</th>
-            <th class="px-3 py-1 text-left text-xs font-medium text-gray-500 uppercase">{{ t('common.certificate') }}</th>
+            <th class="w-16 px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">#</th>
+            <th class="w-12 px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">Cap</th>
+            <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.last_name') }}</th>
+            <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.first_name') }}</th>
+            <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.license') }}</th>
+            <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.club') }}</th>
+            <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.category') }}</th>
+            <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.paddle') }}</th>
+            <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.certificate') }}</th>
             <th v-if="canEdit" class="w-16 px-3 py-1"></th>
           </tr>
         </thead>
 
-        <tbody class="bg-white divide-y divide-gray-200">
+        <tbody class="bg-white divide-y divide-header-200">
           <!-- Active players (-, C) -->
           <tr
             v-for="player in activePlayers"
             :key="player.matric"
-            class="hover:bg-gray-50"
-            :class="{ 'bg-yellow-100': player.capitaine === 'C' }"
+            class="hover:bg-header-50"
+            :class="{ 'bg-warning-100': player.capitaine === 'C' }"
           >
             <td v-if="canEdit" class="px-3 py-1">
               <input
                 v-model="selectedPlayerIds"
                 type="checkbox"
                 :value="player.matric"
-                class="rounded border-gray-300"
+                class="rounded border-header-300"
               />
             </td>
 
             <!-- Numero (inline edit) -->
-            <td class="px-3 py-1 text-sm text-gray-900">
+            <td class="px-3 py-1 text-sm text-header-900">
               <span
                 v-if="editingCell?.matric !== player.matric || editingCell?.field !== 'numero'"
                 :class="canEdit ? 'editable-cell' : ''"
@@ -483,7 +483,7 @@ const formatDate = (dateStr: string) => {
                 type="number"
                 min="0"
                 max="99"
-                class="w-16 px-2 py-1 border border-blue-400 rounded text-sm focus:ring-2 focus:ring-blue-500"
+                class="w-16 px-2 py-1 border border-primary-400 rounded text-sm focus:ring-2 focus:ring-primary-500"
                 @keydown="handleInlineKeydown"
                 @blur="saveInlineEdit"
               />
@@ -502,7 +502,7 @@ const formatDate = (dateStr: string) => {
                 v-else
                 v-model="editingValue"
                 v-inline-focus
-                class="px-2 py-1 border border-blue-400 rounded text-sm focus:ring-2 focus:ring-blue-500"
+                class="px-2 py-1 border border-primary-400 rounded text-sm focus:ring-2 focus:ring-primary-500"
                 @change="saveInlineEdit"
                 @blur="cancelInlineEdit"
               >
@@ -512,9 +512,9 @@ const formatDate = (dateStr: string) => {
               </select>
             </td>
 
-            <td class="px-3 py-1 text-sm font-medium text-gray-900">{{ player.nom }}</td>
-            <td class="px-3 py-1 text-sm text-gray-900">{{ player.prenom }}</td>
-            <td class="px-3 py-1 text-sm text-gray-500 font-mono">
+            <td class="px-3 py-1 text-sm font-medium text-header-900">{{ player.nom }}</td>
+            <td class="px-3 py-1 text-sm text-header-900">{{ player.prenom }}</td>
+            <td class="px-3 py-1 text-sm text-header-500 font-mono">
                 <NuxtLink
                   :to="`/athletes?matric=${player.matric}`"
                   class="link-value"
@@ -522,7 +522,7 @@ const formatDate = (dateStr: string) => {
                   {{ getLicenseDisplay(player) }}
                 </NuxtLink>
               </td>
-            <td class="px-3 py-1 text-sm text-gray-500">
+            <td class="px-3 py-1 text-sm text-header-500">
                 <NuxtLink
                   :to="`/clubs?code=${player.numeroClub}`"
                   class="link-value"
@@ -531,25 +531,25 @@ const formatDate = (dateStr: string) => {
                   {{ player.numeroClub }}
                 </NuxtLink>
               </td>
-            <td class="px-3 py-1 text-sm text-gray-500">{{ player.categ }}-{{ player.sexe }}</td>
+            <td class="px-3 py-1 text-sm text-header-500">{{ player.categ }}-{{ player.sexe }}</td>
 
             <!-- Pagaie -->
             <td class="px-3 py-1 text-sm">
-              <span :class="player.pagaieValide === 0 ? 'text-red-600' : 'text-gray-700'">
+              <span :class="player.pagaieValide === 0 ? 'text-danger-600' : 'text-header-700'">
                 {{ player.pagaieValide === 0 ? `(${player.pagaieLabel})` : player.pagaieLabel }}
               </span>
             </td>
 
             <!-- Certificate -->
             <td class="px-3 py-1 text-sm">
-              <span :class="player.certifCK === 'OUI' ? 'text-green-600' : 'text-red-600'">
+              <span :class="player.certifCK === 'OUI' ? 'text-success-500' : 'text-danger-600'">
                 {{ player.certifCK === 'OUI' ? t('common.yes') : t('common.no') }}
               </span>
             </td>
 
             <!-- Actions -->
             <td v-if="canEdit" class="px-3 py-1 text-right">
-              <button class="text-red-600 hover:text-red-800" @click="deletePlayer(player.matric)">
+              <button class="text-danger-600 hover:text-danger-800" @click="deletePlayer(player.matric)">
                 <UIcon name="i-heroicons-trash" class="w-6 h-6" />
               </button>
             </td>
@@ -557,24 +557,24 @@ const formatDate = (dateStr: string) => {
 
           <!-- Coaches (E) -->
           <template v-if="coaches.length > 0">
-            <tr class="bg-gray-100">
-              <td :colspan="canEdit ? 11 : 10" class="px-3 py-1 text-xs text-gray-500 text-center">
+            <tr class="bg-header-100">
+              <td :colspan="canEdit ? 11 : 10" class="px-3 py-1 text-xs text-header-500 text-center">
                 {{ t('presence.section_coaches') }}
               </td>
             </tr>
             <tr
               v-for="player in coaches"
               :key="player.matric"
-              class="hover:bg-gray-50 bg-orange-100/50"
+              class="hover:bg-header-50 bg-orange-100/50"
             >
               <td v-if="canEdit" class="px-3 py-1">
-                <input v-model="selectedPlayerIds" type="checkbox" :value="player.matric" class="rounded border-gray-300" />
+                <input v-model="selectedPlayerIds" type="checkbox" :value="player.matric" class="rounded border-header-300" />
               </td>
-              <td class="px-3 py-1 text-sm text-gray-900">{{ player.numero || '-' }}</td>
+              <td class="px-3 py-1 text-sm text-header-900">{{ player.numero || '-' }}</td>
               <td class="px-3 py-1 text-sm">{{ player.capitaine }}</td>
-              <td class="px-3 py-1 text-sm font-medium text-gray-900">{{ player.nom }}</td>
-              <td class="px-3 py-1 text-sm text-gray-900">{{ player.prenom }}</td>
-              <td class="px-3 py-1 text-sm text-gray-500 font-mono">
+              <td class="px-3 py-1 text-sm font-medium text-header-900">{{ player.nom }}</td>
+              <td class="px-3 py-1 text-sm text-header-900">{{ player.prenom }}</td>
+              <td class="px-3 py-1 text-sm text-header-500 font-mono">
                 <NuxtLink
                   :to="`/athletes?matric=${player.matric}`"
                   class="link-value"
@@ -582,16 +582,16 @@ const formatDate = (dateStr: string) => {
                   {{ getLicenseDisplay(player) }}
                 </NuxtLink>
               </td>
-              <td class="px-3 py-1 text-sm text-gray-500">{{ player.numeroClub }}</td>
-              <td class="px-3 py-1 text-sm text-gray-500">{{ player.categ }}-{{ player.sexe }}</td>
-              <td class="px-3 py-1 text-sm text-gray-700">{{ player.pagaieLabel }}</td>
+              <td class="px-3 py-1 text-sm text-header-500">{{ player.numeroClub }}</td>
+              <td class="px-3 py-1 text-sm text-header-500">{{ player.categ }}-{{ player.sexe }}</td>
+              <td class="px-3 py-1 text-sm text-header-700">{{ player.pagaieLabel }}</td>
               <td class="px-3 py-1 text-sm">
-                <span :class="player.certifCK === 'OUI' ? 'text-green-600' : 'text-red-600'">
+                <span :class="player.certifCK === 'OUI' ? 'text-success-500' : 'text-danger-600'">
                   {{ player.certifCK === 'OUI' ? t('common.yes') : t('common.no') }}
                 </span>
               </td>
               <td v-if="canEdit" class="px-3 py-1 text-right">
-                <button class="text-red-600 hover:text-red-800" @click="deletePlayer(player.matric)">
+                <button class="text-danger-600 hover:text-danger-800" @click="deletePlayer(player.matric)">
                   <UIcon name="i-heroicons-trash" class="w-6 h-6" />
                 </button>
               </td>
@@ -601,7 +601,7 @@ const formatDate = (dateStr: string) => {
       </table>
 
       <!-- Footer -->
-      <div class="px-4 py-1 bg-gray-50 border-t border-gray-200 text-sm text-gray-600">
+      <div class="px-4 py-1 bg-header-50 border-t border-header-200 text-sm text-header-600">
         {{ t('presence.total_players', { count: presenceStore.players.length }) }}
       </div>
     </div>
@@ -612,7 +612,7 @@ const formatDate = (dateStr: string) => {
         v-for="player in filteredPlayers"
         :key="player.matric"
         class="bg-white rounded-lg shadow p-4"
-        :class="{ 'bg-yellow-50': player.capitaine === 'C', 'opacity-60': player.capitaine === 'E' }"
+        :class="{ 'bg-warning-50': player.capitaine === 'C', 'opacity-60': player.capitaine === 'E' }"
       >
         <div class="flex items-start justify-between mb-3">
           <div class="flex items-center gap-2">
@@ -621,10 +621,10 @@ const formatDate = (dateStr: string) => {
               v-model="selectedPlayerIds"
               type="checkbox"
               :value="player.matric"
-              class="rounded border-gray-300"
+              class="rounded border-header-300"
             />
             <div>
-              <div class="font-bold text-gray-900">{{ player.nom }} {{ player.prenom }}</div>
+              <div class="font-bold text-header-900">{{ player.nom }} {{ player.prenom }}</div>
               <NuxtLink
                 :to="`/athletes?matric=${player.matric}`"
                 class="link-value text-sm"
@@ -634,12 +634,12 @@ const formatDate = (dateStr: string) => {
             </div>
           </div>
           <div class="flex items-center gap-1.5">
-            <span class="px-2 py-1 text-xs font-medium rounded bg-gray-50 border border-dashed border-gray-300">
+            <span class="px-2 py-1 text-xs font-medium rounded bg-header-50 border border-dashed border-header-300">
               #{{ player.numero || '-' }}
             </span>
             <span
               class="px-2 py-1 text-xs font-medium rounded"
-              :class="player.capitaine === 'C' ? 'bg-yellow-200 text-yellow-800' : 'bg-gray-100 text-gray-600'"
+              :class="player.capitaine === 'C' ? 'bg-warning-200 text-warning-800' : 'bg-header-100 text-header-600'"
             >
               {{ player.capitaine }}
             </span>
@@ -648,27 +648,27 @@ const formatDate = (dateStr: string) => {
 
         <div class="space-y-1 text-sm">
           <div class="flex items-center gap-2">
-            <span class="text-gray-500">{{ t('common.club') }}:</span>
+            <span class="text-header-500">{{ t('common.club') }}:</span>
             <span>{{ player.numeroClub }}</span>
           </div>
           <div class="flex items-center gap-2">
-            <span class="text-gray-500">{{ t('common.category') }}:</span>
+            <span class="text-header-500">{{ t('common.category') }}:</span>
             <span>{{ player.categ }}-{{ player.sexe }}</span>
           </div>
           <div class="flex items-center gap-2">
-            <span class="text-gray-500">{{ t('common.paddle') }}:</span>
-            <span :class="player.pagaieValide === 0 ? 'text-red-600' : ''">{{ player.pagaieLabel }}</span>
+            <span class="text-header-500">{{ t('common.paddle') }}:</span>
+            <span :class="player.pagaieValide === 0 ? 'text-danger-600' : ''">{{ player.pagaieLabel }}</span>
           </div>
           <div class="flex items-center gap-2">
-            <span class="text-gray-500">{{ t('common.certificate') }}:</span>
-            <span :class="player.certifCK === 'OUI' ? 'text-green-600' : 'text-red-600'">
+            <span class="text-header-500">{{ t('common.certificate') }}:</span>
+            <span :class="player.certifCK === 'OUI' ? 'text-success-500' : 'text-danger-600'">
               {{ player.certifCK === 'OUI' ? t('common.yes') : t('common.no') }}
             </span>
           </div>
         </div>
 
-        <div v-if="canEdit" class="mt-3 pt-3 border-t border-gray-200 flex justify-end">
-          <button class="text-red-600 hover:text-red-800 text-sm" @click="deletePlayer(player.matric)">
+        <div v-if="canEdit" class="mt-3 pt-3 border-t border-header-200 flex justify-end">
+          <button class="text-danger-600 hover:text-danger-800 text-sm" @click="deletePlayer(player.matric)">
             <UIcon name="i-heroicons-trash" class="w-6 h-6 inline mr-1" />
             {{ t('common.delete') }}
           </button>
@@ -680,7 +680,7 @@ const formatDate = (dateStr: string) => {
     <div v-if="presenceStore.team" class="mt-4">
       <NuxtLink
         :to="`/presence/team/${presenceStore.team.id}`"
-        class="inline-flex items-center gap-1.5 text-sm text-blue-600 hover:text-blue-800"
+        class="inline-flex items-center gap-1.5 text-sm text-primary-600 hover:text-primary-800"
       >
         <UIcon name="heroicons:user-group" class="w-4 h-4" />
         {{ t('presence.view_team_sheet', { team: presenceStore.team.libelle }) }}
@@ -722,7 +722,7 @@ const formatDate = (dateStr: string) => {
     >
       <div class="space-y-4">
         <!-- Notice -->
-        <div class="flex items-center gap-2 p-2 bg-blue-50 border border-blue-200 rounded text-sm text-blue-800">
+        <div class="flex items-center gap-2 p-2 bg-primary-50 border border-primary-200 rounded text-sm text-primary-800">
           <UIcon name="heroicons:information-circle" class="w-4 h-4 shrink-0" />
           {{ t('presence.only_unlocked_matches') }}
         </div>
@@ -731,7 +731,7 @@ const formatDate = (dateStr: string) => {
         <div class="flex gap-2">
           <button
             class="px-3 py-2 text-sm font-medium rounded-lg transition-colors"
-            :class="copyScope === 'day' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+            :class="copyScope === 'day' ? 'bg-primary-600 text-white' : 'bg-header-100 text-header-700 hover:bg-header-200'"
             @click="copyScope = 'day'"
           >
             {{ t('presence.scope_day') }}
@@ -739,7 +739,7 @@ const formatDate = (dateStr: string) => {
           <button
             v-if="canCopyToCompetition"
             class="px-3 py-2 text-sm font-medium rounded-lg transition-colors"
-            :class="copyScope === 'competition' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'"
+            :class="copyScope === 'competition' ? 'bg-primary-600 text-white' : 'bg-header-100 text-header-700 hover:bg-header-200'"
             @click="copyScope = 'competition'"
           >
             {{ t('presence.scope_competition') }}
@@ -747,26 +747,26 @@ const formatDate = (dateStr: string) => {
         </div>
 
         <!-- Match list -->
-        <div v-if="copyableMatches.length === 0" class="text-center py-4 text-sm text-gray-500">
+        <div v-if="copyableMatches.length === 0" class="text-center py-4 text-sm text-header-500">
           {{ t('presence.no_copyable_matches') }}
         </div>
         <div v-else class="space-y-2 max-h-64 overflow-y-auto">
           <label
             v-for="match in copyableMatches"
             :key="match.id"
-            class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer"
+            class="flex items-center gap-3 p-3 border border-header-200 rounded-lg hover:bg-header-50 cursor-pointer"
           >
             <input
               v-model="selectedMatchIds"
               type="checkbox"
               :value="match.id"
-              class="rounded border-gray-300"
+              class="rounded border-header-300"
             />
             <div class="text-sm">
-              <div class="font-medium text-gray-900">
+              <div class="font-medium text-header-900">
                 {{ match.equipeA }} vs {{ match.equipeB }}
               </div>
-              <div class="text-gray-500">
+              <div class="text-header-500">
                 {{ formatDate(match.dateMatch) }} {{ match.heureMatch }} &bull; {{ t('games.field.terrain') }} {{ match.terrain }}
               </div>
             </div>
@@ -777,14 +777,14 @@ const formatDate = (dateStr: string) => {
       <div class="mt-6 flex justify-end gap-3">
         <button
           type="button"
-          class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+          class="px-4 py-2 text-sm font-medium text-header-700 bg-white border border-header-300 rounded-lg hover:bg-header-50"
           @click="copyToMatchesModalOpen = false"
         >
           {{ t('common.cancel') }}
         </button>
         <button
           :disabled="selectedMatchIds.length === 0"
-          class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg disabled:opacity-50"
+          class="px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg disabled:opacity-50"
           @click="copyToMatches"
         >
           {{ t('presence.copy_to_count', { count: selectedMatchIds.length }) }}
@@ -803,17 +803,17 @@ const formatDate = (dateStr: string) => {
         <div class="space-y-4">
           <div
             v-if="addFormError"
-            class="flex items-start gap-3 p-3 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm"
+            class="flex items-start gap-3 p-3 bg-danger-50 border border-danger-200 rounded-lg text-danger-800 text-sm"
           >
             <UIcon name="i-heroicons-exclamation-triangle" class="w-5 h-5 shrink-0 mt-0.5" />
             <span>{{ addFormError }}</span>
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('presence.select_player') }}</label>
+            <label class="block text-sm font-medium text-header-700 mb-1">{{ t('presence.select_player') }}</label>
             <select
               v-model="addFormData.matric"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+              class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500"
               @change="onPlayerSelect"
             >
               <option :value="0" disabled>{{ t('presence.select_player') }}</option>
@@ -827,7 +827,7 @@ const formatDate = (dateStr: string) => {
         <div class="mt-6 flex justify-end gap-3">
           <button
             type="button"
-            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+            class="px-4 py-2 text-sm font-medium text-header-700 bg-white border border-header-300 rounded-lg hover:bg-header-50"
             @click="addModalOpen = false"
           >
             {{ t('common.cancel') }}
@@ -835,7 +835,7 @@ const formatDate = (dateStr: string) => {
           <button
             type="submit"
             :disabled="!addFormData.matric || addFormSaving"
-            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg disabled:opacity-50"
+            class="px-4 py-2 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg disabled:opacity-50"
           >
             {{ t('common.add') }}
           </button>

@@ -120,18 +120,18 @@ onUnmounted(() => {
         type="text"
         :disabled="disabled"
         :placeholder="placeholder || t('common.search_player_placeholder')"
-        class="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+        class="w-full px-3 py-2 pr-10 border border-header-300 rounded-lg bg-white text-header-900 placeholder-header-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 disabled:bg-header-100 disabled:cursor-not-allowed"
         @focus="isOpen = results.length > 0"
       >
       <div class="absolute inset-y-0 right-0 flex items-center pr-3">
         <div
           v-if="isLoading"
-          class="animate-spin h-4 w-4 border-2 border-blue-500 border-t-transparent rounded-full"
+          class="animate-spin h-4 w-4 border-2 border-primary-500 border-t-transparent rounded-full"
         />
         <button
           v-else-if="searchQuery && !disabled"
           type="button"
-          class="text-gray-400 hover:text-gray-600"
+          class="text-header-400 hover:text-header-600"
           @click="clearSelection"
         >
           <UIcon name="i-heroicons-x-mark" class="w-4 h-4" />
@@ -142,11 +142,11 @@ onUnmounted(() => {
     <!-- Dropdown results -->
     <div
       v-if="isOpen && !disabled"
-      class="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"
+      class="absolute z-50 w-full mt-1 bg-white border border-header-300 rounded-lg shadow-lg max-h-60 overflow-y-auto"
     >
       <div
         v-if="!isLoading && results.length === 0 && searchQuery.length >= 2"
-        class="px-4 py-3 text-sm text-gray-500 text-center"
+        class="px-4 py-3 text-sm text-header-500 text-center"
       >
         {{ t('common.no_results') }}
       </div>
@@ -155,31 +155,31 @@ onUnmounted(() => {
         v-for="player in results"
         :key="player.matric"
         type="button"
-        class="w-full px-3 py-2 text-left hover:bg-blue-50 border-b border-gray-100 last:border-b-0 transition-colors"
+        class="w-full px-3 py-2 text-left hover:bg-primary-50 border-b border-header-100 last:border-b-0 transition-colors"
         @click="selectPlayer(player)"
       >
         <div class="font-medium text-sm">{{ player.nom }} {{ player.prenom }}</div>
-        <div class="text-xs text-gray-700">{{ player.label }}</div>
+        <div class="text-xs text-header-700">{{ player.label }}</div>
       </button>
     </div>
 
     <!-- Selected player display -->
-    <div v-if="modelValue" class="mt-2 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+    <div v-if="modelValue" class="mt-2 p-3 bg-primary-50 border border-primary-200 rounded-lg">
       <div class="flex items-center justify-between">
         <div>
-          <span class="font-semibold text-gray-900">{{ modelValue.nom }} {{ modelValue.prenom }}</span>
-          <span class="text-sm text-gray-500 ml-2">{{ modelValue.matric }}</span>
+          <span class="font-semibold text-header-900">{{ modelValue.nom }} {{ modelValue.prenom }}</span>
+          <span class="text-sm text-header-500 ml-2">{{ modelValue.matric }}</span>
         </div>
         <button
           v-if="!disabled"
           type="button"
-          class="text-gray-400 hover:text-gray-600"
+          class="text-header-400 hover:text-header-600"
           @click="clearSelection"
         >
           <UIcon name="i-heroicons-x-mark" class="w-5 h-5" />
         </button>
       </div>
-      <div class="text-xs text-gray-600 mt-1">
+      <div class="text-xs text-header-600 mt-1">
         {{ modelValue.club }}
       </div>
     </div>

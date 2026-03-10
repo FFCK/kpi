@@ -229,66 +229,66 @@ onMounted(() => {
   <div class="space-y-8">
     <!-- Season list -->
     <section>
-      <h2 class="text-lg font-semibold text-gray-900 mb-4">
+      <h2 class="text-lg font-semibold text-header-900 mb-4">
         {{ t('operations.seasons.list') }}
       </h2>
 
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+        <table class="min-w-full divide-y divide-header-200">
+          <thead class="bg-header-50">
             <tr>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th class="px-4 py-3 text-left text-xs font-medium text-header-500 uppercase">
                 {{ t('operations.seasons.code') }}
               </th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th class="px-4 py-3 text-left text-xs font-medium text-header-500 uppercase">
                 {{ t('operations.seasons.status') }}
               </th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th class="px-4 py-3 text-left text-xs font-medium text-header-500 uppercase">
                 {{ t('operations.seasons.nat_start') }}
               </th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th class="px-4 py-3 text-left text-xs font-medium text-header-500 uppercase">
                 {{ t('operations.seasons.nat_end') }}
               </th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th class="px-4 py-3 text-left text-xs font-medium text-header-500 uppercase">
                 {{ t('operations.seasons.inter_start') }}
               </th>
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+              <th class="px-4 py-3 text-left text-xs font-medium text-header-500 uppercase">
                 {{ t('operations.seasons.inter_end') }}
               </th>
-              <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase">
+              <th class="px-4 py-3 text-right text-xs font-medium text-header-500 uppercase">
                 {{ t('common.actions') }}
               </th>
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
+          <tbody class="bg-white divide-y divide-header-200">
             <tr v-if="loading && seasons.length === 0">
-              <td colspan="7" class="px-4 py-8 text-center text-gray-500">
+              <td colspan="7" class="px-4 py-8 text-center text-header-500">
                 <UIcon name="i-heroicons-arrow-path" class="w-6 h-6 animate-spin mx-auto mb-2" />
                 {{ t('common.loading') }}
               </td>
             </tr>
-            <tr v-for="season in seasons" :key="season.code" :class="{ 'bg-green-200': season.active }">
-              <td class="px-4 py-3 text-sm font-medium text-gray-900">
+            <tr v-for="season in seasons" :key="season.code" :class="{ 'bg-success-200': season.active }">
+              <td class="px-4 py-3 text-sm font-medium text-header-900">
                 {{ season.code }}
               </td>
               <td class="px-4 py-3 text-sm">
                 <span
                   :class="[
                     'px-2 py-1 rounded-full text-xs font-medium',
-                    season.active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
+                    season.active ? 'bg-success-100 text-success-800' : 'bg-header-100 text-header-600'
                   ]"
                 >
                   {{ season.active ? t('operations.seasons.active') : t('operations.seasons.inactive') }}
                 </span>
               </td>
-              <td class="px-4 py-3 text-sm text-gray-500">{{ formatDate(season.natDebut) }}</td>
-              <td class="px-4 py-3 text-sm text-gray-500">{{ formatDate(season.natFin) }}</td>
-              <td class="px-4 py-3 text-sm text-gray-500">{{ formatDate(season.interDebut) }}</td>
-              <td class="px-4 py-3 text-sm text-gray-500">{{ formatDate(season.interFin) }}</td>
+              <td class="px-4 py-3 text-sm text-header-500">{{ formatDate(season.natDebut) }}</td>
+              <td class="px-4 py-3 text-sm text-header-500">{{ formatDate(season.natFin) }}</td>
+              <td class="px-4 py-3 text-sm text-header-500">{{ formatDate(season.interDebut) }}</td>
+              <td class="px-4 py-3 text-sm text-header-500">{{ formatDate(season.interFin) }}</td>
               <td class="px-4 py-3 text-right">
                 <button
                   v-if="!season.active"
-                  class="text-sm text-blue-600 hover:text-blue-800"
+                  class="text-sm text-primary-600 hover:text-primary-800"
                   @click="openActivateModal(season)"
                 >
                   {{ t('operations.seasons.activate') }}
@@ -302,66 +302,66 @@ onMounted(() => {
 
     <!-- Add season -->
     <section>
-      <h2 class="text-lg font-semibold text-gray-900 mb-4">
+      <h2 class="text-lg font-semibold text-header-900 mb-4">
         {{ t('operations.seasons.add') }}
       </h2>
 
       <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('operations.seasons.code') }} *
           </label>
           <input
             v-model="newSeasonCode"
             type="text"
             placeholder="2025"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
           >
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('operations.seasons.nat_start') }}
           </label>
           <input
             v-model="newSeasonNatDebut"
             type="date"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
           >
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('operations.seasons.nat_end') }}
           </label>
           <input
             v-model="newSeasonNatFin"
             type="date"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
           >
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('operations.seasons.inter_start') }}
           </label>
           <input
             v-model="newSeasonInterDebut"
             type="date"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
           >
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('operations.seasons.inter_end') }}
           </label>
           <input
             v-model="newSeasonInterFin"
             type="date"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
           >
         </div>
         <div class="flex items-end">
           <button
             :disabled="!newSeasonCode || loading"
-            class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="w-full px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
             @click="addSeason"
           >
             {{ t('operations.seasons.add_button') }}
@@ -372,18 +372,18 @@ onMounted(() => {
 
     <!-- Copy RC -->
     <section>
-      <h2 class="text-lg font-semibold text-gray-900 mb-4">
+      <h2 class="text-lg font-semibold text-header-900 mb-4">
         {{ t('operations.seasons.copy_rc') }}
       </h2>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('operations.seasons.source_season') }}
           </label>
           <select
             v-model="copyRcSource"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
           >
             <option value="">--</option>
             <option v-for="season in seasons" :key="season.code" :value="season.code">
@@ -392,12 +392,12 @@ onMounted(() => {
           </select>
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('operations.seasons.target_season') }}
           </label>
           <select
             v-model="copyRcTarget"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
           >
             <option value="">--</option>
             <option
@@ -413,7 +413,7 @@ onMounted(() => {
         <div>
           <button
             :disabled="!copyRcSource || !copyRcTarget || loading"
-            class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="w-full px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
             @click="copyRc"
           >
             {{ t('operations.seasons.copy_rc_button') }}
@@ -424,19 +424,19 @@ onMounted(() => {
 
     <!-- Copy competitions -->
     <section>
-      <h2 class="text-lg font-semibold text-gray-900 mb-4">
+      <h2 class="text-lg font-semibold text-header-900 mb-4">
         {{ t('operations.seasons.copy_competitions') }}
       </h2>
 
       <div class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-header-700 mb-1">
               {{ t('operations.seasons.source_season') }}
             </label>
             <select
               v-model="copyCompSource"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             >
               <option value="">--</option>
               <option v-for="season in seasons" :key="season.code" :value="season.code">
@@ -445,12 +445,12 @@ onMounted(() => {
             </select>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-header-700 mb-1">
               {{ t('operations.seasons.target_season') }}
             </label>
             <select
               v-model="copyCompTarget"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             >
               <option value="">--</option>
               <option
@@ -468,29 +468,29 @@ onMounted(() => {
         <!-- Competitions selection -->
         <div v-if="competitions.length > 0">
           <div class="flex items-center justify-between mb-2">
-            <label class="block text-sm font-medium text-gray-700">
+            <label class="block text-sm font-medium text-header-700">
               {{ t('operations.seasons.select_competitions') }}
             </label>
             <div class="flex gap-2">
-              <button class="text-sm text-blue-600 hover:underline" @click="selectAllCompetitions">
+              <button class="text-sm text-primary-600 hover:underline" @click="selectAllCompetitions">
                 {{ t('stats.params.select_all') }}
               </button>
-              <button class="text-sm text-gray-600 hover:underline" @click="deselectAllCompetitions">
+              <button class="text-sm text-header-600 hover:underline" @click="deselectAllCompetitions">
                 {{ t('stats.params.deselect_all') }}
               </button>
             </div>
           </div>
-          <div class="max-h-48 overflow-y-auto border border-gray-200 rounded-lg p-2 space-y-1">
+          <div class="max-h-48 overflow-y-auto border border-header-200 rounded-lg p-2 space-y-1">
             <label
               v-for="comp in competitions"
               :key="comp.code"
-              class="flex items-center gap-2 p-2 hover:bg-gray-50 rounded cursor-pointer"
+              class="flex items-center gap-2 p-2 hover:bg-header-50 rounded cursor-pointer"
             >
               <input
                 v-model="selectedCompetitions"
                 type="checkbox"
                 :value="comp.code"
-                class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                class="w-4 h-4 rounded border-header-300 text-primary-600 focus:ring-primary-500"
               >
               <span class="text-sm">{{ comp.code }} - {{ comp.libelle }}</span>
             </label>
@@ -503,15 +503,15 @@ onMounted(() => {
             <input
               v-model="copyMatches"
               type="checkbox"
-              class="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              class="w-4 h-4 rounded border-header-300 text-primary-600 focus:ring-primary-500"
             >
-            <span class="text-sm text-gray-700">{{ t('operations.seasons.copy_matches') }}</span>
+            <span class="text-sm text-header-700">{{ t('operations.seasons.copy_matches') }}</span>
           </label>
         </div>
 
         <button
           :disabled="!copyCompSource || !copyCompTarget || selectedCompetitions.length === 0 || loading"
-          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
           @click="copyCompetitions"
         >
           {{ t('operations.seasons.copy_competitions_button') }}

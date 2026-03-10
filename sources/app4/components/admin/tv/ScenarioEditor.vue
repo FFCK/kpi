@@ -74,10 +74,10 @@ onMounted(() => loadScenario())
     <!-- Scenario selector + refresh -->
     <div class="flex items-end gap-3 mb-4">
       <div class="flex flex-col gap-1">
-        <label class="text-xs font-medium text-gray-600">{{ t('tv.scenario.title') }}</label>
+        <label class="text-xs font-medium text-header-600">{{ t('tv.scenario.title') }}</label>
         <select
           v-model.number="selectedScenario"
-          class="px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white min-w-[250px]"
+          class="px-3 py-2 text-sm border border-header-300 rounded-lg bg-white min-w-[250px]"
         >
           <option v-for="n in SCENARIO_COUNT" :key="n" :value="n">
             {{ scenarioLabel(n) }}
@@ -87,7 +87,7 @@ onMounted(() => loadScenario())
 
       <button
         type="button"
-        class="px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+        class="px-3 py-2 text-sm font-medium text-header-700 bg-header-100 rounded-lg hover:bg-header-200 transition-colors"
         :disabled="loading"
         @click="loadScenario"
       >
@@ -96,27 +96,27 @@ onMounted(() => loadScenario())
     </div>
 
     <!-- Scenes table -->
-    <div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
+    <div class="bg-white rounded-lg shadow border border-header-200 overflow-hidden">
       <table class="w-full text-sm">
-        <thead class="bg-gray-50 border-b border-gray-200">
+        <thead class="bg-header-50 border-b border-header-200">
           <tr>
-            <th class="px-4 py-2 text-left font-medium text-gray-600 w-24">{{ t('tv.scenario.channel') }}</th>
-            <th class="px-4 py-2 text-left font-medium text-gray-600">{{ t('tv.scenario.url') }}</th>
-            <th class="px-4 py-2 text-left font-medium text-gray-600 w-32">{{ t('tv.scenario.delay') }}</th>
+            <th class="px-4 py-2 text-left font-medium text-header-600 w-24">{{ t('tv.scenario.channel') }}</th>
+            <th class="px-4 py-2 text-left font-medium text-header-600">{{ t('tv.scenario.url') }}</th>
+            <th class="px-4 py-2 text-left font-medium text-header-600 w-32">{{ t('tv.scenario.delay') }}</th>
           </tr>
         </thead>
         <tbody>
           <tr
             v-for="scene in scenes"
             :key="scene.voie"
-            class="border-b border-gray-100 last:border-0"
+            class="border-b border-header-100 last:border-0"
           >
-            <td class="px-4 py-2 text-gray-500 font-mono">{{ scene.voie }}</td>
+            <td class="px-4 py-2 text-header-500 font-mono">{{ scene.voie }}</td>
             <td class="px-4 py-2">
               <input
                 v-model="scene.url"
                 type="text"
-                class="w-full px-2 py-1 text-sm border border-gray-300 rounded bg-white"
+                class="w-full px-2 py-1 text-sm border border-header-300 rounded bg-white"
               >
             </td>
             <td class="px-4 py-2">
@@ -125,7 +125,7 @@ onMounted(() => loadScenario())
                 type="number"
                 min="1000"
                 step="1000"
-                class="w-full px-2 py-1 text-sm border border-gray-300 rounded bg-white"
+                class="w-full px-2 py-1 text-sm border border-header-300 rounded bg-white"
               >
             </td>
           </tr>
@@ -137,7 +137,7 @@ onMounted(() => loadScenario())
     <div class="flex gap-3 mt-4">
       <button
         type="button"
-        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+        class="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50"
         :disabled="saving"
         @click="updateScenario"
       >
@@ -146,7 +146,7 @@ onMounted(() => loadScenario())
 
       <button
         type="button"
-        class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+        class="px-4 py-2 text-sm font-medium text-header-700 bg-header-100 rounded-lg hover:bg-header-200 transition-colors"
         @click="testScenario"
       >
         {{ t('tv.scenario.test') }}

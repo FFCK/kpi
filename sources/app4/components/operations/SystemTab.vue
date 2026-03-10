@@ -45,21 +45,21 @@ const confirmPurge = async () => {
   <div class="space-y-8">
     <!-- Cache management -->
     <section>
-      <h2 class="text-lg font-semibold text-gray-900 mb-4">
+      <h2 class="text-lg font-semibold text-header-900 mb-4">
         {{ t('operations.system.cache') }}
       </h2>
 
-      <div class="bg-gray-50 rounded-lg p-4">
+      <div class="bg-header-50 rounded-lg p-4">
         <div class="flex items-start gap-4">
           <div class="p-3 bg-white rounded-lg shadow-sm">
-            <UIcon name="i-heroicons-trash" class="w-6 h-6 text-gray-600" />
+            <UIcon name="i-heroicons-trash" class="w-6 h-6 text-header-600" />
           </div>
           <div class="flex-1">
-            <h3 class="font-medium text-gray-900">{{ t('operations.system.purge_cache') }}</h3>
-            <p class="mt-1 text-sm text-gray-600">{{ t('operations.system.purge_description') }}</p>
+            <h3 class="font-medium text-header-900">{{ t('operations.system.purge_cache') }}</h3>
+            <p class="mt-1 text-sm text-header-600">{{ t('operations.system.purge_description') }}</p>
             <button
               :disabled="loading"
-              class="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              class="mt-4 px-4 py-2 bg-danger-600 text-white rounded-lg hover:bg-danger-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               @click="openPurgeModal"
             >
               <UIcon v-if="loading" name="i-heroicons-arrow-path" class="w-4 h-4 animate-spin" />

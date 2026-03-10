@@ -210,11 +210,11 @@ const profileOptions = computed(() => {
   <div>
     <!-- Header -->
     <div class="flex items-center justify-between mb-4">
-      <h1 class="text-2xl font-bold text-gray-900">{{ t('users.title') }}</h1>
+      <h1 class="text-2xl font-bold text-header-900">{{ t('users.title') }}</h1>
       <NuxtLink
         v-if="canDelete"
         to="/journal"
-        class="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
+        class="text-sm text-primary-600 hover:text-primary-800 flex items-center gap-1"
       >
         {{ t('users.activity_log') }}
         <UIcon name="i-heroicons-arrow-top-right-on-square" class="w-3.5 h-3.5" />
@@ -237,7 +237,7 @@ const profileOptions = computed(() => {
         <!-- Profile filter -->
         <select
           v-model="filterProfile"
-          class="px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          class="px-3 py-2 text-sm border border-header-300 rounded-lg bg-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
         >
           <option value="">{{ t('users.filter_profile_all') }}</option>
           <option v-for="opt in profileOptions" :key="opt.value" :value="opt.value">
@@ -248,7 +248,7 @@ const profileOptions = computed(() => {
         <!-- Season filter -->
         <select
           v-model="filterSeason"
-          class="px-3 py-2 text-sm border border-gray-300 rounded-lg bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          class="px-3 py-2 text-sm border border-header-300 rounded-lg bg-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
         >
           <option value="">{{ t('users.filter_season_all') }}</option>
           <option v-for="s in seasons" :key="s.code" :value="s.code">
@@ -260,13 +260,13 @@ const profileOptions = computed(() => {
 
     <!-- Loading -->
     <div v-if="loading" class="flex justify-center py-12">
-      <UIcon name="i-heroicons-arrow-path" class="w-8 h-8 animate-spin text-gray-400" />
+      <UIcon name="i-heroicons-arrow-path" class="w-8 h-8 animate-spin text-header-400" />
     </div>
 
     <!-- Desktop Table -->
     <div v-else class="hidden lg:block overflow-x-auto">
-      <table v-if="users.length > 0" class="min-w-full divide-y divide-gray-200 bg-white rounded-lg shadow-sm">
-        <thead class="bg-gray-50">
+      <table v-if="users.length > 0" class="min-w-full divide-y divide-header-200 bg-white rounded-lg shadow-sm">
+        <thead class="bg-header-50">
           <tr>
             <th v-if="canDelete" class="w-10 px-3 py-3">
               <input
@@ -275,18 +275,18 @@ const profileOptions = computed(() => {
                 @change="toggleSelectAll"
               >
             </th>
-            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ t('users.table.identity') }}</th>
-            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ t('users.table.function') }}</th>
-            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ t('users.table.profile') }}</th>
-            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ t('users.table.seasons') }}</th>
-            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ t('users.table.competitions') }}</th>
-            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ t('users.table.events_gamedays') }}</th>
-            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ t('users.table.clubs') }}</th>
-            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">{{ t('users.table.actions') }}</th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">{{ t('users.table.identity') }}</th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">{{ t('users.table.function') }}</th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">{{ t('users.table.profile') }}</th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">{{ t('users.table.seasons') }}</th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">{{ t('users.table.competitions') }}</th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">{{ t('users.table.events_gamedays') }}</th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">{{ t('users.table.clubs') }}</th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">{{ t('users.table.actions') }}</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-200">
-          <tr v-for="user in users" :key="user.code" class="hover:bg-gray-50">
+        <tbody class="divide-y divide-header-200">
+          <tr v-for="user in users" :key="user.code" class="hover:bg-header-50">
             <td v-if="canDelete" class="w-10 px-3 py-2" @click.stop>
               <input
                 type="checkbox"
@@ -295,33 +295,33 @@ const profileOptions = computed(() => {
               >
             </td>
             <td class="px-3 py-2">
-              <div class="text-sm font-medium text-gray-900">{{ user.identite }}</div>
-              <div class="text-xs text-gray-500">({{ user.code }})</div>
+              <div class="text-sm font-medium text-header-900">{{ user.identite }}</div>
+              <div class="text-xs text-header-500">({{ user.code }})</div>
             </td>
-            <td class="px-3 py-2 text-sm text-gray-600">{{ user.fonction }}</td>
+            <td class="px-3 py-2 text-sm text-header-600">{{ user.fonction }}</td>
             <td class="px-3 py-2">
               <span class="text-sm font-medium">{{ user.niveau }}</span>
-              <div v-if="user.mandateCount > 0" class="text-xs text-blue-600">
+              <div v-if="user.mandateCount > 0" class="text-xs text-primary-600">
                 {{ t('users.mandates.table_mandates', { count: user.mandateCount }) }}
               </div>
             </td>
-            <td class="px-3 py-2 text-sm text-gray-600">
+            <td class="px-3 py-2 text-sm text-header-600">
               {{ formatFilter(user.filtreSaison, t('users.table.seasons_all')) }}
             </td>
-            <td class="px-3 py-2 text-sm text-gray-600 max-w-50 truncate" :title="formatFilter(user.filtreCompetition, t('users.table.competitions_all'))">
+            <td class="px-3 py-2 text-sm text-header-600 max-w-50 truncate" :title="formatFilter(user.filtreCompetition, t('users.table.competitions_all'))">
               {{ formatFilter(user.filtreCompetition, t('users.table.competitions_all')) }}
             </td>
-            <td class="px-3 py-2 text-sm text-gray-600">
+            <td class="px-3 py-2 text-sm text-header-600">
               {{ formatEventsGamedays(user) }}
             </td>
-            <td class="px-3 py-2 text-sm text-gray-600">
+            <td class="px-3 py-2 text-sm text-header-600">
               {{ user.limitClubs || '—' }}
             </td>
             <td class="px-3 py-2">
               <div class="flex items-center gap-1">
                 <button
                   v-if="canEdit"
-                  class="p-1.5 text-gray-500 hover:text-blue-600 rounded"
+                  class="p-1.5 text-header-500 hover:text-primary-600 rounded"
                   :title="t('common.edit')"
                   @click="openEditModal(user)"
                 >
@@ -329,7 +329,7 @@ const profileOptions = computed(() => {
                 </button>
                 <button
                   v-if="canDelete"
-                  class="p-1.5 text-gray-500 hover:text-red-600 rounded"
+                  class="p-1.5 text-header-500 hover:text-danger-600 rounded"
                   :title="t('common.delete')"
                   @click="confirmDeleteUser(user)"
                 >
@@ -340,7 +340,7 @@ const profileOptions = computed(() => {
           </tr>
         </tbody>
       </table>
-      <div v-else class="text-center py-12 text-gray-500">
+      <div v-else class="text-center py-12 text-header-500">
         {{ t('common.no_results') }}
       </div>
     </div>
@@ -362,16 +362,16 @@ const profileOptions = computed(() => {
         <template #header>
           <div>
             <span class="font-medium">{{ user.identite }}</span>
-            <span class="text-xs text-gray-500 ml-1">({{ user.code }})</span>
+            <span class="text-xs text-header-500 ml-1">({{ user.code }})</span>
           </div>
         </template>
         <template #header-right>
           <span class="text-sm font-medium">{{ t('users.table.profile') }} {{ user.niveau }}</span>
-          <span v-if="user.mandateCount > 0" class="text-xs text-blue-600 ml-1">
+          <span v-if="user.mandateCount > 0" class="text-xs text-primary-600 ml-1">
             {{ t('users.mandates.table_mandates', { count: user.mandateCount }) }}
           </span>
         </template>
-        <div class="space-y-1 text-sm text-gray-600">
+        <div class="space-y-1 text-sm text-header-600">
           <div v-if="user.fonction">{{ user.fonction }}</div>
           <div>{{ t('users.table.seasons') }}: {{ formatFilter(user.filtreSaison, t('users.table.seasons_all')) }}</div>
           <div>{{ t('users.table.competitions') }}: {{ formatFilter(user.filtreCompetition, t('users.table.competitions_all')) }}</div>
@@ -381,14 +381,14 @@ const profileOptions = computed(() => {
           <div class="flex items-center gap-2">
             <button
               v-if="canEdit"
-              class="px-3 py-1 text-xs text-blue-600 border border-blue-300 rounded hover:bg-blue-50"
+              class="px-3 py-1 text-xs text-primary-600 border border-primary-300 rounded hover:bg-primary-50"
               @click="openEditModal(user)"
             >
               {{ t('common.edit') }}
             </button>
             <button
               v-if="canDelete"
-              class="px-3 py-1 text-xs text-red-600 border border-red-300 rounded hover:bg-red-50"
+              class="px-3 py-1 text-xs text-danger-600 border border-danger-300 rounded hover:bg-danger-50"
               @click="confirmDeleteUser(user)"
             >
               {{ t('common.delete') }}

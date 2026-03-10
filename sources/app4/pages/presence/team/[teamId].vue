@@ -399,13 +399,13 @@ const pdfLinks = computed(() => {
     >
       <template #badges>
         <div v-if="presenceStore.team" class="flex flex-wrap items-center gap-2 text-sm">
-          <span class="text-gray-500">{{ presenceStore.competition?.code }} - {{ presenceStore.team.codeSaison }}</span>
-          <span class="text-gray-400">&bull;</span>
+          <span class="text-header-500">{{ presenceStore.competition?.code }} - {{ presenceStore.team.codeSaison }}</span>
+          <span class="text-header-400">&bull;</span>
           <!-- Team dropdown selector -->
           <select
             v-if="siblingTeams.length >= 2"
             :value="teamId"
-            class="font-semibold text-gray-900 border border-gray-300 rounded-md px-2 py-1 text-sm bg-white hover:border-blue-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 cursor-pointer max-w-xs"
+            class="font-semibold text-header-900 border border-header-300 rounded-md px-2 py-1 text-sm bg-white hover:border-primary-400 focus:border-primary-500 focus:ring-2 focus:ring-primary-200 cursor-pointer max-w-xs"
             @change="navigateToTeam(Number(($event.target as HTMLSelectElement).value))"
           >
             <option
@@ -416,13 +416,13 @@ const pdfLinks = computed(() => {
               {{ st.libelle }}
             </option>
           </select>
-          <span v-else class="font-semibold text-gray-900">{{ presenceStore.team.libelle }}</span>
+          <span v-else class="font-semibold text-header-900">{{ presenceStore.team.libelle }}</span>
         </div>
 
         <div v-if="presenceStore.competition" class="flex items-center gap-2 flex-wrap">
           <span
             v-if="presenceStore.competition.codeNiveau"
-            class="px-2 py-1 text-xs font-medium rounded bg-blue-100 text-blue-800"
+            class="px-2 py-1 text-xs font-medium rounded bg-primary-100 text-primary-800"
           >
             {{ presenceStore.competition.codeNiveau }}
           </span>
@@ -440,7 +440,7 @@ const pdfLinks = computed(() => {
           <!-- Lock indicator -->
           <div
             v-if="presenceStore.isLocked"
-            class="flex items-center gap-1 px-2 py-1 rounded bg-red-50 text-red-700"
+            class="flex items-center gap-1 px-2 py-1 rounded bg-danger-50 text-danger-700"
             :title="t('presence.competition_locked')"
           >
             <UIcon name="heroicons:lock-closed-solid" class="w-6 h-6" />
@@ -449,7 +449,7 @@ const pdfLinks = computed(() => {
           <UIcon
             v-else
             name="heroicons:lock-open-solid"
-            class="w-6 h-6 text-gray-400"
+            class="w-6 h-6 text-header-400"
             :title="t('common.unlocked')"
           />
         </div>
@@ -481,7 +481,7 @@ const pdfLinks = computed(() => {
       <template #left>
         <button
           v-if="canCopy"
-          class="px-3 py-1 text-sm font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+          class="px-3 py-1 text-sm font-medium text-primary-700 bg-primary-50 hover:bg-primary-100 rounded-lg transition-colors"
           @click="openCopyModal"
         >
           <UIcon name="i-heroicons-document-duplicate" class="w-4 h-4 inline mr-1" />
@@ -494,13 +494,13 @@ const pdfLinks = computed(() => {
           :key="key"
           :href="link"
           target="_blank"
-          class="hidden sm:inline-flex px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 hover:bg-gray-50 rounded-lg transition-colors"
+          class="hidden sm:inline-flex px-3 py-1 text-sm font-medium text-header-700 bg-white border border-header-300 hover:bg-header-50 rounded-lg transition-colors"
         >
           <UIcon name="i-heroicons-document-text" class="w-4 h-4 inline mr-1" />
           {{ t(`presence.pdf_${key}`) }}
         </a>
         <select
-          class="sm:hidden px-3 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg"
+          class="sm:hidden px-3 py-1 text-sm font-medium text-header-700 bg-white border border-header-300 rounded-lg"
           @change="(e: Event) => { const el = e.target as HTMLSelectElement; if (el.value) { navigateTo(el.value, { external: true, open: { target: '_blank' } }); el.selectedIndex = 0 } }"
         >
           <option value="">{{ t('common.exports') }}</option>
@@ -513,61 +513,61 @@ const pdfLinks = computed(() => {
 
     <!-- Loading state -->
     <div v-if="presenceStore.loading" class="text-center py-12">
-      <UIcon name="i-heroicons-arrow-path" class="w-8 h-8 animate-spin mx-auto text-blue-600" />
-      <p class="mt-2 text-sm text-gray-500">{{ t('common.loading') }}</p>
+      <UIcon name="i-heroicons-arrow-path" class="w-8 h-8 animate-spin mx-auto text-primary-600" />
+      <p class="mt-2 text-sm text-header-500">{{ t('common.loading') }}</p>
     </div>
 
     <!-- Empty state -->
     <div v-else-if="filteredPlayers.length === 0" class="text-center py-12 bg-white rounded-lg shadow">
-      <UIcon name="i-heroicons-user-group" class="w-12 h-12 mx-auto text-gray-400" />
-      <p class="mt-2 text-sm text-gray-500">{{ t('presence.no_players') }}</p>
+      <UIcon name="i-heroicons-user-group" class="w-12 h-12 mx-auto text-header-400" />
+      <p class="mt-2 text-sm text-header-500">{{ t('presence.no_players') }}</p>
     </div>
 
     <!-- Desktop Table -->
     <div v-else class="hidden lg:block bg-white rounded-lg shadow overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
+      <table class="min-w-full divide-y divide-header-200">
+        <thead class="bg-header-50">
           <tr>
             <th v-if="canEdit" class="w-10 px-3 py-1">
               <input
                 v-model="selectAll"
                 type="checkbox"
-                class="rounded border-gray-300"
+                class="rounded border-header-300"
                 @change="toggleSelectAll"
               />
             </th>
-            <th class="w-16 px-3 py-1 text-left text-xs font-medium text-gray-500 uppercase">#</th>
-            <th class="w-12 px-3 py-1 text-left text-xs font-medium text-gray-500 uppercase">Cap</th>
-            <th class="px-3 py-1 text-left text-xs font-medium text-gray-500 uppercase">{{ t('common.last_name') }}</th>
-            <th class="px-3 py-1 text-left text-xs font-medium text-gray-500 uppercase">{{ t('common.first_name') }}</th>
-            <th class="px-3 py-1 text-left text-xs font-medium text-gray-500 uppercase">{{ t('common.license') }}</th>
-            <th class="px-3 py-1 text-left text-xs font-medium text-gray-500 uppercase">{{ t('common.club') }}</th>
-            <th class="px-3 py-1 text-left text-xs font-medium text-gray-500 uppercase">{{ t('common.category') }}</th>
-            <th class="px-3 py-1 text-left text-xs font-medium text-gray-500 uppercase">{{ t('common.paddle') }}</th>
-            <th class="px-3 py-1 text-left text-xs font-medium text-gray-500 uppercase">{{ t('common.certificate') }}</th>
+            <th class="w-16 px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">#</th>
+            <th class="w-12 px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">Cap</th>
+            <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.last_name') }}</th>
+            <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.first_name') }}</th>
+            <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.license') }}</th>
+            <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.club') }}</th>
+            <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.category') }}</th>
+            <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.paddle') }}</th>
+            <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.certificate') }}</th>
             <th v-if="canEdit" class="w-16 px-3 py-1"></th>
           </tr>
         </thead>
 
-        <tbody class="bg-white divide-y divide-gray-200">
+        <tbody class="bg-white divide-y divide-header-200">
           <!-- Active players (-, C) -->
           <tr
             v-for="player in activePlayers"
             :key="player.matric"
-            class="hover:bg-gray-50"
-            :class="{ 'bg-yellow-100': player.capitaine === 'C' }"
+            class="hover:bg-header-50"
+            :class="{ 'bg-warning-100': player.capitaine === 'C' }"
           >
             <td v-if="canEdit" class="px-3 py-1">
               <input
                 v-model="selectedPlayerIds"
                 type="checkbox"
                 :value="player.matric"
-                class="rounded border-gray-300"
+                class="rounded border-header-300"
               />
             </td>
 
             <!-- Numero (inline edit) -->
-            <td class="px-3 py-1 text-sm text-gray-900">
+            <td class="px-3 py-1 text-sm text-header-900">
               <span
                 v-if="editingCell?.matric !== player.matric || editingCell?.field !== 'numero'"
                 :class="canEdit ? 'editable-cell' : ''"
@@ -582,7 +582,7 @@ const pdfLinks = computed(() => {
                 type="number"
                 min="0"
                 max="99"
-                class="w-16 px-2 py-1 border border-blue-400 rounded text-sm focus:ring-2 focus:ring-blue-500"
+                class="w-16 px-2 py-1 border border-primary-400 rounded text-sm focus:ring-2 focus:ring-primary-500"
                 @keydown="handleInlineKeydown"
                 @blur="saveInlineEdit"
               />
@@ -601,7 +601,7 @@ const pdfLinks = computed(() => {
                 v-else
                 :id="`inline-edit-${player.matric}-capitaine`"
                 v-model="editingValue"
-                class="px-2 py-1 border border-blue-400 rounded text-sm focus:ring-2 focus:ring-blue-500"
+                class="px-2 py-1 border border-primary-400 rounded text-sm focus:ring-2 focus:ring-primary-500"
                 @blur="saveInlineEdit"
               >
                 <option value="-">-</option>
@@ -612,9 +612,9 @@ const pdfLinks = computed(() => {
               </select>
             </td>
 
-            <td class="px-3 py-1 text-sm font-medium text-gray-900">{{ player.nom }}</td>
-            <td class="px-3 py-1 text-sm text-gray-900">{{ player.prenom }}</td>
-            <td class="px-3 py-1 text-sm text-gray-500 font-mono">
+            <td class="px-3 py-1 text-sm font-medium text-header-900">{{ player.nom }}</td>
+            <td class="px-3 py-1 text-sm text-header-900">{{ player.prenom }}</td>
+            <td class="px-3 py-1 text-sm text-header-500 font-mono">
               <NuxtLink
                 :to="`/athletes?matric=${player.matric}`"
                 class="link-value"
@@ -622,7 +622,7 @@ const pdfLinks = computed(() => {
                 {{ getLicenseDisplay(player) }}
               </NuxtLink>
             </td>
-            <td class="px-3 py-1 text-sm text-gray-500">
+            <td class="px-3 py-1 text-sm text-header-500">
                 <NuxtLink
                   :to="`/clubs?code=${player.numeroClub}`"
                   class="link-value"
@@ -631,18 +631,18 @@ const pdfLinks = computed(() => {
                   {{ player.numeroClub }}
                 </NuxtLink>
               </td>
-            <td class="px-3 py-1 text-sm text-gray-500">{{ player.categ }}-{{ player.sexe }}</td>
+            <td class="px-3 py-1 text-sm text-header-500">{{ player.categ }}-{{ player.sexe }}</td>
 
             <!-- Pagaie with validation -->
             <td class="px-3 py-1 text-sm">
               <span
                 v-if="player.pagaieValide === 0"
-                class="text-red-600"
+                class="text-danger-600"
                 :title="t('presence.invalid_paddle')"
               >
                 ({{ player.pagaieLabel }})
               </span>
-              <span v-else class="text-gray-700">
+              <span v-else class="text-header-700">
                 {{ player.pagaieLabel }}
               </span>
             </td>
@@ -651,11 +651,11 @@ const pdfLinks = computed(() => {
             <td class="px-3 py-1 text-sm">
               <span
                 v-if="player.certifCK === 'OUI'"
-                class="text-green-600"
+                class="text-success-500"
               >
                 {{ t('common.yes') }}
               </span>
-              <span v-else class="text-red-600">
+              <span v-else class="text-danger-600">
                 {{ t('common.no') }}
               </span>
             </td>
@@ -663,7 +663,7 @@ const pdfLinks = computed(() => {
             <!-- Actions -->
             <td v-if="canEdit" class="px-3 py-1 text-right">
               <button
-                class="text-red-600 hover:text-red-800"
+                class="text-danger-600 hover:text-danger-800"
                 @click="deletePlayer(player.matric)"
               >
                 <UIcon name="i-heroicons-trash" class="w-6 h-6" />
@@ -673,21 +673,21 @@ const pdfLinks = computed(() => {
 
           <!-- Coaches (E) -->
           <template v-if="coaches.length > 0">
-            <tr class="bg-gray-100">
-              <td :colspan="canEdit ? 11 : 10" class="px-3 py-1 text-xs text-gray-500 text-center">
+            <tr class="bg-header-100">
+              <td :colspan="canEdit ? 11 : 10" class="px-3 py-1 text-xs text-header-500 text-center">
                 {{ t('presence.section_coaches') }}
               </td>
             </tr>
             <tr
               v-for="player in coaches"
               :key="player.matric"
-              class="hover:bg-gray-50 bg-orange-100/50"
+              class="hover:bg-header-50 bg-orange-100/50"
             >
               <td v-if="canEdit" class="px-3 py-1">
-                <input v-model="selectedPlayerIds" type="checkbox" :value="player.matric" class="rounded border-gray-300" />
+                <input v-model="selectedPlayerIds" type="checkbox" :value="player.matric" class="rounded border-header-300" />
               </td>
               <!-- Numero (inline edit) -->
-              <td class="px-3 py-1 text-sm text-gray-900">
+              <td class="px-3 py-1 text-sm text-header-900">
                 <span
                   v-if="editingCell?.matric !== player.matric || editingCell?.field !== 'numero'"
                   :class="canEdit ? 'editable-cell' : ''"
@@ -700,7 +700,7 @@ const pdfLinks = computed(() => {
                   :id="`inline-edit-${player.matric}-numero`"
                   v-model.number="editingValue"
                   type="number" min="0" max="99"
-                  class="w-16 px-2 py-1 border border-blue-400 rounded text-sm focus:ring-2 focus:ring-blue-500"
+                  class="w-16 px-2 py-1 border border-primary-400 rounded text-sm focus:ring-2 focus:ring-primary-500"
                   @keydown="handleInlineKeydown"
                   @blur="saveInlineEdit"
                 />
@@ -718,7 +718,7 @@ const pdfLinks = computed(() => {
                   v-else
                   :id="`inline-edit-${player.matric}-capitaine`"
                   v-model="editingValue"
-                  class="px-2 py-1 border border-blue-400 rounded text-sm focus:ring-2 focus:ring-blue-500"
+                  class="px-2 py-1 border border-primary-400 rounded text-sm focus:ring-2 focus:ring-primary-500"
                   @change="saveInlineEdit"
                   @blur="saveInlineEdit"
                 >
@@ -729,9 +729,9 @@ const pdfLinks = computed(() => {
                   <option value="X">X</option>
                 </select>
               </td>
-              <td class="px-3 py-1 text-sm font-medium text-gray-900">{{ player.nom }}</td>
-              <td class="px-3 py-1 text-sm text-gray-900">{{ player.prenom }}</td>
-              <td class="px-3 py-1 text-sm text-gray-500 font-mono">
+              <td class="px-3 py-1 text-sm font-medium text-header-900">{{ player.nom }}</td>
+              <td class="px-3 py-1 text-sm text-header-900">{{ player.prenom }}</td>
+              <td class="px-3 py-1 text-sm text-header-500 font-mono">
                 <NuxtLink
                   :to="`/athletes?matric=${player.matric}`"
                   class="link-value"
@@ -739,7 +739,7 @@ const pdfLinks = computed(() => {
                   {{ getLicenseDisplay(player) }}
                 </NuxtLink>
               </td>
-              <td class="px-3 py-1 text-sm text-gray-500">
+              <td class="px-3 py-1 text-sm text-header-500">
                 <NuxtLink
                   :to="`/clubs?code=${player.numeroClub}`"
                   class="link-value"
@@ -748,14 +748,14 @@ const pdfLinks = computed(() => {
                   {{ player.numeroClub }}
                 </NuxtLink>
               </td>
-              <td class="px-3 py-1 text-sm text-gray-500">{{ player.categ }}-{{ player.sexe }}</td>
-              <td class="px-3 py-1 text-sm text-gray-700">{{ player.pagaieLabel }}</td>
+              <td class="px-3 py-1 text-sm text-header-500">{{ player.categ }}-{{ player.sexe }}</td>
+              <td class="px-3 py-1 text-sm text-header-700">{{ player.pagaieLabel }}</td>
               <td class="px-3 py-1 text-sm">
-                <span v-if="player.certifCK === 'OUI'" class="text-green-600">{{ t('common.yes') }}</span>
-                <span v-else class="text-red-600">{{ t('common.no') }}</span>
+                <span v-if="player.certifCK === 'OUI'" class="text-success-500">{{ t('common.yes') }}</span>
+                <span v-else class="text-danger-600">{{ t('common.no') }}</span>
               </td>
               <td v-if="canEdit" class="px-3 py-1 text-right">
-                <button class="text-red-600 hover:text-red-800" @click="deletePlayer(player.matric)">
+                <button class="text-danger-600 hover:text-danger-800" @click="deletePlayer(player.matric)">
                   <UIcon name="i-heroicons-trash" class="w-6 h-6" />
                 </button>
               </td>
@@ -764,21 +764,21 @@ const pdfLinks = computed(() => {
 
           <!-- Referees (A) -->
           <template v-if="referees.length > 0">
-            <tr class="bg-gray-100">
-              <td :colspan="canEdit ? 11 : 10" class="px-3 py-1 text-xs text-gray-500 text-center">
+            <tr class="bg-header-100">
+              <td :colspan="canEdit ? 11 : 10" class="px-3 py-1 text-xs text-header-500 text-center">
                 {{ t('presence.section_referees') }}
               </td>
             </tr>
             <tr
               v-for="player in referees"
               :key="player.matric"
-              class="hover:bg-gray-50 bg-blue-100"
+              class="hover:bg-header-50 bg-primary-100"
             >
               <td v-if="canEdit" class="px-3 py-1">
-                <input v-model="selectedPlayerIds" type="checkbox" :value="player.matric" class="rounded border-gray-300" />
+                <input v-model="selectedPlayerIds" type="checkbox" :value="player.matric" class="rounded border-header-300" />
               </td>
               <!-- Numero (inline edit) -->
-              <td class="px-3 py-1 text-sm text-gray-900">
+              <td class="px-3 py-1 text-sm text-header-900">
                 <span
                   v-if="editingCell?.matric !== player.matric || editingCell?.field !== 'numero'"
                   :class="canEdit ? 'editable-cell' : ''"
@@ -791,7 +791,7 @@ const pdfLinks = computed(() => {
                   :id="`inline-edit-${player.matric}-numero`"
                   v-model.number="editingValue"
                   type="number" min="0" max="99"
-                  class="w-16 px-2 py-1 border border-blue-400 rounded text-sm focus:ring-2 focus:ring-blue-500"
+                  class="w-16 px-2 py-1 border border-primary-400 rounded text-sm focus:ring-2 focus:ring-primary-500"
                   @keydown="handleInlineKeydown"
                   @blur="saveInlineEdit"
                 />
@@ -809,7 +809,7 @@ const pdfLinks = computed(() => {
                   v-else
                   :id="`inline-edit-${player.matric}-capitaine`"
                   v-model="editingValue"
-                  class="px-2 py-1 border border-blue-400 rounded text-sm focus:ring-2 focus:ring-blue-500"
+                  class="px-2 py-1 border border-primary-400 rounded text-sm focus:ring-2 focus:ring-primary-500"
                   @change="saveInlineEdit"
                   @blur="saveInlineEdit"
                 >
@@ -820,9 +820,9 @@ const pdfLinks = computed(() => {
                   <option value="X">X</option>
                 </select>
               </td>
-              <td class="px-3 py-1 text-sm font-medium text-gray-900">{{ player.nom }}</td>
-              <td class="px-3 py-1 text-sm text-gray-900">{{ player.prenom }}</td>
-              <td class="px-3 py-1 text-sm text-gray-500 font-mono">
+              <td class="px-3 py-1 text-sm font-medium text-header-900">{{ player.nom }}</td>
+              <td class="px-3 py-1 text-sm text-header-900">{{ player.prenom }}</td>
+              <td class="px-3 py-1 text-sm text-header-500 font-mono">
                 <NuxtLink
                   :to="`/athletes?matric=${player.matric}`"
                   class="link-value"
@@ -830,7 +830,7 @@ const pdfLinks = computed(() => {
                   {{ getLicenseDisplay(player) }}
                 </NuxtLink>
               </td>
-              <td class="px-3 py-1 text-sm text-gray-500">
+              <td class="px-3 py-1 text-sm text-header-500">
                 <NuxtLink
                   :to="`/clubs?code=${player.numeroClub}`"
                   class="link-value"
@@ -839,14 +839,14 @@ const pdfLinks = computed(() => {
                   {{ player.numeroClub }}
                 </NuxtLink>
               </td>
-              <td class="px-3 py-1 text-sm text-gray-500">{{ player.categ }}-{{ player.sexe }}</td>
-              <td class="px-3 py-1 text-sm text-gray-700">{{ player.pagaieLabel }}</td>
+              <td class="px-3 py-1 text-sm text-header-500">{{ player.categ }}-{{ player.sexe }}</td>
+              <td class="px-3 py-1 text-sm text-header-700">{{ player.pagaieLabel }}</td>
               <td class="px-3 py-1 text-sm">
-                <span v-if="player.certifCK === 'OUI'" class="text-green-600">{{ t('common.yes') }}</span>
-                <span v-else class="text-red-600">{{ t('common.no') }}</span>
+                <span v-if="player.certifCK === 'OUI'" class="text-success-500">{{ t('common.yes') }}</span>
+                <span v-else class="text-danger-600">{{ t('common.no') }}</span>
               </td>
               <td v-if="canEdit" class="px-3 py-1 text-right">
-                <button class="text-red-600 hover:text-red-800" @click="deletePlayer(player.matric)">
+                <button class="text-danger-600 hover:text-danger-800" @click="deletePlayer(player.matric)">
                   <UIcon name="i-heroicons-trash" class="w-6 h-6" />
                 </button>
               </td>
@@ -855,21 +855,21 @@ const pdfLinks = computed(() => {
 
           <!-- Inactive players (X) -->
           <template v-if="inactivePlayers.length > 0">
-            <tr class="bg-gray-100">
-              <td :colspan="canEdit ? 11 : 10" class="px-3 py-1 text-xs text-gray-500 text-center">
+            <tr class="bg-header-100">
+              <td :colspan="canEdit ? 11 : 10" class="px-3 py-1 text-xs text-header-500 text-center">
                 {{ t('presence.section_inactive') }}
               </td>
             </tr>
             <tr
               v-for="player in inactivePlayers"
               :key="player.matric"
-              class="hover:bg-gray-200 opacity-60 italic"
+              class="hover:bg-header-200 opacity-60 italic"
             >
               <td v-if="canEdit" class="px-3 py-1">
-                <input v-model="selectedPlayerIds" type="checkbox" :value="player.matric" class="rounded border-gray-300" />
+                <input v-model="selectedPlayerIds" type="checkbox" :value="player.matric" class="rounded border-header-300" />
               </td>
               <!-- Numero (inline edit) -->
-              <td class="px-3 py-1 text-sm text-gray-900">
+              <td class="px-3 py-1 text-sm text-header-900">
                 <span
                   v-if="editingCell?.matric !== player.matric || editingCell?.field !== 'numero'"
                   :class="canEdit ? 'editable-cell' : ''"
@@ -882,7 +882,7 @@ const pdfLinks = computed(() => {
                   :id="`inline-edit-${player.matric}-numero`"
                   v-model.number="editingValue"
                   type="number" min="0" max="99"
-                  class="w-16 px-2 py-1 border border-blue-400 rounded text-sm focus:ring-2 focus:ring-blue-500"
+                  class="w-16 px-2 py-1 border border-primary-400 rounded text-sm focus:ring-2 focus:ring-primary-500"
                   @keydown="handleInlineKeydown"
                   @blur="saveInlineEdit"
                 />
@@ -900,7 +900,7 @@ const pdfLinks = computed(() => {
                   v-else
                   :id="`inline-edit-${player.matric}-capitaine`"
                   v-model="editingValue"
-                  class="px-2 py-1 border border-blue-400 rounded text-sm focus:ring-2 focus:ring-blue-500"
+                  class="px-2 py-1 border border-primary-400 rounded text-sm focus:ring-2 focus:ring-primary-500"
                   @change="saveInlineEdit"
                   @blur="saveInlineEdit"
                 >
@@ -911,9 +911,9 @@ const pdfLinks = computed(() => {
                   <option value="X">X</option>
                 </select>
               </td>
-              <td class="px-3 py-1 text-sm font-medium text-gray-900">{{ player.nom }}</td>
-              <td class="px-3 py-1 text-sm text-gray-900">{{ player.prenom }}</td>
-              <td class="px-3 py-1 text-sm text-gray-500 font-mono">
+              <td class="px-3 py-1 text-sm font-medium text-header-900">{{ player.nom }}</td>
+              <td class="px-3 py-1 text-sm text-header-900">{{ player.prenom }}</td>
+              <td class="px-3 py-1 text-sm text-header-500 font-mono">
                 <NuxtLink
                   :to="`/athletes?matric=${player.matric}`"
                   class="link-value"
@@ -921,7 +921,7 @@ const pdfLinks = computed(() => {
                   {{ getLicenseDisplay(player) }}
                 </NuxtLink>
               </td>
-              <td class="px-3 py-1 text-sm text-gray-500">
+              <td class="px-3 py-1 text-sm text-header-500">
                 <NuxtLink
                   :to="`/clubs?code=${player.numeroClub}`"
                   class="link-value"
@@ -930,14 +930,14 @@ const pdfLinks = computed(() => {
                   {{ player.numeroClub }}
                 </NuxtLink>
               </td>
-              <td class="px-3 py-1 text-sm text-gray-500">{{ player.categ }}-{{ player.sexe }}</td>
-              <td class="px-3 py-1 text-sm text-gray-700">{{ player.pagaieLabel }}</td>
+              <td class="px-3 py-1 text-sm text-header-500">{{ player.categ }}-{{ player.sexe }}</td>
+              <td class="px-3 py-1 text-sm text-header-700">{{ player.pagaieLabel }}</td>
               <td class="px-3 py-1 text-sm">
-                <span v-if="player.certifCK === 'OUI'" class="text-green-600">{{ t('common.yes') }}</span>
-                <span v-else class="text-red-600">{{ t('common.no') }}</span>
+                <span v-if="player.certifCK === 'OUI'" class="text-success-500">{{ t('common.yes') }}</span>
+                <span v-else class="text-danger-600">{{ t('common.no') }}</span>
               </td>
               <td v-if="canEdit" class="px-3 py-1 text-right">
-                <button class="text-red-600 hover:text-red-800" @click="deletePlayer(player.matric)">
+                <button class="text-danger-600 hover:text-danger-800" @click="deletePlayer(player.matric)">
                   <UIcon name="i-heroicons-trash" class="w-6 h-6" />
                 </button>
               </td>
@@ -947,11 +947,11 @@ const pdfLinks = computed(() => {
       </table>
 
       <!-- Footer -->
-      <div class="px-4 py-1 bg-gray-50 border-t border-gray-200 text-sm text-gray-600">
+      <div class="px-4 py-1 bg-header-50 border-t border-header-200 text-sm text-header-600">
         <div class="flex items-center justify-between">
           <div>
             {{ t('presence.total_players', { count: presenceStore.players.length }) }}
-            <span v-if="presenceStore.lastUpdate" class="ml-4 text-xs text-gray-500">
+            <span v-if="presenceStore.lastUpdate" class="ml-4 text-xs text-header-500">
               {{ t('presence.last_update') }}: {{ presenceStore.lastUpdate.date }} - {{ presenceStore.lastUpdate.user }}
             </span>
           </div>
@@ -965,7 +965,7 @@ const pdfLinks = computed(() => {
         v-for="player in filteredPlayers"
         :key="player.matric"
         class="bg-white rounded-lg shadow p-4"
-        :class="{ 'bg-yellow-50': player.capitaine === 'C', 'opacity-60': ['E', 'A', 'X'].includes(player.capitaine) }"
+        :class="{ 'bg-warning-50': player.capitaine === 'C', 'opacity-60': ['E', 'A', 'X'].includes(player.capitaine) }"
       >
         <div class="flex items-start justify-between mb-3">
           <div class="flex items-center gap-2">
@@ -974,10 +974,10 @@ const pdfLinks = computed(() => {
               v-model="selectedPlayerIds"
               type="checkbox"
               :value="player.matric"
-              class="rounded border-gray-300"
+              class="rounded border-header-300"
             />
             <div>
-              <div class="font-bold text-gray-900">{{ player.nom }} {{ player.prenom }}</div>
+              <div class="font-bold text-header-900">{{ player.nom }} {{ player.prenom }}</div>
               <NuxtLink
                 :to="`/athletes?matric=${player.matric}`"
                 class="link-value text-sm"
@@ -991,8 +991,8 @@ const pdfLinks = computed(() => {
             <!-- Numero (inline edit on mobile) -->
             <span
               v-if="!canEdit || editingCell?.matric !== player.matric || editingCell?.field !== 'numero'"
-              class="px-2 py-1 text-xs font-medium rounded bg-gray-50 border border-dashed border-gray-300"
-              :class="canEdit ? 'cursor-pointer hover:border-blue-400 hover:bg-blue-50' : ''"
+              class="px-2 py-1 text-xs font-medium rounded bg-header-50 border border-dashed border-header-300"
+              :class="canEdit ? 'cursor-pointer hover:border-primary-400 hover:bg-primary-50' : ''"
               @click="canEdit && startEdit(player, 'numero')"
             >
               #{{ player.numero || '-' }}
@@ -1004,7 +1004,7 @@ const pdfLinks = computed(() => {
               type="number"
               min="0"
               max="99"
-              class="w-14 px-2 py-1 border border-blue-400 rounded text-xs focus:ring-2 focus:ring-blue-500"
+              class="w-14 px-2 py-1 border border-primary-400 rounded text-xs focus:ring-2 focus:ring-primary-500"
               @keydown="handleInlineKeydown"
               @blur="saveInlineEdit"
             />
@@ -1013,8 +1013,8 @@ const pdfLinks = computed(() => {
               v-if="!canEdit || editingCell?.matric !== player.matric || editingCell?.field !== 'capitaine'"
               class="px-2 py-1 text-xs font-medium rounded"
               :class="[
-                player.capitaine === 'C' ? 'bg-yellow-200 text-yellow-800' : 'bg-gray-100 text-gray-600',
-                canEdit ? 'cursor-pointer border border-dashed border-transparent hover:border-blue-400 hover:bg-blue-50' : ''
+                player.capitaine === 'C' ? 'bg-warning-200 text-warning-800' : 'bg-header-100 text-header-600',
+                canEdit ? 'cursor-pointer border border-dashed border-transparent hover:border-primary-400 hover:bg-primary-50' : ''
               ]"
               @click="canEdit && startEdit(player, 'capitaine')"
             >
@@ -1024,7 +1024,7 @@ const pdfLinks = computed(() => {
               v-else
               :id="`mobile-edit-${player.matric}-capitaine`"
               v-model="editingValue"
-              class="px-2 py-1 text-xs border border-blue-400 rounded focus:ring-2 focus:ring-blue-500"
+              class="px-2 py-1 text-xs border border-primary-400 rounded focus:ring-2 focus:ring-primary-500"
               @change="saveInlineEdit"
               @blur="saveInlineEdit"
             >
@@ -1039,27 +1039,27 @@ const pdfLinks = computed(() => {
 
         <div class="space-y-1 text-sm">
           <div class="flex items-center gap-2">
-            <span class="text-gray-500">{{ t('common.club') }}:</span>
+            <span class="text-header-500">{{ t('common.club') }}:</span>
             <span>{{ player.numeroClub }}</span>
           </div>
           <div class="flex items-center gap-2">
-            <span class="text-gray-500">{{ t('common.category') }}:</span>
+            <span class="text-header-500">{{ t('common.category') }}:</span>
             <span>{{ player.categ }}-{{ player.sexe }}</span>
           </div>
           <div class="flex items-center gap-2">
-            <span class="text-gray-500">{{ t('common.paddle') }}:</span>
-            <span :class="player.pagaieValide === 0 ? 'text-red-600' : ''">{{ player.pagaieLabel }}</span>
+            <span class="text-header-500">{{ t('common.paddle') }}:</span>
+            <span :class="player.pagaieValide === 0 ? 'text-danger-600' : ''">{{ player.pagaieLabel }}</span>
           </div>
           <div class="flex items-center gap-2">
-            <span class="text-gray-500">{{ t('common.certificate') }}:</span>
-            <span :class="player.certifCK === 'OUI' ? 'text-green-600' : 'text-red-600'">
+            <span class="text-header-500">{{ t('common.certificate') }}:</span>
+            <span :class="player.certifCK === 'OUI' ? 'text-success-500' : 'text-danger-600'">
               {{ player.certifCK === 'OUI' ? t('common.yes') : t('common.no') }}
             </span>
           </div>
         </div>
 
-        <div v-if="canEdit" class="mt-3 pt-3 border-t border-gray-200 flex justify-end">
-          <button class="text-red-600 hover:text-red-800 text-sm" @click="deletePlayer(player.matric)">
+        <div v-if="canEdit" class="mt-3 pt-3 border-t border-header-200 flex justify-end">
+          <button class="text-danger-600 hover:text-danger-800 text-sm" @click="deletePlayer(player.matric)">
             <UIcon name="i-heroicons-trash" class="w-6 h-6 inline mr-1" />
             {{ t('common.delete') }}
           </button>
@@ -1092,18 +1092,18 @@ const pdfLinks = computed(() => {
           <!-- Error -->
           <div
             v-if="addFormError"
-            class="flex items-start gap-3 p-3 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm"
+            class="flex items-start gap-3 p-3 bg-danger-50 border border-danger-200 rounded-lg text-danger-800 text-sm"
           >
             <UIcon name="i-heroicons-exclamation-triangle" class="w-5 h-5 shrink-0 mt-0.5" />
             <span>{{ addFormError }}</span>
           </div>
 
           <!-- Tabs -->
-          <div class="flex border-b border-gray-200">
+          <div class="flex border-b border-header-200">
             <button
               type="button"
               class="px-4 py-1 text-sm font-medium border-b-2 transition-colors"
-              :class="addMode === 'existing' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+              :class="addMode === 'existing' ? 'border-primary-600 text-primary-600' : 'border-transparent text-header-500 hover:text-header-700'"
               @click="addMode = 'existing'; addFormData.mode = 'existing'"
             >
               {{ t('presence.add_existing_player') }}
@@ -1112,7 +1112,7 @@ const pdfLinks = computed(() => {
               v-if="!presenceStore.isNationalCompetition"
               type="button"
               class="px-4 py-1 text-sm font-medium border-b-2 transition-colors"
-              :class="addMode === 'create' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+              :class="addMode === 'create' ? 'border-primary-600 text-primary-600' : 'border-transparent text-header-500 hover:text-header-700'"
               @click="addMode = 'create'; addFormData.mode = 'create'"
             >
               {{ t('presence.create_new_player') }}
@@ -1122,7 +1122,7 @@ const pdfLinks = computed(() => {
           <!-- Existing player search -->
           <template v-if="addMode === 'existing'">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('presence.search_placeholder') }}</label>
+              <label class="block text-sm font-medium text-header-700 mb-1">{{ t('presence.search_placeholder') }}</label>
               <AdminPlayerAutocomplete
                 :model-value="selectedPlayer"
                 :placeholder="t('presence.search_placeholder')"
@@ -1135,22 +1135,22 @@ const pdfLinks = computed(() => {
           <template v-if="addMode === 'create'">
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('common.last_name') }} *</label>
+                <label class="block text-sm font-medium text-header-700 mb-1">{{ t('common.last_name') }} *</label>
                 <input
                   :value="addFormData.nom"
                   type="text"
                   required
-                  class="w-full px-3 py-1 border border-gray-300 rounded-lg text-sm uppercase focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  class="w-full px-3 py-1 border border-header-300 rounded-lg text-sm uppercase focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   @input="addFormData.nom = ($event.target as HTMLInputElement).value.toUpperCase(); ($event.target as HTMLInputElement).value = addFormData.nom!"
                 />
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('common.first_name') }} *</label>
+                <label class="block text-sm font-medium text-header-700 mb-1">{{ t('common.first_name') }} *</label>
                 <input
                   :value="addFormData.prenom"
                   type="text"
                   required
-                  class="w-full px-3 py-1 border border-gray-300 rounded-lg text-sm uppercase focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  class="w-full px-3 py-1 border border-header-300 rounded-lg text-sm uppercase focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   @input="addFormData.prenom = ($event.target as HTMLInputElement).value.toUpperCase(); ($event.target as HTMLInputElement).value = addFormData.prenom!"
                 />
               </div>
@@ -1176,11 +1176,11 @@ const pdfLinks = computed(() => {
               </div>
 
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('presence.sex') }} *</label>
+                <label class="block text-sm font-medium text-header-700 mb-1">{{ t('presence.sex') }} *</label>
                 <select
                   v-model="addFormData.sexe"
                   required
-                  class="w-full px-3 py-1 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  class="w-full px-3 py-1 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 >
                   <option value="" disabled>-</option>
                   <option value="M">M</option>
@@ -1188,18 +1188,18 @@ const pdfLinks = computed(() => {
                 </select>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('presence.birth_date') }}</label>
+                <label class="block text-sm font-medium text-header-700 mb-1">{{ t('presence.birth_date') }}</label>
                 <input
                   v-model="addFormData.naissance"
                   type="date"
-                  class="w-full px-3 py-1 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  class="w-full px-3 py-1 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 />
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('presence.referee_qualification') }}</label>
+                <label class="block text-sm font-medium text-header-700 mb-1">{{ t('presence.referee_qualification') }}</label>
                 <select
                   v-model="addFormData.arbitre"
-                  class="w-full px-3 py-1 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  class="w-full px-3 py-1 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 >
                   <option value="">-</option>
                   <option value="INT">INT - {{ t('presence.referee_int') }}</option>
@@ -1210,10 +1210,10 @@ const pdfLinks = computed(() => {
                 </select>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('presence.referee_level') }}</label>
+                <label class="block text-sm font-medium text-header-700 mb-1">{{ t('presence.referee_level') }}</label>
                 <select
                   v-model="addFormData.niveau"
-                  class="w-full px-3 py-1 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  class="w-full px-3 py-1 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 >
                   <option value="" v-if="addFormData.arbitre">-</option>
                   <option value="A" v-if="addFormData.arbitre">A</option>
@@ -1223,14 +1223,14 @@ const pdfLinks = computed(() => {
                 </select>
               </div>
               <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('presence.icf_number') }}</label>
+                <label class="block text-sm font-medium text-header-700 mb-1">{{ t('presence.icf_number') }}</label>
                 <input
                   :value="addFormData.numicf ?? ''"
                   type="text"
                   inputmode="numeric"
                   pattern="[0-9]*"
                   :placeholder="t('presence.icf_number_placeholder')"
-                  class="w-full px-3 py-1 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  class="w-full px-3 py-1 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   @input="(e: Event) => { const el = e.target as HTMLInputElement; const digits = el.value.replace(/\D/g, ''); el.value = digits; addFormData.numicf = digits ? parseInt(digits) : undefined }"
                 />
               </div>
@@ -1240,20 +1240,20 @@ const pdfLinks = computed(() => {
           <!-- Common fields -->
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">#</label>
+              <label class="block text-sm font-medium text-header-700 mb-1">#</label>
               <input
                 v-model.number="addFormData.numero"
                 type="number"
                 min="0"
                 max="99"
-                class="w-full px-3 py-1 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full px-3 py-1 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               />
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('presence.status') }}</label>
+              <label class="block text-sm font-medium text-header-700 mb-1">{{ t('presence.status') }}</label>
               <select
                 v-model="addFormData.capitaine"
-                class="w-full px-3 py-1 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full px-3 py-1 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               >
                 <option value="-">{{ t('presence.status_player') }} (-)</option>
                 <option value="C">{{ t('presence.status_captain') }} (C)</option>
@@ -1265,17 +1265,17 @@ const pdfLinks = computed(() => {
         </div>
 
         <!-- Footer -->
-        <div class="flex justify-end gap-2 mt-6 pt-4 border-t border-gray-200">
+        <div class="flex justify-end gap-2 mt-6 pt-4 border-t border-header-200">
           <button
             type="button"
-            class="px-4 py-1 text-gray-700 border border-gray-300 hover:bg-gray-100 rounded-lg transition-colors"
+            class="px-4 py-1 text-header-700 border border-header-300 hover:bg-header-100 rounded-lg transition-colors"
             @click="addModalOpen = false"
           >
             {{ t('common.cancel') }}
           </button>
           <button
             type="submit"
-            class="px-4 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+            class="px-4 py-1 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50"
             :disabled="addFormSaving || (addMode === 'existing' && !selectedPlayer)"
           >
             <span v-if="addFormSaving" class="flex items-center gap-2">
@@ -1304,10 +1304,10 @@ const pdfLinks = computed(() => {
 
         <!-- Season -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('presence.source_season') }}</label>
+          <label class="block text-sm font-medium text-header-700 mb-1">{{ t('presence.source_season') }}</label>
           <select
             v-model="copyFormData.sourceSeason"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             @change="loadSourceCompetitions"
           >
             <option v-for="s in seasonOptions" :key="s" :value="s">{{ s }}</option>
@@ -1316,26 +1316,26 @@ const pdfLinks = computed(() => {
 
         <!-- Available compositions -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('presence.source_competition') }}</label>
-          <div v-if="loadingCompositions" class="text-sm text-gray-500 py-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">{{ t('presence.source_competition') }}</label>
+          <div v-if="loadingCompositions" class="text-sm text-header-500 py-1">
             <UIcon name="i-heroicons-arrow-path" class="w-4 h-4 animate-spin inline mr-1" />
             {{ t('common.loading') }}
           </div>
-          <div v-else-if="availableCompositions.length === 0" class="text-sm text-gray-500 py-1">
+          <div v-else-if="availableCompositions.length === 0" class="text-sm text-header-500 py-1">
             {{ t('presence.no_compositions') }}
           </div>
-          <div v-else class="max-h-48 overflow-y-auto border border-gray-200 rounded-lg">
+          <div v-else class="max-h-48 overflow-y-auto border border-header-200 rounded-lg">
             <button
               v-for="comp in availableCompositions"
               :key="comp.competitionCode"
               type="button"
-              class="w-full text-left px-3 py-1 text-sm border-b border-gray-100 last:border-b-0 transition-colors"
-              :class="copyFormData.sourceCompetition === comp.competitionCode ? 'bg-blue-50 text-blue-800' : 'hover:bg-gray-50'"
+              class="w-full text-left px-3 py-1 text-sm border-b border-header-100 last:border-b-0 transition-colors"
+              :class="copyFormData.sourceCompetition === comp.competitionCode ? 'bg-primary-50 text-primary-800' : 'hover:bg-header-50'"
               @click="copyFormData.sourceCompetition = comp.competitionCode"
             >
               <div class="flex items-center justify-between">
                 <span class="font-medium">{{ comp.competitionCode }} - {{ comp.competitionLibelle }}</span>
-                <span class="text-xs text-gray-500">{{ comp.playerCount }} {{ t('presence.players_count_short') }}</span>
+                <span class="text-xs text-header-500">{{ comp.playerCount }} {{ t('presence.players_count_short') }}</span>
               </div>
             </button>
           </div>
@@ -1343,17 +1343,17 @@ const pdfLinks = computed(() => {
       </div>
 
       <!-- Footer -->
-      <div class="flex justify-end gap-2 mt-6 pt-4 border-t border-gray-200">
+      <div class="flex justify-end gap-2 mt-6 pt-4 border-t border-header-200">
         <button
           type="button"
-          class="px-4 py-1 text-gray-700 border border-gray-300 hover:bg-gray-100 rounded-lg transition-colors"
+          class="px-4 py-1 text-header-700 border border-header-300 hover:bg-header-100 rounded-lg transition-colors"
           @click="copyModalOpen = false"
         >
           {{ t('common.cancel') }}
         </button>
         <button
           type="button"
-          class="px-4 py-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+          class="px-4 py-1 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50"
           :disabled="!copyFormData.sourceCompetition"
           @click="copyComposition"
         >

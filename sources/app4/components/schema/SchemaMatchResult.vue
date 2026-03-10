@@ -24,25 +24,25 @@ const winnerSide = computed(() => {
 
 const getTeamTextClass = (side: 'A' | 'B') => {
   const teamName = side === 'A' ? props.match.equipeA : props.match.equipeB
-  if (props.hoveredTeam && teamName === props.hoveredTeam) return 'text-yellow-800 font-bold'
-  if (!hasScore.value) return 'text-gray-700'
-  if (winnerSide.value === side) return 'text-blue-700 font-bold'
-  if (winnerSide.value !== null) return 'text-gray-400'
-  return 'text-gray-600'
+  if (props.hoveredTeam && teamName === props.hoveredTeam) return 'text-warning-800 font-bold'
+  if (!hasScore.value) return 'text-header-700'
+  if (winnerSide.value === side) return 'text-primary-700 font-bold'
+  if (winnerSide.value !== null) return 'text-header-400'
+  return 'text-header-600'
 }
 
 const getScoreClass = (side: 'A' | 'B') => {
   if (!hasScore.value) return ''
-  if (winnerSide.value === side) return 'text-blue-700 font-bold'
-  if (winnerSide.value !== null) return 'text-gray-400'
-  return 'text-gray-600'
+  if (winnerSide.value === side) return 'text-primary-700 font-bold'
+  if (winnerSide.value !== null) return 'text-header-400'
+  return 'text-header-600'
 }
 </script>
 
 <template>
   <div
-    class="flex items-center text-sm border border-gray-200 rounded px-2 py-1 transition-colors duration-100"
-    :class="{ 'bg-yellow-50': hoveredTeam && (match.equipeA === hoveredTeam || match.equipeB === hoveredTeam) }"
+    class="flex items-center text-sm border border-header-200 rounded px-2 py-1 transition-colors duration-100"
+    :class="{ 'bg-warning-50': hoveredTeam && (match.equipeA === hoveredTeam || match.equipeB === hoveredTeam) }"
   >
     <!-- Team A -->
     <span
@@ -59,10 +59,10 @@ const getScoreClass = (side: 'A' | 'B') => {
     <div class="flex items-center gap-1 mx-2 tabular-nums min-w-[40px] justify-center">
       <template v-if="hasScore">
         <span :class="getScoreClass('A')">{{ match.scoreA }}</span>
-        <span class="text-gray-300">-</span>
+        <span class="text-header-300">-</span>
         <span :class="getScoreClass('B')">{{ match.scoreB }}</span>
       </template>
-      <span v-else class="text-gray-300">vs</span>
+      <span v-else class="text-header-300">vs</span>
     </div>
 
     <!-- Team B -->

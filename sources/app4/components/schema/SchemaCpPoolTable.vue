@@ -32,7 +32,7 @@ const isHighlighted = (team: string) => {
     <div v-if="hasRanking" class="overflow-x-auto">
       <table class="w-full text-sm">
         <thead>
-          <tr class="bg-gray-200">
+          <tr class="bg-header-200">
             <th class="px-1 py-1 text-left text-xs">{{ t('schema.table.rank') }}</th>
             <th class="px-1 py-1 text-left text-xs">{{ t('schema.table.teams') }}</th>
             <th class="px-1 py-1 text-center text-xs">{{ t('schema.table.pts') }}</th>
@@ -46,13 +46,13 @@ const isHighlighted = (team: string) => {
             :key="team.id"
             class="border-t transition-colors duration-100"
             :class="{
-              'bg-yellow-100 text-black': isHighlighted(team.libelle),
-              'bg-gray-50 text-black': !isHighlighted(team.libelle),
+              'bg-warning-100 text-black': isHighlighted(team.libelle),
+              'bg-header-50 text-black': !isHighlighted(team.libelle),
             }"
             @mouseenter="emit('hoverTeam', team.libelle)"
             @mouseleave="emit('hoverTeam', null)"
           >
-            <td class="px-1 py-1 text-xs text-gray-500">{{ team.clt }}</td>
+            <td class="px-1 py-1 text-xs text-header-500">{{ team.clt }}</td>
             <td class="px-1 py-1 text-xs font-medium truncate max-w-30" :title="team.libelle">{{ team.libelle }}</td>
             <td class="px-1 py-1 text-center text-xs font-bold">{{ team.pts }}</td>
             <td class="px-1 py-1 text-center text-xs">{{ team.j }}</td>
@@ -68,7 +68,7 @@ const isHighlighted = (team: string) => {
         v-for="team in phase.poolTeams"
         :key="team.id"
         class="py-0.5 px-1 rounded transition-colors duration-100 text-xs"
-        :class="{ 'bg-yellow-100': isHighlighted(team.libelle) }"
+        :class="{ 'bg-warning-100': isHighlighted(team.libelle) }"
         @mouseenter="emit('hoverTeam', team.libelle)"
         @mouseleave="emit('hoverTeam', null)"
       >
@@ -78,7 +78,7 @@ const isHighlighted = (team: string) => {
 
     <!-- Empty rows -->
     <div v-else>
-      <div v-for="n in emptyRows" :key="n" class="py-0.5 px-1 text-gray-300 border-b border-gray-100 text-xs">
+      <div v-for="n in emptyRows" :key="n" class="py-0.5 px-1 text-header-300 border-b border-header-100 text-xs">
         —
       </div>
     </div>

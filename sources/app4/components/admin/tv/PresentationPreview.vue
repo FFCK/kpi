@@ -20,7 +20,7 @@ const imgSrc = computed(() => {
     <img
       :src="imgSrc"
       :alt="presentation"
-      class="max-w-[200px] max-h-[120px] rounded border border-gray-200 object-contain"
+      class="max-w-[200px] max-h-[120px] rounded border border-header-200 object-contain"
       @error="imgError = true"
     >
   </div>

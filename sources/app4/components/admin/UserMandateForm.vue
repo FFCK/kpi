@@ -123,34 +123,34 @@ function handleSave() {
 <template>
   <div>
     <button
-      class="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1"
+      class="text-sm text-primary-600 hover:text-primary-800 flex items-center gap-1"
       @click="toggleExpanded"
     >
       <UIcon :name="expanded ? 'i-heroicons-minus' : 'i-heroicons-plus'" class="w-4 h-4" />
       {{ t('users.modal.mandate_add') }}
     </button>
 
-    <div v-if="expanded" class="mt-3 p-3 border border-blue-200 bg-blue-50/50 rounded-lg space-y-3">
+    <div v-if="expanded" class="mt-3 p-3 border border-primary-200 bg-primary-50/50 rounded-lg space-y-3">
       <!-- Label + Profile -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label class="block text-xs font-medium text-gray-700 mb-1">
-            {{ t('users.modal.mandate_label') }} <span class="text-red-500">*</span>
+          <label class="block text-xs font-medium text-header-700 mb-1">
+            {{ t('users.modal.mandate_label') }} <span class="text-danger-500">*</span>
           </label>
           <input
             v-model="form.libelle"
             type="text"
             maxlength="100"
-            class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-2 py-1.5 border border-header-300 rounded text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
           >
         </div>
         <div>
-          <label class="block text-xs font-medium text-gray-700 mb-1">
-            {{ t('users.modal.mandate_profile') }} <span class="text-red-500">*</span>
+          <label class="block text-xs font-medium text-header-700 mb-1">
+            {{ t('users.modal.mandate_profile') }} <span class="text-danger-500">*</span>
           </label>
           <select
             v-model="form.niveau"
-            class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-2 py-1.5 border border-header-300 rounded text-sm bg-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
           >
             <option v-for="opt in profileOptions" :key="opt.value" :value="opt.value">
               {{ opt.label }}
@@ -162,8 +162,8 @@ function handleSave() {
       <!-- Seasons + Competitions -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div>
-          <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('users.modal.filter_seasons') }}</label>
-          <div class="border border-gray-300 rounded max-h-28 overflow-y-auto p-1.5 bg-white">
+          <label class="block text-xs font-medium text-header-700 mb-1">{{ t('users.modal.filter_seasons') }}</label>
+          <div class="border border-header-300 rounded max-h-28 overflow-y-auto p-1.5 bg-white">
             <label class="flex items-center gap-1.5 text-xs mb-0.5 cursor-pointer">
               <input type="checkbox" :checked="allSeasons" @change="toggleAllSeasons">
               <span class="font-medium">{{ t('users.modal.filter_seasons_all') }}</span>
@@ -184,14 +184,14 @@ function handleSave() {
           </div>
         </div>
         <div>
-          <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('users.modal.filter_competitions') }}</label>
-          <div class="border border-gray-300 rounded max-h-28 overflow-y-auto p-1.5 bg-white">
+          <label class="block text-xs font-medium text-header-700 mb-1">{{ t('users.modal.filter_competitions') }}</label>
+          <div class="border border-header-300 rounded max-h-28 overflow-y-auto p-1.5 bg-white">
             <label class="flex items-center gap-1.5 text-xs mb-0.5 cursor-pointer">
               <input type="checkbox" :checked="allCompetitions" @change="toggleAllCompetitions">
               <span class="font-medium">{{ t('users.modal.filter_competitions_all') }}</span>
             </label>
             <template v-for="(group, key) in groupedCompetitions" :key="key">
-              <div class="text-[10px] font-semibold text-gray-500 mt-1 mb-0.5">— {{ group.label }} —</div>
+              <div class="text-[10px] font-semibold text-header-500 mt-1 mb-0.5">— {{ group.label }} —</div>
               <label
                 v-for="c in group.items"
                 :key="c.code"
@@ -213,20 +213,20 @@ function handleSave() {
       <!-- Clubs + Journées -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
-          <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('users.modal.filter_clubs') }}</label>
+          <label class="block text-xs font-medium text-header-700 mb-1">{{ t('users.modal.filter_clubs') }}</label>
           <input
             v-model="form.limitClubs"
             type="text"
-            class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-2 py-1.5 border border-header-300 rounded text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             placeholder="7603,4404"
           >
         </div>
         <div>
-          <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('users.modal.filter_gamedays') }}</label>
+          <label class="block text-xs font-medium text-header-700 mb-1">{{ t('users.modal.filter_gamedays') }}</label>
           <input
             v-model="form.filtreJournee"
             type="text"
-            class="w-full px-2 py-1.5 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-2 py-1.5 border border-header-300 rounded text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             :placeholder="t('users.modal.filter_gamedays_placeholder')"
           >
         </div>
@@ -234,8 +234,8 @@ function handleSave() {
 
       <!-- Events (profile <= 2 only) -->
       <div v-if="adminNiveau <= 2 && events.length > 0">
-        <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('users.modal.filter_events') }}</label>
-        <div class="border border-gray-300 rounded max-h-24 overflow-y-auto p-1.5 bg-white">
+        <label class="block text-xs font-medium text-header-700 mb-1">{{ t('users.modal.filter_events') }}</label>
+        <div class="border border-header-300 rounded max-h-24 overflow-y-auto p-1.5 bg-white">
           <label
             v-for="evt in events"
             :key="evt.id"
@@ -254,13 +254,13 @@ function handleSave() {
       <!-- Actions -->
       <div class="flex justify-end gap-2 pt-1">
         <button
-          class="px-3 py-1.5 text-xs text-gray-700 bg-gray-100 rounded hover:bg-gray-200"
+          class="px-3 py-1.5 text-xs text-header-700 bg-header-100 rounded hover:bg-header-200"
           @click="expanded = false"
         >
           {{ t('users.modal.mandate_cancel') }}
         </button>
         <button
-          class="px-3 py-1.5 text-xs text-white bg-blue-600 rounded hover:bg-blue-700 disabled:opacity-50"
+          class="px-3 py-1.5 text-xs text-white bg-primary-600 rounded hover:bg-primary-700 disabled:opacity-50"
           :disabled="!form.libelle.trim()"
           @click="handleSave"
         >

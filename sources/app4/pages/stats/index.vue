@@ -474,7 +474,7 @@ const exportPdf = async () => {
 
     <!-- Page header -->
     <div class="mb-6">
-      <h1 class="text-2xl font-bold text-gray-900">
+      <h1 class="text-2xl font-bold text-header-900">
         {{ t('stats.title') }}
       </h1>
     </div>
@@ -483,31 +483,31 @@ const exportPdf = async () => {
     <div class="bg-white rounded-lg shadow p-4 mb-6">
       <div class="flex flex-wrap items-center gap-4 text-sm">
         <div class="flex items-center gap-2">
-          <span class="text-gray-500">{{ t('stats.params.stat_type') }}:</span>
-          <span class="font-semibold text-gray-900">{{ getStatTypeLabel }}</span>
+          <span class="text-header-500">{{ t('stats.params.stat_type') }}:</span>
+          <span class="font-semibold text-header-900">{{ getStatTypeLabel }}</span>
         </div>
-        <div class="w-px h-4 bg-gray-300" />
+        <div class="w-px h-4 bg-header-300" />
         <div class="flex items-center gap-2">
-          <span class="text-gray-500">{{ t('stats.params.season') }}:</span>
-          <span class="font-semibold text-gray-900">{{ selectedSeason }}</span>
+          <span class="text-header-500">{{ t('stats.params.season') }}:</span>
+          <span class="font-semibold text-header-900">{{ selectedSeason }}</span>
         </div>
-        <div class="w-px h-4 bg-gray-300" />
+        <div class="w-px h-4 bg-header-300" />
         <div class="flex items-center gap-2">
-          <span class="text-gray-500">{{ t('stats.params.competitions') }}:</span>
+          <span class="text-header-500">{{ t('stats.params.competitions') }}:</span>
           <UTooltip :text="selectedCompetitionsTooltip">
-            <span class="font-semibold text-gray-900">{{ selectedCompetitionsSummary }}</span>
+            <span class="font-semibold text-header-900">{{ selectedCompetitionsSummary }}</span>
           </UTooltip>
         </div>
-        <div class="w-px h-4 bg-gray-300" />
+        <div class="w-px h-4 bg-header-300" />
         <div class="flex items-center gap-2">
-          <span class="text-gray-500">{{ t('stats.params.limit') }}:</span>
-          <span class="font-semibold text-gray-900">{{ limit }}</span>
+          <span class="text-header-500">{{ t('stats.params.limit') }}:</span>
+          <span class="font-semibold text-header-900">{{ limit }}</span>
         </div>
         <div class="ml-auto flex items-center gap-2">
           <!-- Export buttons -->
           <button
             type="button"
-            class="inline-flex items-center gap-2 px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            class="inline-flex items-center gap-2 px-3 py-2 border border-header-300 text-header-700 rounded-lg hover:bg-header-50 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             :disabled="selectedCompetitions.length === 0 || exportingXlsx"
             @click="exportXlsx"
           >
@@ -517,7 +517,7 @@ const exportPdf = async () => {
           </button>
           <button
             type="button"
-            class="inline-flex items-center gap-2 px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+            class="inline-flex items-center gap-2 px-3 py-2 border border-header-300 text-header-700 rounded-lg hover:bg-header-50 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             :disabled="selectedCompetitions.length === 0 || exportingPdf"
             @click="exportPdf"
           >
@@ -528,7 +528,7 @@ const exportPdf = async () => {
           <!-- Parameters button -->
           <button
             type="button"
-            class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-sm text-sm"
+            class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors shadow-sm text-sm"
             @click="openFiltersModal"
           >
             <UIcon name="heroicons:adjustments-horizontal" class="w-4 h-4" />
@@ -540,14 +540,14 @@ const exportPdf = async () => {
 
     <!-- Description and results count -->
     <div class="mb-4 flex items-center justify-between text-sm">
-      <span class="text-gray-600 italic">
+      <span class="text-header-600 italic">
         {{ getStatTypeDescription }}
       </span>
-      <span v-if="loading" class="text-gray-500">
+      <span v-if="loading" class="text-header-500">
         <UIcon name="heroicons:arrow-path" class="w-4 h-4 animate-spin inline mr-1" />
         {{ t('common.loading') }}
       </span>
-      <span v-else class="font-semibold text-gray-700">
+      <span v-else class="font-semibold text-header-700">
         {{ t('stats.results_count', { count }) }}
       </span>
     </div>
@@ -555,13 +555,13 @@ const exportPdf = async () => {
     <!-- Desktop Table -->
     <div class="hidden lg:block bg-white rounded-lg shadow overflow-hidden">
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+        <table class="min-w-full divide-y divide-header-200">
+          <thead class="bg-header-50">
             <tr>
               <!-- Ranking column -->
               <th
                 v-if="showRankingColumn && data.length > 0"
-                class="px-4 py-3 text-xs font-medium uppercase tracking-wider text-center text-gray-500 w-16"
+                class="px-4 py-3 text-xs font-medium uppercase tracking-wider text-center text-header-500 w-16"
               >
                 #
               </th>
@@ -570,18 +570,18 @@ const exportPdf = async () => {
                 :key="column"
                 class="px-4 py-3 text-xs font-medium uppercase tracking-wider"
                 :class="isNumericColumn(column)
-                  ? 'text-right text-gray-500'
-                  : 'text-left text-gray-500'"
+                  ? 'text-right text-header-500'
+                  : 'text-left text-header-500'"
               >
                 {{ getColumnLabel(column) }}
               </th>
             </tr>
           </thead>
 
-          <tbody class="bg-white divide-y divide-gray-200">
+          <tbody class="bg-white divide-y divide-header-200">
             <!-- Loading state -->
             <tr v-if="loading && data.length === 0">
-              <td :colspan="(showRankingColumn ? 1 : 0) + (columns.length || 1)" class="px-4 py-8 text-center text-gray-500">
+              <td :colspan="(showRankingColumn ? 1 : 0) + (columns.length || 1)" class="px-4 py-8 text-center text-header-500">
                 <UIcon name="heroicons:arrow-path" class="w-6 h-6 animate-spin mx-auto mb-2" />
                 {{ t('common.loading') }}
               </td>
@@ -589,7 +589,7 @@ const exportPdf = async () => {
 
             <!-- Empty state -->
             <tr v-else-if="data.length === 0">
-              <td :colspan="(showRankingColumn ? 1 : 0) + (columns.length || 1)" class="px-4 py-8 text-center text-gray-500">
+              <td :colspan="(showRankingColumn ? 1 : 0) + (columns.length || 1)" class="px-4 py-8 text-center text-header-500">
                 {{ t('stats.empty') }}
               </td>
             </tr>
@@ -598,13 +598,13 @@ const exportPdf = async () => {
             <tr
               v-for="(row, index) in data"
               :key="index"
-              class="hover:bg-gray-50"
-              :class="{ 'bg-gray-100 italic text-gray-500': row.isNonJoueur }"
+              class="hover:bg-header-50"
+              :class="{ 'bg-header-100 italic text-header-500': row.isNonJoueur }"
             >
               <!-- Ranking cell -->
               <td
                 v-if="showRankingColumn"
-                class="px-4 py-3 text-sm whitespace-nowrap text-center font-semibold text-gray-500 w-16"
+                class="px-4 py-3 text-sm whitespace-nowrap text-center font-semibold text-header-500 w-16"
               >
                 {{ index + 1 }}
               </td>
@@ -613,8 +613,8 @@ const exportPdf = async () => {
                 :key="column"
                 class="px-4 py-3 text-sm whitespace-nowrap"
                 :class="isNumericColumn(column)
-                  ? 'text-right font-mono font-semibold text-gray-900 tabular-nums'
-                  : 'text-gray-900'"
+                  ? 'text-right font-mono font-semibold text-header-900 tabular-nums'
+                  : 'text-header-900'"
               >
                 {{ formatCellValue(row[column], column) }}
               </td>
@@ -638,8 +638,8 @@ const exportPdf = async () => {
         :class="{ 'opacity-60 italic': row.isNonJoueur }"
       >
         <template #header>
-          <h3 class="font-semibold text-gray-900 truncate">
-            <span v-if="showRankingColumn" class="text-gray-500 mr-2">#{{ index + 1 }}</span>
+          <h3 class="font-semibold text-header-900 truncate">
+            <span v-if="showRankingColumn" class="text-header-500 mr-2">#{{ index + 1 }}</span>
             {{ row['nom'] }} {{ row['prenom'] }}
             <template v-if="!row['nom'] && row['equipe']">{{ row['equipe'] }}</template>
             <template v-if="!row['nom'] && !row['equipe'] && row['competition']">{{ row['competition'] }}</template>
@@ -654,11 +654,11 @@ const exportPdf = async () => {
             :key="column"
             class="flex justify-between"
           >
-            <span class="text-gray-500">{{ getColumnLabel(column) }}:</span>
+            <span class="text-header-500">{{ getColumnLabel(column) }}:</span>
             <span
               :class="isNumericColumn(column)
-                ? 'font-mono font-semibold text-gray-900'
-                : 'text-gray-700'"
+                ? 'font-mono font-semibold text-header-900'
+                : 'text-header-700'"
             >
               {{ formatCellValue(row[column], column) }}
             </span>
@@ -677,12 +677,12 @@ const exportPdf = async () => {
       <div class="space-y-4">
         <!-- Stat Type -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('stats.params.stat_type') }}
           </label>
           <select
             v-model="tempStatType"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg bg-white text-header-900 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
           >
             <optgroup
               v-for="category in statTypeCategories"
@@ -694,7 +694,7 @@ const exportPdf = async () => {
               </option>
             </optgroup>
           </select>
-          <p v-if="getTempStatTypeDescription" class="mt-1 text-xs text-gray-500 italic">
+          <p v-if="getTempStatTypeDescription" class="mt-1 text-xs text-header-500 italic">
             {{ getTempStatTypeDescription }}
           </p>
         </div>
@@ -703,12 +703,12 @@ const exportPdf = async () => {
         <div class="grid grid-cols-2 gap-4">
           <!-- Season -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-header-700 mb-1">
               {{ t('stats.params.season') }}
             </label>
             <select
               v-model="tempSeason"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-header-300 rounded-lg bg-white text-header-900 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               @change="onTempSeasonChange"
             >
               <option v-for="season in seasons" :key="season" :value="season">
@@ -719,13 +719,13 @@ const exportPdf = async () => {
 
           <!-- Limit with +/- buttons -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-header-700 mb-1">
               {{ t('stats.params.limit') }}
             </label>
             <div class="flex items-center">
               <button
                 type="button"
-                class="px-3 py-2 border border-gray-300 rounded-l-lg bg-gray-50 text-gray-700 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                class="px-3 py-2 border border-header-300 rounded-l-lg bg-header-50 text-header-700 hover:bg-header-100 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
                 @click="tempLimit = Math.max(1, tempLimit - 1)"
               >
                 <UIcon name="heroicons:minus" class="w-4 h-4" />
@@ -735,11 +735,11 @@ const exportPdf = async () => {
                 type="tel"
                 min="1"
                 max="500"
-                class="w-full px-3 py-2 border-y border-gray-300 bg-white text-gray-900 text-center focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full px-3 py-2 border-y border-header-300 bg-white text-header-900 text-center focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               >
               <button
                 type="button"
-                class="px-3 py-2 border border-gray-300 rounded-r-lg bg-gray-50 text-gray-700 hover:bg-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                class="px-3 py-2 border border-header-300 rounded-r-lg bg-header-50 text-header-700 hover:bg-header-100 focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
                 @click="tempLimit = Math.min(500, tempLimit + 1)"
               >
                 <UIcon name="heroicons:plus" class="w-4 h-4" />
@@ -750,14 +750,14 @@ const exportPdf = async () => {
 
         <!-- Competitions with optgroups -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('stats.params.competitions') }}
           </label>
           <select
             v-model="tempCompetitions"
             multiple
             size="10"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg bg-white text-header-900 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
           >
             <optgroup
               v-for="group in competitionGroups"
@@ -773,24 +773,24 @@ const exportPdf = async () => {
               </option>
             </optgroup>
           </select>
-          <p class="mt-1 text-xs text-gray-500">
+          <p class="mt-1 text-xs text-header-500">
             {{ t('stats.params.multi_select_hint') }}
           </p>
         </div>
       </div>
 
       <!-- Footer -->
-      <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200">
+      <div class="flex justify-end gap-3 mt-6 pt-4 border-t border-header-200">
         <button
           type="button"
-          class="px-4 py-2 text-gray-700 border border-gray-300 hover:bg-gray-100 rounded-lg transition-colors"
+          class="px-4 py-2 text-header-700 border border-header-300 hover:bg-header-100 rounded-lg transition-colors"
           @click="showFiltersModal = false"
         >
           {{ t('common.cancel') }}
         </button>
         <button
           type="button"
-          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+          class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50"
           :disabled="tempCompetitions.length === 0"
           @click="applyFilters"
         >

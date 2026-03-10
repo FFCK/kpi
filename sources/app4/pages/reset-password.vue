@@ -66,27 +66,27 @@ async function handleSubmit() {
     <div class="w-full max-w-md">
       <!-- Header -->
       <div class="text-center mb-8">
-        <h1 class="text-3xl font-bold text-blue-600">KPI Admin</h1>
+        <h1 class="text-3xl font-bold text-primary-600">KPI Admin</h1>
       </div>
 
       <div class="bg-white rounded-lg shadow-lg p-8">
-        <h2 class="text-xl font-semibold text-gray-900 mb-6">
+        <h2 class="text-xl font-semibold text-header-900 mb-6">
           {{ t('users.reset_password.title') }}
         </h2>
 
         <!-- No token -->
-        <div v-if="!token" class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+        <div v-if="!token" class="p-3 bg-danger-50 border border-danger-200 rounded-lg text-danger-700 text-sm">
           {{ t('users.reset_password.error_token_invalid') }}
         </div>
 
         <!-- Success -->
         <div v-else-if="success" class="space-y-4">
-          <div class="p-3 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
+          <div class="p-3 bg-success-50 border border-success-200 rounded-lg text-success-700 text-sm">
             {{ t('users.reset_password.success') }}
           </div>
           <NuxtLink
             to="/login"
-            class="block text-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm font-medium"
+            class="block text-center px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 text-sm font-medium"
           >
             {{ t('login.title') }}
           </NuxtLink>
@@ -97,14 +97,14 @@ async function handleSubmit() {
           <!-- Error -->
           <div
             v-if="error"
-            class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm"
+            class="p-3 bg-danger-50 border border-danger-200 rounded-lg text-danger-700 text-sm"
           >
             {{ error }}
           </div>
 
           <!-- New password -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-header-700 mb-1">
               {{ t('users.reset_password.new_password') }}
             </label>
             <UInput
@@ -115,7 +115,7 @@ async function handleSubmit() {
           </div>
 
           <!-- Rules checklist -->
-          <div class="text-xs text-gray-600 space-y-0.5">
+          <div class="text-xs text-header-600 space-y-0.5">
             <div class="font-medium mb-1">{{ t('users.reset_password.rules') }}</div>
             <div
               v-for="rule in rules"
@@ -124,16 +124,16 @@ async function handleSubmit() {
             >
               <UIcon
                 :name="rule.valid ? 'i-heroicons-check-circle' : 'i-heroicons-x-circle'"
-                :class="rule.valid ? 'text-green-500' : 'text-gray-400'"
+                :class="rule.valid ? 'text-success-500' : 'text-header-400'"
                 class="w-4 h-4"
               />
-              <span :class="rule.valid ? 'text-green-700' : 'text-gray-500'">{{ rule.label }}</span>
+              <span :class="rule.valid ? 'text-success-700' : 'text-header-500'">{{ rule.label }}</span>
             </div>
           </div>
 
           <!-- Confirm password -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-header-700 mb-1">
               {{ t('users.reset_password.confirm_password') }}
             </label>
             <UInput
@@ -143,7 +143,7 @@ async function handleSubmit() {
             />
             <p
               v-if="confirmPassword && !passwordsMatch"
-              class="mt-1 text-xs text-red-500"
+              class="mt-1 text-xs text-danger-500"
             >
               {{ t('users.reset_password.error_mismatch') }}
             </p>

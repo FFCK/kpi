@@ -319,7 +319,7 @@ watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGrou
         <!-- Copy RC button -->
         <button
           v-if="canCopy"
-          class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-header-700 bg-white border border-header-300 rounded-lg hover:bg-header-50 transition-colors"
           @click="openCopyModal"
         >
           <UIcon name="heroicons:document-duplicate" class="w-4 h-4" />
@@ -330,43 +330,43 @@ watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGrou
 
     <!-- RC Table (Desktop) -->
     <div class="hidden lg:block bg-white rounded-lg shadow overflow-hidden">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
+      <table class="min-w-full divide-y divide-header-200">
+        <thead class="bg-header-50">
           <tr>
             <th v-if="canDelete" class="w-10 px-3 py-3">
               <input
                 type="checkbox"
-                class="rounded border-gray-300"
+                class="rounded border-header-300"
                 :checked="selectedIds.length === filteredRc.length && filteredRc.length > 0"
                 @change="selectedIds = selectedIds.length === filteredRc.length ? [] : filteredRc.map(r => r.id)"
               >
             </th>
-            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">
               {{ t('rc.field.competition') }}
             </th>
-            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">
               {{ t('rc.field.ordre') }}
             </th>
-            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">
               {{ t('common.last_name') }}
             </th>
-            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">
               {{ t('common.first_name') }}
             </th>
-            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">
               {{ t('rc.field.licence') }}
             </th>
-            <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">
               {{ t('rc.field.email') }}
             </th>
             <th v-if="canEdit" class="w-16 px-3 py-3" />
           </tr>
         </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
+        <tbody class="bg-white divide-y divide-header-200">
           <tr
             v-for="rc in filteredRc"
             :key="rc.id"
-            class="hover:bg-gray-50 cursor-pointer"
+            class="hover:bg-header-50 cursor-pointer"
             @click="canEdit && openEditModal(rc)"
           >
             <td v-if="canDelete" class="px-3 py-4" @click.stop>
@@ -374,37 +374,37 @@ watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGrou
                 v-model="selectedIds"
                 type="checkbox"
                 :value="rc.id"
-                class="rounded border-gray-300"
+                class="rounded border-header-300"
               >
             </td>
-            <td class="px-3 py-4 text-sm text-gray-900">
+            <td class="px-3 py-4 text-sm text-header-900">
               {{ rc.competitionLabel }}
             </td>
-            <td class="px-3 py-4 text-sm text-gray-900">
+            <td class="px-3 py-4 text-sm text-header-900">
               {{ rc.ordre }}
             </td>
-            <td class="px-3 py-4 text-sm font-medium text-gray-900">
+            <td class="px-3 py-4 text-sm font-medium text-header-900">
               {{ rc.nom }}
             </td>
-            <td class="px-3 py-4 text-sm text-gray-900">
+            <td class="px-3 py-4 text-sm text-header-900">
               {{ rc.prenom }}
             </td>
-            <td class="px-3 py-4 text-sm text-gray-500 font-mono">
+            <td class="px-3 py-4 text-sm text-header-500 font-mono">
               {{ rc.matric }}
             </td>
-            <td class="px-3 py-4 text-sm text-gray-500">
+            <td class="px-3 py-4 text-sm text-header-500">
               {{ rc.email || '-' }}
             </td>
             <td v-if="canEdit" class="px-3 py-4" @click.stop>
               <UIcon
                 name="i-heroicons-pencil"
-                class="w-6 h-6 text-blue-600 hover:text-blue-800 cursor-pointer"
+                class="w-6 h-6 text-primary-600 hover:text-primary-800 cursor-pointer"
                 @click="openEditModal(rc)"
               />
             </td>
           </tr>
           <tr v-if="filteredRc.length === 0">
-            <td :colspan="canDelete ? 8 : 7" class="px-3 py-8 text-center text-sm text-gray-500">
+            <td :colspan="canDelete ? 8 : 7" class="px-3 py-8 text-center text-sm text-header-500">
               {{ loading ? t('common.loading') : t('rc.no_results') }}
             </td>
           </tr>
@@ -412,7 +412,7 @@ watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGrou
       </table>
 
       <!-- Footer -->
-      <div class="px-4 py-3 bg-gray-50 border-t border-gray-200 text-sm text-gray-600">
+      <div class="px-4 py-3 bg-header-50 border-t border-header-200 text-sm text-header-600">
         {{ t('rc.total', { count: filteredRc.length }) }}
       </div>
     </div>
@@ -430,14 +430,14 @@ watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGrou
         <template #header>
           <div>
             <div class="font-bold">{{ rc.nom }} {{ rc.prenom }}</div>
-            <div class="text-sm text-gray-500">{{ rc.competitionLabel }}</div>
+            <div class="text-sm text-header-500">{{ rc.competitionLabel }}</div>
           </div>
         </template>
 
         <div class="space-y-1 text-sm">
-          <div><span class="text-gray-500">{{ t('rc.field.ordre') }}:</span> {{ rc.ordre }}</div>
-          <div><span class="text-gray-500">{{ t('rc.field.licence') }}:</span> {{ rc.matric }}</div>
-          <div v-if="rc.email"><span class="text-gray-500">{{ t('rc.field.email') }}:</span> {{ rc.email }}</div>
+          <div><span class="text-header-500">{{ t('rc.field.ordre') }}:</span> {{ rc.ordre }}</div>
+          <div><span class="text-header-500">{{ t('rc.field.licence') }}:</span> {{ rc.matric }}</div>
+          <div v-if="rc.email"><span class="text-header-500">{{ t('rc.field.email') }}:</span> {{ rc.email }}</div>
         </div>
       </AdminCard>
     </AdminCardList>
@@ -451,14 +451,14 @@ watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGrou
     >
       <form class="space-y-4" @submit.prevent="submitForm">
         <!-- Error -->
-        <div v-if="formError" class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">
+        <div v-if="formError" class="p-3 bg-danger-50 border border-danger-200 rounded-lg text-danger-800 text-sm">
           <UIcon name="i-heroicons-exclamation-triangle" class="w-5 h-5 inline mr-2" />
           {{ formError }}
         </div>
 
         <!-- Player search -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('rc.field.search_person') }} *
           </label>
           <AdminPlayerAutocomplete
@@ -470,20 +470,20 @@ watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGrou
 
         <!-- Season (readonly) -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('rc.field.season') }}
           </label>
           <input
             v-model="formData.season"
             type="text"
             readonly
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-100"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg bg-header-100"
           >
         </div>
 
         <!-- Competition -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('rc.field.competition') }}
           </label>
           <AdminCompetitionGroupedSelect
@@ -494,7 +494,7 @@ watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGrou
 
         <!-- Ordre -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('rc.field.ordre') }} *
           </label>
           <input
@@ -503,7 +503,7 @@ watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGrou
             min="1"
             max="99"
             required
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
           >
         </div>
 
@@ -511,14 +511,14 @@ watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGrou
         <div class="flex justify-end gap-2 pt-4 border-t">
           <button
             type="button"
-            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+            class="px-4 py-2 text-sm font-medium text-header-700 bg-white border border-header-300 rounded-lg hover:bg-header-50"
             @click="addModalOpen = false; editModalOpen = false"
           >
             {{ t('common.cancel') }}
           </button>
           <button
             type="submit"
-            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+            class="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700"
             :disabled="!selectedPlayer || formSaving"
           >
             {{ editingRc ? t('common.save') : t('common.add') }}
@@ -536,19 +536,19 @@ watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGrou
     >
       <form class="space-y-4" @submit.prevent="copyRc">
         <!-- Error -->
-        <div v-if="formError" class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">
+        <div v-if="formError" class="p-3 bg-danger-50 border border-danger-200 rounded-lg text-danger-800 text-sm">
           {{ formError }}
         </div>
 
         <!-- Source season -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('rc.copy_source') }}
           </label>
           <select
             v-model="copyFormData.sourceCode"
             required
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
           >
             <option value="">{{ t('common.select') }}</option>
             <option v-for="season in availableSeasons" :key="season" :value="season">
@@ -559,13 +559,13 @@ watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGrou
 
         <!-- Target season -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('rc.copy_target') }}
           </label>
           <select
             v-model="copyFormData.targetCode"
             required
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
           >
             <option value="">{{ t('common.select') }}</option>
             <option
@@ -589,14 +589,14 @@ watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGrou
         <div class="flex justify-end gap-2 pt-4 border-t">
           <button
             type="button"
-            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+            class="px-4 py-2 text-sm font-medium text-header-700 bg-white border border-header-300 rounded-lg hover:bg-header-50"
             @click="copyModalOpen = false"
           >
             {{ t('common.cancel') }}
           </button>
           <button
             type="submit"
-            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700"
+            class="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700"
             :disabled="!copyFormData.sourceCode || !copyFormData.targetCode || formSaving"
           >
             {{ t('common.copy') }}

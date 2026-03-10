@@ -174,5 +174,5 @@ defineExpose({ geocode, centerOnClub, updateMarkerPosition })
 </script>
 
 <template>
-  <div ref="mapContainer" class="w-full h-100 sm:h-125 rounded-lg border border-gray-200 z-0" />
+  <div ref="mapContainer" class="w-full h-100 sm:h-125 rounded-lg border border-header-200 z-0" />
 </template>

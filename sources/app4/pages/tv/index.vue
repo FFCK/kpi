@@ -145,10 +145,10 @@ onMounted(async () => {
   <div class="px-4 py-6">
     <!-- Header -->
     <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-bold text-gray-900">{{ t('tv.title') }}</h1>
+      <h1 class="text-2xl font-bold text-header-900">{{ t('tv.title') }}</h1>
       <button
         type="button"
-        class="px-3 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors flex items-center gap-1"
+        class="px-3 py-2 text-sm font-medium text-header-700 bg-header-100 rounded-lg hover:bg-header-200 transition-colors flex items-center gap-1"
         @click="labelsModalOpen = true"
       >
         <UIcon name="heroicons:cog-6-tooth" class="w-4 h-4" />
@@ -157,13 +157,13 @@ onMounted(async () => {
     </div>
 
     <!-- Tabs -->
-    <div class="flex gap-1 mb-4 border-b border-gray-200">
+    <div class="flex gap-1 mb-4 border-b border-header-200">
       <button
         type="button"
         class="px-4 py-2 text-sm font-medium border-b-2 transition-colors"
         :class="activeTab === 'channels'
-          ? 'border-blue-600 text-blue-600'
-          : 'border-transparent text-gray-500 hover:text-gray-700'"
+          ? 'border-primary-600 text-primary-600'
+          : 'border-transparent text-header-500 hover:text-header-700'"
         @click="activeTab = 'channels'"
       >
         {{ t('tv.tabs.channels') }}
@@ -172,8 +172,8 @@ onMounted(async () => {
         type="button"
         class="px-4 py-2 text-sm font-medium border-b-2 transition-colors"
         :class="activeTab === 'scenarios'
-          ? 'border-blue-600 text-blue-600'
-          : 'border-transparent text-gray-500 hover:text-gray-700'"
+          ? 'border-primary-600 text-primary-600'
+          : 'border-transparent text-header-500 hover:text-header-700'"
         @click="activeTab = 'scenarios'"
       >
         {{ t('tv.tabs.scenarios') }}
@@ -189,7 +189,7 @@ onMounted(async () => {
         :match-data="matchData"
       />
 
-      <div v-if="!globalFilters.eventId" class="mt-6 text-center text-gray-500 py-8">
+      <div v-if="!globalFilters.eventId" class="mt-6 text-center text-header-500 py-8">
         {{ t('tv.messages.select_event') }}
       </div>
 
@@ -213,7 +213,7 @@ onMounted(async () => {
         <div class="mt-4 text-center">
           <button
             type="button"
-            class="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+            class="px-4 py-2 text-sm font-medium text-primary-600 bg-primary-50 rounded-lg hover:bg-primary-100 transition-colors"
             @click="addPanel"
           >
             + {{ t('tv.actions.add_panel') }}
@@ -222,25 +222,25 @@ onMounted(async () => {
       </template>
 
       <!-- Quick links -->
-      <div class="mt-8 pt-4 border-t border-gray-200 flex flex-wrap gap-4 text-sm">
+      <div class="mt-8 pt-4 border-t border-header-200 flex flex-wrap gap-4 text-sm">
         <a
           :href="`${backendBaseUrl}/live/event.php`"
           target="_blank"
-          class="text-blue-600 hover:text-blue-800 hover:underline"
+          class="text-primary-600 hover:text-primary-800 hover:underline"
         >
           {{ t('tv.links.event_cache') }}
         </a>
         <a
           :href="`${backendBaseUrl}/live/spliturl.php`"
           target="_blank"
-          class="text-blue-600 hover:text-blue-800 hover:underline"
+          class="text-primary-600 hover:text-primary-800 hover:underline"
         >
           {{ t('tv.links.split_url') }}
         </a>
         <!-- <a
           :href="`${backendBaseUrl}/live/scenario.php`"
           target="_blank"
-          class="text-blue-600 hover:text-blue-800 hover:underline"
+          class="text-primary-600 hover:text-primary-800 hover:underline"
         >
           {{ t('tv.links.scenario_live') }}
         </a> -->

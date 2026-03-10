@@ -728,9 +728,9 @@ const getStatusColor = (status: string) => {
 const getLevelColor = (level: string) => {
   switch (level) {
     case 'INT': return 'bg-purple-100 text-purple-800'
-    case 'NAT': return 'bg-blue-100 text-blue-800'
+    case 'NAT': return 'bg-primary-100 text-primary-800'
     case 'REG': return 'bg-orange-100 text-orange-800'
-    default: return 'bg-gray-100 text-gray-800'
+    default: return 'bg-header-100 text-header-800'
   }
 }
 
@@ -784,7 +784,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
           >
             {{ competitionInfo.codeNiveau }}
           </span>
-          <span class="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-800">
+          <span class="px-2 py-1 text-xs font-medium rounded bg-header-100 text-header-800">
             {{ competitionInfo.codeTypeclt }}
           </span>
           <span
@@ -798,7 +798,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
           <button
             v-if="canManageSpecialOps"
             class="p-1.5 rounded-lg transition-colors"
-            :class="competitionInfo.verrou ? 'text-red-600 hover:bg-red-50' : 'text-gray-400 hover:bg-gray-50'"
+            :class="competitionInfo.verrou ? 'text-danger-600 hover:bg-danger-50' : 'text-header-400 hover:bg-header-50'"
             :title="competitionInfo.verrou ? t('teams_page.locked') : t('teams_page.unlocked')"
             @click="toggleLock"
           >
@@ -810,7 +810,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
           <UIcon
             v-else-if="competitionInfo.verrou"
             name="heroicons:lock-closed-solid"
-            class="w-6 h-6 text-red-600"
+            class="w-6 h-6 text-danger-600"
           />
         </div>
       </template>
@@ -826,7 +826,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
     </AdminPageHeader>
 
     <!-- No competition selected -->
-    <div v-if="!workContext.pageCompetitionCode" class="bg-white rounded-lg shadow p-8 text-center text-gray-500">
+    <div v-if="!workContext.pageCompetitionCode" class="bg-white rounded-lg shadow p-8 text-center text-header-500">
       {{ t('teams_page.no_competition') }}
     </div>
 
@@ -838,7 +838,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
           <!-- Add button -->
           <button
             v-if="canAddDelete"
-            class="px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm flex items-center gap-1"
+            class="px-3 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-sm flex items-center gap-1"
             @click="openAddModal"
           >
             <UIcon name="heroicons:plus" class="w-6 h-6" />
@@ -848,7 +848,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
           <!-- Duplicate button -->
           <button
             v-if="canAddDelete"
-            class="px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors text-sm flex items-center gap-1"
+            class="px-3 py-2 bg-header-600 text-white rounded-lg hover:bg-header-700 transition-colors text-sm flex items-center gap-1"
             @click="openDuplicateModal"
           >
             <UIcon name="heroicons:document-duplicate" class="w-6 h-6" />
@@ -858,7 +858,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
           <!-- Init starters -->
           <button
             v-if="canManageSpecialOps"
-            class="px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+            class="px-3 py-2 border border-header-300 text-header-700 rounded-lg hover:bg-header-50 transition-colors text-sm"
             @click="initStartersModalOpen = true"
           >
             {{ t('teams_page.init_starters') }}
@@ -867,7 +867,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
           <!-- Update logos -->
           <button
             v-if="canEditProperties"
-            class="px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+            class="px-3 py-2 border border-header-300 text-header-700 rounded-lg hover:bg-header-50 transition-colors text-sm"
             @click="updateLogosModalOpen = true"
           >
             {{ t('teams_page.update_logos') }}
@@ -876,7 +876,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
           <!-- Global PDF dropdown -->
           <button
             v-if="teams.length > 0"
-            class="global-pdf-trigger px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm flex items-center gap-1"
+            class="global-pdf-trigger px-3 py-2 border border-header-300 text-header-700 rounded-lg hover:bg-header-50 transition-colors text-sm flex items-center gap-1"
             @click="toggleGlobalPdf($event)"
           >
             <UIcon name="heroicons:document-text" class="w-6 h-6" />
@@ -888,7 +888,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
           <!-- Select all / Deselect all -->
           <template v-if="canAddDelete && teams.length > 0">
             <button
-              class="px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm"
+              class="px-3 py-2 border border-header-300 text-header-700 rounded-lg hover:bg-header-50 transition-colors text-sm"
               @click="selectAll = !selectAll; toggleSelectAll()"
             >
               {{ selectAll ? t('teams_page.deselect_all') : t('teams_page.select_all') }}
@@ -897,7 +897,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
             <!-- Bulk delete -->
             <button
               v-if="selectedIds.length > 0"
-              class="px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm flex items-center gap-1"
+              class="px-3 py-2 bg-danger-600 text-white rounded-lg hover:bg-danger-700 transition-colors text-sm flex items-center gap-1"
               @click="openBulkDeleteModal"
             >
               <UIcon name="heroicons:trash-solid" class="w-6 h-6" />
@@ -906,20 +906,20 @@ const getLogoUrl = (team: CompetitionTeam) => {
           </template>
 
           <!-- Total count -->
-          <span class="text-sm text-gray-500">
+          <span class="text-sm text-header-500">
             {{ t('teams_page.total', { count: total }) }}
           </span>
         </div>
       </div>
 
       <!-- Loading state -->
-      <div v-if="loading && teams.length === 0" class="bg-white rounded-lg shadow p-8 text-center text-gray-500">
+      <div v-if="loading && teams.length === 0" class="bg-white rounded-lg shadow p-8 text-center text-header-500">
         <UIcon name="heroicons:arrow-path" class="w-6 h-6 animate-spin mx-auto mb-2" />
         {{ t('common.loading') }}
       </div>
 
       <!-- Empty state -->
-      <div v-else-if="teams.length === 0" class="bg-white rounded-lg shadow p-8 text-center text-gray-500">
+      <div v-else-if="teams.length === 0" class="bg-white rounded-lg shadow p-8 text-center text-header-500">
         {{ t('teams_page.empty') }}
       </div>
 
@@ -927,58 +927,58 @@ const getLogoUrl = (team: CompetitionTeam) => {
       <div v-else class="space-y-4">
         <div v-for="group in teamsByPool" :key="group.pool" class="bg-white rounded-lg shadow overflow-hidden">
           <!-- Pool header -->
-          <div class="px-4 py-2 bg-gray-100 border-b border-gray-200">
-            <h3 class="text-sm font-semibold text-gray-700">
+          <div class="px-4 py-2 bg-header-100 border-b border-header-200">
+            <h3 class="text-sm font-semibold text-header-700">
               {{ group.label }}
             </h3>
           </div>
 
           <!-- Desktop table -->
           <div class="hidden lg:block overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead class="bg-gray-50">
+            <table class="min-w-full divide-y divide-header-200">
+              <thead class="bg-header-50">
                 <tr>
                   <th v-if="canAddDelete" class="px-3 py-2">
                     <span class="sr-only">Select</span>
                   </th>
-                  <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th class="px-3 py-2 text-left text-xs font-medium text-header-500 uppercase">
                     {{ t('teams_page.columns.poule') }}
                   </th>
-                  <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th class="px-3 py-2 text-left text-xs font-medium text-header-500 uppercase">
                     {{ t('teams_page.columns.tirage') }}
                   </th>
-                  <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                  <th class="px-3 py-2 text-center text-xs font-medium text-header-500 uppercase">
                     {{ t('teams_page.columns.logo') }}
                   </th>
-                  <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase">
+                  <th class="px-3 py-2 text-left text-xs font-medium text-header-500 uppercase">
                     {{ t('teams_page.columns.equipe') }}
                   </th>
-                  <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                  <th class="px-3 py-2 text-center text-xs font-medium text-header-500 uppercase">
                     {{ t('teams_page.columns.club') }}
                   </th>
-                  <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                  <th class="px-3 py-2 text-center text-xs font-medium text-header-500 uppercase">
                     {{ t('teams_page.columns.matchs') }}
                   </th>
-                  <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                  <th class="px-3 py-2 text-center text-xs font-medium text-header-500 uppercase">
                     {{ t('teams_page.columns.joueurs') }}
                   </th>
-                  <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase">
+                  <th class="px-3 py-2 text-center text-xs font-medium text-header-500 uppercase">
                     {{ t('teams_page.columns.pdf') }}
                   </th>                </tr>
               </thead>
-              <tbody class="divide-y divide-gray-200">
+              <tbody class="divide-y divide-header-200">
                 <tr
                   v-for="team in group.teams"
                   :key="team.id"
-                  class="hover:bg-gray-50"
-                  :class="{ 'bg-blue-50': isSelected(team.id) }"
+                  class="hover:bg-header-50"
+                  :class="{ 'bg-primary-50': isSelected(team.id) }"
                 >
                   <!-- Checkbox -->
                   <td v-if="canAddDelete" class="px-3 py-2">
                     <input
                       :checked="isSelected(team.id)"
                       type="checkbox"
-                      class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                      class="w-5 h-5 rounded border-header-300 text-primary-600 focus:ring-2 focus:ring-primary-500 cursor-pointer"
                       @change="toggleSelect(team.id)"
                     >
                   </td>
@@ -991,7 +991,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                         v-model="editingValue"
                         type="text"
                         maxlength="5"
-                        class="w-12 px-1 py-0.5 border border-blue-400 rounded text-center text-sm uppercase focus:ring-2 focus:ring-blue-500"
+                        class="w-12 px-1 py-0.5 border border-primary-400 rounded text-center text-sm uppercase focus:ring-2 focus:ring-primary-500"
                         @keydown="handleInlineKeydown"
                         @blur="saveInlineEdit"
                       >
@@ -1015,7 +1015,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                         type="number"
                         min="0"
                         max="99"
-                        class="w-14 px-1 py-0.5 border border-blue-400 rounded text-center text-sm focus:ring-2 focus:ring-blue-500"
+                        class="w-14 px-1 py-0.5 border border-primary-400 rounded text-center text-sm focus:ring-2 focus:ring-primary-500"
                         @keydown="handleInlineKeydown"
                         @blur="saveInlineEdit"
                       >
@@ -1033,7 +1033,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                   <!-- Logo + Colors -->
                   <td
                     class="px-3 py-2 text-center"
-                    :class="canEditProperties ? 'cursor-pointer hover:bg-blue-50' : ''"
+                    :class="canEditProperties ? 'cursor-pointer hover:bg-primary-50' : ''"
                     @click="canEditProperties && openEditModal(team)"
                   >
                     <div class="flex items-center justify-center">
@@ -1058,17 +1058,17 @@ const getLogoUrl = (team: CompetitionTeam) => {
                       >
                         1
                       </span>
-                      <span v-if="!getLogoUrl(team) && !team.color1 && !team.color2" class="text-gray-300 text-xs">-</span>
+                      <span v-if="!getLogoUrl(team) && !team.color1 && !team.color2" class="text-header-300 text-xs">-</span>
                     </div>
                   </td>
 
                   <!-- Team name -->
-                  <td class="px-3 py-2 text-sm font-medium text-gray-900">
+                  <td class="px-3 py-2 text-sm font-medium text-header-900">
                     {{ team.libelle }}
                   </td>
 
                   <!-- Club -->
-                  <td class="px-3 py-2 text-sm text-gray-500 text-center">
+                  <td class="px-3 py-2 text-sm text-header-500 text-center">
                     <NuxtLink
                       :to="`/clubs?code=${team.codeClub}`"
                       class="link-value"
@@ -1079,7 +1079,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                   </td>
 
                   <!-- Matches -->
-                  <td class="px-3 py-2 text-sm text-center text-gray-500">
+                  <td class="px-3 py-2 text-sm text-center text-header-500">
                     {{ team.nbMatchs }}
                   </td>
 
@@ -1100,7 +1100,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                     <div class="flex items-center justify-center gap-1">
                       <!-- Presence sheet dropdown -->
                       <button
-                        class="presence-dropdown-trigger p-1 text-gray-600 hover:bg-gray-50 rounded"
+                        class="presence-dropdown-trigger p-1 text-header-600 hover:bg-header-50 rounded"
                         :title="t('teams_page.columns.pdf')"
                         @click="togglePresenceDropdown(team.id, $event)"
                       >
@@ -1110,7 +1110,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                       <!-- Delete -->
                       <button
                         v-if="canAddDelete && team.nbMatchs === 0"
-                        class="p-1 text-red-600 hover:bg-red-50 rounded"
+                        class="p-1 text-danger-600 hover:bg-danger-50 rounded"
                         :title="t('common.delete')"
                         @click="openDeleteModal(team)"
                       >
@@ -1124,12 +1124,12 @@ const getLogoUrl = (team: CompetitionTeam) => {
           </div>
 
           <!-- Mobile cards -->
-          <div class="lg:hidden divide-y divide-gray-200">
+          <div class="lg:hidden divide-y divide-header-200">
             <div
               v-for="team in group.teams"
               :key="team.id"
               class="p-4"
-              :class="{ 'bg-blue-50': isSelected(team.id) }"
+              :class="{ 'bg-primary-50': isSelected(team.id) }"
             >
               <div class="flex items-start gap-3">
                 <!-- Checkbox -->
@@ -1137,7 +1137,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                   v-if="canAddDelete"
                   :checked="isSelected(team.id)"
                   type="checkbox"
-                  class="w-5 h-5 rounded border-gray-300 text-blue-600 mt-0.5 cursor-pointer"
+                  class="w-5 h-5 rounded border-header-300 text-primary-600 mt-0.5 cursor-pointer"
                   @change="toggleSelect(team.id)"
                 >
 
@@ -1171,8 +1171,8 @@ const getLogoUrl = (team: CompetitionTeam) => {
                 </div>
 
                 <div class="flex-1 min-w-0">
-                  <div class="font-medium text-gray-900">{{ team.libelle }}</div>
-                  <div class="flex flex-wrap items-center gap-2 text-xs text-gray-500 mt-1">
+                  <div class="font-medium text-header-900">{{ team.libelle }}</div>
+                  <div class="flex flex-wrap items-center gap-2 text-xs text-header-500 mt-1">
                     <!-- Poule inline edit (mobile) -->
                     <template v-if="editingCell?.id === team.id && editingCell.field === 'poule'">
                       <input
@@ -1180,7 +1180,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                         v-model="editingValue"
                         type="text"
                         maxlength="5"
-                        class="w-12 px-1 py-0.5 border border-blue-400 rounded text-center text-xs uppercase focus:ring-2 focus:ring-blue-500"
+                        class="w-12 px-1 py-0.5 border border-primary-400 rounded text-center text-xs uppercase focus:ring-2 focus:ring-primary-500"
                         @keydown="handleInlineKeydown"
                         @blur="saveInlineEdit"
                       >
@@ -1201,7 +1201,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                         type="number"
                         min="0"
                         max="99"
-                        class="w-14 px-1 py-0.5 border border-blue-400 rounded text-center text-xs focus:ring-2 focus:ring-blue-500"
+                        class="w-14 px-1 py-0.5 border border-primary-400 rounded text-center text-xs focus:ring-2 focus:ring-primary-500"
                         @keydown="handleInlineKeydown"
                         @blur="saveInlineEdit"
                       >
@@ -1229,7 +1229,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                     <UIcon name="heroicons:user-group" class="w-6 h-6" />
                   </NuxtLink>
                   <button
-                    class="presence-dropdown-trigger p-1 text-gray-600"
+                    class="presence-dropdown-trigger p-1 text-header-600"
                     :title="t('teams_page.presence_sheet')"
                     @click="togglePresenceDropdown(team.id, $event)"
                   >
@@ -1237,7 +1237,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                   </button>
                   <button
                     v-if="canAddDelete && team.nbMatchs === 0"
-                    class="p-1 text-red-600"
+                    class="p-1 text-danger-600"
                     @click="openDeleteModal(team)"
                   >
                     <UIcon name="heroicons:trash-solid" class="w-6 h-6" />
@@ -1249,7 +1249,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
         </div>
 
         <!-- Bottom total -->
-        <div class="text-center text-sm text-gray-500 py-2">
+        <div class="text-center text-sm text-header-500 py-2">
           {{ t('teams_page.total', { count: total }) }}
         </div>
       </div>
@@ -1259,32 +1259,32 @@ const getLogoUrl = (team: CompetitionTeam) => {
     <Teleport to="body">
       <div
         v-if="openDropdownId !== null"
-        class="presence-dropdown-menu fixed w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
+        class="presence-dropdown-menu fixed w-48 bg-white rounded-lg shadow-lg border border-header-200 z-50"
         :style="dropdownStyle"
       >
         <NuxtLink
           :to="`/presence/team/${openDropdownId}`"
-          class="block px-3 py-2 text-sm font-medium text-blue-700 hover:bg-blue-50 rounded-t-lg"
+          class="block px-3 py-2 text-sm font-medium text-primary-700 hover:bg-primary-50 rounded-t-lg"
           @click="closePresenceDropdown"
         >
           <UIcon name="i-heroicons-clipboard-document-list" class="w-6 h-6 inline mr-1" />
           {{ t('teams_page.manage_composition') }}
         </NuxtLink>
-        <div class="border-t border-gray-100"/>
-        <a :href="getPresenceUrl({ id: openDropdownId } as CompetitionTeam)" target="_blank" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50" @click="closePresenceDropdown">
+        <div class="border-t border-header-100"/>
+        <a :href="getPresenceUrl({ id: openDropdownId } as CompetitionTeam)" target="_blank" class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50" @click="closePresenceDropdown">
           {{ t('teams_page.presence_sheet') }} (FR)
         </a>
-        <a :href="getPresenceEnUrl({ id: openDropdownId } as CompetitionTeam)" target="_blank" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50" @click="closePresenceDropdown">
+        <a :href="getPresenceEnUrl({ id: openDropdownId } as CompetitionTeam)" target="_blank" class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50" @click="closePresenceDropdown">
           {{ t('teams_page.presence_sheet_en') }}
         </a>
-        <a :href="getPresencePhotoUrl({ id: openDropdownId } as CompetitionTeam)" target="_blank" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50" @click="closePresenceDropdown">
+        <a :href="getPresencePhotoUrl({ id: openDropdownId } as CompetitionTeam)" target="_blank" class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50" @click="closePresenceDropdown">
           {{ t('teams_page.presence_sheet_photo') }}
         </a>
         <a
           v-if="canEditProperties"
           :href="getControlUrl({ id: openDropdownId } as CompetitionTeam)"
           target="_blank"
-          class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 border-t border-gray-100 rounded-b-lg"
+          class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50 border-t border-header-100 rounded-b-lg"
           @click="closePresenceDropdown"
         >
           {{ t('teams_page.control_sheet') }}
@@ -1296,29 +1296,29 @@ const getLogoUrl = (team: CompetitionTeam) => {
     <Teleport to="body">
       <div
         v-if="globalPdfOpen"
-        class="global-pdf-menu fixed w-52 bg-white rounded-lg shadow-lg border border-gray-200 z-50"
+        class="global-pdf-menu fixed w-52 bg-white rounded-lg shadow-lg border border-header-200 z-50"
         :style="globalPdfStyle"
       >
-        <a :href="globalPdfPoolsUrl" target="_blank" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-t-lg" @click="globalPdfOpen = false">
+        <a :href="globalPdfPoolsUrl" target="_blank" class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50 rounded-t-lg" @click="globalPdfOpen = false">
           {{ t('teams_page.pdf_pools') }}
         </a>
-        <a :href="globalPdfPresenceFrUrl" target="_blank" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50" @click="globalPdfOpen = false">
+        <a :href="globalPdfPresenceFrUrl" target="_blank" class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50" @click="globalPdfOpen = false">
           {{ t('teams_page.presence_sheet') }} (FR)
         </a>
-        <a :href="globalPdfPresenceEnUrl" target="_blank" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50" @click="globalPdfOpen = false">
+        <a :href="globalPdfPresenceEnUrl" target="_blank" class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50" @click="globalPdfOpen = false">
           {{ t('teams_page.presence_sheet_en') }}
         </a>
-        <a :href="globalPdfPresenceCatUrl" target="_blank" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50" @click="globalPdfOpen = false">
+        <a :href="globalPdfPresenceCatUrl" target="_blank" class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50" @click="globalPdfOpen = false">
           {{ t('teams_page.presence_sheet_cat') }}
         </a>
-        <a :href="globalPdfPresencePhotoUrl" target="_blank" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50" @click="globalPdfOpen = false">
+        <a :href="globalPdfPresencePhotoUrl" target="_blank" class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50" @click="globalPdfOpen = false">
           {{ t('teams_page.presence_sheet_photo') }}
         </a>
         <a
           v-if="canEditProperties"
           :href="globalPdfControlUrl"
           target="_blank"
-          class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 border-t border-gray-100 rounded-b-lg"
+          class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50 border-t border-header-100 rounded-b-lg"
           @click="globalPdfOpen = false"
         >
           {{ t('teams_page.control_sheet') }}
@@ -1342,18 +1342,18 @@ const getLogoUrl = (team: CompetitionTeam) => {
           <!-- Error -->
           <div
             v-if="addFormError"
-            class="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800"
+            class="flex items-start gap-3 p-4 bg-danger-50 border border-danger-200 rounded-lg text-danger-800"
           >
             <UIcon name="heroicons:exclamation-triangle" class="w-6 h-6 shrink-0 mt-0.5" />
             <span class="text-sm">{{ addFormError }}</span>
           </div>
 
           <!-- Tab selector -->
-          <div class="flex border-b border-gray-200">
+          <div class="flex border-b border-header-200">
             <button
               type="button"
               class="px-4 py-2 text-sm font-medium border-b-2 transition-colors"
-              :class="addFormTab === 'history' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+              :class="addFormTab === 'history' ? 'border-primary-600 text-primary-600' : 'border-transparent text-header-500 hover:text-header-700'"
               @click="addFormTab = 'history'; addFormData.mode = 'history'"
             >
               {{ t('teams_page.add_modal.tab_history') }}
@@ -1361,7 +1361,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
             <button
               type="button"
               class="px-4 py-2 text-sm font-medium border-b-2 transition-colors"
-              :class="addFormTab === 'manual' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700'"
+              :class="addFormTab === 'manual' ? 'border-primary-600 text-primary-600' : 'border-transparent text-header-500 hover:text-header-700'"
               @click="addFormTab = 'manual'; addFormData.mode = 'manual'"
             >
               {{ t('teams_page.add_modal.tab_manual') }}
@@ -1372,8 +1372,8 @@ const getLogoUrl = (team: CompetitionTeam) => {
           <template v-if="addFormTab === 'manual'">
             <!-- Team name -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
-                {{ t('teams_page.add_modal.libelle') }} <span class="text-red-500">*</span>
+              <label class="block text-sm font-medium text-header-700 mb-1">
+                {{ t('teams_page.add_modal.libelle') }} <span class="text-danger-500">*</span>
               </label>
               <input
                 v-model="addFormData.libelle"
@@ -1381,13 +1381,13 @@ const getLogoUrl = (team: CompetitionTeam) => {
                 :placeholder="t('teams_page.add_modal.libelle_placeholder')"
                 maxlength="30"
                 required
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               >
             </div>
 
             <!-- Club autocomplete -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
+              <label class="block text-sm font-medium text-header-700 mb-1">
                 {{ t('teams_page.add_modal.club') }}
               </label>
               <div class="relative">
@@ -1395,18 +1395,18 @@ const getLogoUrl = (team: CompetitionTeam) => {
                   v-model="clubSearchQuery"
                   type="text"
                   :placeholder="t('teams_page.add_modal.search_club')"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   @input="searchClubs"
                 >
                 <div
                   v-if="clubSearchResults.length > 0"
-                  class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-48 overflow-y-auto"
+                  class="absolute z-10 w-full mt-1 bg-white border border-header-300 rounded-lg shadow-lg max-h-48 overflow-y-auto"
                 >
                   <button
                     v-for="club in clubSearchResults"
                     :key="club.code"
                     type="button"
-                    class="w-full text-left px-3 py-2 text-sm hover:bg-blue-50 border-b border-gray-100 last:border-0"
+                    class="w-full text-left px-3 py-2 text-sm hover:bg-primary-50 border-b border-header-100 last:border-0"
                     @click="selectClub(club)"
                   >
                     <span class="font-medium">{{ club.code }}</span> - {{ club.libelle }}
@@ -1416,13 +1416,13 @@ const getLogoUrl = (team: CompetitionTeam) => {
 
               <!-- Club filters (collapsible) -->
               <details class="mt-2">
-                <summary class="text-xs text-gray-500 cursor-pointer hover:text-gray-700">
+                <summary class="text-xs text-header-500 cursor-pointer hover:text-header-700">
                   {{ t('teams_page.add_modal.filter_cr') }} / {{ t('teams_page.add_modal.filter_cd') }}
                 </summary>
                 <div class="mt-2 grid grid-cols-3 gap-2">
                   <select
                     v-model="selectedCR"
-                    class="px-2 py-1 border border-gray-300 rounded text-sm"
+                    class="px-2 py-1 border border-header-300 rounded text-sm"
                   >
                     <option value="">{{ t('teams_page.add_modal.all') }}</option>
                     <option v-for="cr in regionalCommittees" :key="cr.code" :value="cr.code">
@@ -1431,7 +1431,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                   </select>
                   <select
                     v-model="selectedCD"
-                    class="px-2 py-1 border border-gray-300 rounded text-sm"
+                    class="px-2 py-1 border border-header-300 rounded text-sm"
                     :disabled="!selectedCR"
                   >
                     <option value="">{{ t('teams_page.add_modal.all') }}</option>
@@ -1440,7 +1440,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                     </option>
                   </select>
                   <select
-                    class="px-2 py-1 border border-gray-300 rounded text-sm"
+                    class="px-2 py-1 border border-header-300 rounded text-sm"
                     :disabled="!selectedCD"
                     @change="(e) => { const v = (e.target as HTMLSelectElement).value; if (v) { addFormData.codeClub = v; const club = filteredClubs.find(c => c.code === v); if (club) clubSearchQuery = `${club.code} - ${club.libelle}`; } }"
                   >
@@ -1458,65 +1458,65 @@ const getLogoUrl = (team: CompetitionTeam) => {
           <template v-if="addFormTab === 'history'">
             <!-- Search teams -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
+              <label class="block text-sm font-medium text-header-700 mb-1">
                 {{ t('teams_page.add_modal.search_team') }}
               </label>
               <input
                 v-model="historySearchQuery"
                 type="text"
                 :placeholder="t('teams_page.add_modal.search_team')"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 @input="searchHistoryTeams"
               >
             </div>
 
             <!-- Search results -->
-            <div v-if="historySearchResults.length > 0" class="border border-gray-200 rounded-lg max-h-60 overflow-y-auto">
+            <div v-if="historySearchResults.length > 0" class="border border-header-200 rounded-lg max-h-60 overflow-y-auto">
               <!-- France teams -->
               <div v-if="historySearchResults.filter(t => !t.international).length > 0">
-                <div class="px-3 py-1 bg-gray-50 text-xs font-medium text-gray-500 uppercase sticky top-0">
+                <div class="px-3 py-1 bg-header-50 text-xs font-medium text-header-500 uppercase sticky top-0">
                   {{ t('teams_page.add_modal.france') }}
                 </div>
                 <div
                   v-for="ht in historySearchResults.filter(t => !t.international)"
                   :key="ht.numero"
-                  class="flex items-center gap-2 px-3 py-2 hover:bg-blue-50 cursor-pointer border-b border-gray-100"
+                  class="flex items-center gap-2 px-3 py-2 hover:bg-primary-50 cursor-pointer border-b border-header-100"
                   @click="toggleHistoryTeam(ht.numero)"
                 >
                   <input
                     :checked="isHistoryTeamSelected(ht.numero)"
                     type="checkbox"
-                    class="w-4 h-4 rounded border-gray-300 text-blue-600 pointer-events-none"
+                    class="w-4 h-4 rounded border-header-300 text-primary-600 pointer-events-none"
                   >
                   <span class="text-sm flex-1">{{ ht.libelle }}</span>
-                  <span class="text-xs text-gray-400">{{ ht.codeClub }}</span>
+                  <span class="text-xs text-header-400">{{ ht.codeClub }}</span>
                 </div>
               </div>
 
               <!-- International teams -->
               <div v-if="historySearchResults.filter(t => t.international).length > 0">
-                <div class="px-3 py-1 bg-gray-50 text-xs font-medium text-gray-500 uppercase sticky top-0">
+                <div class="px-3 py-1 bg-header-50 text-xs font-medium text-header-500 uppercase sticky top-0">
                   {{ t('teams_page.add_modal.international') }}
                 </div>
                 <div
                   v-for="ht in historySearchResults.filter(t => t.international)"
                   :key="ht.numero"
-                  class="flex items-center gap-2 px-3 py-2 hover:bg-blue-50 cursor-pointer border-b border-gray-100"
+                  class="flex items-center gap-2 px-3 py-2 hover:bg-primary-50 cursor-pointer border-b border-header-100"
                   @click="toggleHistoryTeam(ht.numero)"
                 >
                   <input
                     :checked="isHistoryTeamSelected(ht.numero)"
                     type="checkbox"
-                    class="w-4 h-4 rounded border-gray-300 text-blue-600 pointer-events-none"
+                    class="w-4 h-4 rounded border-header-300 text-primary-600 pointer-events-none"
                   >
                   <span class="text-sm flex-1">{{ ht.libelle }}</span>
-                  <span class="text-xs text-gray-400">{{ ht.codeClub }}</span>
+                  <span class="text-xs text-header-400">{{ ht.codeClub }}</span>
                 </div>
               </div>
             </div>
 
             <!-- Selected teams summary -->
-            <div v-if="addFormData.teamNumbers.length > 0" class="text-sm text-blue-600 font-medium">
+            <div v-if="addFormData.teamNumbers.length > 0" class="text-sm text-primary-600 font-medium">
               {{ t('teams_page.add_modal.selected_teams', { count: addFormData.teamNumbers.length }) }}
             </div>
 
@@ -1526,7 +1526,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                 <input
                   v-model="showCopyComposition"
                   type="checkbox"
-                  class="w-4 h-4 rounded border-gray-300 text-blue-600"
+                  class="w-4 h-4 rounded border-header-300 text-primary-600"
                   @change="showCopyComposition && loadCompositions(addFormData.teamNumbers[0])"
                 >
                 <span class="text-sm">{{ t('teams_page.add_modal.copy_composition') }}</span>
@@ -1534,7 +1534,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
 
               <div v-if="showCopyComposition" class="mt-2 ml-6">
                 <select
-                  class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                  class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm"
                   @change="(e) => {
                     const val = (e.target as HTMLSelectElement).value
                     if (val) {
@@ -1554,7 +1554,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                     {{ comp.season }} - {{ comp.competitionLibelle }} ({{ t('teams_page.add_modal.players', { count: comp.playerCount }) }})
                   </option>
                 </select>
-                <p v-if="compositions.length === 0 && !compositionsLoading" class="text-xs text-gray-400 mt-1">
+                <p v-if="compositions.length === 0 && !compositionsLoading" class="text-xs text-header-400 mt-1">
                   {{ t('teams_page.add_modal.no_compositions') }}
                 </p>
               </div>
@@ -1564,40 +1564,40 @@ const getLogoUrl = (team: CompetitionTeam) => {
           <!-- Common fields: Poule and Tirage -->
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('teams_page.add_modal.poule') }}</label>
+              <label class="block text-sm font-medium text-header-700 mb-1">{{ t('teams_page.add_modal.poule') }}</label>
               <input
                 v-model="addFormData.poule"
                 type="text"
                 :placeholder="t('teams_page.add_modal.poule_placeholder')"
                 maxlength="5"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 uppercase"
+                class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 uppercase"
               >
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('teams_page.add_modal.tirage') }}</label>
+              <label class="block text-sm font-medium text-header-700 mb-1">{{ t('teams_page.add_modal.tirage') }}</label>
               <input
                 v-model.number="addFormData.tirage"
                 type="number"
                 min="0"
                 max="99"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               >
             </div>
           </div>
         </div>
 
         <!-- Footer -->
-        <div class="flex justify-end gap-2 mt-6 pt-4 border-t border-gray-200">
+        <div class="flex justify-end gap-2 mt-6 pt-4 border-t border-header-200">
           <button
             type="button"
-            class="px-4 py-2 text-gray-700 border border-gray-300 hover:bg-gray-100 rounded-lg transition-colors"
+            class="px-4 py-2 text-header-700 border border-header-300 hover:bg-header-100 rounded-lg transition-colors"
             @click="addModalOpen = false"
           >
             {{ t('common.cancel') }}
           </button>
           <button
             type="submit"
-            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+            class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50"
             :disabled="addFormSaving"
           >
             <span v-if="addFormSaving" class="flex items-center gap-2">
@@ -1621,53 +1621,53 @@ const getLogoUrl = (team: CompetitionTeam) => {
         <div class="space-y-4">
           <!-- Team name (read only) -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('teams_page.columns.equipe') }}</label>
-            <div class="px-3 py-2 bg-gray-100 rounded-lg font-medium">{{ editingTeam?.libelle }}</div>
+            <label class="block text-sm font-medium text-header-700 mb-1">{{ t('teams_page.columns.equipe') }}</label>
+            <div class="px-3 py-2 bg-header-100 rounded-lg font-medium">{{ editingTeam?.libelle }}</div>
           </div>
 
           <!-- Logo -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('teams_page.edit_modal.logo') }}</label>
+            <label class="block text-sm font-medium text-header-700 mb-1">{{ t('teams_page.edit_modal.logo') }}</label>
             <input
               v-model="colorsFormData.logo"
               type="text"
               :placeholder="t('teams_page.edit_modal.logo_placeholder')"
               maxlength="50"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             >
           </div>
 
           <!-- Colors -->
           <div class="grid grid-cols-3 gap-4 items-end">
             <div>
-              <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('teams_page.edit_modal.color1') }}</label>
+              <label class="block text-xs font-medium text-header-700 mb-1">{{ t('teams_page.edit_modal.color1') }}</label>
               <input
                 v-model="colorsFormData.color1"
                 type="color"
-                class="w-full h-10 border border-gray-300 rounded-lg cursor-pointer"
+                class="w-full h-10 border border-header-300 rounded-lg cursor-pointer"
               >
             </div>
             <div>
-              <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('teams_page.edit_modal.color2') }}</label>
+              <label class="block text-xs font-medium text-header-700 mb-1">{{ t('teams_page.edit_modal.color2') }}</label>
               <input
                 v-model="colorsFormData.color2"
                 type="color"
-                class="w-full h-10 border border-gray-300 rounded-lg cursor-pointer"
+                class="w-full h-10 border border-header-300 rounded-lg cursor-pointer"
               >
             </div>
             <div>
-              <label class="block text-xs font-medium text-gray-700 mb-1">{{ t('teams_page.edit_modal.colortext') }}</label>
+              <label class="block text-xs font-medium text-header-700 mb-1">{{ t('teams_page.edit_modal.colortext') }}</label>
               <input
                 v-model="colorsFormData.colortext"
                 type="color"
-                class="w-full h-10 border border-gray-300 rounded-lg cursor-pointer"
+                class="w-full h-10 border border-header-300 rounded-lg cursor-pointer"
               >
             </div>
           </div>
 
           <!-- Preview -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('teams_page.edit_modal.preview') }}</label>
+            <label class="block text-sm font-medium text-header-700 mb-1">{{ t('teams_page.edit_modal.preview') }}</label>
             <div class="flex items-center gap-4">
               <span
                 class="inline-flex items-center justify-center w-14 h-14 rounded-lg text-2xl font-bold"
@@ -1681,39 +1681,39 @@ const getLogoUrl = (team: CompetitionTeam) => {
               >
                 1
               </span>
-              <span class="font-medium text-gray-700">{{ editingTeam?.libelle }}</span>
+              <span class="font-medium text-header-700">{{ editingTeam?.libelle }}</span>
             </div>
           </div>
 
           <!-- Propagation options -->
-          <div class="border border-gray-200 rounded-lg p-3 space-y-2">
+          <div class="border border-header-200 rounded-lg p-3 space-y-2">
             <label class="flex items-center gap-2 cursor-pointer">
-              <input v-model="colorsFormData.propagateNext" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600" >
+              <input v-model="colorsFormData.propagateNext" type="checkbox" class="w-4 h-4 rounded border-header-300 text-primary-600" >
               <span class="text-sm">{{ t('teams_page.edit_modal.propagate_next') }}</span>
             </label>
             <label class="flex items-center gap-2 cursor-pointer">
-              <input v-model="colorsFormData.propagatePrevious" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600" >
+              <input v-model="colorsFormData.propagatePrevious" type="checkbox" class="w-4 h-4 rounded border-header-300 text-primary-600" >
               <span class="text-sm">{{ t('teams_page.edit_modal.propagate_previous') }}</span>
             </label>
             <label class="flex items-center gap-2 cursor-pointer text-amber-700">
-              <input v-model="colorsFormData.propagateClub" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-amber-600" >
+              <input v-model="colorsFormData.propagateClub" type="checkbox" class="w-4 h-4 rounded border-header-300 text-amber-600" >
               <span class="text-sm font-medium">{{ t('teams_page.edit_modal.propagate_club') }}</span>
             </label>
           </div>
         </div>
 
         <!-- Footer -->
-        <div class="flex justify-end gap-2 mt-6 pt-4 border-t border-gray-200">
+        <div class="flex justify-end gap-2 mt-6 pt-4 border-t border-header-200">
           <button
             type="button"
-            class="px-4 py-2 text-gray-700 border border-gray-300 hover:bg-gray-100 rounded-lg transition-colors"
+            class="px-4 py-2 text-header-700 border border-header-300 hover:bg-header-100 rounded-lg transition-colors"
             @click="editModalOpen = false"
           >
             {{ t('common.cancel') }}
           </button>
           <button
             type="submit"
-            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+            class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50"
             :disabled="colorsFormSaving"
           >
             <span v-if="colorsFormSaving" class="flex items-center gap-2">
@@ -1737,12 +1737,12 @@ const getLogoUrl = (team: CompetitionTeam) => {
         <div class="space-y-4">
           <!-- Source competition -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-header-700 mb-1">
               {{ t('teams_page.duplicate_modal.source_competition') }}
             </label>
             <select
               v-model="duplicateFormData.sourceCompetition"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             >
               <option value="">{{ t('teams_page.duplicate_modal.source_competition_placeholder') }}</option>
               <option v-for="comp in duplicateSourceOptions" :key="comp.code" :value="comp.code">
@@ -1754,11 +1754,11 @@ const getLogoUrl = (team: CompetitionTeam) => {
           <!-- Mode -->
           <div class="space-y-2">
             <label class="flex items-center gap-2 cursor-pointer">
-              <input v-model="duplicateFormData.mode" type="radio" value="append" class="w-4 h-4 text-blue-600" >
+              <input v-model="duplicateFormData.mode" type="radio" value="append" class="w-4 h-4 text-primary-600" >
               <span class="text-sm">{{ t('teams_page.duplicate_modal.mode_append') }}</span>
             </label>
             <label class="flex items-center gap-2 cursor-pointer">
-              <input v-model="duplicateFormData.mode" type="radio" value="replace" class="w-4 h-4 text-blue-600" >
+              <input v-model="duplicateFormData.mode" type="radio" value="replace" class="w-4 h-4 text-primary-600" >
               <span class="text-sm">{{ t('teams_page.duplicate_modal.mode_replace') }}</span>
             </label>
           </div>
@@ -1774,23 +1774,23 @@ const getLogoUrl = (team: CompetitionTeam) => {
 
           <!-- Copy players -->
           <label class="flex items-center gap-2 cursor-pointer">
-            <input v-model="duplicateFormData.copyPlayers" type="checkbox" class="w-4 h-4 rounded border-gray-300 text-blue-600" >
+            <input v-model="duplicateFormData.copyPlayers" type="checkbox" class="w-4 h-4 rounded border-header-300 text-primary-600" >
             <span class="text-sm">{{ t('teams_page.duplicate_modal.copy_players') }}</span>
           </label>
         </div>
 
         <!-- Footer -->
-        <div class="flex justify-end gap-2 mt-6 pt-4 border-t border-gray-200">
+        <div class="flex justify-end gap-2 mt-6 pt-4 border-t border-header-200">
           <button
             type="button"
-            class="px-4 py-2 text-gray-700 border border-gray-300 hover:bg-gray-100 rounded-lg transition-colors"
+            class="px-4 py-2 text-header-700 border border-header-300 hover:bg-header-100 rounded-lg transition-colors"
             @click="duplicateModalOpen = false"
           >
             {{ t('common.cancel') }}
           </button>
           <button
             type="submit"
-            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+            class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50"
             :disabled="duplicateFormSaving || !duplicateFormData.sourceCompetition"
           >
             <span v-if="duplicateFormSaving" class="flex items-center gap-2">

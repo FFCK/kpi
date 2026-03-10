@@ -31,6 +31,6 @@ onMounted(() => {
 
 <template>
   <div class="flex items-center justify-center py-12">
-    <UIcon name="heroicons:arrow-path" class="w-8 h-8 animate-spin text-gray-400" />
+    <UIcon name="heroicons:arrow-path" class="w-8 h-8 animate-spin text-header-400" />
   </div>
 </template>

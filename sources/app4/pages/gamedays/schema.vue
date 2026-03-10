@@ -96,27 +96,27 @@ onMounted(async () => {
     <!-- Toolbar (non-printable) -->
     <div class="mb-2 flex flex-wrap items-center justify-between gap-2 print:hidden">
       <div class="flex items-center gap-3">
-        <h1 class="text-2xl font-bold text-gray-900">{{ t('schema.title') }}</h1>
+        <h1 class="text-2xl font-bold text-header-900">{{ t('schema.title') }}</h1>
       </div>
 
       <!-- Right side: toggles + close -->
       <div class="flex items-center gap-3">
         <!-- Toggles (CP only) -->
         <template v-if="isCp">
-          <label class="inline-flex items-center gap-1.5 text-xs text-gray-600 cursor-pointer select-none">
+          <label class="inline-flex items-center gap-1.5 text-xs text-header-600 cursor-pointer select-none">
             <input
               type="checkbox"
               :checked="showMatchCount"
-              class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              class="rounded border-header-300 text-primary-600 focus:ring-primary-500"
               @change="showMatchCount = !showMatchCount"
             >
             {{ t('schema.show_game_count') }}
           </label>
-          <label class="inline-flex items-center gap-1.5 text-xs text-gray-600 cursor-pointer select-none">
+          <label class="inline-flex items-center gap-1.5 text-xs text-header-600 cursor-pointer select-none">
             <input
               type="checkbox"
               :checked="showTimeSlots"
-              class="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              class="rounded border-header-300 text-primary-600 focus:ring-primary-500"
               @change="showTimeSlots = !showTimeSlots"
             >
             {{ t('schema.show_time_slots') }}
@@ -125,7 +125,7 @@ onMounted(async () => {
 
         <!-- Close button -->
         <button
-          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-header-700 bg-white border border-header-300 rounded-lg hover:bg-header-50 transition-colors"
           @click="closeWindow"
         >
           <UIcon name="heroicons:x-mark" class="w-4 h-4" />
@@ -135,13 +135,13 @@ onMounted(async () => {
     </div>
 
     <!-- No params provided -->
-    <div v-if="!competitionCode || !season" class="bg-white rounded-lg shadow p-8 text-center text-gray-500">
+    <div v-if="!competitionCode || !season" class="bg-white rounded-lg shadow p-8 text-center text-header-500">
       {{ t('schema.no_competition') }}
     </div>
 
     <!-- Loading -->
     <div v-else-if="loading" class="bg-white rounded-lg shadow p-8 text-center">
-      <UIcon name="heroicons:arrow-path" class="w-6 h-6 animate-spin text-gray-400 mx-auto" />
+      <UIcon name="heroicons:arrow-path" class="w-6 h-6 animate-spin text-header-400 mx-auto" />
     </div>
 
     <!-- Content -->
@@ -197,7 +197,7 @@ onMounted(async () => {
     </div>
 
     <!-- No data -->
-    <div v-else class="bg-white rounded-lg shadow p-8 text-center text-gray-500">
+    <div v-else class="bg-white rounded-lg shadow p-8 text-center text-header-500">
       {{ t('schema.no_data') }}
     </div>
   </div>

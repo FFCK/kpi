@@ -169,89 +169,89 @@ const onClickOutside = () => {
   <div class="space-y-8" @click.self="onClickOutside">
     <!-- Manual merge -->
     <section>
-      <h2 class="text-lg font-semibold text-gray-900 mb-4">
+      <h2 class="text-lg font-semibold text-header-900 mb-4">
         {{ t('operations.players.manual_merge') }}
       </h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Source player -->
         <div class="relative">
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('operations.players.source_player') }}
           </label>
           <input
             v-model="searchSource"
             type="text"
             :placeholder="t('operations.players.search_placeholder')"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             @focus="showSourceDropdown = sourceResults.length > 0"
             @blur="setTimeout(() => showSourceDropdown = false, 200)"
           >
           <!-- Dropdown -->
           <div
             v-if="showSourceDropdown && sourceResults.length > 0"
-            class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto"
+            class="absolute z-10 w-full mt-1 bg-white border border-header-200 rounded-lg shadow-lg max-h-60 overflow-auto"
           >
             <button
               v-for="player in sourceResults"
               :key="player.matric"
               type="button"
-              class="w-full px-4 py-2 text-left hover:bg-gray-50 text-sm text-gray-900"
+              class="w-full px-4 py-2 text-left hover:bg-header-50 text-sm text-header-900"
               @click="selectSource(player)"
             >
               <div class="font-medium">{{ player.nom }} {{ player.prenom }}</div>
-              <div class="text-xs text-gray-500">
+              <div class="text-xs text-header-500">
                 {{ player.matric }} - {{ player.club || 'Sans club' }}
               </div>
             </button>
           </div>
           <!-- Selected indicator -->
-          <div v-if="selectedSource" class="mt-2 p-2 bg-blue-50 border border-blue-200 rounded-lg">
+          <div v-if="selectedSource" class="mt-2 p-2 bg-primary-50 border border-primary-200 rounded-lg">
             <div class="flex items-center gap-2">
-              <UIcon name="i-heroicons-check-circle" class="w-5 h-5 text-blue-600" />
+              <UIcon name="i-heroicons-check-circle" class="w-5 h-5 text-primary-600" />
               <span class="text-sm font-medium">{{ selectedSource.nom }} {{ selectedSource.prenom }}</span>
-              <span class="text-xs text-gray-500">({{ selectedSource.matric }})</span>
+              <span class="text-xs text-header-500">({{ selectedSource.matric }})</span>
             </div>
           </div>
         </div>
 
         <!-- Target player -->
         <div class="relative">
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('operations.players.target_player') }}
           </label>
           <input
             v-model="searchTarget"
             type="text"
             :placeholder="t('operations.players.search_placeholder')"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             @focus="showTargetDropdown = targetResults.length > 0"
             @blur="setTimeout(() => showTargetDropdown = false, 200)"
           >
           <!-- Dropdown -->
           <div
             v-if="showTargetDropdown && targetResults.length > 0"
-            class="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-auto"
+            class="absolute z-10 w-full mt-1 bg-white border border-header-200 rounded-lg shadow-lg max-h-60 overflow-auto"
           >
             <button
               v-for="player in targetResults"
               :key="player.matric"
               type="button"
-              class="w-full px-4 py-2 text-left hover:bg-gray-50 text-sm text-gray-900"
+              class="w-full px-4 py-2 text-left hover:bg-header-50 text-sm text-header-900"
               @click="selectTarget(player)"
             >
               <div class="font-medium">{{ player.nom }} {{ player.prenom }}</div>
-              <div class="text-xs text-gray-500">
+              <div class="text-xs text-header-500">
                 {{ player.matric }} - {{ player.club || 'Sans club' }}
               </div>
             </button>
           </div>
           <!-- Selected indicator -->
-          <div v-if="selectedTarget" class="mt-2 p-2 bg-green-50 border border-green-200 rounded-lg">
+          <div v-if="selectedTarget" class="mt-2 p-2 bg-success-50 border border-success-200 rounded-lg">
             <div class="flex items-center gap-2">
-              <UIcon name="i-heroicons-check-circle" class="w-5 h-5 text-green-600" />
+              <UIcon name="i-heroicons-check-circle" class="w-5 h-5 text-success-500" />
               <span class="text-sm font-medium">{{ selectedTarget.nom }} {{ selectedTarget.prenom }}</span>
-              <span class="text-xs text-gray-500">({{ selectedTarget.matric }})</span>
+              <span class="text-xs text-header-500">({{ selectedTarget.matric }})</span>
             </div>
           </div>
         </div>
@@ -259,7 +259,7 @@ const onClickOutside = () => {
 
       <button
         :disabled="!selectedSource || !selectedTarget || loading"
-        class="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+        class="mt-4 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
         @click="openMergeModal"
       >
         <UIcon v-if="loading" name="i-heroicons-arrow-path" class="w-4 h-4 animate-spin" />
@@ -269,18 +269,18 @@ const onClickOutside = () => {
 
     <!-- Auto merge -->
     <section>
-      <h2 class="text-lg font-semibold text-gray-900 mb-4">
+      <h2 class="text-lg font-semibold text-header-900 mb-4">
         {{ t('operations.players.auto_merge') }}
       </h2>
 
-      <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+      <div class="bg-warning-50 border border-warning-200 rounded-lg p-4">
         <div class="flex items-start gap-3">
-          <UIcon name="i-heroicons-exclamation-triangle" class="w-5 h-5 text-yellow-600 mt-0.5 flex-shrink-0" />
+          <UIcon name="i-heroicons-exclamation-triangle" class="w-5 h-5 text-warning-600 mt-0.5 flex-shrink-0" />
           <div>
-            <p class="text-sm text-yellow-800">{{ t('operations.players.auto_merge_description') }}</p>
+            <p class="text-sm text-warning-800">{{ t('operations.players.auto_merge_description') }}</p>
             <button
               :disabled="loading"
-              class="mt-4 px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+              class="mt-4 px-4 py-2 bg-warning-600 text-white rounded-lg hover:bg-warning-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               @click="openAutoMergeModal"
             >
               <UIcon v-if="loading" name="i-heroicons-arrow-path" class="w-4 h-4 animate-spin" />

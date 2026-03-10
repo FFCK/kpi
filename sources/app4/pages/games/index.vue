@@ -1055,17 +1055,17 @@ const statusLabel = (game: Game) => {
 
 const statusColor = (game: Game) => {
   switch (game.statut) {
-    case 'ON': return 'text-green-600'
-    case 'END': return 'text-red-600'
-    default: return 'text-gray-400'
+    case 'ON': return 'text-success-500'
+    case 'END': return 'text-danger-600'
+    default: return 'text-header-400'
   }
 }
 
 const statusBtnClass = (game: Game) => {
   switch (game.statut) {
-    case 'ON': return 'bg-blue-100 text-blue-700 border-blue-200'
-    case 'END': return 'bg-green-100 text-green-700 border-green-200'
-    default: return 'bg-gray-100 text-gray-600 border-gray-200'
+    case 'ON': return 'bg-primary-100 text-primary-700 border-primary-200'
+    case 'END': return 'bg-success-100 text-success-700 border-success-200'
+    default: return 'bg-header-100 text-header-600 border-header-200'
   }
 }
 </script>
@@ -1083,8 +1083,8 @@ const statusBtnClass = (game: Game) => {
       <template #filters>
         <!-- Tour -->
         <div>
-          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('games.filter_round') }}</label>
-          <select v-model="selectedTour" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+          <label class="block text-xs font-medium text-header-500 mb-1">{{ t('games.filter_round') }}</label>
+          <select v-model="selectedTour" class="w-full px-3 py-2 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500">
             <option value="">{{ t('games.all_rounds') }}</option>
             <option v-for="n in 5" :key="n" :value="String(n)">{{ t('games.round_n', { n }) }}</option>
           </select>
@@ -1092,8 +1092,8 @@ const statusBtnClass = (game: Game) => {
 
         <!-- Journee -->
         <div class="min-w-48">
-          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('games.filter_journee') }}</label>
-          <select v-model="selectedJournee" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+          <label class="block text-xs font-medium text-header-500 mb-1">{{ t('games.filter_journee') }}</label>
+          <select v-model="selectedJournee" class="w-full px-3 py-2 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500">
             <option value="*">{{ t('games.all_journees') }}</option>
             <option v-for="j in journees" :key="j.id" :value="String(j.id)">{{ journeeLabel(j) }}</option>
           </select>
@@ -1101,8 +1101,8 @@ const statusBtnClass = (game: Game) => {
 
         <!-- Date -->
         <div>
-          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('games.filter_date') }}</label>
-          <select v-model="selectedDate" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+          <label class="block text-xs font-medium text-header-500 mb-1">{{ t('games.filter_date') }}</label>
+          <select v-model="selectedDate" class="w-full px-3 py-2 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500">
             <option value="">{{ t('games.all_dates') }}</option>
             <option v-for="d in availableDates" :key="d" :value="d">{{ formatDate(d) }}</option>
           </select>
@@ -1110,8 +1110,8 @@ const statusBtnClass = (game: Game) => {
 
         <!-- Terrain -->
         <div>
-          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('games.filter_terrain') }}</label>
-          <select v-model="selectedTerrain" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+          <label class="block text-xs font-medium text-header-500 mb-1">{{ t('games.filter_terrain') }}</label>
+          <select v-model="selectedTerrain" class="w-full px-3 py-2 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500">
             <option value="">{{ t('games.all_terrains') }}</option>
             <option v-for="n in 8" :key="n" :value="String(n)">{{ n }}</option>
           </select>
@@ -1119,8 +1119,8 @@ const statusBtnClass = (game: Game) => {
 
         <!-- Sort -->
         <div>
-          <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('games.filter_sort') }}</label>
-          <select v-model="selectedSort" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+          <label class="block text-xs font-medium text-header-500 mb-1">{{ t('games.filter_sort') }}</label>
+          <select v-model="selectedSort" class="w-full px-3 py-2 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500">
             <option value="date_time_terrain">{{ t('games.sort.date_time_terrain') }}</option>
             <option value="competition_date">{{ t('games.sort.competition_date') }}</option>
             <option value="competition_phase">{{ t('games.sort.competition_phase') }}</option>
@@ -1130,13 +1130,13 @@ const statusBtnClass = (game: Game) => {
         </div>
 
         <!-- Unlocked only checkbox -->
-        <label class="flex items-center gap-1.5 px-3 py-2 text-sm cursor-pointer" :class="unlockedOnly ? 'text-blue-700 font-medium' : 'text-gray-600'">
-          <input v-model="unlockedOnly" type="checkbox" class="rounded border-gray-300 text-blue-600">
+        <label class="flex items-center gap-1.5 px-3 py-2 text-sm cursor-pointer" :class="unlockedOnly ? 'text-primary-700 font-medium' : 'text-header-600'">
+          <input v-model="unlockedOnly" type="checkbox" class="rounded border-header-300 text-primary-600">
           {{ t('games.unlocked_only') }}
         </label>
 
         <!-- Loading spinner -->
-        <UIcon v-if="loading" name="heroicons:arrow-path" class="w-5 h-5 text-blue-500 animate-spin" />
+        <UIcon v-if="loading" name="heroicons:arrow-path" class="w-5 h-5 text-primary-500 animate-spin" />
       </template>
     </AdminPageHeader>
 
@@ -1153,83 +1153,83 @@ const statusBtnClass = (game: Game) => {
         <!-- Bulk actions dropdown -->
         <div v-if="canSelect && selectedIds.length > 0" ref="bulkActionsRef" class="relative">
           <button
-            class="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100"
+            class="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-primary-700 bg-primary-50 border border-primary-200 rounded-lg hover:bg-primary-100"
             @click="bulkActionsOpen = !bulkActionsOpen"
           >
             <UIcon name="heroicons:bolt" class="w-6 h-6" />
             {{ t('games.bulk.actions') }}
-            <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+            <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
               {{ selectedIds.length }}
             </span>
             <UIcon name="heroicons:chevron-down" class="w-6 h-6 transition-transform" :class="{ 'rotate-180': bulkActionsOpen }" />
           </button>
-          <div v-show="bulkActionsOpen" class="absolute z-20 mt-1 w-72 bg-white border border-gray-200 rounded-lg shadow-lg py-1 left-0">
+          <div v-show="bulkActionsOpen" class="absolute z-20 mt-1 w-72 bg-white border border-header-200 rounded-lg shadow-lg py-1 left-0">
             <!-- ── Toggle section ── -->
-            <div class="px-3 py-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{{ t('games.bulk.toggle_section') }}</div>
+            <div class="px-3 py-1 text-[10px] font-semibold text-header-400 uppercase tracking-wider">{{ t('games.bulk.toggle_section') }}</div>
             <button
-              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
               @click="bulkPublishConfirmOpen = true; bulkActionsOpen = false"
             >
-              <UIcon name="heroicons:eye" class="w-5 h-5 text-green-600" />
+              <UIcon name="heroicons:eye" class="w-5 h-5 text-success-500" />
               {{ t('games.bulk.publish') }}
             </button>
             <button
               v-if="canLock"
-              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
               @click="bulkLockConfirmOpen = true; bulkActionsOpen = false"
             >
-              <UIcon name="heroicons:lock-closed" class="w-5 h-5 text-blue-600" />
+              <UIcon name="heroicons:lock-closed" class="w-5 h-5 text-primary-600" />
               {{ t('games.bulk.lock') }}
             </button>
             <button
               v-if="canLock"
-              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
               @click="bulkLockPublishConfirmOpen = true; bulkActionsOpen = false"
             >
               <UIcon name="heroicons:lock-closed" class="w-5 h-5 text-purple-600" />
               {{ t('games.bulk.lock_publish') }}
             </button>
             <button
-              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
               @click="bulkTogglePrinted(); bulkActionsOpen = false"
             >
-              <UIcon name="heroicons:printer" class="w-5 h-5 text-gray-600" />
+              <UIcon name="heroicons:printer" class="w-5 h-5 text-header-600" />
               {{ t('games.bulk.toggle_printed') }}
             </button>
 
             <!-- ── Edit section ── -->
-            <div class="border-t border-gray-100 my-1" />
-            <div class="px-3 py-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{{ t('games.bulk.edit_section') }}</div>
+            <div class="border-t border-header-100 my-1" />
+            <div class="px-3 py-1 text-[10px] font-semibold text-header-400 uppercase tracking-wider">{{ t('games.bulk.edit_section') }}</div>
             <button
-              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
               @click="openBulkChangeJournee"
             >
               <UIcon name="heroicons:arrow-right-circle" class="w-5 h-5 text-indigo-600" />
               {{ t('games.bulk.change_journee') }}
             </button>
             <button
-              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
               @click="openBulkRenumber"
             >
               <UIcon name="heroicons:hashtag" class="w-5 h-5 text-orange-600" />
               {{ t('games.bulk.renumber') }}
             </button>
             <button
-              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
               @click="openBulkChangeDate"
             >
-              <UIcon name="heroicons:calendar" class="w-5 h-5 text-blue-600" />
+              <UIcon name="heroicons:calendar" class="w-5 h-5 text-primary-600" />
               {{ t('games.bulk.change_date') }}
             </button>
             <button
-              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
               @click="openBulkIncrementTime"
             >
               <UIcon name="heroicons:clock" class="w-5 h-5 text-teal-600" />
               {{ t('games.bulk.increment_time') }}
             </button>
             <button
-              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
               @click="openBulkChangeGroup"
             >
               <UIcon name="heroicons:arrow-path" class="w-5 h-5 text-amber-600" />
@@ -1237,20 +1237,20 @@ const statusBtnClass = (game: Game) => {
             </button>
 
             <!-- ── Documents section ── -->
-            <div class="border-t border-gray-100 my-1" />
-            <div class="px-3 py-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{{ t('games.bulk.documents_section') }}</div>
+            <div class="border-t border-header-100 my-1" />
+            <div class="px-3 py-1 text-[10px] font-semibold text-header-400 uppercase tracking-wider">{{ t('games.bulk.documents_section') }}</div>
             <button
-              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
               @click="openBulkMatchSheets"
             >
-              <UIcon name="heroicons:document-text" class="w-5 h-5 text-red-600" />
+              <UIcon name="heroicons:document-text" class="w-5 h-5 text-danger-600" />
               {{ t('games.bulk.match_sheets') }}
             </button>
 
             <!-- ── Danger section ── -->
-            <div class="border-t border-gray-100 my-1" />
+            <div class="border-t border-header-100 my-1" />
             <button
-              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-danger-600 hover:bg-danger-50"
               @click="bulkDeleteConfirmOpen = true; bulkActionsOpen = false"
             >
               <UIcon name="heroicons:trash" class="w-5 h-5" />
@@ -1263,107 +1263,107 @@ const statusBtnClass = (game: Game) => {
         <!-- Documents dropdown (all games with current filters) -->
         <div ref="documentsRef" class="relative">
           <button
-            class="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+            class="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-header-700 bg-white border border-header-300 rounded-lg hover:bg-header-50"
             @click="documentsOpen = !documentsOpen"
           >
-            <UIcon name="heroicons:document-arrow-down" class="w-5 h-5 text-gray-500" />
+            <UIcon name="heroicons:document-arrow-down" class="w-5 h-5 text-header-500" />
             {{ t('games.documents.title') }}
             <UIcon name="heroicons:chevron-down" class="w-4 h-4 transition-transform" :class="{ 'rotate-180': documentsOpen }" />
           </button>
-          <div v-show="documentsOpen" class="absolute z-20 mt-1 w-64 bg-white border border-gray-200 rounded-lg shadow-lg py-1 right-0">
-            <div class="px-3 py-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{{ t('games.documents.admin_section') }}</div>
+          <div v-show="documentsOpen" class="absolute z-20 mt-1 w-64 bg-white border border-header-200 rounded-lg shadow-lg py-1 right-0">
+            <div class="px-3 py-1 text-[10px] font-semibold text-header-400 uppercase tracking-wider">{{ t('games.documents.admin_section') }}</div>
             <a
               :href="docUrl('FeuilleListeMatchs.php')"
               target="_blank"
-              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
               @click="documentsOpen = false"
             >
-              <UIcon name="heroicons:document-text" class="w-5 h-5 text-blue-600" />
+              <UIcon name="heroicons:document-text" class="w-5 h-5 text-primary-600" />
               {{ t('games.documents.game_list_fr') }}
             </a>
             <a
               :href="docUrl('FeuilleListeMatchsEN.php')"
               target="_blank"
-              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
               @click="documentsOpen = false"
             >
-              <UIcon name="heroicons:document-text" class="w-5 h-5 text-blue-600" />
+              <UIcon name="heroicons:document-text" class="w-5 h-5 text-primary-600" />
               {{ t('games.documents.game_list_en') }}
             </a>
             <a
               :href="docUrl('FeuilleMatchMulti.php')"
               target="_blank"
-              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
               @click="documentsOpen = false"
             >
-              <UIcon name="heroicons:document-duplicate" class="w-5 h-5 text-red-600" />
+              <UIcon name="heroicons:document-duplicate" class="w-5 h-5 text-danger-600" />
               {{ t('games.documents.scoresheets_all') }}
             </a>
             <a
               :href="docUrl('tableau_openspout.php')"
               target="_blank"
-              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
               @click="documentsOpen = false"
             >
-              <UIcon name="heroicons:table-cells" class="w-5 h-5 text-green-600" />
+              <UIcon name="heroicons:table-cells" class="w-5 h-5 text-success-500" />
               {{ t('games.documents.export_ods') }}
             </a>
-            <div class="border-t border-gray-100 my-1" />
-            <div class="px-3 py-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{{ t('games.documents.public_section') }}</div>
+            <div class="border-t border-header-100 my-1" />
+            <div class="px-3 py-1 text-[10px] font-semibold text-header-400 uppercase tracking-wider">{{ t('games.documents.public_section') }}</div>
             <a
               :href="docUrl('PdfListeMatchs.php', true)"
               target="_blank"
-              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
               @click="documentsOpen = false"
             >
-              <UIcon name="heroicons:document-text" class="w-5 h-5 text-gray-500" />
+              <UIcon name="heroicons:document-text" class="w-5 h-5 text-header-500" />
               {{ t('games.documents.public_list_fr') }}
             </a>
             <a
               :href="docUrl('PdfListeMatchsEN.php', true)"
               target="_blank"
-              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
               @click="documentsOpen = false"
             >
-              <UIcon name="heroicons:document-text" class="w-5 h-5 text-gray-500" />
+              <UIcon name="heroicons:document-text" class="w-5 h-5 text-header-500" />
               {{ t('games.documents.public_list_en') }}
             </a>
-            <div class="border-t border-gray-100 my-1" />
-            <div class="px-3 py-1 text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{{ t('games.documents.pitches_section') }}</div>
+            <div class="border-t border-header-100 my-1" />
+            <div class="px-3 py-1 text-[10px] font-semibold text-header-400 uppercase tracking-wider">{{ t('games.documents.pitches_section') }}</div>
             <a
               :href="docUrl('PdfListeMatchs4TerrainsEn.php', true)"
               target="_blank"
-              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
               @click="documentsOpen = false"
             >
-              <UIcon name="heroicons:table-cells" class="w-5 h-5 text-gray-500" />
+              <UIcon name="heroicons:table-cells" class="w-5 h-5 text-header-500" />
               {{ t('games.documents.pitches_1_4_teams') }}
             </a>
             <a
               :href="docUrl('PdfListeMatchs4TerrainsEn3.php', true)"
               target="_blank"
-              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
               @click="documentsOpen = false"
             >
-              <UIcon name="heroicons:table-cells" class="w-5 h-5 text-gray-500" />
+              <UIcon name="heroicons:table-cells" class="w-5 h-5 text-header-500" />
               {{ t('games.documents.pitches_5_8_teams') }}
             </a>
             <a
               :href="docUrl('PdfListeMatchs4TerrainsEn2.php', true)"
               target="_blank"
-              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
               @click="documentsOpen = false"
             >
-              <UIcon name="heroicons:table-cells" class="w-5 h-5 text-gray-500" />
+              <UIcon name="heroicons:table-cells" class="w-5 h-5 text-header-500" />
               {{ t('games.documents.pitches_1_4_phases') }}
             </a>
             <a
               :href="docUrl('PdfListeMatchs4TerrainsEn4.php', true)"
               target="_blank"
-              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
               @click="documentsOpen = false"
             >
-              <UIcon name="heroicons:table-cells" class="w-5 h-5 text-gray-500" />
+              <UIcon name="heroicons:table-cells" class="w-5 h-5 text-header-500" />
               {{ t('games.documents.pitches_5_8_phases') }}
             </a>
           </div>
@@ -1374,14 +1374,14 @@ const statusBtnClass = (game: Game) => {
     <!-- ═══════ DESKTOP TABLE ═══════ -->
     <div class="hidden lg:block bg-white rounded-lg shadow overflow-hidden">
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200 text-xs">
-          <thead class="bg-gray-50">
+        <table class="min-w-full divide-y divide-header-200 text-xs">
+          <thead class="bg-header-50">
             <tr>
               <!-- Checkbox -->
               <th v-if="canSelect" class="w-8 px-1 py-2">
                 <input
                   type="checkbox"
-                  class="rounded border-gray-300"
+                  class="rounded border-header-300"
                   :checked="selectedIds.length === filteredGames.length && filteredGames.length > 0"
                   :indeterminate="selectedIds.length > 0 && selectedIds.length < filteredGames.length"
                   @change="toggleSelectAll"
@@ -1390,56 +1390,56 @@ const statusBtnClass = (game: Game) => {
               <!-- Publication -->
               <th class="w-8 px-1 py-2 text-center"><UIcon name="heroicons:eye" class="w-6 h-6" /></th>
               <!-- N° -->
-              <th class="w-10 px-1 py-2 text-center text-gray-500 font-medium">{{ t('games.field.number') }}</th>
+              <th class="w-10 px-1 py-2 text-center text-header-500 font-medium">{{ t('games.field.number') }}</th>
               <!-- Actions -->
-              <th v-if="canEdit" colspan="2" class="w-20 px-1 py-2 text-center text-gray-500 font-medium">{{ t('games.field.actions') }}</th>
+              <th v-if="canEdit" colspan="2" class="w-20 px-1 py-2 text-center text-header-500 font-medium">{{ t('games.field.actions') }}</th>
               <!-- Time -->
-              <th class="px-1 py-2 text-left text-gray-500 font-medium">{{ t('games.field.time') }}</th>
+              <th class="px-1 py-2 text-left text-header-500 font-medium">{{ t('games.field.date_time') }}</th>
               <!-- Terrain -->
-              <th class="w-8 px-1 py-2 text-center text-gray-500 font-medium">{{ t('games.field.terrain') }}</th>
+              <th class="w-8 px-1 py-2 text-center text-header-500 font-medium">{{ t('games.field.terrain') }}</th>
               <!-- Cat -->
-              <th class="px-1 py-2 text-left text-gray-500 font-medium">{{ t('games.field.category') }}</th>
+              <th class="px-1 py-2 text-left text-header-500 font-medium">{{ t('games.field.category') }}</th>
               <!-- Phase (conditional) -->
-              <th v-if="phaseLibelle" class="px-1 py-2 text-left text-gray-500 font-medium">{{ t('games.field.phase') }}</th>
+              <th v-if="phaseLibelle" class="px-1 py-2 text-left text-header-500 font-medium">{{ t('games.field.phase') }}</th>
               <!-- Type -->
-              <th class="w-8 px-1 py-2 text-center text-gray-500 font-medium">{{ t('games.field.type') }}</th>
+              <th class="w-8 px-1 py-2 text-center text-header-500 font-medium">{{ t('games.field.type') }}</th>
               <!-- Code (conditional) -->
-              <th v-if="phaseLibelle" class="px-1 py-2 text-left text-gray-500 font-medium">{{ t('games.field.code') }}</th>
+              <th v-if="phaseLibelle" class="px-1 py-2 text-left text-header-500 font-medium">{{ t('games.field.code') }}</th>
               <!-- Code (non-phaseLibelle) -->
-              <th v-if="!phaseLibelle" class="px-1 py-2 text-left text-gray-500 font-medium">{{ t('games.field.code') }}</th>
+              <th v-if="!phaseLibelle" class="px-1 py-2 text-left text-header-500 font-medium">{{ t('games.field.code') }}</th>
               <!-- Lieu (non-phaseLibelle) -->
-              <th v-if="!phaseLibelle" class="px-1 py-2 text-left text-gray-500 font-medium">{{ t('games.field.location') }}</th>
+              <th v-if="!phaseLibelle" class="px-1 py-2 text-left text-header-500 font-medium">{{ t('games.field.location') }}</th>
               <!-- Team A -->
-              <th class="px-1 py-2 text-right text-gray-500 font-medium">{{ t('games.field.team_a') }}</th>
+              <th class="px-1 py-2 text-right text-header-500 font-medium">{{ t('games.field.team_a') }}</th>
               <!-- Score A -->
-              <th class="w-8 px-1 py-2 text-center text-gray-500 font-medium">{{ t('games.field.score_a') }}</th>
+              <th class="w-8 px-1 py-2 text-center text-header-500 font-medium">{{ t('games.field.score_a') }}</th>
               <!-- Lock -->
-              <th class="w-10 px-1 py-2 text-center text-gray-500 font-medium">{{ t('games.field.lock') }}</th>
+              <th class="w-10 px-1 py-2 text-center text-header-500 font-medium">{{ t('games.field.lock') }}</th>
               <!-- Score B -->
-              <th class="w-8 px-1 py-2 text-center text-gray-500 font-medium">{{ t('games.field.score_b') }}</th>
+              <th class="w-8 px-1 py-2 text-center text-header-500 font-medium">{{ t('games.field.score_b') }}</th>
               <!-- Team B -->
-              <th class="px-1 py-2 text-left text-gray-500 font-medium">{{ t('games.field.team_b') }}</th>
+              <th class="px-1 py-2 text-left text-header-500 font-medium">{{ t('games.field.team_b') }}</th>
               <!-- Referee 1 -->
-              <th class="px-1 py-2 text-left text-gray-500 font-medium">{{ t('games.field.referee_1') }}</th>
+              <th class="px-1 py-2 text-left text-header-500 font-medium">{{ t('games.field.referee_1') }}</th>
               <!-- Referee 2 -->
-              <th class="px-1 py-2 text-left text-gray-500 font-medium">{{ t('games.field.referee_2') }}</th>
+              <th class="px-1 py-2 text-left text-header-500 font-medium">{{ t('games.field.referee_2') }}</th>
               <!-- Printed -->
               <th class="w-8 px-1 py-2 text-center"><UIcon name="heroicons:inbox-arrow-down" class="w-6 h-6" /></th>
               <!-- Delete -->
               <th v-if="canEdit" class="w-8 px-1 py-2" />
             </tr>
           </thead>
-          <tbody class="bg-white divide-y divide-gray-200">
+          <tbody class="bg-white divide-y divide-header-200">
             <!-- Loading -->
             <tr v-if="loading && games.length === 0">
-              <td :colspan="22" class="px-4 py-8 text-center text-gray-500">
+              <td :colspan="22" class="px-4 py-8 text-center text-header-500">
                 <UIcon name="heroicons:arrow-path" class="w-6 h-6 animate-spin mx-auto mb-2" />
                 {{ t('common.loading') }}
               </td>
             </tr>
             <!-- Empty -->
             <tr v-else-if="filteredGames.length === 0">
-              <td :colspan="22" class="px-4 py-8 text-center text-gray-500">
+              <td :colspan="22" class="px-4 py-8 text-center text-header-500">
                 {{ t('games.no_results') }}
               </td>
             </tr>
@@ -1447,9 +1447,9 @@ const statusBtnClass = (game: Game) => {
             <tr
               v-for="g in filteredGames"
               :key="g.id"
-              class="hover:bg-gray-50"
+              class="hover:bg-header-50"
               :class="{
-                'bg-blue-50': selectedIds.includes(g.id),
+                'bg-primary-50': selectedIds.includes(g.id),
                 'bg-amber-50/50': isLocked(g),
               }"
             >
@@ -1457,7 +1457,7 @@ const statusBtnClass = (game: Game) => {
               <td v-if="canSelect" class="px-1 py-1" @click.stop>
                 <input
                   type="checkbox"
-                  class="rounded border-gray-300"
+                  class="rounded border-header-300"
                   :checked="selectedIds.includes(g.id)"
                   @change="toggleSelect(g.id)"
                 >
@@ -1469,7 +1469,7 @@ const statusBtnClass = (game: Game) => {
                   :active="g.publication === 'O'"
                   active-icon="heroicons:eye-solid"
                   inactive-icon="heroicons:eye-slash"
-                  active-color="green"
+                  active-color="success"
                   size="md"
                   :active-title="t('games.published')"
                   :inactive-title="t('games.unpublished')"
@@ -1485,7 +1485,7 @@ const statusBtnClass = (game: Game) => {
                     v-model="editingValue" v-inline-focus
                     type="tel"
                     maxlength="4"
-                    class="w-10 px-0.5 py-0 text-xs text-center border border-blue-400 rounded"
+                    class="w-10 px-0.5 py-0 text-xs text-center border border-primary-400 rounded"
                     @keydown="handleInlineKeydown"
                     @blur="saveInlineEdit"
                   >
@@ -1500,28 +1500,28 @@ const statusBtnClass = (game: Game) => {
 
               <!-- Actions -->
               <td v-if="canEdit" class="px-1 py-1 text-center" @click.stop>
-                <button v-if="!isLocked(g)" :title="t('common.edit')" class="text-blue-600 hover:text-blue-800" @click="openEditModal(g)">
+                <button v-if="!isLocked(g)" :title="t('common.edit')" class="text-primary-600 hover:text-primary-800" @click="openEditModal(g)">
                   <UIcon name="heroicons:pencil" class="w-6 h-6" />
                   <br>
-                  <span class="text-xs text-gray-500">Edit</span>
+                  <span class="text-xs text-header-700">Edit</span>
                 </button>
               </td>
               <td v-if="canEdit" class="px-1 py-1 text-center" @click.stop>
                 <div class="flex items-center text-center gap-0.5">
-                  <a :href="`${legacyBase}/admin/FeuilleMatchMulti.php?listMatch=${g.id}`" target="_blank" :title="t('games.scoresheet_pdf')" class="p-0.5 text-red-600 hover:text-red-800">
+                  <a :href="`${legacyBase}/admin/FeuilleMatchMulti.php?listMatch=${g.id}`" target="_blank" :title="t('games.scoresheet_pdf')" class="p-0.5 text-danger-600 hover:text-danger-800">
                     <UIcon name="heroicons:document-text" class="w-6 h-6" />
                     <br>
-                    <span class="text-xs text-gray-500">PDF</span>
+                    <span class="text-xs text-header-700">PDF</span>
                   </a>
-                  <a v-if="authStore.profile <= 2" :href="`${legacyBase}/admin/FeuilleMarque2.php?idMatch=${g.id}`" target="_blank" :title="t('games.scoresheet_online_v2')" class="p-0.5 text-emerald-600 hover:text-emerald-800">
+                  <a v-if="authStore.profile <= 2" :href="`${legacyBase}/admin/FeuilleMarque2.php?idMatch=${g.id}`" target="_blank" :title="t('games.scoresheet_online_v2')" class="p-0.5 text-primary-400 hover:text-primary-600">
                     <UIcon name="heroicons:device-tablet" class="w-6 h-6" />
                     <br>
-                    <span class="text-xs text-gray-500">V2</span>
+                    <span class="text-xs text-header-700">V2</span>
                   </a>
-                  <a v-if="authStore.profile <= 2" :href="`${legacyBase}/admin/FeuilleMarque3.php?idMatch=${g.id}`" target="_blank" :title="t('games.scoresheet_online_v3')" class="p-0.5 text-purple-600 hover:text-purple-800">
+                  <a v-if="authStore.profile <= 2" :href="`${legacyBase}/admin/FeuilleMarque3.php?idMatch=${g.id}`" target="_blank" :title="t('games.scoresheet_online_v3')" class="p-0.5 text-primary-500 hover:text-primary-700">
                     <UIcon name="heroicons:device-tablet" class="w-6 h-6" />
                     <br>
-                    <span class="text-xs text-gray-500">V3</span>
+                    <span class="text-xs text-header-700">V3</span>
                   </a>
                 </div>
               </td>
@@ -1535,7 +1535,7 @@ const statusBtnClass = (game: Game) => {
                       :id="`inline-${g.id}-Date_match`"
                       v-model="editingValue" v-inline-focus
                       type="date"
-                      class="w-28 px-0.5 py-0 text-xs border border-blue-400 rounded"
+                      class="w-28 px-0.5 py-0 text-xs border border-primary-400 rounded"
                       @keydown="handleInlineKeydown"
                       @blur="saveInlineEdit"
                     >
@@ -1543,7 +1543,7 @@ const statusBtnClass = (game: Game) => {
                   <span
                     v-else
                     :class="isGameEditable(g) ? 'editable-cell' : ''"
-                    class="text-gray-500"
+                    class="text-header-500"
                     @click="startInlineEdit(g, 'Date_match')"
                   >{{ formatDateShort(g.dateMatch) }}</span>
                   <!-- Heure inline -->
@@ -1552,7 +1552,7 @@ const statusBtnClass = (game: Game) => {
                       :id="`inline-${g.id}-Heure_match`"
                       v-model="editingValue" v-inline-focus
                       type="time"
-                      class="w-20 px-0.5 py-0 text-xs border border-blue-400 rounded"
+                      class="w-20 px-0.5 py-0 text-xs border border-primary-400 rounded"
                       @keydown="handleInlineKeydown"
                       @blur="saveInlineEdit"
                     >
@@ -1560,7 +1560,7 @@ const statusBtnClass = (game: Game) => {
                   <span
                     v-else
                     :class="isGameEditable(g) ? 'editable-cell' : ''"
-                    class="font-medium text-gray-900"
+                    class="font-medium text-header-900"
                     @click="startInlineEdit(g, 'Heure_match')"
                   >{{ g.heureMatch || '' }}</span>
                 </div>
@@ -1574,7 +1574,7 @@ const statusBtnClass = (game: Game) => {
                     v-model="editingValue" v-inline-focus
                     type="tel"
                     maxlength="2"
-                    class="w-8 px-0.5 py-0 text-xs text-center border border-blue-400 rounded"
+                    class="w-8 px-0.5 py-0 text-xs text-center border border-primary-400 rounded"
                     @keydown="handleInlineKeydown"
                     @blur="saveInlineEdit"
                   >
@@ -1588,7 +1588,7 @@ const statusBtnClass = (game: Game) => {
               </td>
 
               <!-- Category -->
-              <td class="px-1 py-1 text-gray-600">{{ g.soustitre2 || g.codeCompetition }}</td>
+              <td class="px-1 py-1 text-header-600">{{ g.soustitre2 || g.codeCompetition }}</td>
 
               <!-- Phase (conditional, inline editable via journee select) -->
               <td v-if="phaseLibelle" class="px-1 py-1">
@@ -1596,7 +1596,7 @@ const statusBtnClass = (game: Game) => {
                   <select
                     :id="`inline-${g.id}-Phase`"
                     v-model="editingValue" v-inline-focus
-                    class="w-full px-0.5 py-0 text-xs border border-blue-400 rounded"
+                    class="w-full px-0.5 py-0 text-xs border border-primary-400 rounded"
                     @change="savePhaseEdit"
                     @keydown="handleTeamKeydown"
                     @blur="savePhaseEdit"
@@ -1617,14 +1617,14 @@ const statusBtnClass = (game: Game) => {
                 <button
                   :title="g.type === 'C' ? t('games.type_classification') : t('games.type_elimination')"
                   class="p-0.5 rounded"
-                  :class="isGameEditable(g) ? 'hover:bg-gray-100 cursor-pointer' : 'cursor-default opacity-60'"
+                  :class="isGameEditable(g) ? 'hover:bg-header-100 cursor-pointer' : 'cursor-default opacity-60'"
                   :disabled="!isGameEditable(g)"
                   @click="isGameEditable(g) && toggleType(g)"
                 >
                   <UIcon
                     :name="g.type === 'C' ? 'heroicons:bars-3' : 'heroicons:arrows-right-left'"
                     class="w-6 h-6"
-                    :class="g.type === 'C' ? 'text-blue-600' : 'text-orange-600'"
+                    :class="g.type === 'C' ? 'text-primary-600' : 'text-orange-600'"
                   />
                 </button>
               </td>
@@ -1637,7 +1637,7 @@ const statusBtnClass = (game: Game) => {
                     v-model="editingValue" v-inline-focus
                     type="text"
                     maxlength="30"
-                    class="w-full px-0.5 py-0 text-xs border border-blue-400 rounded"
+                    class="w-full px-0.5 py-0 text-xs border border-primary-400 rounded"
                     @keydown="handleInlineKeydown"
                     @blur="saveInlineEdit"
                   >
@@ -1651,7 +1651,7 @@ const statusBtnClass = (game: Game) => {
               </td>
 
               <!-- Lieu (non-phaseLibelle, read-only) -->
-              <td v-if="!phaseLibelle" class="px-1 py-1 text-gray-500">{{ g.lieu || '-' }}</td>
+              <td v-if="!phaseLibelle" class="px-1 py-1 text-header-500">{{ g.lieu || '-' }}</td>
 
               <!-- Team A (inline select, right-aligned) -->
               <td class="px-1 py-1 text-right">
@@ -1659,7 +1659,7 @@ const statusBtnClass = (game: Game) => {
                   <select
                     :id="`inline-${g.id}-Team_A`"
                     v-model="editingValue" v-inline-focus
-                    class="w-full px-0.5 py-0 text-xs border border-blue-400 rounded text-right"
+                    class="w-full px-0.5 py-0 text-xs border border-primary-400 rounded text-right"
                     @change="saveTeamEdit"
                     @keydown="handleTeamKeydown"
                     @blur="saveTeamEdit"
@@ -1671,7 +1671,7 @@ const statusBtnClass = (game: Game) => {
                 <template v-else>
                   <span
                     v-if="g.equipeA"
-                    class="text-gray-900"
+                    class="text-header-900"
                     :class="isGameEditable(g) ? 'editable-cell' : ''"
                     @click="startTeamEdit(g, 'A')"
                   >{{ g.equipeA }}</span>
@@ -1684,14 +1684,14 @@ const statusBtnClass = (game: Game) => {
                   >({{ bracketLabels(g.libelle).teamA }})</span>
                   <span
                     v-else
-                    class="text-red-400 italic"
+                    class="text-danger-400 italic"
                     :class="isGameEditable(g) ? 'editable-cell' : ''"
                     @click="startTeamEdit(g, 'A')"
                   >{{ t('games.team_undefined') }}</span>
                   <NuxtLink
                     v-if="g.idEquipeA"
                     :to="`/presence/match/${g.id}/team/A`"
-                    class="block text-[10px] text-blue-500 hover:text-blue-700 hover:underline"
+                    class="block text-[10px] text-primary-500 hover:text-primary-700 hover:underline"
                     :title="t('presence.title_match')"
                     @click.stop
                   >
@@ -1708,7 +1708,7 @@ const statusBtnClass = (game: Game) => {
                     v-model="editingValue" v-inline-focus
                     type="text" inputmode="numeric"
                     maxlength="4"
-                    class="w-10 px-0.5 py-0 text-xs text-center border border-blue-400 rounded"
+                    class="w-10 px-0.5 py-0 text-xs text-center border border-primary-400 rounded"
                     @input="onScoreInput"
                     @keydown="handleInlineKeydown"
                     @blur="saveInlineEdit"
@@ -1730,13 +1730,13 @@ const statusBtnClass = (game: Game) => {
                   :active="g.validation === 'O'"
                   active-icon="heroicons:lock-closed-solid"
                   inactive-icon="heroicons:lock-open"
-                  active-color="blue"
+                  active-color="success"
                   size="md"
                   :active-title="t('games.locked')"
                   :inactive-title="t('games.unlocked')"
                   @toggle="toggleValidation(g)"
                 />
-                <UIcon v-else-if="g.validation === 'O'" name="heroicons:lock-closed-solid" class="w-6 h-6 text-blue-500" :title="t('games.locked')" />
+                <UIcon v-else-if="g.validation === 'O'" name="heroicons:lock-closed-solid" class="w-6 h-6 text-primary-500" :title="t('games.locked')" />
                 <!-- Statut -->
                 <div class="mt-0.5">
                   <button
@@ -1752,7 +1752,7 @@ const statusBtnClass = (game: Game) => {
                   >{{ statusLabel(g) }}</span>
                 </div>
                 <!-- Provisional score when ON or END -->
-                <div v-if="(g.statut === 'ON' || g.statut === 'END') && (g.scoreDetailA || g.scoreDetailB)" class="text-[9px] text-gray-500 leading-tight">
+                <div v-if="(g.statut === 'ON' || g.statut === 'END') && (g.scoreDetailA || g.scoreDetailB)" class="text-[9px] text-header-500 leading-tight">
                   {{ g.scoreDetailA || '0' }}-{{ g.scoreDetailB || '0' }}
                   <span v-if="g.periode">({{ g.periode }})</span>
                 </div>
@@ -1766,7 +1766,7 @@ const statusBtnClass = (game: Game) => {
                     v-model="editingValue" v-inline-focus
                     type="text" inputmode="numeric"
                     maxlength="4"
-                    class="w-10 px-0.5 py-0 text-xs text-center border border-blue-400 rounded"
+                    class="w-10 px-0.5 py-0 text-xs text-center border border-primary-400 rounded"
                     @input="onScoreInput"
                     @keydown="handleInlineKeydown"
                     @blur="saveInlineEdit"
@@ -1786,7 +1786,7 @@ const statusBtnClass = (game: Game) => {
                   <select
                     :id="`inline-${g.id}-Team_B`"
                     v-model="editingValue" v-inline-focus
-                    class="w-full px-0.5 py-0 text-xs border border-blue-400 rounded"
+                    class="w-full px-0.5 py-0 text-xs border border-primary-400 rounded"
                     @change="saveTeamEdit"
                     @keydown="handleTeamKeydown"
                     @blur="saveTeamEdit"
@@ -1798,7 +1798,7 @@ const statusBtnClass = (game: Game) => {
                 <template v-else>
                   <span
                     v-if="g.equipeB"
-                    class="text-gray-900"
+                    class="text-header-900"
                     :class="isGameEditable(g) ? 'editable-cell' : ''"
                     @click="startTeamEdit(g, 'B')"
                   >{{ g.equipeB }}</span>
@@ -1811,14 +1811,14 @@ const statusBtnClass = (game: Game) => {
                   >({{ bracketLabels(g.libelle).teamB }})</span>
                   <span
                     v-else
-                    class="text-red-400 italic"
+                    class="text-danger-400 italic"
                     :class="isGameEditable(g) ? 'editable-cell' : ''"
                     @click="startTeamEdit(g, 'B')"
                   >{{ t('games.team_undefined') }}</span>
                   <NuxtLink
                     v-if="g.idEquipeB"
                     :to="`/presence/match/${g.id}/team/B`"
-                    class="block text-[10px] text-blue-500 hover:text-blue-700 hover:underline"
+                    class="block text-[10px] text-primary-500 hover:text-primary-700 hover:underline"
                     :title="t('presence.title_match')"
                     @click.stop
                   >
@@ -1846,7 +1846,7 @@ const statusBtnClass = (game: Game) => {
                     class="truncate block"
                     :class="[
                       isGameEditable(g) ? 'editable-cell' : '',
-                      g.matricArbitrePrincipal === 0 ? 'text-gray-400 italic' : 'text-gray-600',
+                      g.matricArbitrePrincipal === 0 ? 'text-header-400 italic' : 'text-header-600',
                     ]"
                     :title="g.arbitrePrincipal"
                     @click="startRefereeEdit(g, 'principal')"
@@ -1860,7 +1860,7 @@ const statusBtnClass = (game: Game) => {
                   >({{ bracketLabels(g.libelle).refereePrincipal }})</span>
                   <span
                     v-else
-                    :class="isGameEditable(g) ? 'editable-cell text-gray-300' : 'text-gray-300'"
+                    :class="isGameEditable(g) ? 'editable-cell text-header-300' : 'text-header-300'"
                     @click="startRefereeEdit(g, 'principal')"
                   >-</span>
                 </template>
@@ -1885,7 +1885,7 @@ const statusBtnClass = (game: Game) => {
                     class="truncate block"
                     :class="[
                       isGameEditable(g) ? 'editable-cell' : '',
-                      g.matricArbitreSecondaire === 0 ? 'text-gray-400 italic' : 'text-gray-600',
+                      g.matricArbitreSecondaire === 0 ? 'text-header-400 italic' : 'text-header-600',
                     ]"
                     :title="g.arbitreSecondaire"
                     @click="startRefereeEdit(g, 'secondaire')"
@@ -1899,7 +1899,7 @@ const statusBtnClass = (game: Game) => {
                   >({{ bracketLabels(g.libelle).refereeSecondaire }})</span>
                   <span
                     v-else
-                    :class="isGameEditable(g) ? 'editable-cell text-gray-300' : 'text-gray-300'"
+                    :class="isGameEditable(g) ? 'editable-cell text-header-300' : 'text-header-300'"
                     @click="startRefereeEdit(g, 'secondaire')"
                   >-</span>
                 </template>
@@ -1911,7 +1911,7 @@ const statusBtnClass = (game: Game) => {
                   :active="g.imprime === 'O'"
                   active-icon="heroicons:inbox-arrow-down-solid"
                   inactive-icon="heroicons:inbox-arrow-down"
-                  active-color="green"
+                  active-color="success"
                   size="sm"
                   @toggle="isGameEditable(g) && togglePrinted(g)"
                 />
@@ -1925,7 +1925,7 @@ const statusBtnClass = (game: Game) => {
               <td v-if="canEdit" class="px-1 py-1" @click.stop>
                 <button
                   v-if="isDeletable(g)"
-                  class="p-0.5 text-red-500 hover:text-red-700"
+                  class="p-0.5 text-danger-500 hover:text-danger-700"
                   :title="t('common.delete')"
                   @click="openDeleteConfirm(g)"
                 >
@@ -1961,7 +1961,7 @@ const statusBtnClass = (game: Game) => {
       >
         <template #header>
           <div class="flex-1 min-w-0">
-            <div class="font-bold text-gray-900">
+            <div class="font-bold text-header-900">
               <!-- Match number (inline editable) -->
               <template v-if="editingCell?.id === g.id && editingCell.field === 'Numero_ordre'">
                 <input
@@ -1969,7 +1969,7 @@ const statusBtnClass = (game: Game) => {
                   v-model="editingValue" v-inline-focus
                   type="tel"
                   maxlength="4"
-                  class="w-12 px-1 py-0 text-sm text-center border border-blue-400 rounded"
+                  class="w-12 px-1 py-0 text-sm text-center border border-primary-400 rounded"
                   @keydown="handleInlineKeydown"
                   @blur="saveInlineEdit"
                 >
@@ -1987,7 +1987,7 @@ const statusBtnClass = (game: Game) => {
                   <select
                     :id="`inline-${g.id}-Phase`"
                     v-model="editingValue" v-inline-focus
-                    class="px-1 py-0 text-sm border border-blue-400 rounded"
+                    class="px-1 py-0 text-sm border border-primary-400 rounded"
                     @change="savePhaseEdit"
                     @keydown="handleTeamKeydown"
                     @blur="savePhaseEdit"
@@ -1997,21 +1997,21 @@ const statusBtnClass = (game: Game) => {
                 </template>
                 <span
                   v-else
-                  class="text-gray-500 font-normal"
+                  class="text-header-500 font-normal"
                   :class="isGameEditable(g) ? 'editable-cell' : ''"
                   @click="startPhaseEdit(g)"
                 >{{ g.phase }}</span>
               </template>
             </div>
             <!-- Libelle (inline editable) -->
-            <div class="text-sm text-gray-600">
+            <div class="text-sm text-header-600">
               <template v-if="editingCell?.id === g.id && editingCell.field === 'Libelle'">
                 <input
                   :id="`inline-${g.id}-Libelle`"
                   v-model="editingValue" v-inline-focus
                   type="text"
                   maxlength="30"
-                  class="w-full px-1 py-0 text-sm border border-blue-400 rounded"
+                  class="w-full px-1 py-0 text-sm border border-primary-400 rounded"
                   @keydown="handleInlineKeydown"
                   @blur="saveInlineEdit"
                 >
@@ -2033,18 +2033,18 @@ const statusBtnClass = (game: Game) => {
               :active="g.validation === 'O'"
               active-icon="heroicons:lock-closed-solid"
               inactive-icon="heroicons:lock-open"
-              active-color="blue"
+              active-color="primary"
               size="md"
               :active-title="t('games.locked')"
               :inactive-title="t('games.unlocked')"
               @toggle="toggleValidation(g)"
             />
-            <UIcon v-else-if="g.validation === 'O'" name="heroicons:lock-closed-solid" class="w-5 h-5 text-blue-500" :title="t('games.locked')" />
+            <UIcon v-else-if="g.validation === 'O'" name="heroicons:lock-closed-solid" class="w-5 h-5 text-primary-500" :title="t('games.locked')" />
             <AdminToggleButton
               :active="g.publication === 'O'"
               active-icon="heroicons:eye-solid"
               inactive-icon="heroicons:eye-slash"
-              active-color="green"
+              active-color="success"
               size="md"
               @toggle="canEdit && togglePublication(g)"
             />
@@ -2054,14 +2054,14 @@ const statusBtnClass = (game: Game) => {
         <div class="space-y-2 text-sm">
           <!-- Date / Time / Terrain (inline editable) -->
           <div class="flex items-center gap-2">
-            <UIcon name="heroicons:calendar" class="w-5 h-5 text-gray-400 shrink-0" />
+            <UIcon name="heroicons:calendar" class="w-5 h-5 text-header-400 shrink-0" />
             <!-- Date inline -->
             <template v-if="editingCell?.id === g.id && editingCell.field === 'Date_match'">
               <input
                 :id="`inline-${g.id}-Date_match`"
                 v-model="editingValue" v-inline-focus
                 type="date"
-                class="px-1 py-0.5 text-sm border border-blue-400 rounded"
+                class="px-1 py-0.5 text-sm border border-primary-400 rounded"
                 @keydown="handleInlineKeydown"
                 @blur="saveInlineEdit"
               >
@@ -2077,7 +2077,7 @@ const statusBtnClass = (game: Game) => {
                 :id="`inline-${g.id}-Heure_match`"
                 v-model="editingValue" v-inline-focus
                 type="time"
-                class="px-1 py-0.5 text-sm border border-blue-400 rounded"
+                class="px-1 py-0.5 text-sm border border-primary-400 rounded"
                 @keydown="handleInlineKeydown"
                 @blur="saveInlineEdit"
               >
@@ -2090,7 +2090,7 @@ const statusBtnClass = (game: Game) => {
             >{{ g.heureMatch }}</span>
           </div>
           <div class="flex items-center gap-2">
-            <UIcon name="heroicons:map-pin" class="w-5 h-5 text-gray-400 shrink-0" />
+            <UIcon name="heroicons:map-pin" class="w-5 h-5 text-header-400 shrink-0" />
             <!-- Terrain inline -->
             <template v-if="editingCell?.id === g.id && editingCell.field === 'Terrain'">
               <input
@@ -2098,7 +2098,7 @@ const statusBtnClass = (game: Game) => {
                 v-model="editingValue" v-inline-focus
                 type="tel"
                 maxlength="2"
-                class="w-10 px-1 py-0.5 text-sm text-center border border-blue-400 rounded"
+                class="w-10 px-1 py-0.5 text-sm text-center border border-primary-400 rounded"
                 @keydown="handleInlineKeydown"
                 @blur="saveInlineEdit"
               >
@@ -2108,7 +2108,7 @@ const statusBtnClass = (game: Game) => {
               :class="isGameEditable(g) ? 'editable-cell' : ''"
               @click="startInlineEdit(g, 'Terrain')"
             >{{ t('games.field.terrain') }} {{ g.terrain || '-' }}</span>
-            <span v-if="g.lieu" class="text-gray-500">| {{ g.lieu }}</span>
+            <span v-if="g.lieu" class="text-header-500">| {{ g.lieu }}</span>
           </div>
 
           <!-- Score: centered, team names close to score -->
@@ -2116,11 +2116,11 @@ const statusBtnClass = (game: Game) => {
             <span class="text-right flex-1 truncate">
               <span v-if="g.equipeA" class="font-medium">{{ g.equipeA }}</span>
               <span v-else-if="bracketLabels(g.libelle).teamA" class="font-medium text-orange-400 italic">({{ bracketLabels(g.libelle).teamA }})</span>
-              <span v-else class="font-medium text-red-400 italic">{{ t('games.team_undefined') }}</span>
+              <span v-else class="font-medium text-danger-400 italic">{{ t('games.team_undefined') }}</span>
               <NuxtLink
                 v-if="g.idEquipeA"
                 :to="`/presence/match/${g.id}/team/A`"
-                class="block text-[10px] text-blue-500 hover:text-blue-700 hover:underline"
+                class="block text-[10px] text-primary-500 hover:text-primary-700 hover:underline"
                 @click.stop
               >{{ t('games.presence') }}</NuxtLink>
             </span>
@@ -2131,7 +2131,7 @@ const statusBtnClass = (game: Game) => {
                 v-model="editingValue" v-inline-focus
                 type="text" inputmode="numeric"
                 maxlength="4"
-                class="w-10 px-0.5 py-0 text-center font-bold text-lg border border-blue-400 rounded"
+                class="w-10 px-0.5 py-0 text-center font-bold text-lg border border-primary-400 rounded"
                 @input="onScoreInput"
                 @keydown="handleInlineKeydown"
                 @blur="saveInlineEdit"
@@ -2143,7 +2143,7 @@ const statusBtnClass = (game: Game) => {
               :class="isScoreEditable(g) ? 'editable-cell' : ''"
               @click="startInlineEdit(g, 'ScoreA')"
             >{{ g.scoreA || '-' }}</span>
-            <span class="text-gray-400">-</span>
+            <span class="text-header-400">-</span>
             <!-- Score B inline -->
             <template v-if="editingCell?.id === g.id && editingCell.field === 'ScoreB'">
               <input
@@ -2151,7 +2151,7 @@ const statusBtnClass = (game: Game) => {
                 v-model="editingValue" v-inline-focus
                 type="text" inputmode="numeric"
                 maxlength="4"
-                class="w-10 px-0.5 py-0 text-center font-bold text-lg border border-blue-400 rounded"
+                class="w-10 px-0.5 py-0 text-center font-bold text-lg border border-primary-400 rounded"
                 @input="onScoreInput"
                 @keydown="handleInlineKeydown"
                 @blur="saveInlineEdit"
@@ -2166,33 +2166,33 @@ const statusBtnClass = (game: Game) => {
             <span class="text-left flex-1 truncate">
               <span v-if="g.equipeB" class="font-medium">{{ g.equipeB }}</span>
               <span v-else-if="bracketLabels(g.libelle).teamB" class="font-medium text-orange-400 italic">({{ bracketLabels(g.libelle).teamB }})</span>
-              <span v-else class="font-medium text-red-400 italic">{{ t('games.team_undefined') }}</span>
+              <span v-else class="font-medium text-danger-400 italic">{{ t('games.team_undefined') }}</span>
               <NuxtLink
                 v-if="g.idEquipeB"
                 :to="`/presence/match/${g.id}/team/B`"
-                class="block text-[10px] text-blue-500 hover:text-blue-700 hover:underline"
+                class="block text-[10px] text-primary-500 hover:text-primary-700 hover:underline"
                 @click.stop
               >{{ t('games.presence') }}</NuxtLink>
             </span>
           </div>
 
           <!-- Type + Status -->
-          <div class="flex items-center gap-3 text-xs text-gray-500">
+          <div class="flex items-center gap-3 text-xs text-header-500">
             <button
               :title="g.type === 'C' ? t('games.type_classification') : t('games.type_elimination')"
               class="p-0.5 rounded"
-              :class="isGameEditable(g) ? 'hover:bg-gray-100 cursor-pointer' : 'cursor-default opacity-60'"
+              :class="isGameEditable(g) ? 'hover:bg-header-100 cursor-pointer' : 'cursor-default opacity-60'"
               :disabled="!isGameEditable(g)"
               @click="isGameEditable(g) && toggleType(g)"
             >
               <UIcon
                 :name="g.type === 'C' ? 'heroicons:bars-3' : 'heroicons:arrows-right-left'"
                 class="w-5 h-5"
-                :class="g.type === 'C' ? 'text-blue-600' : 'text-orange-600'"
+                :class="g.type === 'C' ? 'text-primary-600' : 'text-orange-600'"
               />
             </button>
-            <span class="text-gray-300">|</span>
-            <!-- <span class="text-gray-500">{{ t('games.field.status') }}</span> -->
+            <span class="text-header-300">|</span>
+            <!-- <span class="text-header-500">{{ t('games.field.status') }}</span> -->
             <button
               v-if="isGameEditable(g)"
               class="px-2 py-0.5 text-xs font-medium rounded-full border"
@@ -2206,11 +2206,11 @@ const statusBtnClass = (game: Game) => {
             >{{ statusLabel(g) }}</span>
           </div>
 
-          <div v-if="g.arbitrePrincipal || g.arbitreSecondaire || bracketLabels(g.libelle).refereePrincipal || bracketLabels(g.libelle).refereeSecondaire" class="text-xs text-gray-500">
-            <span v-if="g.arbitrePrincipal" :class="{ 'italic text-gray-400': g.matricArbitrePrincipal === 0 }">{{ g.arbitrePrincipal }}</span>
+          <div v-if="g.arbitrePrincipal || g.arbitreSecondaire || bracketLabels(g.libelle).refereePrincipal || bracketLabels(g.libelle).refereeSecondaire" class="text-xs text-header-500">
+            <span v-if="g.arbitrePrincipal" :class="{ 'italic text-header-400': g.matricArbitrePrincipal === 0 }">{{ g.arbitrePrincipal }}</span>
             <span v-else-if="bracketLabels(g.libelle).refereePrincipal" class="italic text-orange-400">({{ bracketLabels(g.libelle).refereePrincipal }})</span>
             <template v-if="g.arbitreSecondaire || bracketLabels(g.libelle).refereeSecondaire"> /
-              <span v-if="g.arbitreSecondaire" :class="{ 'italic text-gray-400': g.matricArbitreSecondaire === 0 }">{{ g.arbitreSecondaire }}</span>
+              <span v-if="g.arbitreSecondaire" :class="{ 'italic text-header-400': g.matricArbitreSecondaire === 0 }">{{ g.arbitreSecondaire }}</span>
               <span v-else-if="bracketLabels(g.libelle).refereeSecondaire" class="italic text-orange-400">({{ bracketLabels(g.libelle).refereeSecondaire }})</span>
             </template>
           </div>
@@ -2220,7 +2220,7 @@ const statusBtnClass = (game: Game) => {
           <AdminActionButton v-if="canEdit && !isLocked(g)" icon="heroicons:pencil" @click="openEditModal(g)">
             {{ t('common.edit') }}
           </AdminActionButton>
-          <a v-if="canEdit" :href="`${legacyBase}/admin/FeuilleMatchMulti.php?listMatch=${g.id}`" target="_blank" class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-red-600 hover:text-red-800">
+          <a v-if="canEdit" :href="`${legacyBase}/admin/FeuilleMatchMulti.php?listMatch=${g.id}`" target="_blank" class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-danger-600 hover:text-danger-800">
             <UIcon name="heroicons:document-text" class="w-4 h-4" />
             {{ t('games.scoresheet_pdf') }}
           </a>
@@ -2261,17 +2261,17 @@ const statusBtnClass = (game: Game) => {
     >
       <form class="space-y-4" @submit.prevent="submitForm">
         <!-- Error -->
-        <div v-if="formError" class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">
+        <div v-if="formError" class="p-3 bg-danger-50 border border-danger-200 rounded-lg text-danger-800 text-sm">
           <UIcon name="heroicons:exclamation-triangle" class="w-6 h-6 inline mr-1" />
           {{ formError }}
         </div>
 
         <!-- Journee -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('games.filter_journee') }} *</label>
+          <label class="block text-sm font-medium text-header-700 mb-1">{{ t('games.filter_journee') }} *</label>
           <select
             v-model.number="formData.idJournee"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg"
             @change="onFormJourneeChange"
           >
             <option :value="null">-- {{ t('games.all_journees') }} --</option>
@@ -2282,30 +2282,30 @@ const statusBtnClass = (game: Game) => {
         <!-- Date + Heure + N° -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('games.field.date') }} *</label>
-            <input v-model="formData.dateMatch" type="date" required class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+            <label class="block text-sm font-medium text-header-700 mb-1">{{ t('games.field.date') }} *</label>
+            <input v-model="formData.dateMatch" type="date" required class="w-full px-3 py-2 border border-header-300 rounded-lg">
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('games.field.time') }}</label>
-            <input v-model="formData.heureMatch" type="time" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+            <label class="block text-sm font-medium text-header-700 mb-1">{{ t('games.field.time') }}</label>
+            <input v-model="formData.heureMatch" type="time" class="w-full px-3 py-2 border border-header-300 rounded-lg">
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('games.field.game_number') }}</label>
-            <input v-model.number="formData.numeroOrdre" type="number" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+            <label class="block text-sm font-medium text-header-700 mb-1">{{ t('games.field.game_number') }}</label>
+            <input v-model.number="formData.numeroOrdre" type="number" min="0" class="w-full px-3 py-2 border border-header-300 rounded-lg">
           </div>
         </div>
 
         <!-- Terrain + Type + Intervalle -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('games.field.terrain') }}</label>
-            <input v-model="formData.terrain" type="text" maxlength="12" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+            <label class="block text-sm font-medium text-header-700 mb-1">{{ t('games.field.terrain') }}</label>
+            <input v-model="formData.terrain" type="text" maxlength="12" class="w-full px-3 py-2 border border-header-300 rounded-lg">
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('games.field.type') }}</label>
+            <label class="block text-sm font-medium text-header-700 mb-1">{{ t('games.field.type') }}</label>
             <div class="flex items-center gap-4 mt-2">
               <label class="flex items-center gap-2">
-                <input v-model="formData.type" type="radio" value="C" class="text-blue-600">
+                <input v-model="formData.type" type="radio" value="C" class="text-primary-600">
                 <span class="text-sm">{{ t('games.type_classification') }}</span>
               </label>
               <label class="flex items-center gap-2">
@@ -2315,29 +2315,29 @@ const statusBtnClass = (game: Game) => {
             </div>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('games.field.interval') }}</label>
-            <input v-model.number="formData.intervalle" type="number" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+            <label class="block text-sm font-medium text-header-700 mb-1">{{ t('games.field.interval') }}</label>
+            <input v-model.number="formData.intervalle" type="number" min="0" class="w-full px-3 py-2 border border-header-300 rounded-lg">
           </div>
         </div>
 
         <!-- Libelle -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('games.field.label_coding') }}</label>
-          <input v-model="formData.libelle" type="text" maxlength="30" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+          <label class="block text-sm font-medium text-header-700 mb-1">{{ t('games.field.label_coding') }}</label>
+          <input v-model="formData.libelle" type="text" maxlength="30" class="w-full px-3 py-2 border border-header-300 rounded-lg">
         </div>
 
         <!-- Teams -->
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('games.field.team_a') }}</label>
-            <select v-model.number="formData.idEquipeA" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+            <label class="block text-sm font-medium text-header-700 mb-1">{{ t('games.field.team_a') }}</label>
+            <select v-model.number="formData.idEquipeA" class="w-full px-3 py-2 border border-header-300 rounded-lg">
               <option :value="null">{{ t('games.none') }}</option>
               <option v-for="tm in formTeams" :key="tm.id" :value="tm.id">{{ tm.libelle }}</option>
             </select>
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('games.field.team_b') }}</label>
-            <select v-model.number="formData.idEquipeB" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+            <label class="block text-sm font-medium text-header-700 mb-1">{{ t('games.field.team_b') }}</label>
+            <select v-model.number="formData.idEquipeB" class="w-full px-3 py-2 border border-header-300 rounded-lg">
               <option :value="null">{{ t('games.none') }}</option>
               <option v-for="tm in formTeams" :key="tm.id" :value="tm.id">{{ tm.libelle }}</option>
             </select>
@@ -2347,12 +2347,12 @@ const statusBtnClass = (game: Game) => {
         <!-- Coefficients -->
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('games.field.coefficient') }} A</label>
-            <input v-model.number="formData.coeffA" type="number" min="1" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+            <label class="block text-sm font-medium text-header-700 mb-1">{{ t('games.field.coefficient') }} A</label>
+            <input v-model.number="formData.coeffA" type="number" min="1" class="w-full px-3 py-2 border border-header-300 rounded-lg">
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('games.field.coefficient') }} B</label>
-            <input v-model.number="formData.coeffB" type="number" min="1" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+            <label class="block text-sm font-medium text-header-700 mb-1">{{ t('games.field.coefficient') }} B</label>
+            <input v-model.number="formData.coeffB" type="number" min="1" class="w-full px-3 py-2 border border-header-300 rounded-lg">
           </div>
         </div>
 
@@ -2360,7 +2360,7 @@ const statusBtnClass = (game: Game) => {
         <div class="space-y-4">
             <!-- Referee 1 -->
             <div>
-              <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('games.field.referee_1') }}</label>
+              <label class="block text-xs font-medium text-header-500 mb-1">{{ t('games.field.referee_1') }}</label>
               <AdminRefereeAutocomplete
                 v-model="formData.arbitrePrincipal"
                 :matric="formData.matricArbitrePrincipal"
@@ -2370,9 +2370,9 @@ const statusBtnClass = (game: Game) => {
               />
               <!-- Team override for nominative referee -->
               <div v-if="formData.matricArbitrePrincipal > 0" class="mt-1">
-                <label class="block text-[10px] text-gray-400 mb-0.5">{{ t('games.referee_team_label') }}</label>
+                <label class="block text-[10px] text-header-400 mb-0.5">{{ t('games.referee_team_label') }}</label>
                 <select
-                  class="w-full px-2 py-1 text-xs border border-gray-200 rounded bg-gray-50"
+                  class="w-full px-2 py-1 text-xs border border-header-200 rounded bg-header-50"
                   :value="extractTeamFromReferee(formData.arbitrePrincipal)"
                   @change="updateRefereeTeam('principal', ($event.target as HTMLSelectElement).value)"
                 >
@@ -2382,7 +2382,7 @@ const statusBtnClass = (game: Game) => {
             </div>
             <!-- Referee 2 -->
             <div>
-              <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('games.field.referee_2') }}</label>
+              <label class="block text-xs font-medium text-header-500 mb-1">{{ t('games.field.referee_2') }}</label>
               <AdminRefereeAutocomplete
                 v-model="formData.arbitreSecondaire"
                 :matric="formData.matricArbitreSecondaire"
@@ -2392,9 +2392,9 @@ const statusBtnClass = (game: Game) => {
               />
               <!-- Team override for nominative referee -->
               <div v-if="formData.matricArbitreSecondaire > 0" class="mt-1">
-                <label class="block text-[10px] text-gray-400 mb-0.5">{{ t('games.referee_team_label') }}</label>
+                <label class="block text-[10px] text-header-400 mb-0.5">{{ t('games.referee_team_label') }}</label>
                 <select
-                  class="w-full px-2 py-1 text-xs border border-gray-200 rounded bg-gray-50"
+                  class="w-full px-2 py-1 text-xs border border-header-200 rounded bg-header-50"
                   :value="extractTeamFromReferee(formData.arbitreSecondaire)"
                   @change="updateRefereeTeam('secondaire', ($event.target as HTMLSelectElement).value)"
                 >
@@ -2408,14 +2408,14 @@ const statusBtnClass = (game: Game) => {
         <div class="flex justify-end gap-2 pt-4 border-t">
           <button
             type="button"
-            class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+            class="px-4 py-2 text-sm font-medium text-header-700 bg-white border border-header-300 rounded-lg hover:bg-header-50"
             @click="formModalOpen = false"
           >
             {{ t('common.cancel') }}
           </button>
           <button
             type="submit"
-            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+            class="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 disabled:opacity-50"
             :disabled="formSaving"
           >
             {{ formSaving ? t('common.loading') : t('common.save') }}
@@ -2494,10 +2494,10 @@ const statusBtnClass = (game: Game) => {
       @close="bulkChangeJourneeOpen = false"
     >
       <div class="space-y-4">
-        <label class="block text-sm font-medium text-gray-700">{{ t('games.bulk.change_journee_label') }}</label>
+        <label class="block text-sm font-medium text-header-700">{{ t('games.bulk.change_journee_label') }}</label>
         <select
           v-model.number="bulkJourneeId"
-          class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+          class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm"
         >
           <option :value="null" disabled>--</option>
           <option v-for="j in bulkJourneeOptions" :key="j.id" :value="j.id">{{ journeeLabel(j) }}</option>
@@ -2506,14 +2506,14 @@ const statusBtnClass = (game: Game) => {
       <template #footer>
         <button
           type="button"
-          class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+          class="px-4 py-2 text-sm text-header-700 bg-white border border-header-300 rounded-lg hover:bg-header-50"
           @click="bulkChangeJourneeOpen = false"
         >
           {{ t('common.cancel') }}
         </button>
         <button
           type="button"
-          class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          class="px-4 py-2 text-sm text-white bg-primary-600 rounded-lg hover:bg-primary-700 disabled:opacity-50"
           :disabled="formSaving || !bulkJourneeId"
           @click="confirmBulkChangeJournee"
         >
@@ -2530,25 +2530,25 @@ const statusBtnClass = (game: Game) => {
       @close="bulkRenumberOpen = false"
     >
       <div class="space-y-4">
-        <label class="block text-sm font-medium text-gray-700">{{ t('games.bulk.renumber_from') }}</label>
+        <label class="block text-sm font-medium text-header-700">{{ t('games.bulk.renumber_from') }}</label>
         <input
           v-model.number="bulkRenumberFrom"
           type="number"
           min="1"
-          class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+          class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm"
         >
       </div>
       <template #footer>
         <button
           type="button"
-          class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+          class="px-4 py-2 text-sm text-header-700 bg-white border border-header-300 rounded-lg hover:bg-header-50"
           @click="bulkRenumberOpen = false"
         >
           {{ t('common.cancel') }}
         </button>
         <button
           type="button"
-          class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          class="px-4 py-2 text-sm text-white bg-primary-600 rounded-lg hover:bg-primary-700 disabled:opacity-50"
           :disabled="formSaving"
           @click="confirmBulkRenumber"
         >
@@ -2565,24 +2565,24 @@ const statusBtnClass = (game: Game) => {
       @close="bulkChangeDateOpen = false"
     >
       <div class="space-y-4">
-        <label class="block text-sm font-medium text-gray-700">{{ t('games.bulk.new_date') }}</label>
+        <label class="block text-sm font-medium text-header-700">{{ t('games.bulk.new_date') }}</label>
         <input
           v-model="bulkNewDate"
           type="date"
-          class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+          class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm"
         >
       </div>
       <template #footer>
         <button
           type="button"
-          class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+          class="px-4 py-2 text-sm text-header-700 bg-white border border-header-300 rounded-lg hover:bg-header-50"
           @click="bulkChangeDateOpen = false"
         >
           {{ t('common.cancel') }}
         </button>
         <button
           type="button"
-          class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          class="px-4 py-2 text-sm text-white bg-primary-600 rounded-lg hover:bg-primary-700 disabled:opacity-50"
           :disabled="formSaving || !bulkNewDate"
           @click="confirmBulkChangeDate"
         >
@@ -2600,34 +2600,34 @@ const statusBtnClass = (game: Game) => {
     >
       <div class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('games.bulk.start_time') }}</label>
+          <label class="block text-sm font-medium text-header-700 mb-1">{{ t('games.bulk.start_time') }}</label>
           <input
             v-model="bulkStartTime"
             type="time"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm"
           >
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('games.bulk.interval_minutes') }}</label>
+          <label class="block text-sm font-medium text-header-700 mb-1">{{ t('games.bulk.interval_minutes') }}</label>
           <input
             v-model.number="bulkInterval"
             type="number"
             min="1"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm"
           >
         </div>
       </div>
       <template #footer>
         <button
           type="button"
-          class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+          class="px-4 py-2 text-sm text-header-700 bg-white border border-header-300 rounded-lg hover:bg-header-50"
           @click="bulkIncrementTimeOpen = false"
         >
           {{ t('common.cancel') }}
         </button>
         <button
           type="button"
-          class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          class="px-4 py-2 text-sm text-white bg-primary-600 rounded-lg hover:bg-primary-700 disabled:opacity-50"
           :disabled="formSaving"
           @click="confirmBulkIncrementTime"
         >
@@ -2645,26 +2645,26 @@ const statusBtnClass = (game: Game) => {
     >
       <div class="space-y-4">
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('games.bulk.old_group') }}</label>
+          <label class="block text-sm font-medium text-header-700 mb-1">{{ t('games.bulk.old_group') }}</label>
           <input
             :value="bulkOldGroup"
             name="oldGroup"
             type="text"
             maxlength="5"
             pattern="[A-Z]{1,5}"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm uppercase"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm uppercase"
             @input="forceUppercaseLetters"
           >
         </div>
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">{{ t('games.bulk.new_group') }}</label>
+          <label class="block text-sm font-medium text-header-700 mb-1">{{ t('games.bulk.new_group') }}</label>
           <input
             :value="bulkNewGroup"
             name="newGroup"
             type="text"
             maxlength="5"
             pattern="[A-Z]{1,5}"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm uppercase"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm uppercase"
             @input="forceUppercaseLetters"
           >
         </div>
@@ -2672,14 +2672,14 @@ const statusBtnClass = (game: Game) => {
       <template #footer>
         <button
           type="button"
-          class="px-4 py-2 text-sm text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+          class="px-4 py-2 text-sm text-header-700 bg-white border border-header-300 rounded-lg hover:bg-header-50"
           @click="bulkChangeGroupOpen = false"
         >
           {{ t('common.cancel') }}
         </button>
         <button
           type="button"
-          class="px-4 py-2 text-sm text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          class="px-4 py-2 text-sm text-white bg-primary-600 rounded-lg hover:bg-primary-700 disabled:opacity-50"
           :disabled="formSaving || !bulkOldGroup || !bulkNewGroup"
           @click="confirmBulkChangeGroup"
         >

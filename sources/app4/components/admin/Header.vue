@@ -285,7 +285,7 @@ onMounted(() => {
           <NuxtLink to="/" class="flex items-center gap-2">
             <img src="/img/logo_kp.png" width="30" height="30" alt="logo" class="inline-block align-middle" >
             <span class="text-xl font-bold text-primary-400">KPI</span>
-            <span class="text-sm text-gray-300">Admin</span>
+            <span class="text-sm text-header-300">Admin</span>
           </NuxtLink>
           <!-- Online/Offline indicator -->
           <ClientOnly>
@@ -401,7 +401,7 @@ onMounted(() => {
           <!-- User menu (desktop) -->
           <div ref="userMenuRef" class="hidden lg:block relative">
             <button
-              class="flex items-center gap-2 px-3 py-2 bg-gray-800 hover:bg-header-700 rounded-lg transition-colors"
+              class="flex items-center gap-2 px-3 py-2 bg-header-800 hover:bg-header-700 rounded-lg transition-colors"
               @click="userMenuOpen = !userMenuOpen"
             >
               <div class="w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center text-sm font-medium">
@@ -425,18 +425,18 @@ onMounted(() => {
             >
               <div
                 v-if="userMenuOpen"
-                class="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50"
+                class="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-header-200 py-1 z-50"
               >
                 <!-- User info -->
-                <div class="px-4 py-3 border-b border-gray-200">
-                  <div class="text-sm font-medium text-gray-900">
+                <div class="px-4 py-3 border-b border-header-200">
+                  <div class="text-sm font-medium text-header-900">
                     {{ user?.name }} {{ user?.firstname }}
                   </div>
-                  <div class="text-xs text-gray-500 mt-1">
+                  <div class="text-xs text-header-500 mt-1">
                     {{ t('profile') }} {{ user?.profile }}
                   </div>
                   <!-- Active mandate display -->
-                  <div v-if="authStore.activeMandate" class="mt-1.5 px-2 py-1 bg-blue-50 rounded text-xs text-blue-700">
+                  <div v-if="authStore.activeMandate" class="mt-1.5 px-2 py-1 bg-primary-50 rounded text-xs text-primary-700">
                     <div class="font-medium">{{ t('users.header.current_mandate') }}</div>
                     <div>{{ authStore.activeMandate.libelle }}</div>
                   </div>
@@ -446,7 +446,7 @@ onMounted(() => {
                 <NuxtLink
                   v-if="authStore.hasMandates"
                   to="/select-mandate"
-                  class="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                  class="w-full flex items-center gap-3 px-4 py-2 text-sm text-header-700 hover:bg-header-50 transition-colors"
                   @click="userMenuOpen = false"
                 >
                   <UIcon name="heroicons:arrows-right-left" class="w-5 h-5" />
@@ -455,7 +455,7 @@ onMounted(() => {
 
                 <!-- Menu items -->
                 <button
-                  class="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                  class="w-full flex items-center gap-3 px-4 py-2 text-sm text-danger-600 hover:bg-danger-50 transition-colors"
                   @click="handleLogout"
                 >
                   <UIcon name="heroicons:arrow-right-on-rectangle" class="w-5 h-5" />
@@ -467,7 +467,7 @@ onMounted(() => {
 
           <!-- Mobile menu toggle -->
           <button
-            class="lg:hidden p-2 text-gray-300 hover:text-white hover:bg-gray-800 rounded-lg"
+            class="lg:hidden p-2 text-header-300 hover:text-white hover:bg-header-800 rounded-lg"
             @click="emit('toggle-mobile-menu')"
           >
             <UIcon
@@ -481,7 +481,7 @@ onMounted(() => {
       <!-- Mobile menu (vertical dropdown) -->
       <nav
         v-if="mobileMenuOpen"
-        class="lg:hidden py-4 border-t border-gray-800 relative z-50"
+        class="lg:hidden py-4 border-t border-header-800 relative z-50"
       >
         <div class="px-4 pb-2 space-y-1">
           <!-- Section: Competition Management -->
@@ -491,8 +491,8 @@ onMounted(() => {
               :class="[
                 'flex items-center gap-2 py-2 text-sm font-medium transition-colors',
                 isActive(item.to!)
-                  ? 'text-blue-400'
-                  : 'text-gray-200 hover:text-white'
+                  ? 'text-primary-400'
+                  : 'text-header-200 hover:text-white'
               ]"
             >
               <UIcon :name="item.icon" class="w-5 h-5" />
@@ -501,7 +501,7 @@ onMounted(() => {
           </template>
 
           <!-- Separator -->
-          <div v-if="adminMenuGroups.length > 0" class="border-t border-gray-700 my-3" />
+          <div v-if="adminMenuGroups.length > 0" class="border-t border-header-700 my-3" />
 
           <!-- Section: Administration (accordion) -->
           <div v-if="adminMenuGroups.length > 0">
@@ -509,7 +509,7 @@ onMounted(() => {
               type="button"
               :class="[
                 'w-full flex items-center justify-between py-2 text-sm font-medium transition-colors',
-                mobileExpanded === 'admin' ? 'text-blue-400' : 'text-gray-200 hover:text-white'
+                mobileExpanded === 'admin' ? 'text-primary-400' : 'text-header-200 hover:text-white'
               ]"
               @click.stop="toggleMobileExpanded('admin')"
             >
@@ -523,10 +523,10 @@ onMounted(() => {
                 :class="{ 'rotate-180': mobileExpanded === 'admin' }"
               />
             </button>
-            <div v-if="mobileExpanded === 'admin'" class="ml-6 space-y-1 border-l border-gray-700 pl-3">
+            <div v-if="mobileExpanded === 'admin'" class="ml-6 space-y-1 border-l border-header-700 pl-3">
               <template v-for="(group, gIndex) in adminMenuGroups" :key="group.key">
-                <div v-if="gIndex > 0" class="border-t border-gray-700 my-2" />
-                <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider flex items-center gap-1.5 py-1">
+                <div v-if="gIndex > 0" class="border-t border-header-700 my-2" />
+                <div class="text-xs font-semibold text-header-400 uppercase tracking-wider flex items-center gap-1.5 py-1">
                   <UIcon :name="group.icon" class="w-3.5 h-3.5" />
                   {{ group.label }}
                 </div>
@@ -534,7 +534,7 @@ onMounted(() => {
                   v-for="item in group.items"
                   :key="item.to"
                   :to="item.to!"
-                  class="flex items-center gap-2 py-1.5 text-sm text-gray-300 hover:text-white transition-colors"
+                  class="flex items-center gap-2 py-1.5 text-sm text-header-300 hover:text-white transition-colors"
                 >
                   <UIcon :name="item.icon" class="w-4 h-4" />
                   {{ item.label }}
@@ -545,13 +545,13 @@ onMounted(() => {
         </div>
 
         <!-- User info mobile -->
-        <div class="mt-4 pt-4 border-t border-gray-800 px-4">
+        <div class="mt-4 pt-4 border-t border-header-800 px-4">
           <div class="flex items-center justify-between">
             <div>
               <div class="text-sm font-medium text-white">
                 {{ user?.name }} {{ user?.firstname }}
               </div>
-              <div class="text-xs text-gray-400">
+              <div class="text-xs text-header-400">
                 {{ t('profile') }} {{ user?.profile }}
               </div>
             </div>

@@ -27,9 +27,9 @@ const hasLogo = computed(() => props.competition.logoActif && props.competition.
 const getLevelColor = (level: string) => {
   switch (level) {
     case 'INT': return 'bg-purple-100 text-purple-800'
-    case 'NAT': return 'bg-blue-100 text-blue-800'
+    case 'NAT': return 'bg-primary-100 text-primary-800'
     case 'REG': return 'bg-orange-100 text-orange-800'
-    default: return 'bg-gray-100 text-gray-800'
+    default: return 'bg-header-100 text-header-800'
   }
 }
 </script>
@@ -48,14 +48,14 @@ const getLevelColor = (level: string) => {
           @error="showLogo = false"
         >
         <div>
-          <h2 class="text-lg font-semibold text-gray-900">
+          <h2 class="text-lg font-semibold text-header-900">
             {{ competition.libelle }}
             <!-- Season badge -->
-            <span class="px-2 py-1 text-xs font-medium rounded bg-blue-50 text-blue-700">
+            <span class="px-2 py-1 text-xs font-medium rounded bg-primary-50 text-primary-700">
               {{ competition.season }}
             </span>
           </h2>
-          <p v-if="competition.soustitre2" class="text-sm text-gray-700">
+          <p v-if="competition.soustitre2" class="text-sm text-header-700">
             {{ competition.soustitre2 }}
           </p>
         </div>
@@ -68,11 +68,11 @@ const getLevelColor = (level: string) => {
         >
           {{ competition.codeNiveau }}
         </span>
-        <span class="px-2 py-1 text-xs font-medium rounded uppercase bg-gray-100 text-gray-800">
+        <span class="px-2 py-1 text-xs font-medium rounded uppercase bg-header-100 text-header-800">
           {{ competition.codeTypeclt }}
         </span>
         <!-- Game count badge -->
-        <span class="px-2 py-1 text-xs font-medium rounded bg-gray-100 text-gray-700">
+        <span class="px-2 py-1 text-xs font-medium rounded bg-header-100 text-header-700">
           {{ t('schema.games_count', { count: totalMatches }, totalMatches) }}
         </span>
       </div>

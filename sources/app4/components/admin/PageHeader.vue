@@ -42,12 +42,12 @@ watch(() => workContext.pageCompetitionCodeAll, () => {
       <div class="flex items-center gap-3">
         <button
           :title="t('common.back')"
-          class="inline-flex items-center p-1.5 text-gray-500 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
+          class="inline-flex items-center p-1.5 text-header-500 hover:text-header-800 hover:bg-header-100 rounded-lg transition-colors"
           @click="router.back()"
         >
           <UIcon name="heroicons:arrow-left" class="w-5 h-5" />
         </button>
-        <h1 class="text-2xl font-bold text-gray-900">{{ title }}</h1>
+        <h1 class="text-2xl font-bold text-header-900">{{ title }}</h1>
       </div>
       <AdminWorkContextSummary compact />
     </div>
@@ -56,13 +56,13 @@ watch(() => workContext.pageCompetitionCodeAll, () => {
     <div v-if="showFilters" class="flex flex-wrap gap-3 items-end">
       <!-- Event / Group filter -->
       <div class="min-w-48 max-w-96">
-        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t('eventGroupSelect.label') }}</label>
+        <label class="block text-xs font-medium text-header-500 mb-1">{{ t('eventGroupSelect.label') }}</label>
         <AdminEventGroupSelect @change="emit('event-group-change')" />
       </div>
 
       <!-- Competition filter -->
       <div class="min-w-48 max-w-96">
-        <label class="block text-xs font-medium text-gray-500 mb-1">{{ t(workContext.competitionFilterLabelKey) }}</label>
+        <label class="block text-xs font-medium text-header-500 mb-1">{{ t(workContext.competitionFilterLabelKey) }}</label>
         <AdminCompetitionSingleSelect
           :show-all-option="showAllOption"
           :filtered-codes="competitionFilteredCodes"
@@ -86,7 +86,7 @@ watch(() => workContext.pageCompetitionCodeAll, () => {
     <div v-if="slots.notices && !noticesDismissed" class="mt-2 relative">
       <slot name="notices" />
       <button
-        class="absolute top-1 right-1 p-1 text-gray-400 hover:text-gray-600 rounded transition-colors"
+        class="absolute top-1 right-1 p-1 text-header-400 hover:text-header-600 rounded transition-colors"
         @click="noticesDismissed = true"
       >
         <UIcon name="heroicons:x-mark" class="w-4 h-4" />

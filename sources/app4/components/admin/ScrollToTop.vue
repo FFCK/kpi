@@ -42,7 +42,7 @@ onUnmounted(() => {
   >
     <button
       v-if="showButton"
-      class="fixed bottom-2 right-6 p-3 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-colors z-40 mb-2"
+      class="fixed bottom-2 right-6 p-3 bg-primary-600 text-white rounded-full shadow-lg hover:bg-primary-700 transition-colors z-40 mb-2"
       :title="title"
       @click="scrollToTop"
     >

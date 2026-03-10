@@ -3,7 +3,7 @@ interface Props {
   active: boolean
   activeIcon?: string
   inactiveIcon?: string
-  activeColor?: 'green' | 'blue' | 'red' | 'yellow'
+  activeColor?: 'success' | 'primary' | 'danger' | 'warning'
   activeTitle?: string
   inactiveTitle?: string
   size?: 'sm' | 'md' | 'lg'
@@ -13,7 +13,7 @@ withDefaults(defineProps<Props>(), {
   active: false,
   activeIcon: 'heroicons:check-circle-solid',
   inactiveIcon: 'heroicons:x-circle-solid',
-  activeColor: 'green',
+  activeColor: 'success',
   activeTitle: '',
   inactiveTitle: '',
   size: 'md'
@@ -24,10 +24,10 @@ const emit = defineEmits<{
 }>()
 
 const activeColorClasses = {
-  green: 'text-green-600 hover:text-green-700',
-  blue: 'text-blue-600 hover:text-blue-700',
-  red: 'text-red-600 hover:text-red-700',
-  yellow: 'text-yellow-600 hover:text-yellow-700'
+  success: 'text-success-500 hover:text-success-600',
+  primary: 'text-primary-500 hover:text-primary-600',
+  danger: 'text-danger-500 hover:text-danger-600',
+  warning: 'text-warning-500 hover:text-warning-600'
 }
 
 const sizeClasses = {
@@ -41,7 +41,7 @@ const sizeClasses = {
   <button
     :class="[
       'p-1 transition-colors',
-      active ? activeColorClasses[activeColor] : 'text-gray-400 hover:text-gray-500'
+      active ? activeColorClasses[activeColor] : 'text-header-400 hover:text-header-500'
     ]"
     :title="active ? activeTitle : inactiveTitle"
     @click="emit('toggle')"

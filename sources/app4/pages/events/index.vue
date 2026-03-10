@@ -339,7 +339,7 @@ const formatDate = (date: string | null) => {
   <div>
     <!-- Page header -->
     <div class="mb-6">
-      <h1 class="text-2xl font-bold text-gray-900">
+      <h1 class="text-2xl font-bold text-header-900">
         {{ t('events.title') }}
       </h1>
     </div>
@@ -359,21 +359,21 @@ const formatDate = (date: string | null) => {
     <!-- Desktop Table -->
     <div class="hidden lg:block bg-white rounded-lg shadow overflow-hidden">
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-          <thead class="bg-gray-50">
+        <table class="min-w-full divide-y divide-header-200">
+          <thead class="bg-header-50">
             <tr>
               <!-- Checkbox column -->
               <th v-if="authStore.isSuperAdmin" class="px-4 py-3 w-10">
                 <input
                   v-model="selectAll"
                   type="checkbox"
-                  class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                  class="w-5 h-5 rounded border-header-300 text-primary-600 focus:ring-2 focus:ring-primary-500 cursor-pointer"
                   @change="toggleSelectAll"
                 >
               </th>
 
               <!-- ID -->
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" @click="handleSort('Id')">
+              <th class="px-4 py-3 text-left text-xs font-medium text-header-500 uppercase tracking-wider cursor-pointer hover:bg-header-100" @click="handleSort('Id')">
                 <div class="flex items-center gap-1">
                   {{ t('events.columns.id') }}
                   <UIcon :name="getSortIcon('Id')" />
@@ -381,7 +381,7 @@ const formatDate = (date: string | null) => {
               </th>
 
               <!-- Libelle -->
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" @click="handleSort('Libelle')">
+              <th class="px-4 py-3 text-left text-xs font-medium text-header-500 uppercase tracking-wider cursor-pointer hover:bg-header-100" @click="handleSort('Libelle')">
                 <div class="flex items-center gap-1">
                   {{ t('events.columns.libelle') }}
                   <UIcon :name="getSortIcon('Libelle')" class="w-4 h-4" />
@@ -389,7 +389,7 @@ const formatDate = (date: string | null) => {
               </th>
 
               <!-- Lieu -->
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" @click="handleSort('Lieu')">
+              <th class="px-4 py-3 text-left text-xs font-medium text-header-500 uppercase tracking-wider cursor-pointer hover:bg-header-100" @click="handleSort('Lieu')">
                 <div class="flex items-center gap-1">
                   {{ t('events.columns.lieu') }}
                   <UIcon :name="getSortIcon('Lieu')" class="w-4 h-4" />
@@ -397,7 +397,7 @@ const formatDate = (date: string | null) => {
               </th>
 
               <!-- Date debut -->
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" @click="handleSort('Date_debut')">
+              <th class="px-4 py-3 text-left text-xs font-medium text-header-500 uppercase tracking-wider cursor-pointer hover:bg-header-100" @click="handleSort('Date_debut')">
                 <div class="flex items-center gap-1">
                   {{ t('events.columns.date_debut') }}
                   <UIcon :name="getSortIcon('Date_debut')" class="w-4 h-4" />
@@ -405,7 +405,7 @@ const formatDate = (date: string | null) => {
               </th>
 
               <!-- Date fin -->
-              <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" @click="handleSort('Date_fin')">
+              <th class="px-4 py-3 text-left text-xs font-medium text-header-500 uppercase tracking-wider cursor-pointer hover:bg-header-100" @click="handleSort('Date_fin')">
                 <div class="flex items-center gap-1">
                   {{ t('events.columns.date_fin') }}
                   <UIcon :name="getSortIcon('Date_fin')" class="w-4 h-4" />
@@ -413,7 +413,7 @@ const formatDate = (date: string | null) => {
               </th>
 
               <!-- Publication -->
-              <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" @click="handleSort('Publication')">
+              <th class="px-4 py-3 text-center text-xs font-medium text-header-500 uppercase tracking-wider cursor-pointer hover:bg-header-100" @click="handleSort('Publication')">
                 <div class="flex items-center justify-center gap-1">
                   {{ t('events.columns.publication') }}
                   <UIcon :name="getSortIcon('Publication')" class="w-4 h-4" />
@@ -421,7 +421,7 @@ const formatDate = (date: string | null) => {
               </th>
 
               <!-- App -->
-              <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100" @click="handleSort('app')">
+              <th class="px-4 py-3 text-center text-xs font-medium text-header-500 uppercase tracking-wider cursor-pointer hover:bg-header-100" @click="handleSort('app')">
                 <div class="flex items-center justify-center gap-1">
                   {{ t('events.columns.app') }}
                   <UIcon :name="getSortIcon('app')" class="w-4 h-4" />
@@ -429,16 +429,16 @@ const formatDate = (date: string | null) => {
               </th>
 
               <!-- Actions -->
-              <th class="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th class="px-4 py-3 text-right text-xs font-medium text-header-500 uppercase tracking-wider">
                 {{ t('events.columns.actions') }}
               </th>
             </tr>
           </thead>
 
-          <tbody class="bg-white divide-y divide-gray-200">
+          <tbody class="bg-white divide-y divide-header-200">
             <!-- Loading state -->
             <tr v-if="loading && events.length === 0">
-              <td :colspan="authStore.isSuperAdmin ? 9 : 8" class="px-4 py-8 text-center text-gray-500">
+              <td :colspan="authStore.isSuperAdmin ? 9 : 8" class="px-4 py-8 text-center text-header-500">
                 <UIcon name="heroicons:arrow-path" class="w-6 h-6 animate-spin mx-auto mb-2" />
                 {{ t('common.loading') }}
               </td>
@@ -446,7 +446,7 @@ const formatDate = (date: string | null) => {
 
             <!-- Empty state -->
             <tr v-else-if="events.length === 0">
-              <td :colspan="authStore.isSuperAdmin ? 9 : 8" class="px-4 py-8 text-center text-gray-500">
+              <td :colspan="authStore.isSuperAdmin ? 9 : 8" class="px-4 py-8 text-center text-header-500">
                 {{ t('events.empty') }}
               </td>
             </tr>
@@ -455,41 +455,41 @@ const formatDate = (date: string | null) => {
             <tr
               v-for="event in events"
               :key="event.id"
-              class="hover:bg-gray-50"
-              :class="{ 'bg-blue-50': isSelected(event.id) }"
+              class="hover:bg-header-50"
+              :class="{ 'bg-primary-50': isSelected(event.id) }"
             >
               <!-- Checkbox -->
               <td v-if="authStore.isSuperAdmin" class="px-4 py-3">
                 <input
                   :checked="isSelected(event.id)"
                   type="checkbox"
-                  class="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                  class="w-5 h-5 rounded border-header-300 text-primary-600 focus:ring-2 focus:ring-primary-500 cursor-pointer"
                   @change="toggleSelect(event.id)"
                 >
               </td>
 
               <!-- ID -->
-              <td class="px-4 py-3 text-sm text-gray-900">
+              <td class="px-4 py-3 text-sm text-header-900">
                 {{ event.id }}
               </td>
 
               <!-- Libelle -->
-              <td class="px-4 py-3 text-sm text-gray-900 font-medium">
+              <td class="px-4 py-3 text-sm text-header-900 font-medium">
                 {{ event.libelle }}
               </td>
 
               <!-- Lieu -->
-              <td class="px-4 py-3 text-sm text-gray-500">
+              <td class="px-4 py-3 text-sm text-header-500">
                 {{ event.lieu || '-' }}
               </td>
 
               <!-- Date debut -->
-              <td class="px-4 py-3 text-sm text-gray-500">
+              <td class="px-4 py-3 text-sm text-header-500">
                 {{ formatDate(event.dateDebut) }}
               </td>
 
               <!-- Date fin -->
-              <td class="px-4 py-3 text-sm text-gray-500">
+              <td class="px-4 py-3 text-sm text-header-500">
                 {{ formatDate(event.dateFin) }}
               </td>
 
@@ -499,7 +499,7 @@ const formatDate = (date: string | null) => {
                   :active="event.publication"
                   active-icon="heroicons:eye-solid"
                   inactive-icon="heroicons:eye-slash"
-                  active-color="green"
+                  active-color="success"
                   :active-title="t('events.published')"
                   :inactive-title="t('events.unpublished')"
                   size="md"
@@ -513,7 +513,7 @@ const formatDate = (date: string | null) => {
                   :active="event.app"
                   active-icon="heroicons:device-phone-mobile-solid"
                   inactive-icon="heroicons:device-phone-mobile-solid"
-                  active-color="blue"
+                  active-color="primary"
                   :active-title="t('events.app_enabled')"
                   :inactive-title="t('events.app_disabled')"
                   size="md"
@@ -525,7 +525,7 @@ const formatDate = (date: string | null) => {
               <td class="px-4 py-3">
                 <div class="flex items-center justify-end gap-1">
                   <button
-                    class="p-1.5 text-blue-600"
+                    class="p-1.5 text-primary-600"
                     :title="t('common.edit')"
                     @click="openEditModal(event)"
                   >
@@ -533,7 +533,7 @@ const formatDate = (date: string | null) => {
                   </button>
                   <button
                     v-if="authStore.isSuperAdmin"
-                    class="p-1.5 text-red-600"
+                    class="p-1.5 text-danger-600"
                     :title="t('common.delete')"
                     @click="openDeleteModal(event)"
                   >
@@ -574,27 +574,27 @@ const formatDate = (date: string | null) => {
       >
         <!-- Header -->
         <template #header>
-          <h3 class="font-semibold text-gray-900 truncate">
+          <h3 class="font-semibold text-header-900 truncate">
             {{ event.libelle }}
           </h3>
         </template>
         <template #header-right>
-          <span class="text-sm text-gray-600 flex-shrink-0 ml-2">ID: {{ event.id }}</span>
+          <span class="text-sm text-header-600 flex-shrink-0 ml-2">ID: {{ event.id }}</span>
         </template>
 
         <!-- Content -->
         <div v-if="event.lieu" class="flex items-start gap-2 text-sm">
-          <UIcon name="heroicons:map-pin-solid" class="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
-          <span class="text-gray-700">{{ event.lieu }}</span>
+          <UIcon name="heroicons:map-pin-solid" class="w-5 h-5 text-header-400 flex-shrink-0 mt-0.5" />
+          <span class="text-header-700">{{ event.lieu }}</span>
         </div>
 
         <div class="flex flex-col gap-2 text-sm">
           <div v-if="event.dateDebut" class="flex items-center gap-2">
-            <UIcon name="heroicons:calendar-solid" class="w-5 h-5 text-gray-400 flex-shrink-0" />
+            <UIcon name="heroicons:calendar-solid" class="w-5 h-5 text-header-400 flex-shrink-0" />
             <div>
-              <span class="text-gray-900 ml-1">{{ formatDate(event.dateDebut) }}</span>
+              <span class="text-header-900 ml-1">{{ formatDate(event.dateDebut) }}</span>
               -
-              <span class="text-gray-900 ml-1">{{ formatDate(event.dateFin) }}</span>
+              <span class="text-header-900 ml-1">{{ formatDate(event.dateFin) }}</span>
             </div>
           </div>
         </div>
@@ -605,7 +605,7 @@ const formatDate = (date: string | null) => {
             :active="event.publication"
             active-icon="heroicons:eye-solid"
             inactive-icon="heroicons:x-circle-solid"
-            active-color="green"
+            active-color="success"
             :active-title="t('events.published')"
             :inactive-title="t('events.unpublished')"
             @toggle="togglePublication(event)"
@@ -614,7 +614,7 @@ const formatDate = (date: string | null) => {
             :active="event.app"
             active-icon="heroicons:device-phone-mobile-solid"
             inactive-icon="heroicons:device-phone-mobile-solid"
-            active-color="blue"
+            active-color="primary"
             :active-title="t('events.app_enabled')"
             :inactive-title="t('events.app_disabled')"
             @toggle="toggleApp(event)"
@@ -664,7 +664,7 @@ const formatDate = (date: string | null) => {
           <!-- Error message -->
           <div
             v-if="formError"
-            class="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800"
+            class="flex items-start gap-3 p-4 bg-danger-50 border border-danger-200 rounded-lg text-danger-800"
           >
             <UIcon name="heroicons:exclamation-triangle" class="w-5 h-5 flex-shrink-0 mt-0.5" />
             <span class="text-sm">{{ formError }}</span>
@@ -672,8 +672,8 @@ const formatDate = (date: string | null) => {
 
           <!-- Libelle -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
-              {{ t('events.form.libelle') }} <span class="text-red-500">*</span>
+            <label class="block text-sm font-medium text-header-700 mb-1">
+              {{ t('events.form.libelle') }} <span class="text-danger-500">*</span>
             </label>
             <input
               v-model="formData.libelle"
@@ -681,13 +681,13 @@ const formatDate = (date: string | null) => {
               :placeholder="t('events.form.libelle_placeholder')"
               maxlength="40"
               required
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             >
           </div>
 
           <!-- Lieu -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-header-700 mb-1">
               {{ t('events.form.lieu') }}
             </label>
             <input
@@ -695,47 +695,47 @@ const formatDate = (date: string | null) => {
               type="text"
               :placeholder="t('events.form.lieu_placeholder')"
               maxlength="40"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             >
           </div>
 
           <!-- Date debut -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-header-700 mb-1">
               {{ t('events.form.date_debut') }}
             </label>
             <input
               v-model="formData.dateDebut"
               type="date"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             >
           </div>
 
           <!-- Date fin -->
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-header-700 mb-1">
               {{ t('events.form.date_fin') }}
             </label>
             <input
               v-model="formData.dateFin"
               type="date"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             >
           </div>
         </div>
 
         <!-- Footer -->
-        <div class="flex justify-end gap-2 mt-6 pt-4 border-t border-gray-200">
+        <div class="flex justify-end gap-2 mt-6 pt-4 border-t border-header-200">
           <button
             type="button"
-            class="px-4 py-2 text-gray-700 border border-gray-300 hover:bg-gray-100 rounded-lg transition-colors"
+            class="px-4 py-2 text-header-700 border border-header-300 hover:bg-header-100 rounded-lg transition-colors"
             @click="closeModal"
           >
             {{ t('events.form.cancel') }}
           </button>
           <button
             type="submit"
-            class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+            class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50"
             :disabled="loading"
           >
             <span v-if="loading" class="flex items-center gap-2">

@@ -206,7 +206,7 @@ const confirmRename = async () => {
   <div class="space-y-8">
     <!-- Image type selector -->
     <div>
-      <label class="block text-sm font-medium text-gray-700 mb-2">
+      <label class="block text-sm font-medium text-header-700 mb-2">
         {{ t('operations.images.type') }}
       </label>
       <div class="flex flex-wrap gap-2">
@@ -216,8 +216,8 @@ const confirmRename = async () => {
           :class="[
             'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
             selectedImageType === type.value
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+              ? 'bg-primary-600 text-white'
+              : 'bg-header-100 text-header-700 hover:bg-header-200'
           ]"
           @click="selectedImageType = type.value as ImageType; resetForm()"
         >
@@ -225,7 +225,7 @@ const confirmRename = async () => {
         </button>
       </div>
       <!-- Format hint for selected type -->
-      <p v-if="currentFormatHint" class="mt-2 text-sm text-blue-600 flex items-center gap-1">
+      <p v-if="currentFormatHint" class="mt-2 text-sm text-primary-600 flex items-center gap-1">
         <UIcon name="i-heroicons-information-circle" class="w-4 h-4" />
         {{ currentFormatHint }}
       </p>
@@ -233,7 +233,7 @@ const confirmRename = async () => {
 
     <!-- Upload section -->
     <section>
-      <h2 class="text-lg font-semibold text-gray-900 mb-4">
+      <h2 class="text-lg font-semibold text-header-900 mb-4">
         {{ t('operations.images.upload') }}
       </h2>
 
@@ -242,25 +242,25 @@ const confirmRename = async () => {
         <template v-if="needsCompetitionFields">
           <div class="grid grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
+              <label class="block text-sm font-medium text-header-700 mb-1">
                 {{ t('operations.images.code_competition') }}
               </label>
               <input
                 v-model="codeCompetition"
                 type="text"
                 placeholder="ex: N1H"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 uppercase"
+                class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 uppercase"
               >
             </div>
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">
+              <label class="block text-sm font-medium text-header-700 mb-1">
                 {{ t('operations.images.season') }}
               </label>
               <input
                 v-model="saison"
                 type="text"
                 placeholder="ex: 2024-2025"
-                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
               >
             </div>
           </div>
@@ -268,35 +268,35 @@ const confirmRename = async () => {
 
         <template v-else-if="needsClubField">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-header-700 mb-1">
               {{ t('operations.images.club_number') }}
             </label>
             <input
               v-model="numeroClub"
               type="text"
               placeholder="ex: 0750001"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             >
           </div>
         </template>
 
         <template v-else-if="needsNationField">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-header-700 mb-1">
               {{ t('operations.images.nation_code') }}
             </label>
             <input
               v-model="codeNation"
               type="text"
               placeholder="ex: FRA"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 uppercase"
+              class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 uppercase"
             >
           </div>
         </template>
 
         <!-- File input -->
         <div>
-          <label class="block text-sm font-medium text-gray-700 mb-1">
+          <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('operations.images.file') }}
           </label>
           <div class="flex items-center gap-3">
@@ -304,18 +304,18 @@ const confirmRename = async () => {
               ref="fileInput"
               type="file"
               :accept="currentAccept"
-              class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-1 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              class="flex-1 px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 file:mr-4 file:py-1 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-primary-50 file:text-primary-700 hover:file:bg-primary-100"
               @change="onFileSelected"
             >
             <button
               v-if="selectedFile"
-              class="px-3 py-2 text-gray-600 hover:text-gray-900"
+              class="px-3 py-2 text-header-600 hover:text-header-900"
               @click="clearFile"
             >
               <UIcon name="i-heroicons-x-mark" class="w-5 h-5" />
             </button>
           </div>
-          <p v-if="selectedFile" class="mt-1 text-sm text-gray-500">
+          <p v-if="selectedFile" class="mt-1 text-sm text-header-500">
             {{ selectedFile.name }} ({{ Math.round(selectedFile.size / 1024) }} Ko)
           </p>
         </div>
@@ -323,7 +323,7 @@ const confirmRename = async () => {
         <!-- Upload button -->
         <button
           :disabled="!canUpload || loading"
-          class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           @click="uploadImage"
         >
           <UIcon v-if="loading" name="i-heroicons-arrow-path" class="w-4 h-4 animate-spin" />
@@ -335,39 +335,39 @@ const confirmRename = async () => {
 
     <!-- Rename section -->
     <section>
-      <h2 class="text-lg font-semibold text-gray-900 mb-4">
+      <h2 class="text-lg font-semibold text-header-900 mb-4">
         {{ t('operations.images.rename') }}
       </h2>
 
       <div class="max-w-xl space-y-4">
         <div class="grid grid-cols-2 gap-4">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-header-700 mb-1">
               {{ t('operations.images.current_name') }}
             </label>
             <input
               v-model="currentName"
               type="text"
               placeholder="ex: L-N1H-2024-2025.jpg"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             >
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">
+            <label class="block text-sm font-medium text-header-700 mb-1">
               {{ t('operations.images.new_name') }}
             </label>
             <input
               v-model="newName"
               type="text"
               placeholder="ex: L-N1M-2024-2025.jpg"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             >
           </div>
         </div>
 
         <button
           :disabled="!canRename || loading"
-          class="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          class="px-4 py-2 bg-warning-600 text-white rounded-lg hover:bg-warning-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           @click="openRenameModal"
         >
           <UIcon v-if="loading" name="i-heroicons-arrow-path" class="w-4 h-4 animate-spin" />
