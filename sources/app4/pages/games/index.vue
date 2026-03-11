@@ -523,7 +523,7 @@ const saveInlineEdit = async () => {
         }
       }
     }
-    toast.add({ title: t('common.saved'), color: 'success', timeout: 2000 })
+    toast.add({ title: t('common.saved'), color: 'success' })
   } catch {
     // Error already shown by useApi
   }
@@ -580,7 +580,7 @@ const saveTeamEdit = async () => {
         game.equipeB = response.equipe
       }
     }
-    toast.add({ title: t('common.saved'), color: 'success', timeout: 2000 })
+    toast.add({ title: t('common.saved'), color: 'success' })
   } catch {
     // Error already shown
   }
@@ -593,7 +593,7 @@ const handleTeamKeydown = (e: KeyboardEvent) => {
 // ─── Referee helpers ───
 const extractTeamFromReferee = (text: string): string => {
   const match = text.match(/\(([^)]+)\)/)
-  return match ? match[1] : ''
+  return match?.[1] ?? ''
 }
 
 const updateRefereeTeam = (position: 'principal' | 'secondaire', newTeam: string) => {
@@ -641,7 +641,7 @@ const saveRefereeEdit = async (value: string, matric: number) => {
         game.matricArbitreSecondaire = matric
       }
     }
-    toast.add({ title: t('common.saved'), color: 'success', timeout: 2000 })
+    toast.add({ title: t('common.saved'), color: 'success' })
   }
   catch {
     // Error already shown by useApi
@@ -676,7 +676,7 @@ const savePhaseEdit = async () => {
     await api.patch(`/admin/games/${id}/journee`, { idJournee: newJourneeId })
     // Reload to get updated data
     await loadGames()
-    toast.add({ title: t('common.saved'), color: 'success', timeout: 2000 })
+    toast.add({ title: t('common.saved'), color: 'success' })
   } catch {
     // Error already shown
   }
@@ -2139,7 +2139,7 @@ const statusBtnClass = (game: Game) => {
             </template>
             <span
               v-else
-              class="font-bold text-lg min-w-[1.5rem] text-center"
+              class="font-bold text-lg min-w-6 text-center"
               :class="isScoreEditable(g) ? 'editable-cell' : ''"
               @click="startInlineEdit(g, 'ScoreA')"
             >{{ g.scoreA || '-' }}</span>
@@ -2159,7 +2159,7 @@ const statusBtnClass = (game: Game) => {
             </template>
             <span
               v-else
-              class="font-bold text-lg min-w-[1.5rem] text-center"
+              class="font-bold text-lg min-w-6 text-center"
               :class="isScoreEditable(g) ? 'editable-cell' : ''"
               @click="startInlineEdit(g, 'ScoreB')"
             >{{ g.scoreB || '-' }}</span>

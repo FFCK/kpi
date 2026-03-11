@@ -1037,7 +1037,7 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
                 </span>
                 <button
                   class="font-semibold text-primary-600 hover:underline"
-                  @click="navigateToPage(competition)"
+                  @click="navigateToPage('documents', '', competition.code)"
                 >
                   {{ competition.code }}
                 </button>

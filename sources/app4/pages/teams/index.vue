@@ -635,7 +635,7 @@ const confirmBulkDelete = async () => {
     await api.post('/admin/competition-teams/bulk-delete', {
       ids: selectedIds.value,
       season: workContext.season,
-      competition: workContext.competition
+      competition: workContext.pageCompetitionCode
     })
     toast.add({ title: t('common.success'), description: t('teams_page.success_deleted'), color: 'success', duration: 3000 })
     bulkDeleteModalOpen.value = false
@@ -1527,7 +1527,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                   v-model="showCopyComposition"
                   type="checkbox"
                   class="w-4 h-4 rounded border-header-300 text-primary-600"
-                  @change="showCopyComposition && loadCompositions(addFormData.teamNumbers[0])"
+                  @change="showCopyComposition && loadCompositions(addFormData.teamNumbers[0]!)"
                 >
                 <span class="text-sm">{{ t('teams_page.add_modal.copy_composition') }}</span>
               </label>
@@ -1539,7 +1539,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                     const val = (e.target as HTMLSelectElement).value
                     if (val) {
                       const [s, c] = val.split('|')
-                      addFormData.copyComposition = { season: s, competition: c }
+                      addFormData.copyComposition = { season: s!, competition: c! }
                     } else {
                       addFormData.copyComposition = null
                     }

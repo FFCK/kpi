@@ -577,7 +577,7 @@ const fieldToTeamProp = (field: string, team: RankingTeam, published: boolean): 
     'PtsNiveau': published ? 'ptsNiveauPubli' : 'ptsNiveau'
   }
   const prop = map[field] || field
-  return (team as Record<string, unknown>)[prop] as number
+  return (team as unknown as Record<string, unknown>)[prop] as number
 }
 
 // Display value for a field (handles Pts ÷ 100)
@@ -1623,7 +1623,7 @@ const editValueForField = (field: string, value: number): string => {
           >
             <option value="">—</option>
             <option v-for="s in workContext.seasons" :key="s.code" :value="s.code">
-              {{ s.libelle }}
+              {{ s.code }}
             </option>
           </select>
         </div>

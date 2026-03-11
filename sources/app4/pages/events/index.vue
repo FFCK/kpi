@@ -579,18 +579,18 @@ const formatDate = (date: string | null) => {
           </h3>
         </template>
         <template #header-right>
-          <span class="text-sm text-header-600 flex-shrink-0 ml-2">ID: {{ event.id }}</span>
+          <span class="text-sm text-header-600 shrink-0 ml-2">ID: {{ event.id }}</span>
         </template>
 
         <!-- Content -->
         <div v-if="event.lieu" class="flex items-start gap-2 text-sm">
-          <UIcon name="heroicons:map-pin-solid" class="w-5 h-5 text-header-400 flex-shrink-0 mt-0.5" />
+          <UIcon name="heroicons:map-pin-solid" class="w-5 h-5 text-header-400 shrink-0 mt-0.5" />
           <span class="text-header-700">{{ event.lieu }}</span>
         </div>
 
         <div class="flex flex-col gap-2 text-sm">
           <div v-if="event.dateDebut" class="flex items-center gap-2">
-            <UIcon name="heroicons:calendar-solid" class="w-5 h-5 text-header-400 flex-shrink-0" />
+            <UIcon name="heroicons:calendar-solid" class="w-5 h-5 text-header-400 shrink-0" />
             <div>
               <span class="text-header-900 ml-1">{{ formatDate(event.dateDebut) }}</span>
               -
@@ -666,7 +666,7 @@ const formatDate = (date: string | null) => {
             v-if="formError"
             class="flex items-start gap-3 p-4 bg-danger-50 border border-danger-200 rounded-lg text-danger-800"
           >
-            <UIcon name="heroicons:exclamation-triangle" class="w-5 h-5 flex-shrink-0 mt-0.5" />
+            <UIcon name="heroicons:exclamation-triangle" class="w-5 h-5 shrink-0 mt-0.5" />
             <span class="text-sm">{{ formError }}</span>
           </div>
 

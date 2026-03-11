@@ -643,7 +643,7 @@ const isLastInSection = (group: Group, sectionGroups: Group[]) => {
             v-if="formError"
             class="flex items-start gap-3 p-4 bg-danger-50 border border-danger-200 rounded-lg text-danger-800"
           >
-            <UIcon name="heroicons:exclamation-triangle" class="w-5 h-5 flex-shrink-0 mt-0.5" />
+            <UIcon name="heroicons:exclamation-triangle" class="w-5 h-5 shrink-0 mt-0.5" />
             <span class="text-sm">{{ formError }}</span>
           </div>
 
@@ -716,7 +716,7 @@ const isLastInSection = (group: Group, sectionGroups: Group[]) => {
             v-if="showCodeChangeWarning"
             class="flex items-start gap-3 p-4 bg-amber-50 border border-amber-200 rounded-lg text-amber-800"
           >
-            <UIcon name="heroicons:exclamation-triangle" class="w-5 h-5 flex-shrink-0 mt-0.5" />
+            <UIcon name="heroicons:exclamation-triangle" class="w-5 h-5 shrink-0 mt-0.5" />
             <span class="text-sm">
               {{ t('groups.code_change_warning', { oldCode: editingGroup?.groupe, newCode: formData.groupe }) }}
             </span>
@@ -791,7 +791,7 @@ const isLastInSection = (group: Group, sectionGroups: Group[]) => {
       <!-- Show delete error inside modal -->
       <template v-if="deleteError" #default>
         <div class="mt-3 flex items-start gap-3 p-4 bg-danger-50 border border-danger-200 rounded-lg text-danger-800">
-          <UIcon name="heroicons:exclamation-triangle" class="w-5 h-5 flex-shrink-0 mt-0.5" />
+          <UIcon name="heroicons:exclamation-triangle" class="w-5 h-5 shrink-0 mt-0.5" />
           <span class="text-sm">{{ deleteError }}</span>
         </div>
       </template>

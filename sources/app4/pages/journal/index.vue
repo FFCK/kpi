@@ -293,13 +293,13 @@ onMounted(() => {
       <table v-if="entries.length > 0" class="min-w-full divide-y divide-header-200 bg-white rounded-lg shadow-sm">
         <thead class="bg-header-50">
           <tr>
-            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase w-[100px]">{{ t('journal.table.date') }}</th>
-            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase w-[150px]">{{ t('journal.table.identite') }}</th>
-            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase w-[200px]">{{ t('journal.table.action') }}</th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">{{ t('journal.table.date') }}</th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">{{ t('journal.table.identite') }}</th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">{{ t('journal.table.action') }}</th>
             <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">{{ t('journal.table.detail') }}</th>
-            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase w-[80px]">{{ t('journal.table.competition') }}</th>
-            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase w-[60px]">{{ t('journal.table.gameday') }}</th>
-            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase w-[60px]">{{ t('journal.table.match') }}</th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">{{ t('journal.table.competition') }}</th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">{{ t('journal.table.gameday') }}</th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">{{ t('journal.table.match') }}</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-header-200">

@@ -199,7 +199,7 @@ onMounted(async () => {
           <AdminTvChannelPanel
             v-for="(panel, i) in panels"
             :key="panel.id"
-            v-model="panels[i]"
+            v-model="panels[i]!"
             :match-data="matchData"
             :global-filters="globalFilters"
             :channel-labels="channelLabels"

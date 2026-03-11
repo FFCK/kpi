@@ -208,7 +208,7 @@ const saveInlineEdit = async () => {
 
   try {
     await presenceStore.updatePlayerInline(matric, field, value, api)
-    toast.add({ title: t('common.saved'), color: 'success', timeout: 2000 })
+    toast.add({ title: t('common.saved'), color: 'success' })
   } catch (error: any) {
     toast.add({ title: t('common.error'), description: error.message, color: 'error' })
   }
@@ -266,7 +266,6 @@ const createNewPlayer = async () => {
 
   try {
     await presenceStore.addPlayer({
-      mode: 'create',
       ...addFormData.value
     }, api)
 

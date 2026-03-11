@@ -80,6 +80,9 @@ const selectTarget = (player: PlayerAutocomplete) => {
   showTargetDropdown.value = false
 }
 
+const hideSourceDropdown = () => setTimeout(() => showSourceDropdown.value = false, 200)
+const hideTargetDropdown = () => setTimeout(() => showTargetDropdown.value = false, 200)
+
 // Merge players
 const openMergeModal = () => {
   if (!selectedSource.value || !selectedTarget.value) return
@@ -185,7 +188,7 @@ const onClickOutside = () => {
             :placeholder="t('operations.players.search_placeholder')"
             class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             @focus="showSourceDropdown = sourceResults.length > 0"
-            @blur="setTimeout(() => showSourceDropdown = false, 200)"
+            @blur="hideSourceDropdown"
           >
           <!-- Dropdown -->
           <div
@@ -226,7 +229,7 @@ const onClickOutside = () => {
             :placeholder="t('operations.players.search_placeholder')"
             class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
             @focus="showTargetDropdown = targetResults.length > 0"
-            @blur="setTimeout(() => showTargetDropdown = false, 200)"
+            @blur="hideTargetDropdown"
           >
           <!-- Dropdown -->
           <div
@@ -275,7 +278,7 @@ const onClickOutside = () => {
 
       <div class="bg-warning-50 border border-warning-200 rounded-lg p-4">
         <div class="flex items-start gap-3">
-          <UIcon name="i-heroicons-exclamation-triangle" class="w-5 h-5 text-warning-600 mt-0.5 flex-shrink-0" />
+          <UIcon name="i-heroicons-exclamation-triangle" class="w-5 h-5 text-warning-600 mt-0.5 shrink-0" />
           <div>
             <p class="text-sm text-warning-800">{{ t('operations.players.auto_merge_description') }}</p>
             <button

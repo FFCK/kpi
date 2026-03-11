@@ -185,11 +185,13 @@ export interface CopyToMatchesFormData {
  */
 export interface CopyableMatch {
   id: number
-  date: string
-  heure: string
+  dateMatch: string
+  heureMatch: string
   terrain: string
   numeroOrdre: number
-  adversaire: string
+  equipeA: string
+  equipeB: string
+  playerCount: number
 }
 
 /**

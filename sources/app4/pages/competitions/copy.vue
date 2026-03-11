@@ -132,7 +132,7 @@ const doSwitch = () => {
 
   // Change work context and navigate
   workContext.setSeason(switchTarget.value.season)
-  workContext.selectCompetition(switchTarget.value.code)
+  workContext.selectCompetitions([switchTarget.value.code])
   router.push('/competitions')
 }
 

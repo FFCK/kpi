@@ -52,7 +52,6 @@ const duplicateIncludeMatches = ref(false)
 
 // Bulk calendar
 const bulkCalendarData = ref<Omit<GamedayBulkCalendarData, 'ids'>>({
-  ids: [],
   nom: '',
   dateDebut: '',
   dateFin: '',
@@ -355,7 +354,7 @@ const saveInlineEdit = async () => {
         }
       }
     }
-    toast.add({ title: t('common.saved'), color: 'success', timeout: 2000 })
+    toast.add({ title: t('common.saved'), color: 'success' })
   } catch {
     // Error already shown by useApi
   }
@@ -380,7 +379,7 @@ const openAddModal = () => {
     formData.value.codeCompetition = workContext.pageCompetitionCodeAll
   }
   else if (workContext.competitionCodes.length === 1) {
-    formData.value.codeCompetition = workContext.competitionCodes[0]
+    formData.value.codeCompetition = workContext.competitionCodes[0] || ''
   }
   formError.value = ''
   formModalOpen.value = true
@@ -522,7 +521,7 @@ const confirmBulkPublish = async () => {
 }
 
 const openBulkCalendarModal = () => {
-  bulkCalendarData.value = { ids: [], nom: '', dateDebut: '', dateFin: '', lieu: '', departement: '' }
+  bulkCalendarData.value = { nom: '', dateDebut: '', dateFin: '', lieu: '', departement: '' }
   bulkCalendarModalOpen.value = true
 }
 
