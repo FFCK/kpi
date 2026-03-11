@@ -464,51 +464,43 @@ JWT_PASSPHRASE=votre_passphrase
 
 ### Pages principales (priorité haute)
 
-| # | Page PHP | Page Nuxt | Profil | Statut | Specs |
-|---|----------|-----------|--------|--------|-------|
-| 1 | GestionEvenement | `/events` | ≤ 2 | ✅ Implémenté | Annexe A |
-| 2 | GestionDoc | `/documents` | ≤ 9 | ✅ Implémenté | [PAGE_DOCUMENTS.md](../../specs/PAGE_DOCUMENTS.md) |
-| 3 | GestionStats | `/stats` | ≤ 9 | ✅ Implémenté | Annexe B |
-| 4 | GestionOperations | `/operations` | = 1 | ✅ Implémenté | [PAGE_OPERATIONS.md](../../specs/PAGE_OPERATIONS.md) |
-| 5 | GestionCompetition | `/competitions` | ≤ 10 | 🚧 Specs en cours | [PAGE_COMPETITIONS.md](../../specs/PAGE_COMPETITIONS.md) |
-
-### Pages avec redirection provisoire vers legacy
-
-Ces pages ont un stub dans app4 qui redirige automatiquement vers l'interface legacy PHP en attendant leur migration complète.
-
 | # | Page PHP | Page Nuxt | Profil | Statut |
 |---|----------|-----------|--------|--------|
-| 6 | GestionEquipe | `/teams` | ≤ 9 | ↪️ Redirection legacy |
-| 7 | GestionJournee | `/gamedays` | ≤ 9 | ↪️ Redirection legacy |
-| 8 | GestionCalendrier | `/matches` | ≤ 9 | ↪️ Redirection legacy |
-| 9 | GestionClassement | `/rankings` | ≤ 9 | ↪️ Redirection legacy |
-| 10 | GestionClassementInit | `/rankings/initial` | ≤ 9 | ↪️ Redirection legacy |
-| 11 | GestionAthlete | `/athletes` | ≤ 8 | ↪️ Redirection legacy |
-| 12 | GestionStructure | `/clubs` | ≤ 9 | ↪️ Redirection legacy |
-| 13 | GestionUtilisateur | `/users` | ≤ 3 | ↪️ Redirection legacy |
+| 1 | GestionEvenement | `/events` | ≤ 2 | ✅ Implémenté |
+| 2 | GestionDoc | `/documents` | ≤ 9 | ✅ Implémenté |
+| 3 | GestionStats | `/stats` | ≤ 9 | ✅ Implémenté |
+| 4 | GestionOperations | `/operations` | = 1 | ✅ Implémenté |
+| 5 | GestionCompetition | `/competitions` | ≤ 10 | ✅ Implémenté |
+| 6 | GestionEquipe | `/teams` | ≤ 3 | ✅ Implémenté |
+| 7 | GestionJournee | `/gamedays` | ≤ 4 | ✅ Implémenté |
+| 8 | GestionCalendrier | `/games` | ≤ 4 | ✅ Implémenté |
+| 9 | GestionClassement | `/rankings` | ≤ 4 | ✅ Implémenté |
+| 10 | GestionClassementInit | `/rankings/initial` | ≤ 6 | ✅ Implémenté |
+| 11 | GestionAthlete | `/athletes` | ≤ 8 | ✅ Implémenté |
+| 12 | GestionStructure | `/clubs` | ≤ 2 | ✅ Implémenté |
+| 13 | GestionUtilisateur | `/users` | ≤ 2 | ✅ Implémenté |
 
 ### Pages implémentées (hors menu principal)
 
-| # | Page PHP | Page Nuxt | Profil | Statut | Specs |
-|---|----------|-----------|--------|--------|-------|
-| 14 | GestionRc | `/rc` | ≤ 4 | ✅ Implémenté | [PAGE_RC.md](../../specs/PAGE_RC.md) |
-| 15 | GestionEquipeJoueur | `/presence/team/:teamId` | ≤ 10 | ✅ Implémenté (Team Mode) | [PAGE_PRESENCE.md](../../specs/PAGE_PRESENCE.md) |
-| 16 | GestionMatchEquipeJoueur | `/presence/match/:matchId/team/:teamCode` | ≤ 10 | 🚧 Stub (Match Mode) | [PAGE_PRESENCE.md](../../specs/PAGE_PRESENCE.md) |
+| # | Page PHP | Page Nuxt | Profil | Statut |
+|---|----------|-----------|--------|--------|
+| 14 | GestionRc | `/rc` | ≤ 4 | ✅ Implémenté |
+| 15 | GestionEquipeJoueur | `/presence/team/:teamId` | ≤ 10 | ✅ Implémenté (Team Mode) |
+| 16 | GestionMatchEquipeJoueur | `/presence/match/:matchId/team/:teamCode` | ≤ 10 | ✅ Implémenté (Match Mode) |
+| 17 | GestionCopieCompetition | `/competitions/copy` | ≤ 3 | ✅ Implémenté |
+| 18 | GestionGroupe | `/groups` | ≤ 2 | ✅ Implémenté |
+| 19 | GestionSchema | `/gamedays/schema` | ≤ 3 | ✅ Implémenté |
+| 20 | GestionJournal | `/journal` | = 1 | ✅ Implémenté |
+| 21 | Contrôle TV | `/tv` | ≤ 2 | ✅ Implémenté |
 
-### Pages non exposées dans le menu app4 (à planifier)
-
-Ces pages legacy ne sont pas encore intégrées au menu de app4. À évaluer pour migration future.
+### Pages et fonctionnalités restantes à migrer
 
 | # | Page PHP | Description | Profil | Priorité |
 |---|----------|-------------|--------|----------|
-| 17 | GestionCopieCompetition | Copier structure de compétition entre saisons | ≤ 3 | Moyenne |
-| 18 | GestionGroupe | Gestion des groupes de compétitions | ≤ 2 | Moyenne |
-| 19 | GestionInstances | Gestion des instances fédérales | ≤ 2 | Basse |
-| 20 | GestionGrillePoints | Gestion des grilles de points | ≤ 3 | Basse |
-| 21 | GestionSchema | Schémas de compétition | ≤ 3 | Basse |
-| 22 | GestionParamUser | Paramètres utilisateur | ≤ 9 | Basse |
-| 23 | GestionParamJournee | Paramètres de journée | ≤ 9 | Basse |
-| 24 | GestionJournal | Consultation des logs | ≤ 1 | Basse |
+| 22 | GestionInstances | Gestion des instances fédérales | ≤ 2 | Basse |
+| 23 | GestionGrillePoints | Gestion des grilles de points | ≤ 3 | Basse |
+| 24 | GestionParamUser | Paramètres utilisateur | ≤ 9 | Basse |
+| 25 | GestionParamJournee | Paramètres de journée | ≤ 9 | Basse |
 
 Pour chaque page, une analyse fonctionnelle détaillée sera produite avant migration.
 
@@ -647,5 +639,5 @@ Pour chaque page, une analyse fonctionnelle détaillée sera produite avant migr
 ---
 
 **Document créé le** : 2026-01-02
-**Dernière mise à jour** : 2026-02-13
-**Statut** : ✅ Phase 1-6 implémentées - Events, Stats, Documents, Operations, RC, Présence (Team Mode) terminés
+**Dernière mise à jour** : 2026-03-11
+**Statut** : ✅ 21/25 pages migrées - Toutes les pages principales et secondaires implémentées. Reste : instances fédérales, grilles de points, paramètres utilisateur/journée.

@@ -518,6 +518,8 @@ PUT    /admin/gamedays/{id}/event/{eventId}    Link gameday to event
 DELETE /admin/gamedays/{id}/event/{eventId}    Unlink gameday from event
 GET    /admin/gamedays/events                  List events (for filter dropdown)
 GET    /admin/gamedays/autocomplete/names      Autocomplete gameday names
+GET    /admin/gamedays/autocomplete/communes   Autocomplete commune names
+PATCH  /admin/gamedays/bulk/officials          Bulk update officials (profile <=4)
 ```
 
 **Query Parameters (GET list):**
@@ -1066,6 +1068,121 @@ POST   /admin/rankings/initial/reset                Reset initial ranking values
 - Phase team removal: team must have no played matches in the phase (`J = 0`)
 - Transfer: source competition must differ from target; at least one team selected
 
+### Admin Games
+```
+GET    /admin/games                                    List games (paginated, filtered)
+GET    /admin/games/{id}                               Get single game
+POST   /admin/games                                    Create game (profile <=4)
+PUT    /admin/games/{id}                               Update game (profile <=4)
+DELETE /admin/games/{id}                               Delete game (profile <=4)
+PATCH  /admin/games/{id}/inline                        Inline field update (profile <=4)
+PATCH  /admin/games/{id}/publication                   Toggle publication (profile <=4)
+PATCH  /admin/games/{id}/validation                    Toggle validation (profile <=4)
+PATCH  /admin/games/{id}/type                          Toggle type (profile <=4)
+PATCH  /admin/games/{id}/statut                        Toggle statut (profile <=4)
+PATCH  /admin/games/{id}/printed                       Toggle printed (profile <=4)
+PATCH  /admin/games/{id}/team                          Change team (profile <=4)
+PATCH  /admin/games/{id}/journee                       Change journee (profile <=4)
+DELETE /admin/games/bulk                               Bulk delete games (profile <=4)
+PATCH  /admin/games/bulk/publication                   Bulk toggle publication (profile <=4)
+PATCH  /admin/games/bulk/validation                    Bulk toggle validation (profile <=4)
+PATCH  /admin/games/bulk/lock-publish                  Bulk lock & publish (profile <=4)
+PATCH  /admin/games/bulk/journee                       Bulk change journee (profile <=4)
+PATCH  /admin/games/bulk/renumber                      Bulk renumber games (profile <=4)
+PATCH  /admin/games/bulk/date                          Bulk change date (profile <=4)
+PATCH  /admin/games/bulk/time                          Bulk change time (profile <=4)
+PATCH  /admin/games/bulk/group                         Bulk change group (profile <=4)
+GET    /admin/games/teams                              Get teams for game selects
+GET    /admin/games/journees                           Get journees for game selects
+GET    /admin/games/events                             Get events for game selects
+GET    /admin/games/autocomplete/referees              Autocomplete referees
+```
+
+### Admin Users
+```
+GET    /admin/users                                    List users (paginated)
+GET    /admin/users/{code}                             Get single user
+POST   /admin/users                                    Create user (profile <=2)
+PUT    /admin/users/{code}                             Update user (profile <=2)
+DELETE /admin/users/{code}                             Delete user (profile <=1)
+POST   /admin/users/bulk-delete                        Bulk delete users (profile <=1)
+POST   /admin/users/{code}/reset-password              Reset user password (profile <=2)
+GET    /admin/users/{code}/mandats                     List user mandates
+POST   /admin/users/{code}/mandats                     Create mandate (profile <=2)
+PUT    /admin/users/{code}/mandats/{id}                Update mandate (profile <=2)
+DELETE /admin/users/{code}/mandats/{id}                Delete mandate (profile <=2)
+```
+
+### Admin Clubs
+```
+GET    /admin/clubs/search-all                         Search all clubs (paginated, with map data)
+GET    /admin/clubs/map                                Get clubs for map display (with coordinates)
+GET    /admin/clubs/{code}                             Get club detail
+PATCH  /admin/clubs/{code}                             Update club (profile <=2)
+POST   /admin/clubs                                    Create club (profile <=2)
+GET    /admin/clubs/{code}/teams                       Get club teams
+GET    /admin/teams/{numero}                           Get team detail
+POST   /admin/departmental-committees                  Create departmental committee (profile <=2)
+```
+
+### Admin TV Control
+```
+GET    /admin/tv/events                                List events for TV control
+GET    /admin/tv/matches                               List matches for an event
+POST   /admin/tv/activate                              Activate a presentation on a channel
+POST   /admin/tv/blank                                 Blank a channel (display nothing)
+GET    /admin/tv/labels                                Get custom labels for a channel
+PUT    /admin/tv/labels                                Update custom labels for a channel
+GET    /admin/tv/scenario/{scenarioNumber}             Get scenario configuration
+PUT    /admin/tv/scenario/{scenarioNumber}             Update scenario configuration
+```
+
+### Admin Schema
+```
+GET    /admin/schema                                   Get competition schema (phases, brackets, pools)
+```
+
+**Query Parameters:**
+- `season` - Season code (required)
+- `competition` - Competition code (required)
+
+Returns the full competition schema with gamedays, matches, teams, pools, and brackets for CHPT and CP types.
+
+### Admin Journal
+```
+GET    /admin/journal                                  List journal entries (paginated, filtered)
+GET    /admin/journal/users                            List users for journal filter dropdown
+GET    /admin/journal/actions                          List actions for journal filter dropdown
+```
+
+**Query Parameters (GET list):**
+- `page` - Page number (default: 1)
+- `limit` - Items per page (default: 50)
+- `user` - Filter by user code
+- `action` - Filter by action type
+- `dateFrom` - Filter from date
+- `dateTo` - Filter to date
+
+### Admin Auth (Mandates)
+```
+GET    /auth/mandates                                  Get available mandates for current user
+POST   /auth/switch-mandate                            Switch active mandate
+POST   /auth/reset-password                            Request password reset
+```
+
+### Admin Presence (Match Mode)
+```
+GET    /admin/matches/{matchId}/players                Get match players composition
+POST   /admin/matches/{matchId}/players/add            Add player to match composition
+PATCH  /admin/matches/{matchId}/players/{matric}       Update player (numero/capitaine)
+DELETE /admin/matches/{matchId}/players                 Delete players from match composition
+DELETE /admin/matches/{matchId}/players/clear           Clear all players from match
+POST   /admin/matches/{matchId}/players/initialize     Initialize from team composition
+POST   /admin/matches/{matchId}/players/copy-to-competition  Copy match players to competition team
+POST   /admin/matches/{matchId}/players/copy-to-day    Copy match players to all matches of the day
+GET    /admin/matches/{matchId}/copyable-matches       Get matches available for composition copy
+```
+
 ## HTTP Status Codes
 
 - `200` - Success
@@ -1122,6 +1239,13 @@ The `/_error/` routes are internal Symfony routes used for error handling:
 | `GestionAthlete.php` | `/api2/admin/athletes/*` |
 | `GestionClassement.php` | `/api2/admin/rankings/*` |
 | `GestionClassementInit.php` | `/api2/admin/rankings/initial/*` |
+| `GestionCalendrier.php` | `/api2/admin/games/*` |
+| `GestionMatchEquipeJoueur.php` | `/api2/admin/matches/{matchId}/players/*` |
+| `GestionUtilisateur.php` | `/api2/admin/users/*` |
+| `GestionStructure.php` | `/api2/admin/clubs/*` |
+| `GestionSchema.php` | `/api2/admin/schema` |
+| `GestionJournal.php` | `/api2/admin/journal/*` |
+| TV Control (legacy) | `/api2/admin/tv/*` |
 
 **Important differences:**
 - **Authentication:** API2 uses `X-Auth-Token` header instead of token in URL for Staff/Report endpoints

@@ -14,6 +14,7 @@
 - **i18n** : @nuxtjs/i18n (FR/EN)
 - **Styling** : Tailwind CSS
 - **Icons** : Heroicons (via Iconify)
+- **Maps** : Leaflet (client-side, pour page clubs)
 - **API Client** : Composable `useApi()` personnalisé
 
 ---
@@ -23,62 +24,140 @@
 ```
 sources/app4/
 ├── components/
-│   └── admin/                      # Composants réutilisables
-│       ├── WorkContextSelector.vue # Sélecteur de contexte de travail
-│       ├── AthleteEditModal.vue    # Modal modification athlète
-│       ├── ActionButton.vue        # Boutons d'action
-│       ├── Card.vue                # Carte mobile
-│       ├── CardList.vue            # Liste de cartes
-│       ├── ConfirmModal.vue        # Modal de confirmation
-│       ├── LegacyRedirect.vue      # Redirection vers legacy PHP
-│       ├── Modal.vue               # Modal générique
-│       ├── Pagination.vue          # Pagination
-│       ├── ScrollToTop.vue         # Bouton scroll to top
-│       ├── ToggleButton.vue        # Toggle on/off
-│       └── Toolbar.vue             # Barre d'outils (search, add, bulk delete)
+│   ├── admin/                          # Composants réutilisables
+│   │   ├── ActionButton.vue            # Boutons d'action
+│   │   ├── AthleteAutocomplete.vue     # Autocomplete recherche athlète
+│   │   ├── AthleteEditModal.vue        # Modal modification athlète
+│   │   ├── Card.vue                    # Carte mobile
+│   │   ├── CardList.vue               # Liste de cartes
+│   │   ├── ClubMap.client.vue         # Carte Leaflet des clubs (client-only)
+│   │   ├── CompetitionAutocomplete.vue # Autocomplete compétition
+│   │   ├── CompetitionGroupedSelect.vue # Sélecteur compétitions groupées par section
+│   │   ├── CompetitionMultiSelect.vue  # Sélecteur multi-compétitions
+│   │   ├── CompetitionSingleSelect.vue # Sélecteur compétition unique
+│   │   ├── ConfirmModal.vue           # Modal de confirmation
+│   │   ├── ContextBadge.vue           # Badge contextuel
+│   │   ├── EventGroupSelect.vue       # Sélecteur événement-groupe
+│   │   ├── Header.vue                 # En-tête admin
+│   │   ├── LegacyRedirect.vue        # Redirection vers legacy PHP
+│   │   ├── Modal.vue                  # Modal générique
+│   │   ├── PageHeader.vue             # En-tête de page avec titre et bouton retour
+│   │   ├── Pagination.vue             # Pagination
+│   │   ├── PlayerAutocomplete.vue     # Autocomplete recherche joueur
+│   │   ├── PointsGridEditor.vue       # Éditeur de grille de points
+│   │   ├── RefereeAutocomplete.vue    # Autocomplete recherche arbitre
+│   │   ├── ScrollToTop.vue            # Bouton scroll to top
+│   │   ├── TextAutocomplete.vue       # Autocomplete texte générique
+│   │   ├── ToggleButton.vue           # Toggle on/off
+│   │   ├── Toolbar.vue                # Barre d'outils (search, add, bulk delete)
+│   │   ├── UserEditModal.vue          # Modal édition utilisateur
+│   │   ├── UserMandateForm.vue        # Formulaire mandat utilisateur
+│   │   ├── WorkContextSelector.vue    # Sélecteur de contexte de travail
+│   │   ├── WorkContextSummary.vue     # Résumé du contexte de travail
+│   │   └── tv/                        # Composants TV Control
+│   │       ├── ChannelPanel.vue       # Panneau de canal TV
+│   │       ├── ChannelSelector.vue    # Sélecteur de canal
+│   │       ├── ConditionalParams.vue  # Paramètres conditionnels
+│   │       ├── GlobalBar.vue          # Barre globale TV
+│   │       ├── LabelsModal.vue        # Modal labels personnalisés
+│   │       ├── PlayerNumberGrid.vue   # Grille numéros joueurs
+│   │       ├── PresentationPreview.vue # Aperçu présentation
+│   │       ├── PresentationSelector.vue # Sélecteur de présentation
+│   │       └── ScenarioEditor.vue     # Éditeur de scénarios
+│   ├── documents/
+│   │   └── DocumentsCompetitionSummary.vue # Résumé compétition pour documents
+│   ├── operations/                     # Onglets page opérations
+│   │   ├── CodesTab.vue               # Changement codes
+│   │   ├── ImagesTab.vue              # Gestion images
+│   │   ├── ImportExportTab.vue        # Import/Export événements
+│   │   ├── PlayersTab.vue             # Fusion joueurs
+│   │   ├── SeasonsTab.vue             # Gestion saisons
+│   │   ├── SystemTab.vue              # Cache système
+│   │   └── TeamsTab.vue               # Opérations équipes
+│   └── schema/                         # Composants visualisation schéma compétition
+│       ├── SchemaChptGameday.vue      # Journée championnat
+│       ├── SchemaChptLayout.vue       # Layout championnat
+│       ├── SchemaCpBracketMatch.vue   # Match bracket coupe
+│       ├── SchemaCpLayout.vue         # Layout coupe
+│       ├── SchemaCpPoolTable.vue      # Tableau poule coupe
+│       ├── SchemaHeader.vue           # En-tête schéma
+│       └── SchemaMatchResult.vue      # Résultat match
 ├── composables/
-│   └── useApi.ts                   # Client API avec auth et gestion erreurs
+│   ├── useApi.ts                       # Client API avec auth et gestion erreurs
+│   ├── useAuth.ts                      # Gestion authentification (login, logout, token)
+│   ├── useBracketDisplay.ts           # Logique d'affichage brackets (coupe)
+│   ├── useCompetitionCopyApi.ts       # API copie de compétition
+│   ├── useCompetitionsApi.ts          # API compétitions
+│   ├── useLegacyRedirect.ts          # Redirection vers pages legacy
+│   ├── useOnlineStatus.ts            # Détection état réseau
+│   ├── usePresencePermissions.ts     # Permissions page présence
+│   └── useTvUrl.ts                    # Construction URL TV
 ├── i18n/
 │   └── locales/
-│       ├── fr.json                 # Traductions françaises (~750 lignes)
-│       └── en.json                 # Traductions anglaises (~750 lignes)
+│       ├── fr.json                     # Traductions françaises
+│       └── en.json                     # Traductions anglaises
 ├── layouts/
-│   └── admin.vue                   # Layout principal (header, menu, footer)
+│   └── admin.vue                       # Layout principal (header, menu, footer)
 ├── middleware/
-│   └── auth.ts                     # Vérification JWT token
-├── pages/                          # Routes (file-based routing)
-│   ├── index.vue                   # Page d'accueil (/)
-│   ├── login.vue                   # Connexion (/login)
-│   ├── competitions/index.vue      # Gestion compétitions (/competitions)
-│   ├── competitions/copy.vue       # Copie système de jeu (/competitions/copy)
-│   ├── documents/index.vue         # Documents (/documents)
-│   ├── events/index.vue            # Événements (/events)
-│   ├── games/index.vue             # Matchs (/games)
-│   ├── gamedays/index.vue          # Journées/Phases (/gamedays)
-│   ├── groups/index.vue            # Groupes (/groups)
-│   ├── operations/index.vue        # Opérations système (/operations)
+│   └── auth.ts                         # Vérification JWT token
+├── pages/                              # Routes (file-based routing)
+│   ├── index.vue                       # Page d'accueil (/)
+│   ├── login.vue                       # Connexion (/login)
+│   ├── reset-password.vue              # Réinitialisation mot de passe (/reset-password)
+│   ├── select-mandate.vue              # Sélection mandat (/select-mandate)
+│   ├── athletes/index.vue             # Athlètes (/athletes)
+│   ├── clubs/
+│   │   ├── index.vue                  # Clubs (/clubs)
+│   │   └── team/[numero].vue          # Détail équipe club (/clubs/team/:numero)
+│   ├── competitions/
+│   │   ├── index.vue                  # Gestion compétitions (/competitions)
+│   │   └── copy.vue                   # Copie système de jeu (/competitions/copy)
+│   ├── documents/index.vue            # Documents (/documents)
+│   ├── events/index.vue               # Événements (/events)
+│   ├── gamedays/
+│   │   ├── index.vue                  # Journées/Phases (/gamedays)
+│   │   └── schema.vue                 # Schéma compétition (/gamedays/schema)
+│   ├── games/index.vue                # Matchs (/games)
+│   ├── groups/index.vue               # Groupes (/groups)
+│   ├── journal/index.vue              # Journal des actions (/journal)
+│   ├── operations/index.vue           # Opérations système (/operations)
+│   ├── presence/
+│   │   ├── team/[teamId].vue          # Composition équipe (/presence/team/:teamId)
+│   │   └── match/[matchId]/team/[teamCode].vue  # Composition match (/presence/match/:matchId/team/:teamCode)
 │   ├── rankings/
-│   │   ├── index.vue               # Classements (/rankings) - onglets calculé/publié, édition inline, phases CP, PDFs, transfert
-│   │   └── initial.vue             # Classement initial (/rankings/initial) - CHPT uniquement, édition inline, remise à zéro
+│   │   ├── index.vue                  # Classements (/rankings)
+│   │   └── initial.vue                # Classement initial (/rankings/initial)
+│   ├── rc/index.vue                   # Responsables de compétition (/rc)
 │   ├── stats/
-│   │   ├── index.vue               # Statistiques (/stats)
-│   │   └── [type]/[saison]/[competition].vue
-│   ├── teams/index.vue             # Équipes (/teams)
-│   ├── athletes/index.vue          # Athlètes (/athletes)
-│   ├── clubs/index.vue             # Clubs (/clubs)
-│   └── users/index.vue             # Utilisateurs (/users)
-├── stores/                         # Pinia stores
-│   ├── authStore.ts                # Authentification utilisateur
-│   ├── workContextStore.ts         # Contexte de travail (saison + périmètre)
-│   ├── filtersStore.ts             # Filtres legacy (utilisé uniquement par la route stats dynamique)
-│   └── statsStore.ts               # État page statistiques
-├── types/                          # Types TypeScript
-│   ├── index.ts                    # Types généraux (Season, Competition, etc.)
-│   ├── competitions.ts             # Types spécifiques compétitions
-│   ├── teams.ts                    # Types spécifiques équipes
-│   └── rankings.ts                 # Types spécifiques classements (RankingCompetitionInfo, RankingTeam, RankingPhase, etc.)
-├── nuxt.config.ts                  # Configuration Nuxt
-└── tailwind.config.ts              # Configuration Tailwind
+│   │   ├── index.vue                  # Statistiques (/stats)
+│   │   └── [type]/[saison]/[competition].vue  # Stats détaillées
+│   ├── teams/index.vue                # Équipes (/teams)
+│   ├── tv/index.vue                   # Contrôle TV (/tv)
+│   └── users/index.vue                # Utilisateurs (/users)
+├── stores/                             # Pinia stores
+│   ├── authStore.ts                    # Authentification utilisateur
+│   ├── filtersStore.ts                # Filtres legacy (utilisé uniquement par stats dynamique)
+│   ├── presenceStore.ts               # État page présence (composition)
+│   ├── statsStore.ts                  # État page statistiques
+│   └── workContextStore.ts            # Contexte de travail (saison + périmètre)
+├── types/                              # Types TypeScript
+│   ├── index.ts                        # Types généraux (Season, Competition, etc.)
+│   ├── athletes.ts                    # Types athlètes
+│   ├── clubs.ts                       # Types clubs
+│   ├── competition-copy.ts            # Types copie compétition
+│   ├── competitions.ts               # Types compétitions
+│   ├── gamedays.ts                    # Types journées
+│   ├── games.ts                       # Types matchs
+│   ├── operations.ts                  # Types opérations
+│   ├── presence.ts                    # Types présence/composition
+│   ├── rankings.ts                    # Types classements
+│   ├── rc.ts                          # Types responsables compétition
+│   ├── schema.ts                      # Types schéma compétition
+│   ├── teams.ts                       # Types équipes
+│   ├── tv.ts                          # Types contrôle TV
+│   └── users.ts                       # Types utilisateurs
+├── nuxt.config.ts                      # Configuration Nuxt
+└── tailwind.config.ts                  # Configuration Tailwind
 ```
 
 ---
@@ -163,6 +242,10 @@ workContext.clearContext()         // Efface tout
 - `kpi_admin_work_group`
 - `kpi_admin_work_competition`
 - `kpi_admin_work_event`
+
+### 3.3 presenceStore
+
+Gestion de l'état de la page composition d'équipe/match.
 
 ---
 
@@ -256,6 +339,17 @@ Pagination avec sélection du nombre d'éléments.
 />
 ```
 
+### AdminPageHeader
+En-tête de page avec titre, breadcrumb et bouton retour.
+
+```vue
+<AdminPageHeader
+  :title="t('page.title')"
+  :back-link="'/competitions'"
+  :back-label="t('common.back')"
+/>
+```
+
 ### AdminLegacyRedirect
 Composant de redirection vers page PHP legacy.
 
@@ -265,6 +359,30 @@ Composant de redirection vers page PHP legacy.
   :title="t('page.title')"
 />
 ```
+
+### AdminWorkContextSummary
+Rappel du contexte (saison/périmètre) en haut de page.
+
+### AdminTextAutocomplete
+Champ texte avec suggestions dynamiques (communes, noms, etc.).
+
+### AdminRefereeAutocomplete
+Autocomplete spécialisé pour la recherche d'arbitres.
+
+### AdminPlayerAutocomplete
+Autocomplete spécialisé pour la recherche de joueurs.
+
+### AdminAthleteAutocomplete
+Autocomplete spécialisé pour la recherche d'athlètes.
+
+### AdminCompetitionSingleSelect / MultiSelect / GroupedSelect
+Sélecteurs de compétitions avec différents modes.
+
+### AdminPointsGridEditor
+Éditeur de grille de points pour compétitions.
+
+### AdminUserEditModal / UserMandateForm
+Modals et formulaires pour la gestion des utilisateurs et de leurs mandats.
 
 ---
 
@@ -330,6 +448,18 @@ Structure des fichiers de traduction :
   "documents": {},     // Page documents
   "stats": {},         // Page statistiques
   "operations": {},    // Page opérations
+  "games": {},         // Page matchs
+  "gamedays": {},      // Page journées
+  "teams": {},         // Page équipes
+  "rankings": {},      // Page classements
+  "athletes": {},      // Page athlètes
+  "clubs": {},         // Page clubs
+  "users": {},         // Page utilisateurs
+  "tv": {},            // Page contrôle TV
+  "journal": {},       // Page journal
+  "schema": {},        // Schéma compétition
+  "presence": {},      // Page présence/composition
+  "rc": {},            // Page responsables compétition
   "common": {},        // Textes communs (yes, no, save, etc.)
   "errors": {}         // Messages d'erreur
 }
@@ -395,108 +525,15 @@ onMounted(async () => {
 </script>
 ```
 
-### Rappel du contexte en haut de page
-
-Placé **au-dessus du titre** de chaque page utilisant le contexte. En mobile, saison/périmètre/bouton s'empilent sur 3 lignes. En desktop, tout est sur une ligne.
-
-```vue
-<!-- Work Context Summary -->
-<div class="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-  <div class="flex flex-col sm:flex-row sm:flex-wrap sm:items-center sm:justify-between gap-2 sm:gap-4">
-    <div class="flex items-center gap-2">
-      <UIcon name="i-heroicons-calendar" class="w-5 h-5 text-blue-600 shrink-0" />
-      <span class="text-sm text-gray-600">{{ t('context.season') }}:</span>
-      <span class="font-semibold text-gray-900">{{ workContext.season || '-' }}</span>
-    </div>
-    <div v-if="workContext.hasValidContext" class="flex items-center gap-2">
-      <UIcon name="i-heroicons-funnel" class="w-5 h-5 text-blue-600 shrink-0" />
-      <span class="text-sm text-gray-600">{{ t('context.scope') }}:</span>
-      <span class="font-semibold text-gray-900">{{ workContext.contextLabel }}</span>
-      <span class="text-sm text-gray-500">
-        ({{ t('context.competitions_count', { count: workContext.competitionCount }) }})
-      </span>
-    </div>
-    <div v-else class="flex items-center gap-2 text-sm text-amber-600">
-      <UIcon name="i-heroicons-exclamation-triangle" class="w-4 h-4 shrink-0" />
-      {{ t('context.no_context') }}
-    </div>
-    <NuxtLink
-      to="/"
-      class="inline-flex items-center gap-1 self-start px-3 py-1.5 text-sm font-medium text-blue-700 bg-blue-100 hover:bg-blue-200 rounded-lg transition-colors"
-    >
-      <UIcon name="i-heroicons-pencil-square" class="w-4 h-4" />
-      {{ t('context.change') }}
-    </NuxtLink>
-  </div>
-</div>
-```
-
 ### Cellules éditables inline (.editable-cell)
 
 Pour les champs modifiables directement dans un tableau (click-to-edit), utiliser la classe CSS `.editable-cell` définie dans `assets/css/admin.css`. Elle fournit un indicateur visuel subtil et moderne signalant que le champ est cliquable et éditable.
 
 **Style** : fond gris-bleu très clair + bordure inférieure pointillée. Au survol : fond bleu léger + bordure bleue.
 
-```vue
-<!-- Affichage normal (non éditable) -->
-<span>{{ value }}</span>
-
-<!-- Champ éditable inline -->
-<span
-  :class="canEdit ? 'editable-cell' : ''"
-  @click="startEdit(item, 'field')"
->
-  {{ value }}
-</span>
-
-<!-- Mode édition (input remplace le span) -->
-<template v-if="editingCell?.id === item.id && editingCell.field === 'field'">
-  <input
-    :id="`inline-edit-${item.id}-field`"
-    v-model="editingValue"
-    class="w-14 px-1 py-0.5 border border-blue-400 rounded text-center text-sm focus:ring-2 focus:ring-blue-500"
-    @keydown="handleInlineKeydown"
-    @blur="saveInlineEdit"
-  />
-</template>
-```
-
-**Appliquer systématiquement** sur toutes les pages app4 où des champs sont éditables inline dans un tableau ou une liste (poule, tirage, statut, etc.).
-
 ### Dropdown Teleport (overflow-safe)
 
 Pour les menus déroulants à l'intérieur de conteneurs `overflow-hidden` (tables, groupes avec scroll), utiliser `<Teleport to="body">` avec `position: fixed` et calcul de position via `getBoundingClientRect()`.
-
-```vue
-<script setup>
-const openDropdownId = ref(null)
-const dropdownStyle = ref({ top: '0px', left: '0px' })
-
-const toggleDropdown = (id, event) => {
-  if (openDropdownId.value === id) { openDropdownId.value = null; return }
-  const rect = (event.currentTarget as HTMLElement).getBoundingClientRect()
-  dropdownStyle.value = {
-    top: `${rect.bottom + 4}px`,
-    left: `${Math.min(rect.left, window.innerWidth - 200)}px`
-  }
-  openDropdownId.value = id
-}
-</script>
-
-<template>
-  <!-- Trigger -->
-  <button class="dropdown-trigger" @click="toggleDropdown(item.id, $event)">...</button>
-
-  <!-- Menu téléporté -->
-  <Teleport to="body">
-    <div v-if="openDropdownId === item.id" class="dropdown-menu fixed ..." :style="dropdownStyle">
-      ...
-    </div>
-  </Teleport>
-</template>
-```
-
-Ajouter un listener `click` global pour fermer le dropdown lors d'un clic en dehors.
 
 ---
 
@@ -506,6 +543,8 @@ Ajouter un listener `click` global pour fermer le dropdown lors d'un clic en deh
 |------|-------|--------|
 | Accueil | `/` | Implémentée |
 | Connexion | `/login` | Implémentée |
+| Reset mot de passe | `/reset-password` | Implémentée |
+| Sélection mandat | `/select-mandate` | Implémentée |
 | Compétitions | `/competitions` | Implémentée (contexte) |
 | Copie compétition | `/competitions/copy` | Implémentée (recherche schémas, copie structure) |
 | Documents | `/documents` | Implémentée (contexte) |
@@ -513,16 +552,23 @@ Ajouter un listener `click` global pour fermer le dropdown lors d'un clic en deh
 | Statistiques | `/stats` | Implémentée (contexte) |
 | Opérations | `/operations` | Implémentée |
 | Groupes | `/groups` | Implémentée |
-| Matchs | `/games` | Legacy redirect |
-| Équipes | `/teams` | Implémentée (contexte) |
-| Journées | `/gamedays` | Legacy redirect |
+| Matchs | `/games` | Implémentée (contexte, CRUD, bulk actions, arbitres) |
+| Journées | `/gamedays` | Implémentée (contexte, CRUD, bulk, schéma, officiels) |
+| Schéma compétition | `/gamedays/schema` | Implémentée (visualisation CHPT/CP) |
+| Équipes | `/teams` | Implémentée (contexte, CRUD, couleurs, logos) |
 | Classements | `/rankings` | Implémentée (contexte, calcul, publication, phases CP, transfert) |
 | Classement initial | `/rankings/initial` | Implémentée (CHPT uniquement, édition inline, RAZ) |
 | Athlètes | `/athletes` | Implémentée (recherche + fiche + participations) |
-| Clubs | `/clubs` | Implémentée (carte Leaflet) |
-| Utilisateurs | `/users` | Legacy redirect |
+| Clubs | `/clubs` | Implémentée (carte Leaflet, détail, équipes) |
+| Détail équipe club | `/clubs/team/:numero` | Implémentée |
+| Utilisateurs | `/users` | Implémentée (CRUD, mandats, reset password) |
+| Responsables compétition | `/rc` | Implémentée |
+| Présence (équipe) | `/presence/team/:teamId` | Implémentée |
+| Présence (match) | `/presence/match/:matchId/team/:teamCode` | Implémentée |
+| Contrôle TV | `/tv` | Implémentée (canaux, présentations, scénarios, labels) |
+| Journal | `/journal` | Implémentée (consultation logs, filtres utilisateur/action) |
 
 ---
 
 **Document créé le** : 2026-02-03
-**Dernière mise à jour** : 2026-03-02
+**Dernière mise à jour** : 2026-03-11
