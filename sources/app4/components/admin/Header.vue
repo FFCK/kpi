@@ -40,7 +40,7 @@ const languages = [
 
 // Competition management menu items (linked to work context)
 const competitionMenuItems = computed<MenuItem[]>(() => {
-  const profile = authStore.user?.profile ?? 99
+  const profile = authStore.profile
   const items: MenuItem[] = []
 
   // Compétitions - profile <= 10
@@ -111,7 +111,7 @@ const competitionMenuItems = computed<MenuItem[]>(() => {
 
 // Administration menu groups (global, not linked to a specific competition)
 const adminMenuGroups = computed<MenuGroup[]>(() => {
-  const profile = authStore.user?.profile ?? 99
+  const profile = authStore.profile
   const groups: MenuGroup[] = []
 
   // Référentiels: groupes, événements, clubs, athlètes, resp. compétitions
@@ -451,6 +451,7 @@ onMounted(() => {
                   <div v-if="authStore.activeMandate" class="mt-1.5 px-2 py-1 bg-primary-50 rounded text-xs text-primary-700">
                     <div class="font-medium">{{ t('users.header.current_mandate') }}</div>
                     <div>{{ authStore.activeMandate.libelle }}</div>
+                    <div class="text-primary-500">{{ t(`users.profiles.${authStore.effectiveProfile}`) }}</div>
                   </div>
                 </div>
 
@@ -575,17 +576,33 @@ onMounted(() => {
               <div class="text-xs text-header-400">
                 {{ t('profile') }} {{ user?.profile }}
               </div>
+              <!-- Active mandate display (mobile) -->
+              <div v-if="authStore.activeMandate" class="mt-1 px-2 py-0.5 bg-primary-900 rounded text-xs text-primary-200">
+                <div>{{ authStore.activeMandate.libelle }}</div>
+                <div class="text-primary-400">{{ t(`users.profiles.${authStore.effectiveProfile}`) }}</div>
+              </div>
             </div>
-            <UButton
-              icon="heroicons:arrow-right-on-rectangle"
-              color="error"
-              variant="soft"
-              size="sm"
-              class="pe-2"
-              @click="handleLogout"
-            >
-              {{ t('logout') }}
-            </UButton>
+            <div class="flex items-center gap-2">
+              <!-- Switch mandate (mobile) -->
+              <NuxtLink
+                v-if="authStore.hasMandates"
+                to="/select-mandate"
+                class="p-2 text-header-300 hover:text-white hover:bg-header-700 rounded-lg transition-colors"
+                @click="emit('toggle-mobile-menu')"
+              >
+                <UIcon name="heroicons:arrows-right-left" class="w-5 h-5" />
+              </NuxtLink>
+              <UButton
+                icon="heroicons:arrow-right-on-rectangle"
+                color="error"
+                variant="soft"
+                size="sm"
+                class="pe-2"
+                @click="handleLogout"
+              >
+                {{ t('logout') }}
+              </UButton>
+            </div>
           </div>
         </div>
       </nav>

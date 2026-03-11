@@ -21,6 +21,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $idEvenement = null;
     private ?string $limitClubs = null;
     private ?string $club = null;
+    private ?int $activeMandateId = null;
+    private ?int $mandateNiveau = null;
+    private ?string $mandateFiltreCompetition = null;
+    private ?string $mandateFiltreSaison = null;
+    private ?string $mandateFiltreJournee = null;
+    private ?string $mandateIdEvenement = null;
+    private ?string $mandateLimitClubs = null;
 
     public function getCode(): string
     {
@@ -143,6 +150,34 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    // --- Mandate override ---
+
+    public function getActiveMandateId(): ?int
+    {
+        return $this->activeMandateId;
+    }
+
+    /**
+     * Apply mandate overrides to user filters.
+     * When a mandate is active, its filters replace the user's base filters.
+     */
+    public function applyMandate(int $mandateId, int $niveau, ?string $filtreSaison, ?string $filtreCompetition, ?string $limitClubs, ?string $filtreJournee, ?string $idEvenement): void
+    {
+        $this->activeMandateId = $mandateId;
+        $this->mandateNiveau = $niveau;
+        $this->mandateFiltreSaison = $filtreSaison;
+        $this->mandateFiltreCompetition = $filtreCompetition;
+        $this->mandateLimitClubs = $limitClubs;
+        $this->mandateFiltreJournee = $filtreJournee;
+        $this->mandateIdEvenement = $idEvenement;
+    }
+
+    /** Effective profile level (mandate overrides base) */
+    public function getEffectiveNiveau(): int
+    {
+        return $this->mandateNiveau ?? $this->niveau;
+    }
+
     // --- Filter parsing methods ---
 
     /**
@@ -172,32 +207,43 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /** @return string[]|null Allowed seasons, or null if unrestricted */
     public function getAllowedSeasons(): ?array
     {
+        if ($this->activeMandateId !== null) {
+            return self::parsePipeFilter($this->mandateFiltreSaison);
+        }
         return self::parsePipeFilter($this->filtreSaison);
     }
 
     /** @return string[]|null Allowed competition codes, or null if unrestricted */
     public function getAllowedCompetitions(): ?array
     {
+        if ($this->activeMandateId !== null) {
+            return self::parsePipeFilter($this->mandateFiltreCompetition);
+        }
         return self::parsePipeFilter($this->filtreCompetition);
     }
 
     /** @return int[]|null Allowed event IDs, or null if unrestricted */
     public function getAllowedEvents(): ?array
     {
-        $values = self::parsePipeFilter($this->idEvenement);
+        $raw = $this->activeMandateId !== null ? $this->mandateIdEvenement : $this->idEvenement;
+        $values = self::parsePipeFilter($raw);
         return $values !== null ? array_map('intval', $values) : null;
     }
 
     /** @return int[]|null Allowed journee IDs, or null if unrestricted */
     public function getAllowedJournees(): ?array
     {
-        $values = self::parseCommaFilter($this->filtreJournee);
+        $raw = $this->activeMandateId !== null ? $this->mandateFiltreJournee : $this->filtreJournee;
+        $values = self::parseCommaFilter($raw);
         return $values !== null ? array_map('intval', $values) : null;
     }
 
     /** @return string[]|null Allowed club codes, or null if unrestricted */
     public function getAllowedClubs(): ?array
     {
+        if ($this->activeMandateId !== null) {
+            return self::parseCommaFilter($this->mandateLimitClubs);
+        }
         return self::parseCommaFilter($this->limitClubs);
     }
 

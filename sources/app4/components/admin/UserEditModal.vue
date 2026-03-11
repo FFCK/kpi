@@ -227,8 +227,15 @@ async function loadUserDetail(code: string) {
 
 async function loadCompetitions() {
   try {
-    const data = await api.get<{ competitions: Competition[] }>('/admin/filters/competitions')
-    competitions.value = data.competitions || []
+    const data = await api.get<{ groups: { section: number; sectionLabel: string; competitions: { code: string; libelle: string; season?: string }[] }[] }>('/admin/filters/competitions', { allSeasons: '1' })
+    // Flatten grouped response into flat array with section info
+    const flat: Competition[] = []
+    for (const group of data.groups || []) {
+      for (const c of group.competitions) {
+        flat.push({ code: c.code, libelle: c.libelle, section: group.section, sectionLabel: group.sectionLabel })
+      }
+    }
+    competitions.value = flat
   } catch { /* ignore */ }
 }
 

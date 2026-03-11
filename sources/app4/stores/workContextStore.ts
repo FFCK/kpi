@@ -738,6 +738,20 @@ export const useWorkContextStore = defineStore('workContext', {
       localStorage.removeItem(STORAGE_KEYS.season)
     },
 
+    // Reset store so initContext() can run again (e.g. after user change)
+    resetForNewUser() {
+      this.initialized = false
+      this.initializing = false
+      this.loading = false
+      this.season = ''
+      this.seasons = []
+      this.groups = []
+      this.competitions = []
+      this.events = []
+      this.clearSelection()
+      localStorage.removeItem(STORAGE_KEYS.season)
+    },
+
     // Save to localStorage
     saveToStorage() {
       if (this.selectionType) {

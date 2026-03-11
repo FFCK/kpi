@@ -28,12 +28,16 @@ export const useApi = () => {
 
   // Get auth headers
   const getHeaders = (): HeadersInit => {
-    const headers: HeadersInit = {
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json'
     }
 
     if (authStore.token) {
       headers['Authorization'] = `Bearer ${authStore.token}`
+    }
+
+    if (authStore.activeMandate) {
+      headers['X-Active-Mandate'] = String(authStore.activeMandate.id)
     }
 
     return headers
@@ -275,7 +279,8 @@ export const useApi = () => {
           method: 'POST',
           headers: {
             // Don't set Content-Type for FormData - browser will set it with boundary
-            'Authorization': authStore.token ? `Bearer ${authStore.token}` : ''
+            'Authorization': authStore.token ? `Bearer ${authStore.token}` : '',
+            ...(authStore.activeMandate ? { 'X-Active-Mandate': String(authStore.activeMandate.id) } : {})
           },
           body: formData
         }),
@@ -353,7 +358,8 @@ export const useApi = () => {
         fetch(url, {
           method: 'GET',
           headers: {
-            'Authorization': authStore.token ? `Bearer ${authStore.token}` : ''
+            'Authorization': authStore.token ? `Bearer ${authStore.token}` : '',
+            ...(authStore.activeMandate ? { 'X-Active-Mandate': String(authStore.activeMandate.id) } : {})
           }
         }),
         new Promise<never>((_, reject) =>

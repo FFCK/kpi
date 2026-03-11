@@ -101,6 +101,10 @@ export const useAuthStore = defineStore('auth', {
         } else {
           localStorage.removeItem('kpi_admin_effective_filters')
         }
+
+        // Reset work context so it reloads with the new mandate's permissions
+        const workContext = useWorkContextStore()
+        workContext.resetForNewUser()
       }
     },
 
@@ -120,6 +124,10 @@ export const useAuthStore = defineStore('auth', {
         localStorage.removeItem('kpi_admin_active_mandate')
         localStorage.removeItem('kpi_admin_effective_profile')
         localStorage.removeItem('kpi_admin_effective_filters')
+
+        // Reset work context so it reloads with the new user's permissions
+        const workContext = useWorkContextStore()
+        workContext.resetForNewUser()
       }
     },
 

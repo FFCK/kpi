@@ -5,8 +5,16 @@ const workContext = useWorkContextStore()
 // Create API instance at setup time (required for Nuxt composables)
 const api = useApi()
 
+const authStore = useAuthStore()
+
 // Initialize context on mount
 onMounted(() => {
+  workContext.initContext()
+})
+
+// Re-initialize context when active mandate changes (mandate switch)
+watch(() => authStore.activeMandate, () => {
+  workContext.resetForNewUser()
   workContext.initContext()
 })
 

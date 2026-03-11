@@ -82,28 +82,65 @@ class AdminFiltersController extends AbstractController
         /** @var User $user */
         $user = $this->getUser();
 
+        $allSeasons = $request->query->getBoolean('allSeasons');
         $season = $request->query->get('season');
-        if (!$season) {
-            $season = $this->getActiveSeason();
-        }
-
-        // Check season access
         $allowedSeasons = $user->getAllowedSeasons();
-        if ($allowedSeasons !== null && !in_array($season, $allowedSeasons)) {
-            return $this->json(['message' => 'Access denied for this season'], 403);
+
+        if ($allSeasons) {
+            // Load competitions from all allowed seasons
+            if ($allowedSeasons !== null && count($allowedSeasons) > 0) {
+                $placeholders = implode(',', array_fill(0, count($allowedSeasons), '?'));
+                $whereClause = "c.Code_saison IN ($placeholders)";
+                $params = $allowedSeasons;
+            } else {
+                // No season restriction: load all seasons
+                $whereClause = "c.Code_saison > '1900'";
+                $params = [];
+            }
+        } else {
+            if (!$season) {
+                $season = $this->getActiveSeason();
+            }
+
+            // Check season access
+            if ($allowedSeasons !== null && !in_array($season, $allowedSeasons)) {
+                return $this->json(['message' => 'Access denied for this season'], 403);
+            }
+
+            $whereClause = 'c.Code_saison = ?';
+            $params = [$season];
         }
 
-        $sql = "SELECT c.Code, c.Libelle, c.Soustitre, c.Soustitre2,
-                       c.Titre_actif, c.Code_ref, c.Code_tour, c.Code_niveau,
-                       c.En_actif, c.Code_typeclt,
-                       g.section, g.ordre
-                FROM kp_competition c
-                LEFT JOIN kp_groupe g ON c.Code_ref = g.Groupe
-                WHERE c.Code_saison = ?
-                ORDER BY g.section, g.ordre,
-                    COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";
+        if ($allSeasons) {
+            // Deduplicate by Code, keeping the most recent season's data
+            $sql = "SELECT c.Code, c.Libelle, c.Soustitre, c.Soustitre2,
+                           c.Titre_actif, c.Code_ref, c.Code_tour, c.Code_niveau,
+                           c.En_actif, c.Code_typeclt, c.Code_saison,
+                           g.section, g.ordre
+                    FROM kp_competition c
+                    INNER JOIN (
+                        SELECT c.Code, MAX(c.Code_saison) AS max_saison
+                        FROM kp_competition c
+                        WHERE $whereClause
+                        GROUP BY c.Code
+                    ) latest ON c.Code = latest.Code AND c.Code_saison = latest.max_saison
+                    LEFT JOIN kp_groupe g ON c.Code_ref = g.Groupe
+                    ORDER BY g.section, g.ordre,
+                        COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";
+            // params are used in the subquery
+        } else {
+            $sql = "SELECT c.Code, c.Libelle, c.Soustitre, c.Soustitre2,
+                           c.Titre_actif, c.Code_ref, c.Code_tour, c.Code_niveau,
+                           c.En_actif, c.Code_typeclt, c.Code_saison,
+                           g.section, g.ordre
+                    FROM kp_competition c
+                    LEFT JOIN kp_groupe g ON c.Code_ref = g.Groupe
+                    WHERE $whereClause
+                    ORDER BY g.section, g.ordre,
+                        COALESCE(c.Code_ref, 'z'), c.Code_tour, c.GroupOrder, c.Code";
+        }
 
-        $result = $this->connection->executeQuery($sql, [$season]);
+        $result = $this->connection->executeQuery($sql, $params);
         $rows = $result->fetchAllAssociative();
 
         $allowedCompetitions = $user->getAllowedCompetitions();
@@ -126,7 +163,7 @@ class AdminFiltersController extends AbstractController
                 ];
             }
 
-            $groups[$section]['competitions'][] = [
+            $competition = [
                 'code' => $row['Code'],
                 'libelle' => $row['Libelle'],
                 'soustitre' => $row['Soustitre'] ?: null,
@@ -136,12 +173,18 @@ class AdminFiltersController extends AbstractController
                 'codeTypeclt' => $row['Code_typeclt'] ?: null,
                 'codeRef' => $row['Code_ref'] ?: null,
             ];
+            if ($allSeasons) {
+                $competition['season'] = $row['Code_saison'];
+            }
+            $groups[$section]['competitions'][] = $competition;
         }
 
-        return $this->json([
-            'season' => $season,
-            'groups' => array_values($groups),
-        ]);
+        $response = ['groups' => array_values($groups)];
+        if (!$allSeasons) {
+            $response['season'] = $season;
+        }
+
+        return $this->json($response);
     }
 
     /**

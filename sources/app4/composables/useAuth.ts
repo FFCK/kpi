@@ -1,19 +1,28 @@
-import type { AuthResponse } from '~/types'
 import type { MandateSummary, MandateFilters } from '~/types/users'
 
-interface LoginResponse extends AuthResponse {
-  hasMandates?: boolean
-  mandates?: MandateSummary[]
-  activeMandate?: { id: number; libelle: string } | null
-  effectiveProfile?: number
-  effectiveFilters?: MandateFilters
+interface LoginResponse {
+  token: string
+  user: {
+    id: string
+    name: string
+    firstname: string
+    profile: number
+    filters: MandateFilters
+    mandates: MandateSummary[]
+    activeMandate: { id: number; libelle: string } | null
+    effectiveProfile: number
+    effectiveFilters: MandateFilters
+  }
+  hasMandates: boolean
 }
 
 interface SwitchMandateResponse {
   token: string
-  activeMandate: { id: number; libelle: string } | null
-  effectiveProfile: number
-  effectiveFilters: MandateFilters | null
+  user: {
+    activeMandate: { id: number; libelle: string } | null
+    effectiveProfile: number
+    effectiveFilters: MandateFilters | null
+  }
 }
 
 export const useAuth = () => {
@@ -45,13 +54,13 @@ export const useAuth = () => {
       authStore.setAuth(
         data.user,
         data.token,
-        data.mandates,
-        data.activeMandate,
-        data.effectiveProfile,
-        data.effectiveFilters
+        data.user.mandates,
+        data.user.activeMandate,
+        data.user.effectiveProfile,
+        data.user.effectiveFilters
       )
 
-      return { hasMandates: data.hasMandates ?? false }
+      return { hasMandates: data.hasMandates }
     } catch (error) {
       authStore.clearAuth()
       throw error
@@ -105,9 +114,9 @@ export const useAuth = () => {
 
     authStore.setMandate(
       data.token,
-      data.activeMandate,
-      data.effectiveProfile,
-      data.effectiveFilters
+      data.user.activeMandate,
+      data.user.effectiveProfile,
+      data.user.effectiveFilters
     )
   }
 
