@@ -31,6 +31,7 @@ const router = useRouter()
 const authStore = useAuthStore()
 const route = useRoute()
 const { isOnline } = useOnlineStatus()
+const runtimeConfig = useRuntimeConfig()
 
 const languages = [
   { code: 'fr', label: 'FR', flag: '🇫🇷' },
@@ -304,6 +305,17 @@ onMounted(() => {
 
         <!-- Center: Horizontal menu (desktop only) -->
         <nav ref="navRef" class="hidden lg:flex items-center space-x-1">
+          <!-- Section: Public -->
+          <a
+            :href="runtimeConfig.public.legacyBaseUrl"
+            target="_blank"
+            class="flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium transition-colors
+              text-success-300 hover:text-light-50 hover:bg-success-800
+            "
+          >
+            <UIcon name="heroicons:arrow-top-right-on-square" class="w-4 h-4" />
+            <span>KPI Public</span>
+          </a>
           <!-- Section: Competition Management -->
           <template v-for="item in competitionMenuItems" :key="item.label">
             <NuxtLink
@@ -484,6 +496,15 @@ onMounted(() => {
         class="lg:hidden py-4 border-t border-header-800 relative z-50"
       >
         <div class="px-4 pb-2 space-y-1">
+          <!-- Section: Public -->
+          <a
+            :href="runtimeConfig.public.legacyBaseUrl"
+            target="_blank"
+            class="flex items-center gap-2 py-2 text-sm font-medium transition-colors text-success-300 hover:text-success-100"
+          >
+            <UIcon name="heroicons:arrow-top-right-on-square" class="w-5 h-5" />
+            <span>KPI Public</span>
+          </a>
           <!-- Section: Competition Management -->
           <template v-for="item in competitionMenuItems" :key="item.label">
             <NuxtLink
