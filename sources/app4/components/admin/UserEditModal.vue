@@ -790,6 +790,15 @@ onBeforeUnmount(() => {
               <span v-if="mandate.filtreCompetition" class="text-header-400 ml-2 text-xs">
                 {{ mandate.filtreCompetition.split('|').filter(v => v).join(', ') }}
               </span>
+              <span v-if="mandate.limitClubs" class="text-orange-500 ml-2 text-xs" :title="t('users.modal.filter_clubs')">
+                {{ t('users.modal.filter_clubs') }}: {{ mandate.limitClubs }}
+              </span>
+              <span v-if="mandate.filtreJournee" class="text-orange-500 ml-2 text-xs" :title="t('users.modal.filter_gamedays')">
+                {{ t('users.modal.filter_gamedays') }}: {{ mandate.filtreJournee }}
+              </span>
+              <span v-if="mandate.idEvenement" class="text-orange-500 ml-2 text-xs" :title="t('users.modal.filter_events')">
+                {{ t('users.modal.filter_events') }}: {{ mandate.idEvenement.split('|').filter(v => v).join(', ') }}
+              </span>
             </div>
             <button
               class="p-1 text-danger-500 hover:text-danger-700"

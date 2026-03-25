@@ -325,7 +325,7 @@ const profileOptions = computed(() => {
                   :title="t('common.edit')"
                   @click="openEditModal(user)"
                 >
-                  <UIcon name="i-heroicons-pencil-square" class="w-4 h-4" />
+                  <UIcon name="i-heroicons-pencil-square" class="w-5 h-5" />
                 </button>
                 <button
                   v-if="canDelete"
@@ -333,7 +333,7 @@ const profileOptions = computed(() => {
                   :title="t('common.delete')"
                   @click="confirmDeleteUser(user)"
                 >
-                  <UIcon name="i-heroicons-trash" class="w-4 h-4" />
+                  <UIcon name="i-heroicons-trash" class="w-5 h-5" />
                 </button>
               </div>
             </td>

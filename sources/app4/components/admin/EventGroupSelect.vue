@@ -103,7 +103,8 @@ watch(
 <template>
   <select
     :value="workContext.pageEventGroupSelection"
-    class="w-full px-3 py-2 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+    class="w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-primary-500"
+    :class="workContext.pageEventGroupSelection ? 'border-warning-400 bg-warning-50' : 'border-header-300'"
     @change="onSelectionChange(($event.target as HTMLSelectElement).value)"
   >
     <option value="">{{ t('eventGroupSelect.all') }}</option>

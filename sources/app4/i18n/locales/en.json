@@ -50,7 +50,7 @@
     "error_profile_restricted": "Access restricted to profile 1 during beta phase",
     "error_generic": "Login error. Please try again.",
     "beta_title": "Beta Version",
-    "beta_message": "Access limited to profile 1 (Super Admin) only."
+    "beta_message": "Please report any difficulties to the developer."
   },
   "dashboard": {
     "title": "Dashboard",
@@ -66,7 +66,7 @@
     "view_statistics": "View statistics",
     "system_operations": "System operations",
     "beta_notice_title": "Beta Version",
-    "beta_notice_message": "This new administration interface is under development. Only profile 1 has access during the testing phase."
+    "beta_notice_message": "This new administration interface is under development. Thanks for reporting any issue."
   },
   "events": {
     "title": "Event Management",
@@ -1259,7 +1259,7 @@
       "referee_1": "Referee 1",
       "referee_2": "Referee 2",
       "actions": "Actions",
-      "printed": "Print",
+      "printed": "Printed",
       "date": "Date",
       "date_time": "Date Time",
       "interval": "Interval (min)",
@@ -1643,7 +1643,7 @@
       "rule_special": "1 special character (!{'@'}#$%...)"
     },
     "select_mandate": {
-      "title": "Choose a work context",
+      "title": "Choose a mandate",
       "subtitle": "Logged in as {name}",
       "base_profile": "Base profile",
       "continue": "Continue",

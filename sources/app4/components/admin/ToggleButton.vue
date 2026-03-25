@@ -7,6 +7,7 @@ interface Props {
   activeTitle?: string
   inactiveTitle?: string
   size?: 'sm' | 'md' | 'lg'
+  disabled?: boolean
 }
 
 withDefaults(defineProps<Props>(), {
@@ -16,7 +17,8 @@ withDefaults(defineProps<Props>(), {
   activeColor: 'success',
   activeTitle: '',
   inactiveTitle: '',
-  size: 'md'
+  size: 'md',
+  disabled: false
 })
 
 const emit = defineEmits<{
@@ -41,10 +43,12 @@ const sizeClasses = {
   <button
     :class="[
       'p-1 transition-colors',
-      active ? activeColorClasses[activeColor] : 'text-header-400 hover:text-header-500'
+      active ? activeColorClasses[activeColor] : 'text-header-400',
+      disabled ? 'opacity-40 cursor-not-allowed' : 'hover:opacity-80'
     ]"
     :title="active ? activeTitle : inactiveTitle"
-    @click="emit('toggle')"
+    :disabled="disabled"
+    @click="!disabled && emit('toggle')"
   >
     <UIcon
       :name="active ? activeIcon : inactiveIcon"

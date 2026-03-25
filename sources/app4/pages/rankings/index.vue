@@ -31,7 +31,7 @@ const ranking = ref<RankingTeam[]>([])
 const phases = ref<RankingPhase[]>([])
 
 // Active tab: 'computed' or 'published'
-const activeTab = ref<'computed' | 'published'>('computed')
+const activeTab = ref<'computed' | 'published'>(authStore.profile <= 6 ? 'computed' : 'published')
 
 // Selected ranking type (profil ≤ 3 can change it)
 const selectedType = ref<CompetitionType | ''>('')
@@ -84,6 +84,7 @@ const pdfDropdownStyle = ref<Record<string, string>>({})
 const pdfDropdownMode = ref<'admin' | 'public'>('admin')
 
 // Permission checks
+const canViewComputed = computed(() => authStore.profile <= 6)
 const canCompute = computed(() => authStore.profile <= 6)
 const canEditInline = computed(() => authStore.profile <= 4 && competitionInfo.value?.statut === 'ON')
 const canPublish = computed(() => authStore.profile <= 4 && competitionInfo.value?.statut === 'ON')
@@ -664,6 +665,7 @@ const editValueForField = (field: string, value: number): string => {
       <div class="mb-4 bg-white rounded-lg shadow">
         <div class="flex border-b border-header-200">
           <button
+            v-if="canViewComputed"
             class="flex-1 px-4 py-3 text-sm font-medium text-center transition-colors"
             :class="activeTab === 'computed' ? 'text-white bg-primary-700 border-b-2 border-primary-700' : 'text-primary-600 bg-primary-100 hover:bg-primary-200'"
             @click="activeTab = 'computed'"
@@ -680,7 +682,7 @@ const editValueForField = (field: string, value: number): string => {
         </div>
 
         <!-- ═══ COMPUTED TAB ═══ -->
-        <div v-if="activeTab === 'computed'" class="p-4">
+        <div v-if="activeTab === 'computed' && canViewComputed" class="p-4">
           <!-- Compute info + Toolbar on same line -->
           <div class="mb-4 flex flex-wrap items-center gap-3">
             <!-- LEFT: Compute info -->
@@ -1255,7 +1257,7 @@ const editValueForField = (field: string, value: number): string => {
         <!-- ═══ PUBLISHED TAB ═══ -->
         <div v-if="activeTab === 'published'" class="p-4">
           <!-- Publication info + Toolbar on same line -->
-          <div class="mb-4 flex flex-wrap items-center gap-3">
+          <div v-if="canViewComputed" class="mb-4 flex flex-wrap items-center gap-3">
             <!-- LEFT: Publication info -->
             <div class="p-3 bg-header-50 rounded-lg">
               <template v-if="competitionInfo.datePublication">

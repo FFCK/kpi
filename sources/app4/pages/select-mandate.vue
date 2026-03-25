@@ -4,8 +4,13 @@ definePageMeta({
   middleware: 'auth'
 })
 
-const { t } = useI18n()
+const { t, locale, setLocale } = useI18n()
 const { switchMandate } = useAuth()
+
+const languages = [
+  { code: 'fr', label: 'FR', flag: '🇫🇷' },
+  { code: 'en', label: 'EN', flag: '🇬🇧' }
+]
 const authStore = useAuthStore()
 const router = useRouter()
 
@@ -45,6 +50,24 @@ const profileLabel = (niveau: number) => {
 
 <template>
   <div class="min-h-screen flex items-center justify-center px-4">
+    <!-- Language switcher -->
+    <div class="fixed top-4 right-4 flex gap-2">
+      <button
+        v-for="lang in languages"
+        :key="lang.code"
+        :class="[
+          'text-2xl transition-all duration-200 cursor-pointer',
+          locale === lang.code
+            ? 'opacity-100 scale-110 drop-shadow-lg'
+            : 'opacity-50 hover:opacity-75 hover:scale-105'
+        ]"
+        :title="lang.label"
+        @click="setLocale(lang.code as 'en' | 'fr')"
+      >
+        {{ lang.flag }}
+      </button>
+    </div>
+
     <div class="w-full max-w-lg">
       <!-- Header -->
       <div class="text-center mb-8">
@@ -97,14 +120,26 @@ const profileLabel = (niveau: number) => {
               <div class="text-sm text-header-500 mt-0.5">
                 {{ profileLabel(mandate.niveau) }}
               </div>
-              <div v-if="mandate.filters.seasons?.length || mandate.filters.competitions?.length" class="text-xs text-header-400 mt-1">
-                <span v-if="mandate.filters.seasons?.length">
-                  {{ t('users.select_mandate.seasons') }}: {{ mandate.filters.seasons.join(', ') }}
-                </span>
-                <span v-if="mandate.filters.seasons?.length && mandate.filters.competitions?.length"> · </span>
-                <span v-if="mandate.filters.competitions?.length">
-                  {{ t('users.select_mandate.competitions') }}: {{ mandate.filters.competitions.join(', ') }}
-                </span>
+              <div v-if="mandate.filters.seasons?.length || mandate.filters.competitions?.length || mandate.filters.clubs?.length || mandate.filters.journees?.length || mandate.filters.events?.length" class="text-xs text-header-400 mt-1 space-y-0.5">
+                <div v-if="mandate.filters.seasons?.length || mandate.filters.competitions?.length" class="flex flex-wrap gap-x-2">
+                  <span v-if="mandate.filters.seasons?.length">
+                    {{ t('users.select_mandate.seasons') }}: {{ mandate.filters.seasons.join(', ') }}
+                  </span>
+                  <span v-if="mandate.filters.competitions?.length">
+                    {{ t('users.select_mandate.competitions') }}: {{ mandate.filters.competitions.join(', ') }}
+                  </span>
+                </div>
+                <div v-if="mandate.filters.clubs?.length || mandate.filters.journees?.length || mandate.filters.events?.length" class="flex flex-wrap gap-x-2 text-orange-500">
+                  <span v-if="mandate.filters.clubs?.length">
+                    {{ t('users.modal.filter_clubs') }}: {{ mandate.filters.clubs.join(', ') }}
+                  </span>
+                  <span v-if="mandate.filters.journees?.length">
+                    {{ t('users.modal.filter_gamedays') }}: {{ mandate.filters.journees.join(', ') }}
+                  </span>
+                  <span v-if="mandate.filters.events?.length">
+                    {{ t('users.modal.filter_events') }}: {{ mandate.filters.events.join(', ') }}
+                  </span>
+                </div>
               </div>
             </div>
             <UIcon name="i-heroicons-identification" class="w-8 h-8 text-primary-400" />

@@ -943,7 +943,8 @@ const printJurySheet = (gamedayId: number) => {
                   active-color="success"
                   :active-title="t('gamedays.published')"
                   :inactive-title="t('gamedays.unpublished')"
-                  @toggle="canEdit && togglePublication(g)"
+                  :disabled="!canEdit"
+                  @toggle="togglePublication(g)"
                 />
               </td>
               <!-- Id -->
@@ -1048,7 +1049,8 @@ const printJurySheet = (gamedayId: number) => {
                 <button
                   :title="g.type === 'C' ? t('gamedays.field.type_c') : t('gamedays.field.type_e')"
                   class="p-1 rounded"
-                  :class="canEdit ? 'hover:bg-header-100 cursor-pointer' : 'cursor-default'"
+                  :class="canEdit ? 'hover:bg-header-100 cursor-pointer' : 'opacity-40 cursor-not-allowed'"
+                  :disabled="!canEdit"
                   @click="canEdit && toggleType(g)"
                 >
                   <UIcon

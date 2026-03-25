@@ -20,7 +20,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * (kp_competition_equipe_joueur, kp_match_joueur tables)
  * Migrated from GestionEquipeJoueur.php and GestionMatchEquipeJoueur.php
  */
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted('ROLE_TEAM')]
 #[OA\Tag(name: '27. App4 - Presence')]
 class AdminPresenceController extends AbstractController
 {
@@ -160,6 +160,11 @@ class AdminPresenceController extends AbstractController
             return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
         }
 
+        $allowedClubs = $user->getAllowedClubs();
+        if ($allowedClubs !== null && !in_array($teamInfo['code_club'], $allowedClubs)) {
+            return $this->json(['message' => 'Access denied to this team'], Response::HTTP_FORBIDDEN);
+        }
+
         $mode = $data['mode'] ?? 'existing';
         $matric = null;
 
@@ -295,6 +300,11 @@ class AdminPresenceController extends AbstractController
             return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
         }
 
+        $allowedClubs = $user->getAllowedClubs();
+        if ($allowedClubs !== null && !in_array($teamInfo['code_club'], $allowedClubs)) {
+            return $this->json(['message' => 'Access denied to this team'], Response::HTTP_FORBIDDEN);
+        }
+
         $updateData = [];
         if (isset($data['numero'])) {
             $updateData['Numero'] = (int) $data['numero'];
@@ -352,6 +362,11 @@ class AdminPresenceController extends AbstractController
         $user = $this->getUser();
         if (!$user || $user->getNiveau() > 8) {
             return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
+        }
+
+        $allowedClubs = $user->getAllowedClubs();
+        if ($allowedClubs !== null && !in_array($teamInfo['code_club'], $allowedClubs)) {
+            return $this->json(['message' => 'Access denied to this team'], Response::HTTP_FORBIDDEN);
         }
 
         $placeholders = implode(',', array_fill(0, count($matricIds), '?'));

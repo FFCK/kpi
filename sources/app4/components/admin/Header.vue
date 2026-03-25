@@ -30,6 +30,12 @@ const { logout } = useAuth()
 const router = useRouter()
 const authStore = useAuthStore()
 const route = useRoute()
+
+const activeMandateSummary = computed(() =>
+  authStore.activeMandate
+    ? authStore.mandates.find(m => m.id === authStore.activeMandate!.id) ?? null
+    : null
+)
 const { isOnline } = useOnlineStatus()
 const runtimeConfig = useRuntimeConfig()
 
@@ -444,7 +450,7 @@ onMounted(() => {
                   <div class="text-sm font-medium text-header-900">
                     {{ user?.name }} {{ user?.firstname }}
                   </div>
-                  <div class="text-xs text-header-500 mt-1">
+                  <div v-if="!authStore.activeMandate" class="text-xs text-header-500 mt-1">
                     {{ t('profile') }} {{ user?.profile }}
                   </div>
                   <!-- Active mandate display -->
@@ -452,6 +458,11 @@ onMounted(() => {
                     <div class="font-medium">{{ t('users.header.current_mandate') }}</div>
                     <div>{{ authStore.activeMandate.libelle }}</div>
                     <div class="text-primary-500">{{ t(`users.profiles.${authStore.effectiveProfile}`) }}</div>
+                    <div v-if="activeMandateSummary?.filters.clubs?.length || activeMandateSummary?.filters.journees?.length || activeMandateSummary?.filters.events?.length" class="text-orange-500 mt-0.5 space-y-0.5">
+                      <div v-if="activeMandateSummary.filters.clubs?.length">{{ t('users.modal.filter_clubs') }}: {{ activeMandateSummary.filters.clubs.join(', ') }}</div>
+                      <div v-if="activeMandateSummary.filters.journees?.length">{{ t('users.modal.filter_gamedays') }}: {{ activeMandateSummary.filters.journees.join(', ') }}</div>
+                      <div v-if="activeMandateSummary.filters.events?.length">{{ t('users.modal.filter_events') }}: {{ activeMandateSummary.filters.events.join(', ') }}</div>
+                    </div>
                   </div>
                 </div>
 
@@ -573,13 +584,18 @@ onMounted(() => {
               <div class="text-sm font-medium text-white">
                 {{ user?.name }} {{ user?.firstname }}
               </div>
-              <div class="text-xs text-header-400">
+              <div v-if="!authStore.activeMandate" class="text-xs text-header-400">
                 {{ t('profile') }} {{ user?.profile }}
               </div>
               <!-- Active mandate display (mobile) -->
               <div v-if="authStore.activeMandate" class="mt-1 px-2 py-0.5 bg-primary-900 rounded text-xs text-primary-200">
                 <div>{{ authStore.activeMandate.libelle }}</div>
                 <div class="text-primary-400">{{ t(`users.profiles.${authStore.effectiveProfile}`) }}</div>
+                <div v-if="activeMandateSummary?.filters.clubs?.length || activeMandateSummary?.filters.journees?.length || activeMandateSummary?.filters.events?.length" class="text-orange-300 mt-0.5 space-y-0.5">
+                  <div v-if="activeMandateSummary.filters.clubs?.length">{{ t('users.modal.filter_clubs') }}: {{ activeMandateSummary.filters.clubs.join(', ') }}</div>
+                  <div v-if="activeMandateSummary.filters.journees?.length">{{ t('users.modal.filter_gamedays') }}: {{ activeMandateSummary.filters.journees.join(', ') }}</div>
+                  <div v-if="activeMandateSummary.filters.events?.length">{{ t('users.modal.filter_events') }}: {{ activeMandateSummary.filters.events.join(', ') }}</div>
+                </div>
               </div>
             </div>
             <div class="flex items-center gap-2">

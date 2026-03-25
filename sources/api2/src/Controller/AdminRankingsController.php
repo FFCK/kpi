@@ -20,7 +20,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Migrated from GestionClassement.php and GestionClassementInit.php
  */
 #[Route('/admin/rankings')]
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted('ROLE_TEAM')]
 #[OA\Tag(name: '30. App4 - Rankings')]
 class AdminRankingsController extends AbstractController
 {

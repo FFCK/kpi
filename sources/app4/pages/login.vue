@@ -4,8 +4,13 @@ definePageMeta({
   middleware: 'auth'
 })
 
-const { t } = useI18n()
+const { t, locale, setLocale } = useI18n()
 const { login } = useAuth()
+
+const languages = [
+  { code: 'fr', label: 'FR', flag: '🇫🇷' },
+  { code: 'en', label: 'EN', flag: '🇬🇧' }
+]
 
 const form = ref({
   username: '',
@@ -46,6 +51,24 @@ const handleSubmit = async () => {
 
 <template>
   <div class="min-h-screen flex items-center justify-center px-4">
+    <!-- Language switcher -->
+    <div class="fixed top-4 right-4 flex gap-2">
+      <button
+        v-for="lang in languages"
+        :key="lang.code"
+        :class="[
+          'text-2xl transition-all duration-200 cursor-pointer',
+          locale === lang.code
+            ? 'opacity-100 scale-110 drop-shadow-lg'
+            : 'opacity-50 hover:opacity-75 hover:scale-105'
+        ]"
+        :title="lang.label"
+        @click="setLocale(lang.code as 'en' | 'fr')"
+      >
+        {{ lang.flag }}
+      </button>
+    </div>
+
     <div class="w-full max-w-md">
       <!-- Logo -->
       <div class="text-center mb-8">

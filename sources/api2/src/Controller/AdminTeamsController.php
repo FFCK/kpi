@@ -20,7 +20,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * (kp_competition_equipe, kp_equipe tables)
  * Migrated from GestionEquipe.php
  */
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted('ROLE_TEAM')]
 #[OA\Tag(name: '26. App4 - Teams')]
 class AdminTeamsController extends AbstractController
 {

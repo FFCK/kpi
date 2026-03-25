@@ -129,7 +129,7 @@ const legacyBase = computed(() => useRuntimeConfig().public.legacyBaseUrl || 'ht
 
 // ─── Permissions ───
 const canEdit = computed(() => authStore.profile <= 6)
-const canEditScores = computed(() => authStore.profile <= 9)
+const canEditScores = computed(() => authStore.profile <= 6 || authStore.profile === 9)
 const canLock = computed(() => authStore.profile <= 4)
 const canSelect = computed(() => authStore.profile <= 6)
 // ─── Default form data ───
@@ -1084,7 +1084,7 @@ const statusBtnClass = (game: Game) => {
         <!-- Tour -->
         <div>
           <label class="block text-xs font-medium text-header-500 mb-1">{{ t('games.filter_round') }}</label>
-          <select v-model="selectedTour" class="w-full px-3 py-2 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+          <select v-model="selectedTour" class="w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-primary-500" :class="selectedTour ? 'border-warning-400 bg-warning-50' : 'border-header-300'">
             <option value="">{{ t('games.all_rounds') }}</option>
             <option v-for="n in 5" :key="n" :value="String(n)">{{ t('games.round_n', { n }) }}</option>
           </select>
@@ -1093,7 +1093,7 @@ const statusBtnClass = (game: Game) => {
         <!-- Journee -->
         <div class="min-w-48">
           <label class="block text-xs font-medium text-header-500 mb-1">{{ t('games.filter_journee') }}</label>
-          <select v-model="selectedJournee" class="w-full px-3 py-2 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+          <select v-model="selectedJournee" class="w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-primary-500" :class="selectedJournee !== '*' ? 'border-warning-400 bg-warning-50' : 'border-header-300'">
             <option value="*">{{ t('games.all_journees') }}</option>
             <option v-for="j in journees" :key="j.id" :value="String(j.id)">{{ journeeLabel(j) }}</option>
           </select>
@@ -1102,7 +1102,7 @@ const statusBtnClass = (game: Game) => {
         <!-- Date -->
         <div>
           <label class="block text-xs font-medium text-header-500 mb-1">{{ t('games.filter_date') }}</label>
-          <select v-model="selectedDate" class="w-full px-3 py-2 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+          <select v-model="selectedDate" class="w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-primary-500" :class="selectedDate ? 'border-warning-400 bg-warning-50' : 'border-header-300'">
             <option value="">{{ t('games.all_dates') }}</option>
             <option v-for="d in availableDates" :key="d" :value="d">{{ formatDate(d) }}</option>
           </select>
@@ -1111,7 +1111,7 @@ const statusBtnClass = (game: Game) => {
         <!-- Terrain -->
         <div>
           <label class="block text-xs font-medium text-header-500 mb-1">{{ t('games.filter_terrain') }}</label>
-          <select v-model="selectedTerrain" class="w-full px-3 py-2 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+          <select v-model="selectedTerrain" class="w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-primary-500" :class="selectedTerrain ? 'border-warning-400 bg-warning-50' : 'border-header-300'">
             <option value="">{{ t('games.all_terrains') }}</option>
             <option v-for="n in 8" :key="n" :value="String(n)">{{ n }}</option>
           </select>
@@ -1120,7 +1120,7 @@ const statusBtnClass = (game: Game) => {
         <!-- Sort -->
         <div>
           <label class="block text-xs font-medium text-header-500 mb-1">{{ t('games.filter_sort') }}</label>
-          <select v-model="selectedSort" class="w-full px-3 py-2 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+          <select v-model="selectedSort" class="w-full px-3 py-2 text-sm border rounded-lg focus:ring-2 focus:ring-primary-500" :class="selectedSort !== 'date_time_terrain' ? 'border-warning-400 bg-warning-50' : 'border-header-300'">
             <option value="date_time_terrain">{{ t('games.sort.date_time_terrain') }}</option>
             <option value="competition_date">{{ t('games.sort.competition_date') }}</option>
             <option value="competition_phase">{{ t('games.sort.competition_phase') }}</option>
@@ -1130,7 +1130,7 @@ const statusBtnClass = (game: Game) => {
         </div>
 
         <!-- Unlocked only checkbox -->
-        <label class="flex items-center gap-1.5 px-3 py-2 text-sm cursor-pointer" :class="unlockedOnly ? 'text-primary-700 font-medium' : 'text-header-600'">
+        <label class="flex items-center gap-1.5 px-3 py-2 text-sm cursor-pointer rounded-lg border" :class="unlockedOnly ? 'text-warning-700 font-medium border-warning-400 bg-warning-50' : 'text-header-600 border-transparent'">
           <input v-model="unlockedOnly" type="checkbox" class="rounded border-header-300 text-primary-600">
           {{ t('games.unlocked_only') }}
         </label>
@@ -1392,7 +1392,9 @@ const statusBtnClass = (game: Game) => {
               <!-- N° -->
               <th class="w-10 px-1 py-2 text-center text-header-500 font-medium">{{ t('games.field.number') }}</th>
               <!-- Actions -->
-              <th v-if="canEdit" colspan="2" class="w-20 px-1 py-2 text-center text-header-500 font-medium">{{ t('games.field.actions') }}</th>
+              <th v-if="canEdit" class="w-10 px-1 py-2 text-center text-header-500 font-medium">{{ t('games.field.actions') }}</th>
+              <!-- Scoresheets -->
+              <th v-if="canEdit || canEditScores" class="w-10 px-1 py-2 text-center text-header-500 font-medium">{{ t('games.field.actions') }}</th>
               <!-- Time -->
               <th class="px-1 py-2 text-left text-header-500 font-medium">{{ t('games.field.date_time') }}</th>
               <!-- Terrain -->
@@ -1473,7 +1475,8 @@ const statusBtnClass = (game: Game) => {
                   size="md"
                   :active-title="t('games.published')"
                   :inactive-title="t('games.unpublished')"
-                  @toggle="canEdit && togglePublication(g)"
+                  :disabled="!canEdit"
+                  @toggle="togglePublication(g)"
                 />
               </td>
 
@@ -1506,19 +1509,19 @@ const statusBtnClass = (game: Game) => {
                   <span class="text-xs text-header-700">Edit</span>
                 </button>
               </td>
-              <td v-if="canEdit" class="px-1 py-1 text-center" @click.stop>
+              <td v-if="canEdit || canEditScores" class="px-1 py-1 text-center" @click.stop>
                 <div class="flex items-center text-center gap-0.5">
-                  <a :href="`${legacyBase}/admin/FeuilleMatchMulti.php?listMatch=${g.id}`" target="_blank" :title="t('games.scoresheet_pdf')" class="p-0.5 text-danger-600 hover:text-danger-800">
+                  <a v-if="canEdit" :href="`${legacyBase}/admin/FeuilleMatchMulti.php?listMatch=${g.id}`" target="_blank" :title="t('games.scoresheet_pdf')" class="p-0.5 text-danger-600 hover:text-danger-800">
                     <UIcon name="heroicons:document-text" class="w-6 h-6" />
                     <br>
                     <span class="text-xs text-header-700">PDF</span>
                   </a>
-                  <a v-if="authStore.profile <= 2" :href="`${legacyBase}/admin/FeuilleMarque2.php?idMatch=${g.id}`" target="_blank" :title="t('games.scoresheet_online_v2')" class="p-0.5 text-primary-400 hover:text-primary-600">
+                  <a v-if="canEditScores" :href="`${legacyBase}/admin/FeuilleMarque2.php?idMatch=${g.id}`" target="_blank" :title="t('games.scoresheet_online_v2')" class="p-0.5 text-primary-400 hover:text-primary-600">
                     <UIcon name="heroicons:device-tablet" class="w-6 h-6" />
                     <br>
                     <span class="text-xs text-header-700">V2</span>
                   </a>
-                  <a v-if="authStore.profile <= 2" :href="`${legacyBase}/admin/FeuilleMarque3.php?idMatch=${g.id}`" target="_blank" :title="t('games.scoresheet_online_v3')" class="p-0.5 text-primary-500 hover:text-primary-700">
+                  <a v-if="canEditScores" :href="`${legacyBase}/admin/FeuilleMarque3.php?idMatch=${g.id}`" target="_blank" :title="t('games.scoresheet_online_v3')" class="p-0.5 text-primary-500 hover:text-primary-700">
                     <UIcon name="heroicons:device-tablet" class="w-6 h-6" />
                     <br>
                     <span class="text-xs text-header-700">V3</span>
@@ -1695,7 +1698,7 @@ const statusBtnClass = (game: Game) => {
                     :title="t('presence.title_match')"
                     @click.stop
                   >
-                    <UIcon name="heroicons:user-group" class="w-4 h-4 mt-2 me-4" />
+                    <UIcon name="heroicons:user-group" class="w-5 h-5 mt-2 me-4" />
                   </NuxtLink>
                 </template>
               </td>
@@ -1822,7 +1825,7 @@ const statusBtnClass = (game: Game) => {
                     :title="t('presence.title_match')"
                     @click.stop
                   >
-                    <UIcon name="heroicons:user-group" class="w-4 h-4 mt-2 ms-4" />
+                    <UIcon name="heroicons:user-group" class="w-5 h-5 mt-2 ms-4" />
                   </NuxtLink>
                 </template>
               </td>
@@ -1913,7 +1916,10 @@ const statusBtnClass = (game: Game) => {
                   inactive-icon="heroicons:inbox-arrow-down"
                   active-color="success"
                   size="sm"
-                  @toggle="isGameEditable(g) && togglePrinted(g)"
+                  :active-title="t('games.field.printed')"
+                  :inactive-title="t('games.field.printed')"
+                  :disabled="!canLock || !g.authorized"
+                  @toggle="togglePrinted(g)"
                 />
                 <!-- Coefficients -->
                 <div v-if="g.coeffA !== 1 || g.coeffB !== 1" class="text-[9px] text-purple-500 leading-tight">

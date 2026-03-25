@@ -50,7 +50,7 @@
     "error_profile_restricted": "Accès restreint au profil 1 pendant la phase beta",
     "error_generic": "Erreur de connexion. Veuillez réessayer.",
     "beta_title": "Version Beta",
-    "beta_message": "Accès limité au profil 1 (Super Admin) uniquement."
+    "beta_message": "Merci d'indiquer au développeur toute difficulté rencontrée."
   },
   "dashboard": {
     "title": "Tableau de bord",
@@ -66,7 +66,7 @@
     "view_statistics": "Voir les statistiques",
     "system_operations": "Opérations système",
     "beta_notice_title": "Version Beta",
-    "beta_notice_message": "Cette nouvelle interface d'administration est en cours de développement. Seul le profil 1 y a accès pendant la phase de test."
+    "beta_notice_message": "Cette nouvelle interface d'administration est en cours de développement. Merci de signaler toute difficulté."
   },
   "events": {
     "title": "Gestion des événements",
@@ -1034,7 +1034,7 @@
   },
   "presence": {
     "title_team": "Feuille de Présence - Équipe",
-    "title_match": "Feuille de Match",
+    "title_match": "Compo pour le match",
     "search_player": "Rechercher un joueur",
     "add_player": "Ajouter un joueur",
     "add_existing_player": "Ajouter un joueur existant",
@@ -1271,7 +1271,7 @@
       "referee_1": "Arbitre 1",
       "referee_2": "Arbitre 2",
       "actions": "Actions",
-      "printed": "Impr.",
+      "printed": "Imprimé",
       "date": "Date",
       "date_time": "Date Heure",
       "interval": "Intervalle (min)",
@@ -1655,7 +1655,7 @@
       "rule_special": "1 caractère spécial (!{'@'}#$%...)"
     },
     "select_mandate": {
-      "title": "Choisir un cadre de travail",
+      "title": "Choisir un mandat",
       "subtitle": "Connecté en tant que {name}",
       "base_profile": "Profil de base",
       "continue": "Continuer",
