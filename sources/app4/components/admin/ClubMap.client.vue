@@ -33,8 +33,8 @@ const searchIcon = L.icon({
   popupAnchor: [0, -25]
 })
 
-onMounted(() => {
-  if (!mapContainer.value) return
+function initMap() {
+  if (!mapContainer.value || map.value) return
 
   map.value = L.map(mapContainer.value).setView([46.85, 1.75], 5)
 
@@ -46,6 +46,23 @@ onMounted(() => {
   markersLayer.value = L.layerGroup().addTo(map.value)
 
   buildMarkers()
+
+  // Center on selected club if already set before map was ready
+  if (props.selectedClubCode) {
+    const marker = clubMarkers.value.get(props.selectedClubCode)
+    if (marker) {
+      map.value.setView(marker.getLatLng(), 12)
+      marker.openPopup()
+    }
+  }
+}
+
+onMounted(() => {
+  initMap()
+})
+
+watch(mapContainer, (el) => {
+  if (el) initMap()
 })
 
 onBeforeUnmount(() => {
@@ -96,7 +113,12 @@ watch(() => props.selectedClubCode, (code) => {
 
 // Rebuild markers when clubs change
 watch(() => props.clubs, () => {
-  buildMarkers()
+  if (!map.value) {
+    initMap()
+  } else {
+    buildMarkers()
+    nextTick(() => map.value?.invalidateSize())
+  }
 }, { deep: true })
 
 // Geocode an address and place a search marker
