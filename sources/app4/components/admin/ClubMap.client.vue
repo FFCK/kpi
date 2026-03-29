@@ -84,10 +84,10 @@ function buildMarkers() {
     if (!coords) continue
 
     const logoHtml = club.logo
-      ? `<img src="${legacyBaseUrl}/${club.logo}" alt="${club.libelle}" style="height:32px;max-width:80px;object-fit:contain;display:block;margin-bottom:4px" onerror="this.style.display='none'">`
+      ? `<img src="${legacyBaseUrl}/${club.logo}" alt="${club.libelle}" style="height:60px;max-width:120px;object-fit:contain;display:block;margin:0 auto 4px" onerror="this.style.display='none'">`
       : ''
     const marker = L.marker([coords.lat, coords.lng], { icon: clubIcon })
-      .bindPopup(`${logoHtml}<strong>${club.libelle}</strong>`)
+      .bindPopup(`<div style="text-align:center">${logoHtml}<strong>${club.libelle}</strong></div>`)
       .on('click', () => {
         emit('select-club', club.code)
       })
@@ -187,10 +187,10 @@ function updateMarkerPosition(code: string, coord: string) {
     const club = props.clubs.find(c => c.code === code)
     if (club) {
       const logoHtml = club.logo
-        ? `<img src="/${club.logo}" alt="${club.libelle}" style="height:32px;max-width:80px;object-fit:contain;display:block;margin-bottom:4px" onerror="this.style.display='none'">`
+        ? `<img src="${legacyBaseUrl}/${club.logo}" alt="${club.libelle}" style="height:60px;max-width:120px;object-fit:contain;display:block;margin:0 auto 4px" onerror="this.style.display='none'">`
         : ''
       const marker = L.marker([coords.lat, coords.lng], { icon: clubIcon })
-        .bindPopup(`${logoHtml}<strong>${club.libelle}</strong>`)
+        .bindPopup(`<div style="text-align:center">${logoHtml}<strong>${club.libelle}</strong></div>`)
         .on('click', () => emit('select-club', code))
       markersLayer.value.addLayer(marker)
       const updated = new Map(clubMarkers.value)

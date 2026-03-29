@@ -577,11 +577,12 @@ onBeforeUnmount(() => {
             </div>
 
             <!-- Club logo -->
-            <div v-if="selectedClub.logo" class="mb-3">
+            <div v-if="selectedClub.logo" class="mb-3 flex items-center justify-center">
               <img
+                :key="selectedClub.code"
                 :src="`${$config.public.legacyBaseUrl}/${selectedClub.logo}`"
                 :alt="selectedClub.libelle"
-                class="h-14 max-w-full object-contain"
+                class="h-20 max-w-full object-contain"
                 @error="($event.target as HTMLImageElement).style.display = 'none'"
               >
             </div>
