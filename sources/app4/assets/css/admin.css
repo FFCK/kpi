@@ -158,6 +158,63 @@
   --color-neutral-950: oklch(0.145 0 0);
 }
 
+/* ===== Typography ===== */
+@font-face {
+  font-family: 'Raleway';
+  src: url('/fonts/raleway-v37-latin-300.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Raleway';
+  src: url('/fonts/raleway-v37-latin-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Raleway';
+  src: url('/fonts/raleway-v37-latin-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Raleway';
+  src: url('/fonts/raleway-v37-latin-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Raleway';
+  src: url('/fonts/raleway-v37-latin-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Agency FB';
+  src: url('/fonts/agencyfb.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  font-family: 'Raleway', sans-serif;
+}
+
+h1, h2 {
+  font-family: 'Agency FB', 'Arial Narrow', Arial, sans-serif;
+}
+
 /* ===== Force Light Mode for Admin Interface ===== */
 /* Override dark mode styles to ensure consistent light theme */
 :root {

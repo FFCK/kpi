@@ -16,10 +16,7 @@ export default defineNuxtConfig({
         { name: 'description', content: 'KPI Administration Panel' }
       ],
       link: [
-        { rel: 'icon', type: 'image/png', href: `${baseUrl}/favicon.png` },
-        { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
-        { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
-        { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&display=swap' }
+        { rel: 'icon', type: 'image/png', href: `${baseUrl}/favicon.png` }
       ]
     }
   },
@@ -115,10 +112,6 @@ export default defineNuxtConfig({
       { code: 'en', file: 'en.json', name: 'English' },
       { code: 'fr', file: 'fr.json', name: 'Français' }
     ]
-  },
-
-  tailwindcss: {
-    configPath: 'tailwind.config.ts'
   },
 
   css: ['@/assets/css/admin.css']
