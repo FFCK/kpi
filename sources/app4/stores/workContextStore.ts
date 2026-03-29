@@ -338,8 +338,9 @@ export const useWorkContextStore = defineStore('workContext', {
           }
         }
         else {
-          // Default to 'all' when no stored type
-          this.selectionType = 'all'
+          // Default to 'selection' with all competitions checked
+          this.selectionType = 'selection'
+          this.selectedCompetitionCodes = this.competitions.map(c => c.code)
           this.computeCompetitionCodes()
           this.saveToStorage()
         }
@@ -495,8 +496,9 @@ export const useWorkContextStore = defineStore('workContext', {
           this.loadSeasonData(apiInstance),
           this.loadEvents(apiInstance),
         ])
-        // Default to 'all' after season change
-        this.selectionType = 'all'
+        // Default to 'selection' with all competitions checked after season change
+        this.selectionType = 'selection'
+        this.selectedCompetitionCodes = this.competitions.map(c => c.code)
         this.computeCompetitionCodes()
         this.saveToStorage()
       }

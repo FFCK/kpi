@@ -834,6 +834,8 @@
     "type_section": "Section",
     "type_group": "Groupe",
     "type_event": "Événement",
+    "select_all": "Tout cocher",
+    "deselect_all": "Tout décocher",
     "select_season": "Sélectionnez une saison",
     "select_section": "Sélectionnez une section",
     "select_group": "Sélectionnez un groupe",

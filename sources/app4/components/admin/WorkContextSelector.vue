@@ -24,13 +24,10 @@ async function onSeasonChange(seasonCode: string) {
 }
 
 // Selection type handler
-function onSelectionTypeChange(type: 'all' | 'selection' | 'section' | 'group' | 'event') {
+function onSelectionTypeChange(type: 'selection' | 'section' | 'group' | 'event') {
   if (type === workContext.selectionType) return
 
   switch (type) {
-    case 'all':
-      workContext.selectAll()
-      break
     case 'selection':
       workContext.selectCompetitions([])
       break
@@ -40,6 +37,16 @@ function onSelectionTypeChange(type: 'all' | 'selection' | 'section' | 'group' |
       workContext.saveToStorage()
       break
   }
+}
+
+// Check all competitions in selection mode
+function selectAllCompetitions() {
+  workContext.selectCompetitions(workContext.competitions.map(c => c.code))
+}
+
+// Uncheck all competitions in selection mode
+function deselectAllCompetitions() {
+  workContext.selectCompetitions([])
 }
 
 // Section selection handler
@@ -138,22 +145,7 @@ function formatEventLabel(event: { id: number; libelle: string; dateDebut: strin
             </label>
 
             <div class="space-y-3">
-              <!-- 1. All competitions -->
-              <div class="flex items-start gap-3">
-                <input
-                  id="type-all"
-                  type="radio"
-                  :checked="workContext.selectionType === 'all'"
-                  name="selection-type"
-                  class="mt-1"
-                  @change="onSelectionTypeChange('all')"
-                >
-                <label for="type-all" class="block text-sm font-medium text-header-500 cursor-pointer">
-                  {{ t('context.type_all') }}
-                </label>
-              </div>
-
-              <!-- 2. Selection (multi-select competitions) -->
+              <!-- 1. Selection (multi-select competitions) -->
               <div class="flex items-start gap-3">
                 <input
                   id="type-selection"
@@ -164,9 +156,28 @@ function formatEventLabel(event: { id: number; libelle: string; dateDebut: strin
                   @change="onSelectionTypeChange('selection')"
                 >
                 <div class="flex-1">
-                  <label for="type-selection" class="block text-sm font-medium text-header-500 cursor-pointer">
-                    {{ t('context.type_selection') }}
-                  </label>
+                  <div class="flex items-center gap-3">
+                    <label for="type-selection" class="block text-sm font-medium text-header-500 cursor-pointer">
+                      {{ t('context.type_selection') }}
+                    </label>
+                    <template v-if="workContext.selectionType === 'selection'">
+                      <button
+                        type="button"
+                        class="text-xs text-primary-600 hover:text-primary-800 underline"
+                        @click="selectAllCompetitions"
+                      >
+                        {{ t('context.select_all') }}
+                      </button>
+                      <span class="text-header-300">|</span>
+                      <button
+                        type="button"
+                        class="text-xs text-primary-600 hover:text-primary-800 underline"
+                        @click="deselectAllCompetitions"
+                      >
+                        {{ t('context.deselect_all') }}
+                      </button>
+                    </template>
+                  </div>
                   <div
                     v-if="workContext.selectionType === 'selection'"
                     class="mt-1 max-h-48 overflow-y-auto border border-header-200 rounded-md p-2 space-y-1"

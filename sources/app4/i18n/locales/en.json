@@ -822,6 +822,8 @@
     "type_section": "Section",
     "type_group": "Group",
     "type_event": "Event",
+    "select_all": "Check all",
+    "deselect_all": "Uncheck all",
     "select_season": "Select a season",
     "select_section": "Select a section",
     "select_group": "Select a group",
