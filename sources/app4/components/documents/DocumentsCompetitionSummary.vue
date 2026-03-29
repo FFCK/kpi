@@ -9,8 +9,12 @@ const props = defineProps<{
 
 const { t } = useI18n()
 const api = useApi()
+const authStore = useAuthStore()
 const config = useRuntimeConfig()
 const legacyBase = config.public.legacyBaseUrl as string
+
+// Only profiles <= 2 have ROLE_ADMIN and can access /admin/schema
+const canViewSchema = computed(() => (authStore.user?.profile ?? 99) <= 2)
 
 // State
 const competition = ref<AdminCompetition | null>(null)
@@ -125,10 +129,12 @@ const loadSummary = async () => {
   try {
     const [compData, schema] = await Promise.all([
       api.get<AdminCompetition>(`/admin/competitions/${props.competitionCode}`, { season: props.season }),
-      api.get<SchemaResponse>('/admin/schema', {
-        season: props.season,
-        competition: props.competitionCode,
-      }).catch(() => null),
+      canViewSchema.value
+        ? api.get<SchemaResponse>('/admin/schema', {
+            season: props.season,
+            competition: props.competitionCode,
+          }).catch(() => null)
+        : Promise.resolve(null),
     ])
     competition.value = compData
     schemaData.value = schema
@@ -305,8 +311,8 @@ onMounted(() => {
       </p>
     </div>
 
-    <!-- No phases -->
-    <div v-else-if="!loading && !isMulti" class="px-6 py-4">
+    <!-- No phases (only show if schema was loaded but returned empty) -->
+    <div v-else-if="!loading && !isMulti && schemaData !== null" class="px-6 py-4">
       <p class="text-sm text-header-400 italic">{{ t('documents.summary.no_phases') }}</p>
     </div>
 
