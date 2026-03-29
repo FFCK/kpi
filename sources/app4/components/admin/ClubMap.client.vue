@@ -8,6 +8,8 @@ const props = defineProps<{
   selectedClubCode?: string | null
 }>()
 
+const { public: { legacyBaseUrl } } = useRuntimeConfig()
+
 const emit = defineEmits<{
   'select-club': [code: string]
 }>()
@@ -81,8 +83,11 @@ function buildMarkers() {
     const coords = parseCoord(club.coord)
     if (!coords) continue
 
+    const logoHtml = club.logo
+      ? `<img src="${legacyBaseUrl}/${club.logo}" alt="${club.libelle}" style="height:32px;max-width:80px;object-fit:contain;display:block;margin-bottom:4px" onerror="this.style.display='none'">`
+      : ''
     const marker = L.marker([coords.lat, coords.lng], { icon: clubIcon })
-      .bindPopup(`<strong>${club.libelle}</strong><br>${club.code}`)
+      .bindPopup(`${logoHtml}<strong>${club.libelle}</strong>`)
       .on('click', () => {
         emit('select-club', club.code)
       })
@@ -181,8 +186,11 @@ function updateMarkerPosition(code: string, coord: string) {
     // Club now has coordinates, add marker
     const club = props.clubs.find(c => c.code === code)
     if (club) {
+      const logoHtml = club.logo
+        ? `<img src="/${club.logo}" alt="${club.libelle}" style="height:32px;max-width:80px;object-fit:contain;display:block;margin-bottom:4px" onerror="this.style.display='none'">`
+        : ''
       const marker = L.marker([coords.lat, coords.lng], { icon: clubIcon })
-        .bindPopup(`<strong>${club.libelle}</strong><br>${club.code}`)
+        .bindPopup(`${logoHtml}<strong>${club.libelle}</strong>`)
         .on('click', () => emit('select-club', code))
       markersLayer.value.addLayer(marker)
       const updated = new Map(clubMarkers.value)

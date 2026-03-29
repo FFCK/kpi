@@ -5,6 +5,7 @@ export interface ClubMapItem {
   postal: string
   www: string
   email: string
+  logo: string
 }
 
 export interface ClubDetail {
@@ -17,6 +18,7 @@ export interface ClubDetail {
   postal: string
   www: string
   email: string
+  logo: string
 }
 
 export interface RegionalCommittee {

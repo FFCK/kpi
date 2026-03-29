@@ -60,7 +60,7 @@ onMounted(() => {
           <!-- Club -->
           <div class="flex items-center gap-1.5">
             <UIcon name="i-heroicons-building-office-2" class="w-4 h-4 text-header-400" />
-            <span class="font-medium">{{ t('clubs.teams.club') }} :</span>
+            <span class="font-bold">{{ t('clubs.teams.club') }} :</span>
             <NuxtLink :to="`/clubs?code=${team.codeClub}`" class="text-primary-600 hover:text-primary-800">
               {{ team.libelleClub }} ({{ team.codeClub }})
             </NuxtLink>
@@ -68,7 +68,7 @@ onMounted(() => {
 
           <!-- Colors -->
           <div v-if="team.color1 || team.color2" class="flex items-center gap-1.5">
-            <span class="font-medium">{{ t('clubs.teams.colors') }} :</span>
+            <span class="font-bold">{{ t('clubs.teams.colors') }} :</span>
             <span
               v-if="team.color1"
               class="inline-block w-5 h-5 rounded border border-header-300"

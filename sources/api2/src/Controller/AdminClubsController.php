@@ -78,6 +78,7 @@ class AdminClubsController extends AbstractController
             'postal' => $row['Postal'] ?? '',
             'www' => $row['www'] ?? '',
             'email' => $row['email'] ?? '',
+            'logo' => 'img/KIP/logo/' . $row['Code'] . '-logo.png',
         ], $rows);
 
         return $this->json(['clubs' => $clubs]);
@@ -111,6 +112,7 @@ class AdminClubsController extends AbstractController
             'postal' => $row['Postal'] ?? '',
             'www' => $row['www'] ?? '',
             'email' => $row['email'] ?? '',
+            'logo' => 'img/KIP/logo/' . $row['Code'] . '-logo.png',
         ]);
     }
 

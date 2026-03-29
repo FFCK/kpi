@@ -576,10 +576,20 @@ onBeforeUnmount(() => {
               </span>
             </div>
 
+            <!-- Club logo -->
+            <div v-if="selectedClub.logo" class="mb-3">
+              <img
+                :src="`${$config.public.legacyBaseUrl}/${selectedClub.logo}`"
+                :alt="selectedClub.libelle"
+                class="h-14 max-w-full object-contain"
+                @error="($event.target as HTMLImageElement).style.display = 'none'"
+              >
+            </div>
+
             <div v-if="canEdit" class="space-y-3">
               <!-- Postal -->
               <div>
-                <label class="block text-xs font-medium text-header-700 mb-1">{{ t('clubs.update.postal') }}</label>
+                <label class="block text-xs font-bold text-header-700 mb-1">{{ t('clubs.update.postal') }}</label>
                 <input
                   v-model="updateForm.postal"
                   type="text"
@@ -591,7 +601,7 @@ onBeforeUnmount(() => {
 
               <!-- Website -->
               <div>
-                <label class="block text-xs font-medium text-header-700 mb-1">{{ t('clubs.update.www') }}</label>
+                <label class="block text-xs font-bold text-header-700 mb-1">{{ t('clubs.update.www') }}</label>
                 <input
                   v-model="updateForm.www"
                   type="text"
@@ -603,7 +613,7 @@ onBeforeUnmount(() => {
 
               <!-- Email -->
               <div>
-                <label class="block text-xs font-medium text-header-700 mb-1">{{ t('clubs.update.email') }}</label>
+                <label class="block text-xs font-bold text-header-700 mb-1">{{ t('clubs.update.email') }}</label>
                 <input
                   v-model="updateForm.email"
                   type="text"
@@ -615,7 +625,7 @@ onBeforeUnmount(() => {
 
               <!-- GPS Coordinates -->
               <div>
-                <label class="block text-xs font-medium text-header-700 mb-1">{{ t('clubs.update.coord') }}</label>
+                <label class="block text-xs font-bold text-header-700 mb-1">{{ t('clubs.update.coord') }}</label>
                 <input
                   v-model="updateForm.coord"
                   type="text"
@@ -640,10 +650,10 @@ onBeforeUnmount(() => {
 
             <!-- Read-only for non-admins -->
             <div v-else class="space-y-2 text-sm text-header-600">
-              <div v-if="selectedClub.postal"><span class="font-medium">{{ t('clubs.update.postal') }}:</span> {{ selectedClub.postal }}</div>
-              <div v-if="selectedClub.www"><span class="font-medium">{{ t('clubs.update.www') }}:</span> {{ selectedClub.www }}</div>
-              <div v-if="selectedClub.email"><span class="font-medium">{{ t('clubs.update.email') }}:</span> {{ selectedClub.email }}</div>
-              <div v-if="selectedClub.coord"><span class="font-medium">{{ t('clubs.update.coord') }}:</span> {{ selectedClub.coord }}</div>
+              <div v-if="selectedClub.postal"><span class="font-bold">{{ t('clubs.update.postal') }}:</span> {{ selectedClub.postal }}</div>
+              <div v-if="selectedClub.www"><span class="font-bold">{{ t('clubs.update.www') }}:</span> {{ selectedClub.www }}</div>
+              <div v-if="selectedClub.email"><span class="font-bold">{{ t('clubs.update.email') }}:</span> {{ selectedClub.email }}</div>
+              <div v-if="selectedClub.coord"><span class="font-bold">{{ t('clubs.update.coord') }}:</span> {{ selectedClub.coord }}</div>
             </div>
           </template>
 
