@@ -46,6 +46,9 @@ COPY php-error-logging.ini /usr/local/etc/php/conf.d/
 # Note: auto-prepend-cors.php is in sources/commun/ and will be available via volume mount
 COPY php-auto-prepend.ini /usr/local/etc/php/conf.d/
 
+# Copy PHP upload size configuration
+COPY php-uploads.ini /usr/local/etc/php/conf.d/
+
 # Copy Apache vhost configuration with CORS and .htaccess support
 COPY 000-default.conf /etc/apache2/sites-enabled/000-default.conf
 RUN chmod 644 /etc/apache2/sites-enabled/000-default.conf
