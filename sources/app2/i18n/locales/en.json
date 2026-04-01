@@ -65,7 +65,11 @@
     "ClickToCopy": "Click to copy link",
     "LinkCopied": "Link copied to clipboard!",
     "CopyFailed": "Failed to copy link",
-    "ModeDescription": "Combined competitions"
+    "ModeDescription": "Combined competitions",
+    "TutoTitle": "How to navigate",
+    "TutoExample": "Illustrative example",
+    "TutoTeam": "Click on a team name to access its detail page: games played, results and tournament progression.",
+    "TutoMatchSheet": "Click on a score or a game number to open the match sheet: team lineups, goals and events."
   },
   "Section": {
     "Competitions_Internationales": "International Competitions",
