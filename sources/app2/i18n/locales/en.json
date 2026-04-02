@@ -69,7 +69,7 @@
     "TutoTitle": "How to navigate",
     "TutoExample": "Illustrative example",
     "TutoTeam": "Click on a team name to access its detail page: games played, results and tournament progression.",
-    "TutoMatchSheet": "Click on a score or a game number to open the match sheet: team lineups, goals and events."
+    "TutoMatchSheet": "Click on a score or a game number to open the game sheet: team lineups, goals and events."
   },
   "Section": {
     "Competitions_Internationales": "International Competitions",
@@ -184,7 +184,7 @@
   "About": {
     "Information": "Informations",
     "ClickForDetails": "Click for more details...",
-    "ClickableElements": "Team names, match numbers and scores are clickable!",
+    "ClickableElements": "Team names, game numbers and scores are clickable!",
     "DoYouLike": "Do you like this application?",
     "IDevelopIt": "I develop it in my spare time.",
     "Rating": "Rate this app:",
