@@ -22,11 +22,22 @@ La fonctionnalité **Cohérence des matchs** permet de détecter automatiquement
 2. **Match < 1h après arbitrage**
    - Détecte quand une équipe doit jouer un match moins d'une heure après avoir arbitré un match
 
-3. **Plus de 6 matchs par jour**
-   - Identifie les équipes qui jouent plus de 6 matchs dans la même journée
+3. **Plus de 6 matchs par jour (International)**
+   - Identifie les équipes qui jouent plus de 6 matchs dans la même journée, pour les compétitions de niveau International (`Code_niveau = 'INT'`)
 
 4. **Plus de 3 matchs sur 4 heures**
-   - Repère les équipes qui jouent plus de 3 matchs sur une fenêtre de 4 heures consécutives
+   - Repère les équipes qui jouent plus de 3 matchs sur une fenêtre de 4 heures consécutives (toutes compétitions confondues)
+
+5. **Match < 1h après le match précédent (National)**
+   - Détecte quand une équipe doit jouer un match moins d'une heure après avoir commencé un autre match, pour les compétitions de niveau National (`Code_niveau = 'NAT'`)
+
+6. **Plus de 2 matchs sur 3 heures (National)**
+   - Repère les équipes qui jouent plus de 2 matchs sur une fenêtre de 3 heures consécutives, pour les compétitions de niveau National (`Code_niveau = 'NAT'`)
+
+7. **Plus de 4 matchs par jour (Championnat)**
+   - Identifie les équipes qui jouent plus de 4 matchs dans la même journée, pour les compétitions de type Championnat (`Code_typeclt = 'CHPT'`)
+
+> **Note multi-compétitions** : Les calculs portent sur l'ensemble des matchs d'une équipe, y compris si elle est engagée dans plusieurs compétitions se déroulant sur le même week-end et le même lieu.
 
 ---
 
@@ -65,7 +76,8 @@ La fonctionnalité **Cohérence des matchs** permet de détecter automatiquement
 
 1. **Récupération des données**
    - Chargement de tous les matchs de la saison/compétition avec dates, heures, équipes et arbitres
-   - Requête SQL avec jointures sur `kp_match`, `kp_journee`, `kp_competition_equipe`
+   - Requête SQL avec jointures sur `kp_match`, `kp_journee`, `kp_competition`, `kp_competition_equipe`
+   - Les champs `Code_niveau` et `Code_typeclt` de `kp_competition` sont récupérés pour chaque match
 
 2. **Construction de la timeline**
    - Création d'un tableau d'événements pour chaque équipe
@@ -220,12 +232,15 @@ Avant chaque mise en production, vérifier :
 **Tables utilisées :**
 - `kp_match` : matchs avec dates, heures, arbitres
 - `kp_journee` : journées et compétitions
+- `kp_competition` : niveau (`Code_niveau`) et type de classement (`Code_typeclt`) de la compétition
 - `kp_competition_equipe` : équipes participantes
 
 **Colonnes critiques :**
 - `kp_match.Date_match` : ne doit pas être NULL
 - `kp_match.Heure_match` : ne doit pas être NULL
 - `kp_match.Arbitre_principal` / `Arbitre_secondaire` : format texte libre
+- `kp_competition.Code_niveau` : `INT` (International), `NAT` (National), `REG` (Régional)
+- `kp_competition.Code_typeclt` : `CHPT` (Championnat), `CP` (autre type)
 
 ---
 
