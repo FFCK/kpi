@@ -50,9 +50,11 @@ const groupedCompetitions = computed(() => {
   const groups = new Map<string, typeof workContext.competitions>()
 
   workContext.competitions.forEach((competition) => {
-    // Trouver le groupe de la compétition
-    const group = workContext.groups?.find(g => g.code === competition.codeRef)
-    const section = group?.section || 'Autres'
+    // Trouver le CompetitionGroup qui contient cette compétition
+    const group = workContext.groups?.find(g =>
+      g.competitions.some(c => c.code === competition.code),
+    )
+    const section = group?.sectionLabel || 'Autres'
 
     if (!groups.has(section)) {
       groups.set(section, [])
@@ -60,8 +62,8 @@ const groupedCompetitions = computed(() => {
     groups.get(section)!.push(competition)
   })
 
-  // Convertir en array et trier par ordre de section (International, National, Régional, etc.)
-  const sectionOrder = ['International', 'National', 'Régional', 'Départemental', 'Autres']
+  // Convertir en array, en conservant l'ordre des sections tel que renvoyé par l'API
+  const sectionOrder = workContext.groups?.map(g => g.sectionLabel) || []
 
   return Array.from(groups.entries())
     .sort((a, b) => {
@@ -73,7 +75,7 @@ const groupedCompetitions = computed(() => {
     })
     .map(([section, competitions]) => ({
       section,
-      competitions: competitions.sort((a, b) => a.libelle.localeCompare(b.libelle))
+      competitions: competitions.sort((a, b) => a.libelle.localeCompare(b.libelle)),
     }))
 })
 

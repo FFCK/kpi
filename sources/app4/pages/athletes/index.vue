@@ -273,18 +273,10 @@ onBeforeUnmount(() => {
               {{ t('athletes.edit.submit') }}
             </button>
           </div>
-          <div v-if="athlete.icf || athlete.surclassement" class="flex flex-wrap gap-4 mt-1 text-sm text-header-600">
-            <span v-if="athlete.icf">
-              {{ t('athletes.icf_number') }}{{ athlete.icf }}
-            </span>
-            <span v-if="athlete.surclassement">
-              {{ t('athletes.surclasse') }} {{ formatDate(athlete.surclassement) }}
-            </span>
-          </div>
         </div>
 
         <!-- Info cards grid -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-5">
           <!-- Club -->
           <div class="bg-header-50 rounded-lg p-4">
             <h3 class="text-sm font-semibold text-header-700 mb-2">{{ t('athletes.club.title') }}</h3>
@@ -297,9 +289,6 @@ onBeforeUnmount(() => {
               </div>
               <div v-if="athlete.comiteReg.code" class="text-header-500 text-xs">
                 {{ athlete.comiteReg.code }} {{ athlete.comiteReg.libelle }}
-              </div>
-              <div class="text-header-800 font-semibold mt-2">
-                {{ t('athletes.club.last_season') }} : {{ athlete.origine || '-' }}
               </div>
             </div>
           </div>
@@ -338,6 +327,32 @@ onBeforeUnmount(() => {
                 <span :class="athlete.certificats.ck === 'OUI' ? 'text-success-500 font-medium' : 'text-danger-500'">
                   {{ athlete.certificats.ck || '-' }}
                 </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Licence -->
+          <div class="bg-header-50 rounded-lg p-4">
+            <h3 class="text-sm font-semibold text-header-700 mb-2">{{ t('athletes.licence_bloc.title') }}</h3>
+            <div class="space-y-1 text-sm">
+              <div v-if="athlete.icf" class="text-header-500 text-xs">
+                {{ t('athletes.icf_number') }}{{ athlete.icf }}
+              </div>
+              <div v-if="athlete.typeLicence">
+                {{ athlete.typeLicence }}
+              </div>
+              <div class="text-header-800 font-semibold">
+                {{ t('athletes.club.last_season') }} : {{ athlete.origine || '-' }}
+              </div>
+              <div v-if="athlete.categorieAge">
+                <span class="text-header-500">{{ t('athletes.licence_bloc.categorie') }} :</span>
+                {{ athlete.categorieAge.code }}
+                <span class="text-header-400 text-xs">({{ athlete.categorieAge.libelle }})</span>
+              </div>
+              <div v-if="athlete.surclassement" class="mt-1 pt-1 border-t border-header-200">
+                <span class="text-header-500">{{ t('athletes.licence_bloc.surclassement') }} :</span>
+                <span class="font-medium">{{ athlete.surclassement.cat }}</span>
+                <span class="text-header-400 text-xs ml-1">({{ formatDate(athlete.surclassement.date) }})</span>
               </div>
             </div>
           </div>

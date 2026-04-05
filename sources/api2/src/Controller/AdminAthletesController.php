@@ -148,14 +148,33 @@ class AdminAthletesController extends AbstractController
             "SELECT Code FROM kp_saison WHERE Etat = 'O' ORDER BY Code DESC LIMIT 1"
         );
 
+        // Surclassement: use athlete's own Origine season (not active season)
+        // An athlete can have a surclassement for a season different from the current active one
         $surclassement = null;
-        if ($activeSeason) {
+        $athleteSeason = $row['Origine'] ?: $activeSeason;
+        if ($athleteSeason) {
             $surcl = $this->connection->fetchAssociative(
                 "SELECT Date, Cat FROM kp_surclassement WHERE Matric = ? AND Saison = ?",
-                [$matric, $activeSeason]
+                [$matric, $athleteSeason]
             );
             if ($surcl) {
-                $surclassement = $surcl['Date'];
+                $surclassement = ['date' => $surcl['Date'], 'cat' => $surcl['Cat']];
+            }
+        }
+
+        // Compute age category: use athlete's Origine season for consistency
+        // sexe in kp_categorie is 'T' (Tous/all) — no gender split at this level
+        $categorieAge = null;
+        $seasonForAge = $athleteSeason ?: $activeSeason;
+        if ($seasonForAge && $row['Naissance']) {
+            $anneeNaissance = (int) substr($row['Naissance'], 0, 4);
+            $age = (int) $seasonForAge - $anneeNaissance;
+            $cat = $this->connection->fetchAssociative(
+                "SELECT id, libelle FROM kp_categorie WHERE age_min <= ? AND age_max >= ?",
+                [$age, $age]
+            );
+            if ($cat) {
+                $categorieAge = ['code' => $cat['id'], 'libelle' => $cat['libelle']];
             }
         }
 
@@ -210,6 +229,8 @@ class AdminAthletesController extends AbstractController
                 'saison' => $arb['saison'] ?? '',
                 'livret' => $arb['livret'] ?? '',
             ],
+            'typeLicence' => $row['Type_licence'] ?? null,
+            'categorieAge' => $categorieAge,
             'surclassement' => $surclassement,
             'editable' => (int) $row['Matric'] > 2000000,
         ]);

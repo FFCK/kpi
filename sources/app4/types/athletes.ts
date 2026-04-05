@@ -44,7 +44,9 @@ export interface AthleteDetail {
     saison: string
     livret: string
   }
-  surclassement: string | null
+  typeLicence: string | null
+  categorieAge: { code: string; libelle: string } | null
+  surclassement: { date: string; cat: string } | null
   editable: boolean
 }
 

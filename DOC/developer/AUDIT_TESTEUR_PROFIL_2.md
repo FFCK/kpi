@@ -30,17 +30,17 @@ accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mai
 ## Nouvelle interface administration (app4) :
 
 - Remarques / erreurs générales : 
-	* ~~l'actualisation des différentes pages dans le navigateur (F5) renvoie une erreur 404 à part la page de connexion https://preprod.kayak-polo.info/admin2/~~ → **RÉSOLU** (fix nginx-app4-prod.conf `try_files`, à tester en préprod)
+	* ✅ l'actualisation des différentes pages dans le navigateur (F5) renvoie une erreur 404 à part la page de connexion https://preprod.kayak-polo.info/admin2/ → **RÉSOLU** (fix nginx-app4-prod.conf `try_files`)
 
 
 - Page "Athlètes"
-	* afficher la catégorie d'âge pour la saison en cours
-	* afficher le surclassement
-	* afficher le type de licence (même si normalement seules les licences 1 an compétition remontent j'ai déjà eu des surprises)
+	* ✅ afficher la catégorie d'âge pour la saison en cours → **RÉSOLU**
+	* ✅ afficher le surclassement → **RÉSOLU**
+	* ✅ afficher le type de licence (même si normalement seules les licences 1 an compétition remontent j'ai déjà eu des surprises) → **RÉSOLU**
 	* plus de "recherche avancée" permettant par exemple d'avoir la liste des adhérents d'un club?
 
-- Page gestion des RC
-	* impossible d'en ajouter, y compris pour une compétition régionale, message d'erreur "Accès refusé / vous n'avez pas les droits nécessaires" y compris au stade de la recherche d'un licencié avant même de valider l'ajout
+- Page gestion des RC → **RÉSOLU**
+	* ✅ impossible d'en ajouter, y compris pour une compétition régionale, message d'erreur "Accès refusé / vous n'avez pas les droits nécessaires" y compris au stade de la recherche d'un licencié avant même de valider l'ajout → **RÉSOLU** (canDelete et bulk-delete côté API étaient restreints au profil 1 au lieu de 2 ; select des compétitions groupait tout dans "Autres" à cause d'une erreur dans CompetitionGroupedSelect)
 	
 - Page gestion des utilisateurs : 
 	* notion de "mandat" : si j'ai bien compris ce sont des autorisations délivrées temporairement sur 1 journée ou événement? / permet d'avoir une gestion différenciée des droits selon la compétition?

@@ -49,7 +49,7 @@ const availableSeasons = ref<string[]>([])
 
 // Computed
 const canEdit = computed(() => authStore.profile <= 2)
-const canDelete = computed(() => authStore.profile <= 1)
+const canDelete = computed(() => authStore.profile <= 2)
 const canCopy = computed(() => authStore.profile <= 2)
 
 const filteredRc = computed(() => {
@@ -445,7 +445,7 @@ watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGrou
     <!-- Add/Edit Modal -->
     <AdminModal
       :open="addModalOpen || editModalOpen"
-      :title="editingRc ? t('rc.edit') : t('rc.add')"
+      :title="editingRc ? t('rc.edit') : t('rc.add_title')"
       max-width="lg"
       @close="addModalOpen = false; editModalOpen = false"
     >

@@ -296,7 +296,7 @@ class AdminRcController extends AbstractController
      * Delete RC (bulk) - DELETE method (legacy)
      */
     #[Route('/admin/rc', name: 'admin_rc_delete', methods: ['DELETE'])]
-    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[IsGranted('ROLE_ADMIN')]
     #[OA\Delete(
         path: '/admin/rc',
         summary: 'Delete RC in bulk (legacy - use POST /bulk-delete instead)',
@@ -319,7 +319,7 @@ class AdminRcController extends AbstractController
      * Delete RC (bulk) - POST method (preferred)
      */
     #[Route('/admin/rc/bulk-delete', name: 'admin_rc_bulk_delete', methods: ['POST'])]
-    #[IsGranted('ROLE_SUPER_ADMIN')]
+    #[IsGranted('ROLE_ADMIN')]
     #[OA\Post(
         path: '/admin/rc/bulk-delete',
         summary: 'Delete RC in bulk',

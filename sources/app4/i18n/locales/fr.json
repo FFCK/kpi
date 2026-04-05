@@ -214,7 +214,9 @@
     "no_results": "Aucun résultat",
     "club": "Club",
     "exports": "Exports PDF",
-    "all": "Tous"
+    "all": "Tous",
+    "select": "Sélectionner",
+    "copy": "Copier"
   },
   "legacy_redirect": {
     "message": "Redirection vers l'interface classique en cours...",
@@ -1000,6 +1002,7 @@
   "rc": {
     "title": "Responsables de Compétition",
     "add": "Ajouter un RC",
+    "add_title": "Ajouter un Responsable de compétition",
     "edit": "Modifier le RC",
     "no_national_competition": "National (sans compétition)",
     "field": {
@@ -1015,7 +1018,7 @@
     "filter_competitions": "Filtrer par compétitions",
     "delete_confirm_title": "Supprimer les RC",
     "delete_confirm_message": "Êtes-vous sûr de vouloir supprimer {count} responsable(s) de compétition ?",
-    "copy_title": "Copier les RC",
+    "copy_title": "Copier les Responsables de compétition",
     "copy_source": "Saison source",
     "copy_target": "Saison cible",
     "copy_button": "Copier les RC",
@@ -1464,6 +1467,11 @@
       "title": "Certificats",
       "aps": "APS (Loisir)",
       "ck": "CK (Compétition)"
+    },
+    "licence_bloc": {
+      "title": "Licence",
+      "categorie": "Catégorie",
+      "surclassement": "Surclassement"
     },
     "arbitrage": {
       "title": "Arbitrage",
