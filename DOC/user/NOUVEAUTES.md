@@ -4,6 +4,29 @@ Ce document liste les dernières fonctionnalités et améliorations ajoutées au
 
 ---
 
+## 📅 Avril 2026
+
+### 🗺️ Guide de navigation illustré sur la page d'accueil (App2) (01/04/2026)
+
+**Aide visuelle pour découvrir les fonctionnalités de l'application**
+
+Un guide illustré apparaît sur la page d'accueil après la sélection d'un événement ou d'une compétition :
+
+- Capture d'écran annotée (adaptée PC ou smartphone) montrant les zones cliquables
+- **À gauche** : cliquer sur un nom d'équipe pour accéder à sa fiche détaillée (matchs, résultats, progression)
+- **À droite** : cliquer sur un score ou un numéro de match pour ouvrir la feuille de match (composition, buts, événements)
+- Marquée "Exemple illustratif" pour éviter toute confusion avec de vrais matchs
+
+### 🔗 Numéro de match cliquable dans la liste des matchs (App2) (01/04/2026)
+
+**Navigation directe vers la feuille de match depuis le numéro de match**
+
+- Le numéro de match (`#345`) est désormais cliquable dans la liste des matchs (`/games`) et dans la fiche équipe (`/team`)
+- Comportement identique au clic sur le score : ouvre la feuille de match détaillée
+- Disponible uniquement pour les matchs en cours ou terminés (comme pour le score)
+
+---
+
 ## 📅 Janvier 2026
 
 ### 🏆 Sélection par Compétition/Groupe (App2) (18/01/2026)
