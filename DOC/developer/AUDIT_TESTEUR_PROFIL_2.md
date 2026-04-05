@@ -30,7 +30,7 @@ accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mai
 ## Nouvelle interface administration (app4) :
 
 - Remarques / erreurs générales : 
-	* l'actualisation des différentes pages dans le navigateur (F5) renvoie une erreur 404 à part la page de connexion https://preprod.kayak-polo.info/admin2/
+	* ~~l'actualisation des différentes pages dans le navigateur (F5) renvoie une erreur 404 à part la page de connexion https://preprod.kayak-polo.info/admin2/~~ → **RÉSOLU** (fix nginx-app4-prod.conf `try_files`, à tester en préprod)
 
 
 - Page "Athlètes"
