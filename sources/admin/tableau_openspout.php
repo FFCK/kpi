@@ -109,9 +109,11 @@ try {
 	$writer = new Writer();
 	$writer->openToFile($temp_file);
 	$headerRow = Row::fromValues([
+		$lang['Num'] ?? 'N°',
 		$lang['Journee'] ?? 'Journée',
 		$lang['Competition'] ?? 'Compétition',
 		$lang['Phase'] ?? 'Phase',
+		$lang['Lieu'] ?? 'Lieu',
 		$lang['Date'] ?? 'Date',
 		$lang['Heure'] ?? 'Heure',
 		$lang['Terrain'] ?? 'Terrain',
@@ -121,17 +123,21 @@ try {
 		$lang['Score'] . ' B',
 		$lang['Arbitre_1'] ?? 'Arbitre principal',
 		$lang['Arbitre_2'] ?? 'Arbitre secondaire',
+		$lang['Ligne'] ?? 'Juge de ligne',
+		$lang['Ligne'] ?? 'Juge de ligne',
 		$lang['Secretaire'] ?? 'Secrétaire',
 		$lang['Chronometre'] ?? 'Chronomètre',
-		$lang['Lieu'] ?? 'Lieu',
+		$lang['Time_shoot2'] ?? 'Shotclock',
 		$lang['Commentaires'] ?? 'Commentaires'
 	]);
 	$writer->addRow($headerRow);
 	foreach ($arrayMatchs as $match) {
 		$dataRow = Row::fromValues([
+			$match['Numero_ordre'] ?? '',
 			$match['LibelleJournee'] ?? '',
 			$match['Code_competition'] ?? '',
 			$match['Phase'] ?? '',
+			$match['Lieu'] ?? '',
 			$match['Date_match'] ?? '',
 			$match['Heure_match'] ?? '',
 			$match['Terrain'] ?? '',
@@ -141,9 +147,11 @@ try {
 			$match['ScoreB'] ?? '',
 			$match['Arbitre_principal'] ?? '',
 			$match['Arbitre_secondaire'] ?? '',
+			$match['Ligne1'] ?? '',
+			$match['Ligne2'] ?? '',
 			$match['Secretaire'] ?? '',
 			$match['Chronometre'] ?? '',
-			$match['Lieu'] ?? '',
+			$match['Timeshoot'] ?? '',
 			$match['Commentaires_officiels'] ?? ''
 		]);
 		$writer->addRow($dataRow);

@@ -56,7 +56,7 @@ accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mai
 	* le QR code dépasse sur les bordures adjacentes, qui disparaissent à l'édition
 
 - Page Documents :
-	* export des listes de match en format tableur ODS : le numéro du match n'est pas exporté dans le fichier (idem depuis la liste des matchs), c'est pourtant utile
+	* ✅ export des listes de match en format tableur ODS : le numéro du match n'est pas exporté dans le fichier (idem depuis la liste des matchs), c'est pourtant utile → **RÉSOLU**
 	* horodatage "variable" sur les fichiers PDF
 		- Equipes / feuilles de présence FR : uniquement sur la dernière page, date du 01/01/1970 à 00:00 ? / horodater chacune des pages en pied de page ?
 		- Equipes / feuilles de présence EN : aucun horodatage / horodater chacune des pages en pied de page ?
