@@ -99,9 +99,11 @@ const canSelect = computed(() => authStore.profile <= 3)
 const canAssociateEvents = computed(() => authStore.profile <= 3)
 
 // Open schema page in a new tab with competition and season params
+const router = useRouter()
 function goToSchema(competitionCode: string) {
   const season = workContext.season || ''
-  window.open(`/gamedays/schema?competition=${competitionCode}&season=${season}`, '_blank')
+  const resolved = router.resolve({ path: '/gamedays/schema', query: { competition: competitionCode, season } })
+  window.open(resolved.href, '_blank')
 }
 
 // ─── Computed ───

@@ -435,14 +435,15 @@ onMounted(async () => {
               </td>
               <!-- View schema (new tab) -->
               <td class="px-3 py-2 text-center">
-                <NuxtLink
-                  :to="`/gamedays/schema?competition=${schema.code}&season=${schema.season}`"
+                <a
+                  :href="router.resolve({ path: '/gamedays/schema', query: { competition: schema.code, season: schema.season } }).href"
                   target="_blank"
+                  rel="noopener noreferrer"
                   class="p-1.5 rounded text-primary-500 hover:text-primary-600 hover:bg-primary-50 transition-colors inline-block"
                   :title="t('competitionCopy.table.viewSchema')"
                 >
                   <UIcon name="i-heroicons-rectangle-group" class="w-6 h-6" />
-                </NuxtLink>
+                </a>
               </td>
               <!-- Switch to -->
               <td class="px-3 py-2 text-center">

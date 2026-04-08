@@ -42,14 +42,14 @@ accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mai
 - Page gestion des RC → **RÉSOLU**
 	* ✅ impossible d'en ajouter, y compris pour une compétition régionale, message d'erreur "Accès refusé / vous n'avez pas les droits nécessaires" y compris au stade de la recherche d'un licencié avant même de valider l'ajout → **RÉSOLU** (canDelete et bulk-delete côté API étaient restreints au profil 1 au lieu de 2 ; select des compétitions groupait tout dans "Autres" à cause d'une erreur dans CompetitionGroupedSelect)
 	
-- Page gestion des utilisateurs : 
-	* notion de "mandat" : si j'ai bien compris ce sont des autorisations délivrées temporairement sur 1 journée ou événement? / permet d'avoir une gestion différenciée des droits selon la compétition?
+- Page gestion des utilisateurs → **EXPLICATION**
+	* ✅ notion de "mandat" : si j'ai bien compris ce sont des autorisations délivrées temporairement sur 1 journée ou événement? / permet d'avoir une gestion différenciée des droits selon la compétition? → **EXPLICATION** : les mandats permettent d'attribuer des droits différents selon les compétitions ou ensemble de compétitions (ex. profil 7 responsable d'équipe pour une compétition nationale, limité à un club, profil 6 délégué CNA pour une journée spécifique, profil 3 responsable de compétition pour un tournoi international ou un championnat régional). L'utilisateur, après son authentification, choisit le mandat actif pour la session en cours (s'il en a plusieurs) et n'a accès qu'aux compétitions associées à ce mandat. Il peut changer de mandat à tout moment (c'est un système similaire à celui d'Exalto lorsqu'un utilisateur a plusieurs rôles au sein de son club ou comité).
+	Reste à imaginer l'organisation pour le renouvellement annuel des droits des utilisateurs...
 
 - Page contrôle TV : 
 	* à quoi correspond la fonction "split URL" ?
 	
-- Schémas de compétitions : erreur 404 sur les liens vers les schémas : https://preprod.kayak-polo.info/gamedays/schema?competition=MCP&season=2015
-	erreur observée que ce soit depuis la liste des journées/phases ou module de copie de compétitions
+- ✅ Schémas de compétitions : erreur 404 sur les liens vers les schémas — **RÉSOLU, à tester** (les liens `window.open()` et `NuxtLink target="_blank"` ne préfixaient pas `/admin2` ; corrigé via `router.resolve()` dans `gamedays/index.vue` et `competitions/copy.vue`)
 
 - Feuilles de match PDF : qq détails de mise en page à régler : 
 	* la typo a changé, du coup certains champs dépassent des cadres. => réduire globalement la taille de police d'1 ou 2 pts ?
@@ -100,7 +100,7 @@ accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mai
 	* Ajout de joueur : en mode ajout de joueur existant, recherche impossible, génère une erreur : "Accès refusé : vous n'avez pas les droits nécessaires" (idem autres recherches)
 
 - Page Journées/Phases
-	* Les liens vers les schémas de compétitions ne fonctionnent pas (erreur 404)
+	* ✅ Les liens vers les schémas de compétitions ne fonctionnent pas (erreur 404) — **RÉSOLU, à tester**
 	* Comment peut-on associer des journées à un événement ? je n'ai pas retrouvé l'option dans cette nouvelle interface 
 
 - Page Matchs :
