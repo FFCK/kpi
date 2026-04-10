@@ -81,3 +81,11 @@ TODO :
 - Association événement : à tester
 - Matchs : tester en profondeur,
 - Classements : tester en profondeur
+
+- Droits par profil :
+  - Les profils > 2 ne peuvent pas créer, modifier ou supprimer quoi que ce soit dans les saisons antérieures à la saison active.
+- Mandats : revoir l'organisation pour simplifier le renouvellement annuel des droits
+- Import PCE (: manquant dans Opérations, doit être exécutable par cron
+- Verrou présences : manquant dans Opérations, doit être exécutable par cron
+- Vérifier l'envoi de mail des cron et autres alertes (antispam de Hostinger ?)
+- 
