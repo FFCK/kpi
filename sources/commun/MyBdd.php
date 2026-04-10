@@ -565,6 +565,10 @@ class MyBdd
 			$placeholders .= '(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
 		}
 		$sql_licencies = "INSERT INTO kp_licence
+			(Matric, Origine, Nom, Prenom, Sexe, Naissance, Club, Numero_club,
+			Comite_dept, Numero_comite_dept, Comite_reg, Numero_comite_reg, Etat,
+			Pagaie_EVI, Pagaie_MER, Pagaie_ECA, Date_certificat_CK, Date_certificat_APS,
+			Reserve, Etat_certificat_APS, Etat_certificat_CK, Type_licence)
 			VALUES $placeholders
 			ON DUPLICATE KEY UPDATE
 				Matric = VALUES(Matric), Origine = VALUES(Origine), Nom = VALUES(Nom),
