@@ -72,12 +72,12 @@ accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mai
 		- Contrôle / Carton cumulés : à horodater en pied de page?
 		
 	* Classements / détail par équipes  : ordre des équipes OK si compétition type championnat
-	* Classements / détail par équipes  : ordre des équipes erroné si compétition type coupe, a priori classées par ordre alphabétique et non de résultats
+	* ✅ Classements / détail par équipes  : ordre des équipes erroné si compétition type coupe, a priori classées par ordre alphabétique et non de résultats → **RÉSOLU**
 	* pour l'ensemble des documents de "classement" : classement indiqué "provisoire" alors que la compétition est au statut terminée
 			
-	* Si on navigue du menu documents à matchs puis retour à documents (sans autre action), le lien documents / matchs / Feuilles de marque indique "aucun match" et ne permet pas de les charger, il faut changer de compétition dans les menus en haut puis revenir pour avoir la possibilité de charger le PDF via ce menu
+	* ✅ Si on navigue du menu documents à matchs puis retour à documents (sans autre action), le lien documents / matchs / Feuilles de marque indique "aucun match" et ne permet pas de les charger → **RÉSOLU** (`onMounted` appelle désormais `loadMatchIds()` directement si une compétition est déjà sélectionnée, car `initContext()` est sans effet au retour de navigation puisque le store est déjà initialisé)
 	
-	* Contrôle / feuille "cartons cumulés", à renommer Fiche de suivi des cartons ? (ou ajout "(fiche de suivi)") car a priori doit être présent sur la table de marque de chaque journée pour le déroulement et mentionné dans le réglement
+	* ✅ Contrôle / feuille "cartons cumulés", à renommer Fiche de suivi des cartons → **RÉSOLU** (libellé mis à jour en FR et EN dans les fichiers i18n)
 	
 - Page Gestion des Equipes (liste générale)
 	* ajout d'équipe : en mode "depuis l'historique" : la recherche génère une erreur "Erreur serveur : le serveur a rencontré une erreur" (peut être lié aux droits?)

@@ -136,6 +136,10 @@ onMounted(async () => {
   if (profile.value <= 2) {
     await loadEvents()
   }
+  // Load match IDs for the current competition (even if initContext() was a no-op on return navigation)
+  if (workContext.pageCompetitionCode) {
+    await loadMatchIds()
+  }
   loading.value = false
 })
 </script>
