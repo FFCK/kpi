@@ -3,6 +3,7 @@
 <div class="container" id="containor">
     {if $type == 'CP' || $event > 0 }
         <article class="col-md-6 padTopBottom">
+            {if isset($journee[0])}
             <div class="page-header">
                 <h3 class="text-info" id="journee">{$journee[0].Soustitre2}</h3>
             </div>
@@ -30,13 +31,14 @@
                 </div>
                 <div class="form-group">
                     <label class="col-sm-4">{#Delegue#}</label>
-                    <div class="col-sm-8" id="delegue">{if isset($journee[0])}{$journee[0].Delegue}{/if}</div>
+                    <div class="col-sm-8" id="delegue">{$journee[0].Delegue}</div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-4">{#Chef_arbitres#}</label>
-                    <div class="col-sm-8" id="chefarbitre">{if isset($journee[0])}{$journee[0].ChefArbitre}{/if}</div>
+                    <div class="col-sm-8" id="chefarbitre">{$journee[0].ChefArbitre}</div>
                 </div>
             </div>
+            {/if}
             <div class="form-horizontal">
                 <div class="page-header">
                     <h3 class="text-info">{#Autres_categories#}</h3>

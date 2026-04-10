@@ -110,6 +110,9 @@ class Phases extends MyPage
 
 			// Journées
             $etapes = 0;
+            $arrayJournees = array();
+            $arrayListJournees = array();
+            $arrayEquipes = array();
             if ($event > 0) {
                 $sql = "SELECT j.Id Id_journee, j.Phase, j.Etape, j.Nbequipes, j.Niveau, 
                     j.Type, j.Date_debut, j.Date_fin, j.Lieu, j.Departement 
@@ -370,7 +373,7 @@ class Phases extends MyPage
 		$this->m_tpl->assign('Qualifies', $recordCompetition['Qualifies']);
 		$this->m_tpl->assign('Elimines', $recordCompetition['Elimines']);
 		$this->m_tpl->assign('etapes', $etapes);
-        $this->m_tpl->assign('largeur', 12/$etapes);
+        $this->m_tpl->assign('largeur', $etapes > 0 ? 12/$etapes : 12);
 		$this->m_tpl->assign('page', 'Phases');
 
 		// Combo "CHPT" - "CP"		
