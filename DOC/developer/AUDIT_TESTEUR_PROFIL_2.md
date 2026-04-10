@@ -80,9 +80,9 @@ accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mai
 	* ✅ Contrôle / feuille "cartons cumulés", à renommer Fiche de suivi des cartons → **RÉSOLU** (libellé mis à jour en FR et EN dans les fichiers i18n)
 	
 - Page Gestion des Equipes (liste générale)
-	* ajout d'équipe : en mode "depuis l'historique" : la recherche génère une erreur "Erreur serveur : le serveur a rencontré une erreur" (peut être lié aux droits?)
-	* ajout d'équipe : en mode "crétion manuelle" : la recherche d'un club génère une erreur de requête : erreur 404
-	* ajout d'équipe : en mode "crétion manuelle"  : option comité régional / comité départemental : la liste des CDCK est en doublon et 1/2 ne donne pas accès à la liste des clubs du département
+	* ✅ ajout d'équipe : en mode "depuis l'historique" : la recherche génère une erreur "Erreur serveur : le serveur a rencontré une erreur" → **RÉSOLU** (fix collision de route `/admin/teams/{numero}` avec `/admin/teams/search` — ajout `requirements: ['numero' => '\d+']`)
+	* ✅ ajout d'équipe : en mode "crétion manuelle" : la recherche d'un club génère une erreur de requête : erreur 404 → **RÉSOLU** (fix collision de route `/admin/clubs/{code}` avec `/admin/clubs/search` — ajout `requirements: ['code' => '\d+']`)
+	* ajout d'équipe : en mode "crétion manuelle"  : option comité régional / comité départemental : la liste des CDCK est en doublon et 1/2 ne donne pas accès à la liste des clubs du département → **À REPORTER** (lié à la réflexion sur la renumérotation des clubs/CD/CR, cf. ligne 26)
 	* ajout d'équipe : en mode "crétion manuelle"  : option comité régional / comité départemental : comment rattacher une équipe à un CD ou un CR ? (option pas trouvée, dans la version actuelle de KPi on retrouve la structure "parente" dans la liste du sous niveau pour faire celà.
 
 	* Editions PDF : 
