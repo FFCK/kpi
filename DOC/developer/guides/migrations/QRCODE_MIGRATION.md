@@ -84,7 +84,7 @@ $qrcode->displayHTML();
 After pulling these changes, run:
 
 ```bash
-make composer_install
+make backend_composer_install
 ```
 
 Or manually in the PHP container:

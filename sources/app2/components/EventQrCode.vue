@@ -126,7 +126,7 @@ const copyLinkToClipboard = async () => {
       title: t('Event.LinkCopied'),
       description: shareUrl,
       icon: 'i-heroicons-check-circle',
-      color: 'green',
+      color: 'success',
       duration: 3000
     })
   } catch (error) {
@@ -137,7 +137,7 @@ const copyLinkToClipboard = async () => {
       title: t('Event.CopyFailed'),
       description: error.message,
       icon: 'i-heroicons-x-circle',
-      color: 'red',
+      color: 'error',
       duration: 3000
     })
   }

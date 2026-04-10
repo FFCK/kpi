@@ -92,14 +92,14 @@ server {
 #### Option 1: Dev Server (Hot Reload)
 ```bash
 # Start Node.js dev server
-make dev_up
-make run_dev  # Accessible at https://kpi-node.localhost
+make docker_dev_up
+make app2_dev  # Accessible at https://kpi-node.localhost
 ```
 
 #### Option 2: Static Build (Test Nginx)
 ```bash
 # Generate static files with dev config
-make run_generate_dev
+make app2_generate_dev
 
 # Restart nginx to serve new files
 docker restart kpi_nginx_app2
@@ -117,14 +117,14 @@ cd /path/to/kpi
 git pull origin main
 
 # Generate static files using temporary container
-make run_generate_prod
+make app2_generate_prod
 
 # Restart nginx
-make prod_restart
+make docker_prod_restart
 ```
 
 **Technical Details**:
-- `make run_generate_prod` uses `docker run --rm` with temporary Node.js container
+- `make app2_generate_prod` uses `docker run --rm` with temporary Node.js container
 - No permanent Node.js container needed in production
 - Uses `.env.production` for environment variables
 
@@ -132,13 +132,13 @@ make prod_restart
 
 **Development** (requires permanent Node container):
 ```makefile
-run_generate_dev:
+app2_generate_dev:
     $(DOCKER_EXEC_NODE_NON_INTERACTIVE) sh -c "npx dotenv-cli -e .env.development -- nuxt generate"
 ```
 
 **Production** (uses temporary container):
 ```makefile
-run_generate_prod:
+app2_generate_prod:
     @echo "🔨 Building app2 for production using temporary Node.js container..."
     docker run --rm -v "$(CURDIR)/sources/app2:/app" -w /app node:20-alpine sh -c "npm ci && npx dotenv-cli -e .env.production -- nuxt generate"
     @echo "✅ Build complete! Files are in sources/app2/.output/public/"
@@ -238,7 +238,7 @@ preg_match('/^https?:\/\/.*\.localhost$/', $origin)
 | CORS Auto-Prepend | COPY in Dockerfile (all envs) | COPY in Dockerfile | COPY in Dockerfile |
 | Nginx Config | `nginx-app2.conf` (dev) | `nginx-app2-prod.conf` | `nginx-app2-prod.conf` |
 | Nginx Cache | Disabled (`sendfile off`) | Enabled (`sendfile on`) | Enabled (`sendfile on`) |
-| Build Command | `make run_generate_dev` | `make run_generate_prod` | `make run_generate_prod` |
+| Build Command | `make app2_generate_dev` | `make app2_generate_prod` | `make app2_generate_prod` |
 | Node Container | Permanent (for hot-reload) | Temporary (docker run --rm) | Temporary (docker run --rm) |
 | Domain | `app.kpi.localhost` | `app.{PREPROD_DOMAIN}` | `app.kayak-polo.info` |
 | Auto-restart after build | Yes (Makefile) | Manual | Manual |
@@ -359,7 +359,7 @@ dist
 ```bash
 # Force rebuild with correct env
 rm -rf sources/app2/.output
-make run_generate_dev  # or run_generate_prod
+make app2_generate_dev  # or app2_generate_prod
 ```
 
 ### Issue: Service Worker Errors
@@ -378,12 +378,12 @@ pwa: {
 **Solution**:
 1. Remove all `Header always set Access-Control-*` from Apache config
 2. Ensure `auto-prepend-cors.php` is loaded via `php-auto-prepend.ini`
-3. Rebuild Docker image: `make dev_rebuild`
+3. Rebuild Docker image: `make docker_dev_rebuild`
 
 ### Issue: Build Fails in Production
 
 **Cause**: Missing Node.js dependencies
-**Solution**: Use `npm ci` instead of `npm install` in temporary container (already implemented in `make run_generate_prod`)
+**Solution**: Use `npm ci` instead of `npm install` in temporary container (already implemented in `make app2_generate_prod`)
 
 ## Performance Considerations
 

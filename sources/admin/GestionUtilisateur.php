@@ -412,7 +412,7 @@ class GestionUtilisateur extends MyPageSecure
 							VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ";
 						$result = $myBdd->pdo->prepare($sql);
 						$result->execute(array(
-							$guser, $gidentite, $gmail, $gtel, $gfonction, $gniveau, md5($gpwd),
+							$guser, $gidentite, $gmail, $gtel, $gfonction, $gniveau, password_hash($gpwd, PASSWORD_BCRYPT),
 							$typeFiltreCompetition, $filtreCompetition, $filtreSaison,
 							$filtreCompetitionSql, $filtreJournee, $limitclub, $filtreEvenement,
 							$Date_debut, $Date_fin
@@ -433,7 +433,7 @@ class GestionUtilisateur extends MyPageSecure
 						Id_Evenement = ?, Date_debut = ?, Date_fin = ? ";
 					if ($gpwd != '') {
 						$sql .= ", Pwd = ? ";
-						$arrayQuery = array_merge($arrayQuery, [md5($gpwd)]);
+						$arrayQuery = array_merge($arrayQuery, [password_hash($gpwd, PASSWORD_BCRYPT)]);
 					}
 					$sql .= "WHERE Code = ? ";
 					$result = $myBdd->pdo->prepare($sql);

@@ -215,7 +215,7 @@
         </div>
       </div>
 
-      <!-- Team Statistics -->
+      <!-- Team Statistics (event mode) -->
       <div v-if="teamStats && teamStats.length > 0" class="mb-6">
         <div class="w-full px-2">
           <h3 class="px-4 text-xl font-semibold text-gray-700 mb-3">{{ t('Stats.Title') }}</h3>
@@ -261,6 +261,60 @@
                 </tr>
               </tbody>
             </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Team Statistics (group mode - one table per competition) -->
+      <div v-if="groupStats && groupStats.length > 0" class="mb-6">
+        <div class="w-full px-2">
+          <h3 class="px-4 text-xl font-semibold text-gray-700 mb-3">{{ t('Stats.Title') }}</h3>
+          <div v-for="compStats in groupStats" :key="compStats.competition_code" class="mb-6 flex justify-center">
+            <div class="overflow-x-auto bg-white rounded-lg shadow-sm border w-full max-w-3xl">
+              <div class="bg-gray-800 text-white px-3 py-2 rounded-t-lg text-sm font-medium">
+                {{ compStats.competition_label || compStats.competition_code }}
+              </div>
+              <table class="w-full">
+                <thead class="bg-gray-100">
+                  <tr>
+                    <th class="py-2 px-3 border-b text-left">{{ t('Stats.Player') }}</th>
+                    <th class="py-2 px-2 border-b text-center">{{ t('Stats.Goals') }}</th>
+                    <th class="py-2 px-2 border-b text-center">
+                      <div class="inline-block bg-green-500 w-6 h-8 transform -rotate-12 rounded-sm"></div>
+                    </th>
+                    <th class="py-2 px-2 border-b text-center">
+                      <div class="inline-block bg-yellow-400 w-6 h-8 transform -rotate-12 rounded-sm"></div>
+                    </th>
+                    <th class="py-2 px-2 border-b text-center">
+                      <div class="relative inline-block">
+                        <div class="absolute bg-yellow-400 w-6 h-8 rounded-sm transform -rotate-3 translate-x-0.5 translate-y-0.5"></div>
+                        <div class="relative bg-red-500 w-6 h-8 rounded-sm transform -rotate-12"></div>
+                      </div>
+                    </th>
+                    <th class="py-2 px-2 border-b text-center">
+                      <div class="flex items-center justify-center bg-red-500 w-6 h-8 transform -rotate-12 rounded-sm text-white font-bold text-xs">E</div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="player in compStats.players" :key="player.licence" class="hover:bg-gray-100 border-b">
+                    <td class="py-2 px-3">
+                      <div class="font-medium flex items-center">
+                        <span v-if="player.captain !== 'E'" class="text-sm text-gray-500 mr-2">#{{ player.number }}</span>
+                        <span class="text-xs md:text-sm lg:text-base ml-1">{{ player.firstname }} {{ player.name }}</span>
+                        <span v-if="player.captain === 'C'" class="ml-2 bg-black text-white text-xs font-bold w-4 h-4 flex items-center justify-center rounded-sm">C</span>
+                        <span v-if="player.captain === 'E'" class="ml-2 text-xs text-gray-500">({{ t('Stats.Coach') }})</span>
+                      </div>
+                    </td>
+                    <td class="py-2 px-2 text-center">{{ player.goals > 0 ? player.goals : '' }}</td>
+                    <td class="py-2 px-2 text-center">{{ player.green_cards > 0 ? player.green_cards : '' }}</td>
+                    <td class="py-2 px-2 text-center">{{ player.yellow_cards > 0 ? player.yellow_cards : '' }}</td>
+                    <td class="py-2 px-2 text-center">{{ player.red_cards > 0 ? player.red_cards : '' }}</td>
+                    <td class="py-2 px-2 text-center">{{ player.exclusions > 0 ? player.exclusions : '' }}</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -320,6 +374,7 @@ const showRefreshButton = ref(false)
 const visibleButton = ref(true)
 const isLoading = ref(false)
 const stats = ref(null)
+const groupStatsData = ref(null)
 
 const runtimeConfig = useRuntimeConfig()
 const baseUrl = runtimeConfig.public.backendBaseUrl
@@ -347,50 +402,70 @@ const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
-// Filter and sort team statistics
-const teamStats = computed(() => {
-  if (!stats.value) return []
-
-  return stats.value
-    // Exclude non-players (A = referees, X = inactive)
-    .filter(player => player.captain !== 'A' && player.captain !== 'X')
-    // Sort: players first by number, then coaches by number
+const sortPlayers = (players) =>
+  [...players]
+    .filter(p => p.captain !== 'A' && p.captain !== 'X')
     .sort((a, b) => {
       const aIsCoach = a.captain === 'E'
       const bIsCoach = b.captain === 'E'
-
-      // If one is coach and other is player, player comes first
       if (aIsCoach && !bIsCoach) return 1
       if (!aIsCoach && bIsCoach) return -1
-
-      // Both same type, sort by number
       return (a.number || 0) - (b.number || 0)
     })
+
+// Filter and sort team statistics (event mode)
+const teamStats = computed(() => {
+  if (!stats.value || !Array.isArray(stats.value)) return []
+  return sortPlayers(stats.value)
+})
+
+// Group mode stats: one entry per competition
+const groupStats = computed(() => {
+  if (!groupStatsData.value || !Array.isArray(groupStatsData.value)) return []
+  return groupStatsData.value
+    .map(comp => ({ ...comp, players: sortPlayers(comp.players || []) }))
+    .filter(comp => comp.players.length > 0)
 })
 
 // Fetch team statistics
 const fetchStats = async (teamId) => {
   if (!teamId) {
     stats.value = null
+    groupStatsData.value = null
     return
   }
 
-  try {
-    const eventId = preferenceStore.preferences.lastEvent?.id
-    if (!eventId) {
-      stats.value = null
-      return
-    }
+  const eventMode = preferenceStore.preferences?.eventMode
+  const lastGroup = preferenceStore.preferences?.lastGroup
+  const lastSeason = preferenceStore.preferences?.lastSeason
 
-    const response = await getApi(`/event/${eventId}/team/${teamId}/stats`)
-    if (response.ok) {
-      stats.value = await response.json()
-    } else {
+  try {
+    if (eventMode === 'group' && lastGroup?.code && lastSeason) {
       stats.value = null
+      const response = await getApi(`/group/${lastSeason}/${lastGroup.code}/team/${teamId}/stats`)
+      if (response.ok) {
+        groupStatsData.value = await response.json()
+      } else {
+        groupStatsData.value = null
+      }
+    } else {
+      groupStatsData.value = null
+      const eventId = preferenceStore.preferences.lastEvent?.id
+      if (!eventId) {
+        stats.value = null
+        return
+      }
+      const response = await getApi(`/event/${eventId}/team/${teamId}/stats`)
+      if (response.ok) {
+        stats.value = await response.json()
+      } else {
+        stats.value = null
+      }
     }
   } catch (e) {
     console.error('Error fetching stats:', e)
     stats.value = null
+    groupStatsData.value = null
   }
 }
 

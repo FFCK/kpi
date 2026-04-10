@@ -87,10 +87,20 @@ class AuthController extends AbstractController
             return new JsonResponse(['error' => 'Unauthorized'], 401);
         }
 
-        // Verify password and events
+        // Verify password: bcrypt first, then MD5 fallback with auto-upgrade
         $events = trim($row['Id_Evenement'] ?? '', '|');
-        if ($row['Pwd'] !== md5($password) || strlen($events) === 0) {
+        $storedHash = $row['Pwd'] ?? '';
+        $passwordValid = password_verify($password, $storedHash) || md5($password) === $storedHash;
+        if (!$passwordValid || strlen($events) === 0) {
             return new JsonResponse(['error' => 'Unauthorized'], 401);
+        }
+
+        // Auto-upgrade MD5 to bcrypt
+        if (md5($password) === $storedHash) {
+            $conn->executeStatement('UPDATE kp_user SET Pwd = ? WHERE Code = ?', [
+                password_hash($password, PASSWORD_BCRYPT),
+                $row['Code']
+            ]);
         }
 
         // Generate or reuse token

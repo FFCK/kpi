@@ -53,7 +53,7 @@ Migrer vers une bibliothèque moderne, activement maintenue et compatible PHP 8.
 
 **Commande Makefile**:
 ```bash
-make composer_require package=openspout/openspout
+make backend_composer_require package=openspout/openspout
 ```
 
 **Résultat**:

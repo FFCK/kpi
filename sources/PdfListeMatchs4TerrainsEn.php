@@ -13,36 +13,41 @@ class PdfListeMatchs extends MyPage
     function __construct()
     {
         parent::__construct();
+        $myBdd = new MyBdd();
+
+        // Mode URL : si des paramètres GET de filtre sont présents,
+        // ignorer les variables de session pour éviter les interférences
+        $urlMode = (utyGetGet('Compet', '') !== '' || utyGetGet('idEvenement', '') !== '' || utyGetGet('S', '') !== '');
+
         // Chargement des Matchs des journées ...
-        $filtreJour = utyGetSession('filtreJour', '');
+        $filtreJour = $urlMode ? '' : utyGetSession('filtreJour', '');
         $filtreJour = utyGetPost('filtreJour', $filtreJour);
         $filtreJour = utyGetGet('filtreJour', $filtreJour);
 
-        $filtreTerrain = utyGetSession('filtreTerrain', '');
+        $filtreTerrain = $urlMode ? '' : utyGetSession('filtreTerrain', '');
         $filtreTerrain = utyGetPost('filtreTerrain', $filtreTerrain);
         $filtreTerrain = utyGetGet('filtreTerrain', $filtreTerrain);
 
-        $filtreTour = utyGetSession('filtreTour', '');
+        $filtreTour = $urlMode ? '' : utyGetSession('filtreTour', '');
         $filtreTour = utyGetPost('filtreTour', $filtreTour);
         $filtreTour = utyGetGet('filtreTour', $filtreTour);
 
-        $filtreMatchsNonVerrouilles = utyGetSession('filtreMatchsNonVerrouilles', '');
+        $filtreMatchsNonVerrouilles = $urlMode ? '' : utyGetSession('filtreMatchsNonVerrouilles', '');
 
-        $myBdd = new MyBdd();
-        $lstJournee = utyGetSession('lstJournee', 0);
+        $lstJournee = $urlMode ? [] : utyGetSession('lstJournee', 0);
 
         // Filtre Journée/Phase/Poule : si une journée spécifique est sélectionnée, utiliser celle-ci
-        $idSelJournee = utyGetSession('idSelJournee', '*');
+        $idSelJournee = $urlMode ? '*' : utyGetSession('idSelJournee', '*');
         if ($idSelJournee != '*' && $idSelJournee != '' && $idSelJournee > 0) {
             $lstJournee = $idSelJournee;
         }
 
-        $idEvenement = utyGetSession('idEvenement', -1);
+        $idEvenement = $urlMode ? -1 : utyGetSession('idEvenement', -1);
         $idEvenement = utyGetGet('idEvenement', $idEvenement);
         if (utyGetGet('idEvenement', 0) > 0) {
             $lstJournee = [];
-            $sql = "SELECT Id_journee 
-                FROM kp_evenement_journee 
+            $sql = "SELECT Id_journee
+                FROM kp_evenement_journee
                 WHERE Id_evenement = ? ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($idEvenement));
@@ -55,7 +60,7 @@ class PdfListeMatchs extends MyPage
         $codeSaison = $myBdd->GetActiveSaison();
         $codeSaison = utyGetGet('S', $codeSaison);
         $orderMatchs = 'ORDER BY a.Date_match, d.Lieu, a.Heure_match, a.Terrain';
-        $laCompet = utyGetSession('codeCompet', 0);
+        $laCompet = $urlMode ? 0 : utyGetSession('codeCompet', 0);
         $laCompet = utyGetGet('Compet', $laCompet);
         // Ne vider $lstJournee que si $laCompet est une VRAIE compétition
         // Pas *, pas 0, pas vide
@@ -65,18 +70,18 @@ class PdfListeMatchs extends MyPage
         $codeCompet = $laCompet;
         if ($lstJournee != []) {
             $in  = str_repeat('?,', count($lstJournee) - 1) . '?';
-            $sql = "SELECT a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre, 
-                a.Date_match, a.Heure_match, a.Libelle, a.Terrain, b.Libelle EquipeA, 
-                c.Libelle EquipeB, a.Terrain, a.ScoreA, a.ScoreB, a.Arbitre_principal, 
-                a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire, 
-                a.Validation, d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee, 
-                cp.Soustitre2 
-                FROM kp_competition cp, kp_journee d, kp_match a 
-                LEFT OUTER JOIN kp_competition_equipe b ON (a.Id_equipeA = b.Id) 
-                LEFT OUTER JOIN kp_competition_equipe c ON (a.Id_equipeB = c.Id) 
-                WHERE a.Id_journee = d.Id 
-                AND d.Code_competition = cp.Code 
-                AND d.Code_saison = cp.Code_saison 
+            $sql = "SELECT a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre,
+                a.Date_match, a.Heure_match, a.Libelle, a.Terrain, b.Libelle EquipeA,
+                c.Libelle EquipeB, a.Terrain, a.ScoreA, a.ScoreB, a.Arbitre_principal,
+                a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire,
+                a.Validation, d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee,
+                cp.Soustitre2
+                FROM kp_competition cp, kp_journee d, kp_match a
+                LEFT OUTER JOIN kp_competition_equipe b ON (a.Id_equipeA = b.Id)
+                LEFT OUTER JOIN kp_competition_equipe c ON (a.Id_equipeB = c.Id)
+                WHERE a.Id_journee = d.Id
+                AND d.Code_competition = cp.Code
+                AND d.Code_saison = cp.Code_saison
                 AND a.Id_journee IN ($in) ";
             $merge = $lstJournee;
             if ($filtreJour != '') {
@@ -97,20 +102,54 @@ class PdfListeMatchs extends MyPage
             $sql .= $orderMatchs;
             $result = $myBdd->pdo->prepare($sql);
             $result->execute($merge);
+        } elseif ($laCompet == 0 || $laCompet == '*' || $laCompet == '') {
+            // Toutes les compétitions de la saison
+            $sql = "SELECT a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre,
+                a.Date_match, a.Heure_match, a.Libelle, a.Terrain, b.Libelle EquipeA,
+                c.Libelle EquipeB, a.Terrain, a.ScoreA, a.ScoreB, a.Arbitre_principal,
+                a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire,
+                a.Validation, d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee,
+                cp.Soustitre2
+                FROM kp_competition cp, kp_journee d, kp_match a
+                LEFT OUTER JOIN kp_competition_equipe b ON (a.Id_equipeA = b.Id)
+                LEFT OUTER JOIN kp_competition_equipe c ON (a.Id_equipeB = c.Id)
+                WHERE a.Id_journee = d.Id
+                AND d.Code_competition = cp.Code
+                AND d.Code_saison = cp.Code_saison
+                AND d.Code_saison = ? ";
+            $merge = array($codeSaison);
+            if ($filtreJour != '') {
+                $sql .= "AND a.Date_match = ? ";
+                $merge = array_merge($merge, [$filtreJour]);
+            }
+            if ($filtreTerrain != '') {
+                $sql .= "AND a.Terrain = ? ";
+                $merge = array_merge($merge, [$filtreTerrain]);
+            }
+            if ($filtreTour != '') {
+                $sql .= "AND d.Etape = ? ";
+                $merge = array_merge($merge, [$filtreTour]);
+            }
+            if ($filtreMatchsNonVerrouilles == 'on') {
+                $sql .= "AND a.Validation = 'N' ";
+            }
+            $sql .= $orderMatchs;
+            $result = $myBdd->pdo->prepare($sql);
+            $result->execute($merge);
         } else {
-            $sql = "SELECT a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre, 
-                a.Date_match, a.Heure_match, a.Libelle, a.Terrain, b.Libelle EquipeA, 
-                c.Libelle EquipeB, a.Terrain, a.ScoreA, a.ScoreB, a.Arbitre_principal, 
-                a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire, 
-                a.Validation, d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee, 
-                cp.Soustitre2 
-                FROM kp_competition cp, kp_journee d, kp_match a 
-                LEFT OUTER JOIN kp_competition_equipe b ON (a.Id_equipeA = b.Id) 
-                LEFT OUTER JOIN kp_competition_equipe c ON (a.Id_equipeB = c.Id) 
-                WHERE a.Id_journee = d.Id 
-                AND d.Code_competition = cp.Code 
-                AND d.Code_saison = cp.Code_saison 
-                AND d.Code_competition = ? 
+            $sql = "SELECT a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre,
+                a.Date_match, a.Heure_match, a.Libelle, a.Terrain, b.Libelle EquipeA,
+                c.Libelle EquipeB, a.Terrain, a.ScoreA, a.ScoreB, a.Arbitre_principal,
+                a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire,
+                a.Validation, d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee,
+                cp.Soustitre2
+                FROM kp_competition cp, kp_journee d, kp_match a
+                LEFT OUTER JOIN kp_competition_equipe b ON (a.Id_equipeA = b.Id)
+                LEFT OUTER JOIN kp_competition_equipe c ON (a.Id_equipeB = c.Id)
+                WHERE a.Id_journee = d.Id
+                AND d.Code_competition = cp.Code
+                AND d.Code_saison = cp.Code_saison
+                AND d.Code_competition = ?
                 AND d.Code_saison = ? ";
             $merge = array($laCompet, $codeSaison);
             if ($filtreJour != '') {

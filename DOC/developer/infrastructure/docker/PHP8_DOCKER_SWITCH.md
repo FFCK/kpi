@@ -182,7 +182,7 @@ Laisser la configuration intacte pour rollback rapide (1-2 semaines).
 cd /home/laurent/Documents/dev/kpi
 
 # Arrêter tous les containers
-make dev_down
+make docker_dev_down
 
 # Vérifier arrêt
 docker ps | grep kpi
@@ -195,7 +195,7 @@ docker ps | grep kpi
 
 ```bash
 # Rebuild avec nouvelle configuration
-make dev_rebuild
+make docker_dev_rebuild
 
 # Attendre fin du build (~2-3 minutes)
 # ...
@@ -218,7 +218,7 @@ Building kpi
 
 ```bash
 # Vérifier containers actifs
-make dev_status
+make docker_dev_status
 
 # Output attendu:
 # CONTAINER ID   IMAGE              STATUS         PORTS                  NAMES
@@ -227,7 +227,7 @@ make dev_status
 # ...
 
 # Vérifier version PHP
-make php_bash
+make backend_bash
 php -v
 
 # Output attendu:
@@ -284,10 +284,10 @@ cd docker
 cp .env.backup_YYYYMMDD .env
 
 # Rebuild avec PHP 7.4
-make dev_rebuild
+make docker_dev_rebuild
 
 # Vérifier version
-make php_bash
+make backend_bash
 php -v
 # Output: PHP 7.4.33
 ```
@@ -300,13 +300,13 @@ php -v
 
 ```bash
 # Arrêter containers
-make dev_down
+make docker_dev_down
 
 # Restaurer BDD
 docker exec -i kpi_db mysql -u root -p${DB_ROOT_PASSWORD} kpi_db < backup_prod_YYYYMMDD_HHMMSS.sql
 
 # Redémarrer
-make dev_up
+make docker_dev_up
 ```
 
 **Durée rollback BDD** : ~10-15 minutes (selon taille)
@@ -320,7 +320,7 @@ make dev_up
 | Aspect | Développement | Production |
 |--------|---------------|------------|
 | **Fichier compose** | `compose.dev.yaml` | `compose.prod.yaml` |
-| **Commande** | `make dev_rebuild` | `make prod_rebuild` |
+| **Commande** | `make docker_dev_rebuild` | `make docker_prod_rebuild` |
 | **Domaine** | `kpi.localhost` | `kayak-polo.info` |
 | **HTTPS** | Auto-signé | Let's Encrypt |
 | **Logs** | Verbose | Erreurs uniquement |
@@ -334,7 +334,7 @@ make dev_up
 # 2. Backup production
 ssh user@production-server
 cd /path/to/kpi
-make prod_down
+make docker_prod_down
 # Backup BDD + code (voir Phase 2.1)
 
 # 3. Modifier docker/.env
@@ -342,7 +342,7 @@ nano docker/.env
 # BASE_IMAGE_PHP=php:8.4-apache
 
 # 4. Rebuild
-make prod_rebuild
+make docker_prod_rebuild
 
 # 5. Tests post-deploy
 # Exécuter checklist complète
@@ -368,8 +368,8 @@ make prod_rebuild
 ### Pendant Migration
 
 - [ ] Variables .env modifiées (`BASE_IMAGE_PHP`)
-- [ ] Containers stoppés (`make dev_down`)
-- [ ] Rebuild effectué (`make dev_rebuild`)
+- [ ] Containers stoppés (`make docker_dev_down`)
+- [ ] Rebuild effectué (`make docker_dev_rebuild`)
 - [ ] Version PHP 8.4 confirmée (`php -v`)
 - [ ] Containers démarrés correctement
 - [ ] Logs sans erreurs critiques
@@ -403,7 +403,7 @@ make prod_rebuild
 
 ```bash
 # Dans le container
-make php_bash
+make backend_bash
 php -v
 
 # Depuis l'hôte
@@ -414,7 +414,7 @@ docker exec kpi_php php -v
 
 ```bash
 # Tous les containers
-make dev_logs
+make docker_dev_logs
 
 # Container PHP uniquement
 docker logs -f kpi_php
@@ -428,7 +428,7 @@ docker logs --tail 100 kpi_php
 ```bash
 # Force rebuild complet
 docker compose -f docker/compose.dev.yaml build --no-cache kpi
-make dev_up
+make docker_dev_up
 ```
 
 ### Comparaison PHP 7.4 vs 8.4
@@ -458,7 +458,7 @@ Error: OCI runtime create failed
 docker logs kpi_php
 
 # Reconstruire sans cache
-make dev_rebuild --no-cache
+make docker_dev_rebuild --no-cache
 ```
 
 ---
@@ -476,7 +476,7 @@ Permission denied: /var/www/html/...
 grep USER_ID docker/.env
 
 # Reconstruire avec bon user
-make dev_rebuild
+make docker_dev_rebuild
 ```
 
 ---
@@ -491,7 +491,7 @@ Call to undefined function imagecreatetruecolor()
 **Solution** :
 ```bash
 # Vérifier extensions installées
-make php_bash
+make backend_bash
 php -m | grep gd
 
 # Si manquante, vérifier Dockerfile.dev.web
@@ -510,7 +510,7 @@ composer: command not found
 **Solution** :
 ```bash
 # Vérifier installation Composer
-make php_bash
+make backend_bash
 which composer
 
 # Réinstaller si nécessaire (dans Dockerfile)

@@ -14,11 +14,11 @@ watch(() => route.path, () => {
 </script>
 
 <template>
-  <div class="flex flex-col min-h-screen bg-gray-50">
+  <div class="flex flex-col min-h-screen bg-header-50">
     <!-- Mobile menu backdrop -->
     <div
       v-if="mobileMenuOpen"
-      class="fixed inset-0 z-40 bg-black/50 lg:hidden"
+      class="fixed inset-0 z-30 bg-black/50 lg:hidden"
       @click="mobileMenuOpen = false"
     />
 
@@ -30,12 +30,12 @@ watch(() => route.path, () => {
     />
 
     <!-- Page content -->
-    <main class="flex-1 p-4 md:p-6 overflow-auto">
+    <main class="flex-1 px-4 py-2 md:px-6 overflow-auto">
       <slot />
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-100 border-t border-gray-200 py-3 px-4 text-center text-sm text-gray-500">
+    <footer class="bg-header-100 border-t border-header-200 py-3 px-4 text-center text-sm text-header-500">
       {{ t('app.title') }} - {{ t('footer.version') }} {{ version }}
     </footer>
   </div>

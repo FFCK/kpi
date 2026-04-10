@@ -66,7 +66,8 @@ sources/app4/
 │   └── admin/
 │       ├── Sidebar.vue     # Menu latéral
 │       ├── Header.vue      # En-tête admin
-│       └── DataTable.vue   # Table de données réutilisable
+│       ├── DataTable.vue   # Table de données réutilisable
+│       └── PlayerAutocomplete.vue  # Recherche joueur (partagé RC + Présence)
 ├── composables/
 │   ├── useAuth.ts          # Authentification JWT
 │   ├── useApi.ts           # Appels API2
@@ -93,13 +94,11 @@ sources/app4/
 
 ```makefile
 # NPM - App4
-npm_install_app4
-npm_clean_app4
-run_dev_app4          # Port 3004
-run_generate_app4
-run_generate_dev_app4
-run_generate_preprod_app4
-run_generate_prod_app4
+app4_npm_install
+app4_npm_clean
+app4_dev          # Port 3004
+app4_generate      # Génère via container Node permanent
+app4_generate_tmp  # Génère via container temporaire (preprod/prod)
 ```
 
 ## Phase 2 : Authentification JWT dans API2
@@ -123,7 +122,7 @@ composer require symfony/security-bundle
 
 ```makefile
 # JWT - Génération des clés RSA
-jwt_generate_keys:
+api2_jwt_generate_keys:
 	@echo "Génération des clés JWT..."
 	docker compose -f docker/compose.dev.yaml exec php \
 		sh -c "cd /var/www/html/api2 && \
@@ -136,10 +135,10 @@ jwt_generate_keys:
 **Usage :**
 ```bash
 # En développement
-make jwt_generate_keys
+make api2_jwt_generate_keys
 
 # En préprod/prod (même commande, fichiers .env différents)
-make jwt_generate_keys
+make api2_jwt_generate_keys
 ```
 
 **Note** : Les clés sont dans `.gitignore` et doivent être générées sur chaque environnement.
@@ -399,23 +398,23 @@ Ajouter un lien conditionnel pour le profil 1 :
 
 1. **Démarrer les conteneurs Docker** :
    ```bash
-   make dev_up
+   make docker_dev_up
    ```
 
 2. **Générer les clés JWT** (première fois seulement) :
    ```bash
-   make jwt_generate_keys
+   make api2_jwt_generate_keys
    ```
    Entrer un passphrase quand demandé (et le noter dans `.env` de API2).
 
 3. **Installer les dépendances app4** :
    ```bash
-   make npm_install_app4
+   make app4_npm_install
    ```
 
 4. **Démarrer le serveur de développement app4** :
    ```bash
-   make run_dev_app4
+   make app4_dev
    ```
 
 ### Tests manuels
@@ -463,12 +462,45 @@ JWT_PASSPHRASE=votre_passphrase
 
 ## Pages à migrer (ordre validé)
 
+### Pages principales (priorité haute)
+
 | # | Page PHP | Page Nuxt | Profil | Statut |
 |---|----------|-----------|--------|--------|
-| 1 | GestionEvenement | `/events` | ≤ 2 | ✅ Implémenté (en test) |
-| 2 | GestionDoc | `/documents` | ≤ 9 | ⏳ À faire |
-| 3 | GestionStats | `/statistics` | ≤ 9 | ⏳ À faire |
-| 4 | GestionOperations | `/operations` | = 1 | ⏳ À faire |
+| 1 | GestionEvenement | `/events` | ≤ 2 | ✅ Implémenté |
+| 2 | GestionDoc | `/documents` | ≤ 9 | ✅ Implémenté |
+| 3 | GestionStats | `/stats` | ≤ 9 | ✅ Implémenté |
+| 4 | GestionOperations | `/operations` | = 1 | ✅ Implémenté |
+| 5 | GestionCompetition | `/competitions` | ≤ 10 | ✅ Implémenté |
+| 6 | GestionEquipe | `/teams` | ≤ 3 | ✅ Implémenté |
+| 7 | GestionJournee | `/gamedays` | ≤ 4 | ✅ Implémenté |
+| 8 | GestionCalendrier | `/games` | ≤ 4 | ✅ Implémenté |
+| 9 | GestionClassement | `/rankings` | ≤ 4 | ✅ Implémenté |
+| 10 | GestionClassementInit | `/rankings/initial` | ≤ 6 | ✅ Implémenté |
+| 11 | GestionAthlete | `/athletes` | ≤ 8 | ✅ Implémenté |
+| 12 | GestionStructure | `/clubs` | ≤ 2 | ✅ Implémenté |
+| 13 | GestionUtilisateur | `/users` | ≤ 2 | ✅ Implémenté |
+
+### Pages implémentées (hors menu principal)
+
+| # | Page PHP | Page Nuxt | Profil | Statut |
+|---|----------|-----------|--------|--------|
+| 14 | GestionRc | `/rc` | ≤ 4 | ✅ Implémenté |
+| 15 | GestionEquipeJoueur | `/presence/team/:teamId` | ≤ 10 | ✅ Implémenté (Team Mode) |
+| 16 | GestionMatchEquipeJoueur | `/presence/match/:matchId/team/:teamCode` | ≤ 10 | ✅ Implémenté (Match Mode) |
+| 17 | GestionCopieCompetition | `/competitions/copy` | ≤ 3 | ✅ Implémenté |
+| 18 | GestionGroupe | `/groups` | ≤ 2 | ✅ Implémenté |
+| 19 | GestionSchema | `/gamedays/schema` | ≤ 3 | ✅ Implémenté |
+| 20 | GestionJournal | `/journal` | = 1 | ✅ Implémenté |
+| 21 | Contrôle TV | `/tv` | ≤ 2 | ✅ Implémenté |
+
+### Pages et fonctionnalités restantes à migrer
+
+| # | Page PHP | Description | Profil | Priorité |
+|---|----------|-------------|--------|----------|
+| 22 | GestionInstances | Gestion des instances fédérales | ≤ 2 | Basse |
+| 23 | GestionGrillePoints | Gestion des grilles de points | ≤ 3 | Basse |
+| 24 | GestionParamUser | Paramètres utilisateur | ≤ 9 | Basse |
+| 25 | GestionParamJournee | Paramètres de journée | ≤ 9 | Basse |
 
 Pour chaque page, une analyse fonctionnelle détaillée sera produite avant migration.
 
@@ -530,6 +562,82 @@ Pour chaque page, une analyse fonctionnelle détaillée sera produite avant migr
 
 ---
 
+## Annexe B : Analyse fonctionnelle - GestionStats
+
+### Fonctionnalités existantes
+
+| # | Fonctionnalité | Profil | Évaluation | Décision |
+|---|----------------|--------|------------|----------|
+| 1 | Sélection saison | ≤ 9 | Essentielle | ✅ Conserver |
+| 2 | Sélection compétitions multiples | ≤ 9 | Essentielle | ✅ Conserver |
+| 3 | 22 types de statistiques | ≤ 9 | Essentielle | ✅ Conserver |
+| 4 | Restriction certaines stats (profil ≤ 6) | ≤ 6 | Sécurité | ✅ Conserver |
+| 5 | Export Excel | ≤ 9 | Essentielle | ✅ Conserver |
+| 6 | Export PDF | ≤ 9 | Essentielle | 🔧 Améliorer |
+| 7 | Limite de résultats | ≤ 9 | Utile | ✅ Conserver |
+| 8 | Colonne de classement (#) | - | Utile | ✅ Conserver |
+
+### Améliorations implémentées
+
+| # | Amélioration | Description |
+|---|--------------|-------------|
+| 1 | Interface responsive | Adapté mobile/tablet/desktop |
+| 2 | Descriptions des stats | Explication de chaque type de statistique |
+| 3 | Traductions exports | PDF et Excel traduits selon langue interface |
+| 4 | En-tête PDF | Logo KPI, titre, site web |
+| 5 | Pied de page PDF | Date/heure locale, numéro de page |
+| 6 | Compétitions groupées | Sections (National, CF, Régional, etc.) |
+| 7 | Persistance paramètres | Sauvegarde et restauration automatique |
+| 8 | Tooltip compétitions | Affiche détail si > 3 sélectionnées |
+| 9 | Modal paramétrage | Interface claire avec descriptions |
+
+### Types de statistiques
+
+| # | Type | Colonnes | Classement |
+|---|------|----------|------------|
+| 1 | Buteurs | competition, licence, nom, prenom, sexe, numero, equipe, buts | ✅ |
+| 2 | Attaque | competition, equipe, buts | |
+| 3 | Défense | competition, equipe, buts | |
+| 4 | Cartons | competition, licence, nom, prenom, sexe, numero, equipe, vert, jaune, rouge, rougeDefinitif | ✅ |
+| 5 | CartonsEquipe | competition, equipe, vert, jaune, rouge, rougeDefinitif | |
+| 6 | CartonsCompetition | competition, matchs, buts, vert, jaune, rouge, rougeDefinitif | |
+| 7 | Fairplay | competition, licence, nom, prenom, sexe, numero, equipe, fairplay | ✅ |
+| 8 | FairplayEquipe | competition, equipe, fairplay | |
+| 9 | Arbitrage | competition, licence, nom, prenom, sexe, principal, secondaire, total | ✅ |
+| 10 | ArbitrageEquipe | competition, equipe, principal, secondaire, total | |
+| 11 | CJouees | competition, matric, nom, prenom, numeroClub, nomClub, nbMatchs | |
+| 12 | CJouees2 | competition, matric, nom, prenom, nomEquipe, nbMatchs | |
+| 13 | CJouees3 | competition, matric, nom, prenom, nomEquipe, nbMatchs, irregularite | |
+| 14 | CJoueesN | competition, matric, nom, prenom, nomEquipe, nbMatchs | |
+| 15 | CJoueesCF | competition, matric, nom, prenom, nomEquipe, nbMatchs | |
+| 16 | OfficielsJournees | id, competition, libelle, lieu, departement, dateDebut, dateFin, responsableInsc, responsableR1, delegue, chefArbitre | |
+| 17 | OfficielsMatchs | id, competition, lieu, dateMatch, heureMatch, numeroOrdre, equipeA, equipeB, arbitrePrincipal, arbitreSecondaire, ligne1, ligne2, secretaire, chronometre, timeshoot | |
+| 18 | ListeArbitres | matric, nom, prenom, sexe, codeClub, club, arbitre, niveau, saison | |
+| 19 | ListeEquipes | equipe, club, cd, cr, clubActuelJoueurs | |
+| 20 | ListeJoueurs | matric, nom, prenom, sexe, naissance, clubActuel, categorie, club | |
+| 21 | ListeJoueurs2 | matric, nom, prenom, sexe, naissance, clubActuel, categorie, club | |
+| 22 | LicenciesNationaux | saison, hommesU16...femmesTotal, totalActivite | |
+| 23 | CoherenceMatchs | type, equipe, competition, date, lieu, details | |
+
+### Endpoints API2
+
+| Méthode | Endpoint | Description |
+|---------|----------|-------------|
+| GET | `/admin/stats/filters` | Filtres disponibles (saisons, compétitions, types) |
+| GET | `/admin/stats/data` | Données statistiques |
+| GET | `/admin/stats/export/xlsx` | Export Excel |
+| GET | `/admin/stats/export/pdf` | Export PDF |
+
+### Statut d'implémentation
+
+- ✅ Tous les types de statistiques implémentés
+- ✅ Exports PDF et Excel avec traductions
+- ✅ Interface responsive
+- ✅ Sauvegarde des paramètres
+- ✅ Restrictions par profil
+
+---
+
 **Document créé le** : 2026-01-02
-**Dernière mise à jour** : 2026-01-02
-**Statut** : ✅ Phase 1-6 implémentées - Prêt pour tests
+**Dernière mise à jour** : 2026-03-11
+**Statut** : ✅ 21/25 pages migrées - Toutes les pages principales et secondaires implémentées. Reste : instances fédérales, grilles de points, paramètres utilisateur/journée.

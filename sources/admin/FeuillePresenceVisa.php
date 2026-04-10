@@ -16,7 +16,11 @@ class FeuillePresenceVisa extends MyPage
     $myBdd = new MyBdd();
 
     $codeCompet = utyGetSession('codeCompet');
+    $codeCompet = utyGetGet('Compet', $codeCompet);
+    $codeCompet = utyGetGet('compet', $codeCompet); // App4 uses 'compet'
     $codeSaison = $codeCompet === 'POOL' ? 1000 : $myBdd->GetActiveSaison();
+    $codeSaison = utyGetGet('S', $codeSaison);
+    $codeSaison = utyGetGet('season', $codeSaison); // App4 uses 'season'
 
     // Chargement des équipes ...
     $arrayEquipe = array();
@@ -220,7 +224,12 @@ class FeuillePresenceVisa extends MyPage
           $pdf->Cell(23, 9, $arrayJoueur[$idEquipe][$j]['CertifCK'], 'B', 0, 'C');
           $pdf->Cell(16, 9, $arrayJoueur[$idEquipe][$j]['Numero_club'], 'B', 0, 'C');
           $pdf->Cell(16, 9, $arrayJoueur[$idEquipe][$j]['Arbitre'], 'B', 0, 'C');
-          $pdf->Cell(47, 9, '[_]', 'B', 1, 'L');
+          $pdf->Cell(47, 9, '', 'B', 0, 'L');
+          $x = $pdf->x - 47 + 3;
+          $y = $pdf->y + 1.5;
+          $pdf->Rect($x, $y, 6, 6);
+          $pdf->Ln(9);
+          $pdf->SetX(10);
         }
       }
     }

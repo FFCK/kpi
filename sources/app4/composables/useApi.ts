@@ -28,12 +28,16 @@ export const useApi = () => {
 
   // Get auth headers
   const getHeaders = (): HeadersInit => {
-    const headers: HeadersInit = {
+    const headers: Record<string, string> = {
       'Content-Type': 'application/json'
     }
 
     if (authStore.token) {
       headers['Authorization'] = `Bearer ${authStore.token}`
+    }
+
+    if (authStore.activeMandate) {
+      headers['X-Active-Mandate'] = String(authStore.activeMandate.id)
     }
 
     return headers
@@ -255,8 +259,154 @@ export const useApi = () => {
   }
 
   // DELETE request
-  const del = <T>(endpoint: string): Promise<T> => {
-    return apiFetch<T>(endpoint, { method: 'DELETE' })
+  const del = <T>(endpoint: string, data?: unknown): Promise<T> => {
+    return apiFetch<T>(endpoint, {
+      method: 'DELETE',
+      body: data ? JSON.stringify(data) : undefined
+    })
+  }
+
+  // POST request with FormData (for file uploads)
+  const upload = async <T>(endpoint: string, formData: FormData): Promise<T> => {
+    const url = `${baseUrl}${endpoint}`
+    let response: Response | null = null
+    let fetchError: Error | null = null
+
+    try {
+      // Add timeout wrapper
+      response = await Promise.race([
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            // Don't set Content-Type for FormData - browser will set it with boundary
+            'Authorization': authStore.token ? `Bearer ${authStore.token}` : '',
+            ...(authStore.activeMandate ? { 'X-Active-Mandate': String(authStore.activeMandate.id) } : {})
+          },
+          body: formData
+        }),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('Request timeout')), REQUEST_TIMEOUT_MS * 3) // 30s for uploads
+        )
+      ])
+
+      if (!response.ok) {
+        const errorType = detectErrorType(null, response)
+
+        if (errorType === ErrorType.HTTP_401) {
+          const now = Date.now()
+          if (now - last401Time > THROTTLE_401_MS) {
+            last401Time = now
+            toast.add({
+              title: t('errors.http.401.title'),
+              description: t('errors.http.401.description'),
+              icon: 'i-heroicons-shield-exclamation',
+              color: 'error',
+              duration: 3000
+            })
+          }
+          authStore.clearAuth()
+          navigateTo('/login')
+          throw new Error('Session expired')
+        }
+
+        if (errorType === ErrorType.HTTP_403) {
+          showErrorToast(ErrorType.HTTP_403)
+          throw new Error('Access denied')
+        }
+
+        if (errorType) {
+          showErrorToast(errorType, response.status)
+        }
+
+        let error: ApiError
+        try {
+          error = await response.json()
+        } catch {
+          error = { message: `HTTP ${response.status}: ${response.statusText}` }
+        }
+
+        throw error
+      }
+
+      if (response.status === 204) {
+        return {} as T
+      }
+
+      return response.json()
+    } catch (err) {
+      fetchError = err as Error
+
+      if (!response || response.ok) {
+        const errorType = detectErrorType(fetchError, null)
+        if (errorType) {
+          showErrorToast(errorType)
+        }
+      }
+
+      throw fetchError
+    }
+  }
+
+  // GET request returning Blob (for file downloads)
+  const getBlob = async (endpoint: string): Promise<ArrayBuffer> => {
+    const url = `${baseUrl}${endpoint}`
+    let response: Response | null = null
+    let fetchError: Error | null = null
+
+    try {
+      response = await Promise.race([
+        fetch(url, {
+          method: 'GET',
+          headers: {
+            'Authorization': authStore.token ? `Bearer ${authStore.token}` : '',
+            ...(authStore.activeMandate ? { 'X-Active-Mandate': String(authStore.activeMandate.id) } : {})
+          }
+        }),
+        new Promise<never>((_, reject) =>
+          setTimeout(() => reject(new Error('Request timeout')), REQUEST_TIMEOUT_MS)
+        )
+      ])
+
+      if (!response.ok) {
+        const errorType = detectErrorType(null, response)
+
+        if (errorType === ErrorType.HTTP_401) {
+          const now = Date.now()
+          if (now - last401Time > THROTTLE_401_MS) {
+            last401Time = now
+            toast.add({
+              title: t('errors.http.401.title'),
+              description: t('errors.http.401.description'),
+              icon: 'i-heroicons-shield-exclamation',
+              color: 'error',
+              duration: 3000
+            })
+          }
+          authStore.clearAuth()
+          navigateTo('/login')
+          throw new Error('Session expired')
+        }
+
+        if (errorType) {
+          showErrorToast(errorType, response.status)
+        }
+
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`)
+      }
+
+      return response.arrayBuffer()
+    } catch (err) {
+      fetchError = err as Error
+
+      if (!response || response.ok) {
+        const errorType = detectErrorType(fetchError, null)
+        if (errorType) {
+          showErrorToast(errorType)
+        }
+      }
+
+      throw fetchError
+    }
   }
 
   return {
@@ -264,6 +414,8 @@ export const useApi = () => {
     post,
     put,
     patch,
-    del
+    del,
+    upload,
+    getBlob
   }
 }

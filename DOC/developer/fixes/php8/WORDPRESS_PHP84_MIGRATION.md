@@ -285,7 +285,7 @@ chmod +x docker/disable_wordpress_plugin.sh
 ### 8.1 Développement (déjà fait ✅)
 ```bash
 # Modifier les fichiers selon les sections 1-6 ci-dessus
-make dev_rebuild
+make docker_dev_rebuild
 ```
 
 ### 8.2 Pré-production
@@ -293,7 +293,7 @@ make dev_rebuild
 # 1. Modifier les fichiers selon les sections 1-6
 # 2. Adapter les URLs dans wp-config.php et 000-default.conf
 # 3. Rebuild les conteneurs
-make preprod_rebuild
+make docker_preprod_rebuild
 ```
 
 ### 8.3 Production
@@ -303,7 +303,7 @@ make preprod_rebuild
 # 3. Backup WordPress avant migration
 make wordpress_backup
 # 4. Rebuild les conteneurs
-make prod_rebuild
+make docker_prod_rebuild
 ```
 
 ---
@@ -326,7 +326,7 @@ make prod_rebuild
 docker exec kpi_php tail -f /var/www/html/wordpress/wp-content/debug.log
 
 # Vérifier les logs Apache
-make dev_logs  # ou preprod_logs / prod_logs
+make docker_dev_logs  # ou docker_preprod_logs / docker_prod_logs
 
 # Tester REST API
 curl https://kpi.localhost/wp-json/
@@ -427,7 +427,7 @@ tar -xzf wordpress_backup_YYYY-MM-DD_HH-MM-SS.tar.gz
 # Changer php:8.4.13-apache-trixie par php:7.4-apache
 
 # 3. Rebuild
-make dev_rebuild  # ou preprod_rebuild / prod_rebuild
+make docker_dev_rebuild  # ou docker_preprod_rebuild / docker_prod_rebuild
 ```
 
 ---

@@ -15,15 +15,15 @@
         <p class="text-gray-700 mb-4">{{ t("About.ClickableElements") }}</p>
         <!-- Large image for desktop -->
         <img
-          src="/img/tuto_lg.png"
+          src="/img/tuto_md.png"
           :alt="t('About.Information')"
-          class="hidden md:block w-full rounded-lg shadow"
+          class="hidden md:block w-full rounded-lg shadow-xl/30 opacity-70"
         />
         <!-- Small image for mobile -->
         <img
-          src="/img/tuto_sm.png"
+          src="/img/tuto_xs.png"
           :alt="t('About.Information')"
-          class="block md:hidden w-full rounded-lg shadow"
+          class="block md:hidden w-full rounded-lg shadow-xl/30 opacity-70"
         />
       </div>
 

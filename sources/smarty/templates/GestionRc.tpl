@@ -50,7 +50,7 @@
                     <label>{#Filtre#} :</label>
                     <select id="filtreCompetition" style="background-color: #F15A2A">
 						<option value="">{#Tous#}</option>
-						<option value="- CNA -" {if 'CNA'==$filtreCompet}selected{/if}>- CNA -</option>
+						<option value="CNA" {if 'CNA'==$filtreCompet}selected{/if}>{#National_sans_competition#}</option>
 						{section name=i loop=$arrayCompetitions}
 							<option value="{$arrayCompetitions[i].Code}" {if $arrayCompetitions[i].Code==$filtreCompet}selected{/if}>{$arrayCompetitions[i].Code}</option>
 						{/section}
@@ -72,7 +72,7 @@
 						</thead>
 						<tbody>
 							{section name=i loop=$arrayRc}
-								<tr class="{cycle values='impair,pair'} {$arrayRc[i].Selected|default: ''}" data-code="{$arrayRc[i].Code_competition}">
+								<tr class="{cycle values='impair,pair'} {$arrayRc[i].Selected|default: ''}" data-code="{if $arrayRc[i].Code_competition}{$arrayRc[i].Code_competition}{else}CNA{/if}">
 									{if $profile <= 2}
 										<td>
 											<a href="#" Id="Param{$arrayRc[i].Id}" onclick="paramRc({$arrayRc[i].Id})">
@@ -81,7 +81,7 @@
 										</td>
 									{/if}
 									<td>{$arrayRc[i].Code_saison}</td>
-									<td>{$arrayRc[i].Code_competition}</td>
+									<td>{if $arrayRc[i].Code_competition}{$arrayRc[i].Code_competition}{else}{#National_sans_competition#}{/if}</td>
 									<td>{$arrayRc[i].Ordre}</td>
 									<td>{$arrayRc[i].Prenom} {$arrayRc[i].Nom}</td>
 									<td class="cliquableNomEquipe">
@@ -127,7 +127,7 @@
 							<td colspan=2>
 								<label for="Code_competition">{#Competition#} :</label>
 								<select name="Code_competition" id="Code_competition">
-									<option value="- CNA -">- CNA -</option>
+									<option value="">{#National_sans_competition#}</option>
 									{section name=i loop=$arrayCompetitions}
 										<option value="{$arrayCompetitions[i].Code}" {if $arrayCompetitions[i].Code==$selectCompetition}selected{/if}>{$arrayCompetitions[i].Code}</option>
 									{/section}

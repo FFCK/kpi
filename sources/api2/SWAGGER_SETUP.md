@@ -7,7 +7,7 @@
 Exécutez cette commande sur votre serveur :
 
 ```bash
-make composer_require_api2 package=nelmio/api-doc-bundle
+make api2_backend_composer_require package=nelmio/api-doc-bundle
 ```
 
 Cette commande installe le bundle nécessaire pour générer automatiquement la documentation OpenAPI à partir des annotations.

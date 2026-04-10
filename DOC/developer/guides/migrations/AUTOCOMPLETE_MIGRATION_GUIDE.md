@@ -246,7 +246,7 @@ Tous suivent le même pattern :
 rm -rf sources/smarty/templates_c/*
 
 # Redémarrer containers
-make dev_restart
+make docker_dev_restart
 ```
 
 #### 4.2. Pages Admin à Tester
@@ -364,7 +364,7 @@ ls -lh sources/js/vanilla-autocomplete.js
 rm -rf sources/smarty/templates_c/*
 
 # 4. Redémarrer
-make dev_restart
+make docker_dev_restart
 ```
 
 ---

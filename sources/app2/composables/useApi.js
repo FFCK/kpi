@@ -41,7 +41,7 @@ export const useApi = () => {
       description: t('errors.cache.usingOfflineData.description'),
       icon: 'i-heroicons-archive-box',
       color: 'info',
-      timeout: 3000
+      duration: 3000
     })
   }
 
@@ -96,25 +96,25 @@ export const useApi = () => {
         titleKey = 'errors.http.404.title'
         descKey = 'errors.http.404.description'
         icon = 'i-heroicons-question-mark-circle'
-        color = 'orange'
+        color = 'warning'
         break
       case ErrorType.HTTP_4XX:
         titleKey = 'errors.http.4xx.title'
         descKey = 'errors.http.4xx.description'
         icon = 'i-heroicons-exclamation-triangle'
-        color = 'orange'
+        color = 'warning'
         break
       case ErrorType.HTTP_5XX:
         titleKey = 'errors.http.5xx.title'
         descKey = 'errors.http.5xx.description'
         icon = 'i-heroicons-server'
-        color = 'red'
+        color = 'error'
         break
       default:
         titleKey = 'errors.generic.title'
         descKey = 'errors.generic.description'
         icon = 'i-heroicons-x-circle'
-        color = 'red'
+        color = 'error'
     }
 
     toast.add({
@@ -123,7 +123,7 @@ export const useApi = () => {
       description: t(descKey, { status }),
       icon,
       color,
-      timeout: 3000
+      duration: 3000
     })
   }
 
@@ -158,7 +158,7 @@ export const useApi = () => {
       description: t(descKey),
       icon,
       color: 'error',
-      timeout: 3000
+      duration: 3000
     })
   }
 
@@ -204,7 +204,7 @@ export const useApi = () => {
               description: t('errors.http.401.description'),
               icon: 'i-heroicons-shield-exclamation',
               color: 'error',
-              timeout: 3000
+              duration: 3000
             })
 
             // Logout user and redirect to login after short delay

@@ -15,8 +15,10 @@ class FeuilleCards extends MyPage
         $myBdd = new MyBdd();
 
         $codeCompet = utyGetSession('codeCompet', '');
+        $codeCompet = utyGetGet('Compet', $codeCompet);
         //Saison
         $codeSaison = $myBdd->GetActiveSaison();
+        $codeSaison = utyGetGet('S', $codeSaison);
         $titreDate = "Saison " . $codeSaison;
         $arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
         $titreCompet = 'Compétition : ' . $arrayCompetition['Libelle'] . ' (' . $codeCompet . ')';

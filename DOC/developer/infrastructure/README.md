@@ -18,7 +18,7 @@ Documentation complète sur le déploiement des applications Nuxt (app2 & app3) 
 - Containers Node.js temporaires pour builds prod
 - Variables d'environnement (.env.development, .env.production)
 - Intégration Docker Compose et Traefik
-- Commandes Makefile (`run_generate_dev`, `run_generate_prod`)
+- Commandes Makefile (`app2_generate_dev`, `app2_generate_prod`)
 - Troubleshooting (403, Service Worker, URLs incorrectes)
 
 **Pour qui**: Développeurs, DevOps
@@ -86,10 +86,10 @@ Gestion des dépendances JavaScript (Flatpickr, Day.js, etc.) dans le backend PH
 
 ```bash
 # Build app2 pour développement
-make run_generate_dev
+make app2_generate_dev
 
 # Build app2 pour production (sans container Node.js permanent)
-make run_generate_prod
+make app2_generate_prod
 
 # Redémarrer nginx
 docker restart kpi_nginx_app2
@@ -98,8 +98,8 @@ docker restart kpi_nginx_app2
 curl -k -I -H "Origin: https://app.kpi.localhost" https://kpi.localhost/api/test
 
 # Rebuild Docker après changement Dockerfile
-make dev_rebuild
-make prod_rebuild
+make docker_dev_rebuild
+make docker_prod_rebuild
 ```
 
 ### Fichiers de Configuration Clés
@@ -135,12 +135,12 @@ make prod_rebuild
 ### Problèmes Courants
 
 #### 1. App2 retourne 403 Forbidden
-**Solution**: Vérifier que `ssr: false` dans `nuxt.config.ts` et régénérer avec `make run_generate_dev`
+**Solution**: Vérifier que `ssr: false` dans `nuxt.config.ts` et régénérer avec `make app2_generate_dev`
 
 #### 2. Headers CORS dupliqués
 **Solution**:
 - Vérifier que `000-default.conf` n'a pas de `Header always set Access-Control-*`
-- Rebuild image: `make dev_rebuild`
+- Rebuild image: `make docker_dev_rebuild`
 
 #### 3. Service Worker cache old URLs
 **Solution**: Désactiver temporairement PWA dans `nuxt.config.ts`:
@@ -149,13 +149,13 @@ pwa: { disable: true }
 ```
 
 #### 4. Build prod échoue (pas de Node.js)
-**Solution**: Utiliser `make run_generate_prod` qui crée un container temporaire
+**Solution**: Utiliser `make app2_generate_prod` qui crée un container temporaire
 
 ## 📞 Support
 
 Pour toute question technique:
 1. Consulter la documentation associée
-2. Vérifier les logs: `make dev_logs` ou `make prod_logs`
+2. Vérifier les logs: `make docker_dev_logs` ou `make docker_prod_logs`
 3. Tester avec curl pour CORS
 4. Inspecter Network tab dans DevTools
 

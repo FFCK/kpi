@@ -12,7 +12,7 @@ class Event extends MyPageSecure
 {
     function __construct($arrayParam)
     {
-        parent::__construct($arrayParam, 1); // Niveau 1 = authentification requise
+        parent::__construct($arrayParam, 2); // Niveau 2 = authentification requise
     }
 
     function Header()

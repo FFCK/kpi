@@ -17,7 +17,7 @@ Le nom du conteneur PHP dépend de la variable `APPLICATION_NAME` dans `docker/.
 ```bash
 docker ps | grep php
 # ou
-make dev_status  # Pour voir les conteneurs de développement
+make docker_dev_status  # Pour voir les conteneurs de développement
 ```
 
 **Dans les commandes ci-dessous**, remplacez `kpi_php_1` par le nom de votre conteneur si différent.
@@ -102,12 +102,12 @@ docker exec -it kpi_php_1 php /sources/scripts/patch_mysmarty.php
 
 # 5. Redémarrer les conteneurs
 cd ../..
-make dev_restart
+make docker_dev_restart
 
 # 6. Tester l'application
 # - Générer des PDFs
 # - Naviguer dans l'interface Smarty
-# - Vérifier les logs : make dev_logs
+# - Vérifier les logs : make docker_dev_logs
 
 # 7. Si tout fonctionne, supprimer les anciennes sauvegardes
 cd sources/commun
@@ -139,14 +139,14 @@ docker exec -it kpi_php_1 php /sources/scripts/patch_mysmarty.php
 
 # 5. Redémarrer
 cd ../..
-make dev_restart
+make docker_dev_restart
 ```
 
 ### Option 3 : Via Shell Interactif (Pour Plus de Contrôle)
 
 ```bash
 # Entrer dans le conteneur PHP
-make php_bash
+make backend_bash
 
 # Dans le conteneur :
 cd /sources/commun
@@ -170,13 +170,13 @@ cp MyLang.ini MyLang.ini.backup
 mv MyLang_unified.ini MyLang.ini
 
 # Retourner dans le conteneur pour patcher
-make php_bash
+make backend_bash
 cd /sources/commun
 php patch_mysmarty.php
 exit
 
 # Redémarrer
-make dev_restart
+make docker_dev_restart
 ```
 
 ---
@@ -236,7 +236,7 @@ Tous les conflits ont été résolus en appliquant les choix recommandés basés
 3. **Surveiller** les logs PHP pour détecter d'éventuelles erreurs :
    ```bash
    # Depuis l'hôte - méthode recommandée
-   make dev_logs
+   make docker_dev_logs
 
    # Ou directement avec Docker
    docker logs -f kpi_php_1
@@ -248,10 +248,10 @@ Tous les conflits ont été résolus en appliquant les choix recommandés basés
 4. **Redémarrer les conteneurs** après modifications importantes :
    ```bash
    # Redémarrer les conteneurs de développement
-   make dev_restart
+   make docker_dev_restart
 
    # Ou pour production
-   make prod_restart
+   make docker_prod_restart
    ```
 
 ---

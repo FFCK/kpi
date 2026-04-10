@@ -1,9 +1,8 @@
 <template>
-  <UApp>
+  <UApp :toaster="{ position: 'bottom-right', progress: true }">
     <NuxtLayout>
       <NuxtPage />
     </NuxtLayout>
-    <UNotifications />
   </UApp>
 </template>
 
@@ -65,7 +64,5 @@ onMounted(async () => {
 </script>
 
 <style>
-@import url("~/assets/css/app.css");
 @import "tailwindcss";
-
 </style>

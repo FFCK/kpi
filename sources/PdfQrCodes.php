@@ -34,7 +34,6 @@ class PdfQrCodes extends MyPage
         }
         $codeSaison = $myBdd->GetActiveSaison();
         $codeSaison = utyGetGet('S', $codeSaison);
-        $orderMatchs = utyGetSession('orderMatchs', 'ORDER BY a.Date_match, d.Lieu, a.Heure_match, a.Terrain');
         $laCompet = utyGetSession('codeCompet', 0);
         $laCompet = utyGetGet('Compet', $laCompet);
         // Pattern Bug SQL : Vérifier que $laCompet n'est pas '*' ou vide
@@ -45,34 +44,16 @@ class PdfQrCodes extends MyPage
         $codeCompet = $laCompet;
         if (count($lstJournee) > 0) {
             $in  = str_repeat('?,', count($lstJournee) - 1) . '?';
-            $sql = "SELECT a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre, 
-                a.Date_match, a.Heure_match, a.Libelle, a.Terrain, b.Libelle EquipeA, 
-                c.Libelle EquipeB, a.Terrain, a.ScoreA, a.ScoreB, a.Arbitre_principal, 
-                a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire, a.Validation, 
-                d.Code_competition, d.Code_saison, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee 
-                FROM kp_journee d, kp_match a 
-                LEFT OUTER JOIN kp_competition_equipe b ON (a.Id_equipeA = b.Id) 
-                LEFT OUTER JOIN kp_competition_equipe c ON (a.Id_equipeB = c.Id) 
-                WHERE a.Id_journee = d.Id 
-                AND a.Publication = 'O' 
-                AND a.Id_journee In ($in) 
-                $orderMatchs ";
+            $sql = "SELECT d.Code_competition
+                FROM kp_journee d 
+                WHERE d.Id In ($in) ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute($lstJournee);
         } else {
-            $sql = "SELECT a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre, 
-                a.Date_match, a.Heure_match, a.Libelle, a.Terrain, b.Libelle EquipeA, 
-                c.Libelle EquipeB, a.Terrain, a.ScoreA, a.ScoreB, a.Arbitre_principal, 
-                a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire, a.Validation, 
-                d.Code_competition, d.Code_saison, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee 
-                FROM kp_journee d, kp_match a 
-                LEFT OUTER JOIN kp_competition_equipe b ON (a.Id_equipeA = b.Id) 
-                LEFT OUTER JOIN kp_competition_equipe c ON (a.Id_equipeB = c.Id) 
-                WHERE a.Id_journee = d.Id 
-                AND a.Publication = 'O' 
-                AND d.Code_competition = ?
-                AND d.Code_saison = ?  
-                $orderMatchs ";
+            $sql = "SELECT d.Code_competition
+                FROM kp_journee d                 
+                WHERE d.Code_competition = ?
+                AND d.Code_saison = ? ";
             $result = $myBdd->pdo->prepare($sql);
             $result->execute(array($codeCompet, $codeSaison));
         }
@@ -174,6 +155,9 @@ class PdfQrCodes extends MyPage
         $savedY = $pdf->y;
         $savedX = $pdf->x;
 
+        if (!file_exists($logo)) {
+            $logo = 'img/CNAKPI_small.jpg';
+        }
         $logo1 = imagecreatefromstring(file_get_contents($logo));
         $logo_width = imagesx($logo1);
         $logo_height = imagesy($logo1);

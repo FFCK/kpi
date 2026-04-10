@@ -265,13 +265,13 @@ Checklist:
 ### 1. Environnement de Test
 ```bash
 # Démarrer environnement dev
-make dev_up
+make docker_dev_up
 
 # Vérifier que les containers sont actifs
-make dev_status
+make docker_dev_status
 
 # Vérifier les logs (en cas d'erreur)
-make dev_logs
+make docker_dev_logs
 ```
 
 ### 2. Tests Navigateurs

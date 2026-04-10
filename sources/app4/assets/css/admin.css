@@ -2,6 +2,246 @@
 @import "@nuxt/ui";
 @import "./toast.css";
 
+:root {
+  --color-header: #20265b;
+  --color-primary: #1e4385;
+  --color-secondary: #69b9e6;
+  --color-light: #c6c7c7;
+  --color-dark: #1e1e1c;
+  --color-warning: #e9b410;
+  --color-success: #209452;
+  --color-danger: #c94a4c;
+}
+
+@theme {
+  /* Header - deep blue (#20265b) */
+  --color-header-50: oklch(0.970 0.014 274.28);
+  --color-header-100: oklch(0.940 0.033 274.28);
+  --color-header-200: oklch(0.880 0.061 274.28);
+  --color-header-300: oklch(0.810 0.080 274.28);
+  --color-header-400: oklch(0.710 0.090 274.28);
+  --color-header-500: oklch(0.620 0.094 274.28);
+  --color-header-600: oklch(0.540 0.092 274.28);
+  --color-header-700: oklch(0.480 0.087 274.28);
+  --color-header-800: oklch(0.420 0.079 274.28);
+  --color-header-900: oklch(0.380 0.071 274.28);
+  --color-header-950: oklch(0.280 0.057 274.28);
+
+  /* Primary - blue (#1e4385) — used by Nuxt UI for UButton, UInput focus, etc. */
+  --color-primary-50: oklch(0.970 0.018 260.93);
+  --color-primary-100: oklch(0.940 0.042 260.93);
+  --color-primary-200: oklch(0.880 0.077 260.93);
+  --color-primary-300: oklch(0.810 0.101 260.93);
+  --color-primary-400: oklch(0.710 0.113 260.93);
+  --color-primary-500: oklch(0.540 0.116 260.93);
+  --color-primary-600: oklch(0.480 0.109 260.93);
+  --color-primary-700: oklch(0.420 0.100 260.93);
+  --color-primary-800: oklch(0.380 0.089 260.93);
+  --color-primary-900: oklch(0.330 0.080 260.93);
+  --color-primary-950: oklch(0.280 0.071 260.93);
+
+  /* Secondary - light blue (#69b9e6) */
+  --color-secondary-50: oklch(0.970 0.018 230);
+  --color-secondary-100: oklch(0.940 0.042 230);
+  --color-secondary-200: oklch(0.880 0.077 230);
+  --color-secondary-300: oklch(0.810 0.101 230);
+  --color-secondary-400: oklch(0.750 0.105 230);
+  --color-secondary-500: oklch(0.680 0.100 230);
+  --color-secondary-600: oklch(0.600 0.095 230);
+  --color-secondary-700: oklch(0.520 0.085 230);
+  --color-secondary-800: oklch(0.440 0.075 230);
+  --color-secondary-900: oklch(0.380 0.065 230);
+  --color-secondary-950: oklch(0.280 0.050 230);
+
+  /* Light (#c6c7c7) */
+  --color-light-50: oklch(0.970 0.000 197.14);
+  --color-light-100: oklch(0.940 0.000 197.14);
+  --color-light-200: oklch(0.880 0.001 197.14);
+  --color-light-300: oklch(0.810 0.001 197.14);
+  --color-light-400: oklch(0.710 0.001 197.14);
+  --color-light-500: oklch(0.620 0.001 197.14);
+  --color-light-600: oklch(0.540 0.001 197.14);
+  --color-light-700: oklch(0.480 0.001 197.14);
+  --color-light-800: oklch(0.420 0.001 197.14);
+  --color-light-900: oklch(0.380 0.001 197.14);
+  --color-light-950: oklch(0.280 0.001 197.14);
+
+  /* Dark (#1e1e1c) */
+  --color-dark-50: oklch(0.970 0.001 106.69);
+  --color-dark-100: oklch(0.940 0.001 106.69);
+  --color-dark-200: oklch(0.880 0.002 106.69);
+  --color-dark-300: oklch(0.810 0.003 106.69);
+  --color-dark-400: oklch(0.710 0.004 106.69);
+  --color-dark-500: oklch(0.620 0.004 106.69);
+  --color-dark-600: oklch(0.540 0.004 106.69);
+  --color-dark-700: oklch(0.480 0.003 106.69);
+  --color-dark-800: oklch(0.420 0.003 106.69);
+  --color-dark-900: oklch(0.380 0.003 106.69);
+  --color-dark-950: oklch(0.280 0.002 106.69);
+
+  /* Warning - yellow (#e9b410) */
+  --color-warning-50: oklch(0.970 0.024 86.80);
+  --color-warning-100: oklch(0.940 0.056 86.80);
+  --color-warning-200: oklch(0.880 0.104 86.80);
+  --color-warning-300: oklch(0.810 0.136 86.80);
+  --color-warning-400: oklch(0.710 0.152 86.80);
+  --color-warning-500: oklch(0.620 0.161 86.80);
+  --color-warning-600: oklch(0.540 0.157 86.80);
+  --color-warning-700: oklch(0.480 0.148 86.80);
+  --color-warning-800: oklch(0.420 0.135 86.80);
+  --color-warning-900: oklch(0.380 0.120 86.80);
+  --color-warning-950: oklch(0.280 0.096 86.80);
+
+  /* Success - green (#209452) */
+  --color-success-50: oklch(0.970 0.021 152.75);
+  --color-success-100: oklch(0.940 0.049 152.75);
+  --color-success-200: oklch(0.880 0.092 152.75);
+  --color-success-300: oklch(0.810 0.120 152.75);
+  --color-success-400: oklch(0.710 0.134 152.75);
+  --color-success-500: oklch(0.620 0.141 152.75);
+  --color-success-600: oklch(0.540 0.138 152.75);
+  --color-success-700: oklch(0.480 0.130 152.75);
+  --color-success-800: oklch(0.420 0.118 152.75);
+  --color-success-900: oklch(0.380 0.106 152.75);
+  --color-success-950: oklch(0.280 0.085 152.75);
+
+  /* Error/Danger - red (#c94a4c) */
+  --color-error-50: oklch(0.970 0.024 22.73);
+  --color-error-100: oklch(0.940 0.057 22.73);
+  --color-error-200: oklch(0.880 0.105 22.73);
+  --color-error-300: oklch(0.810 0.138 22.73);
+  --color-error-400: oklch(0.710 0.154 22.73);
+  --color-error-500: oklch(0.620 0.162 22.73);
+  --color-error-600: oklch(0.540 0.159 22.73);
+  --color-error-700: oklch(0.480 0.149 22.73);
+  --color-error-800: oklch(0.420 0.136 22.73);
+  --color-error-900: oklch(0.380 0.121 22.73);
+  --color-error-950: oklch(0.280 0.097 22.73);
+
+  /* Danger - alias of error for custom usage */
+  --color-danger-50: oklch(0.970 0.024 22.73);
+  --color-danger-100: oklch(0.940 0.057 22.73);
+  --color-danger-200: oklch(0.880 0.105 22.73);
+  --color-danger-300: oklch(0.810 0.138 22.73);
+  --color-danger-400: oklch(0.710 0.154 22.73);
+  --color-danger-500: oklch(0.620 0.162 22.73);
+  --color-danger-600: oklch(0.540 0.159 22.73);
+  --color-danger-700: oklch(0.480 0.149 22.73);
+  --color-danger-800: oklch(0.420 0.136 22.73);
+  --color-danger-900: oklch(0.380 0.121 22.73);
+  --color-danger-950: oklch(0.280 0.097 22.73);
+
+  /* Info - blue tone */
+  --color-info-50: oklch(0.970 0.018 240);
+  --color-info-100: oklch(0.940 0.042 240);
+  --color-info-200: oklch(0.880 0.077 240);
+  --color-info-300: oklch(0.810 0.101 240);
+  --color-info-400: oklch(0.710 0.113 240);
+  --color-info-500: oklch(0.620 0.119 240);
+  --color-info-600: oklch(0.540 0.116 240);
+  --color-info-700: oklch(0.480 0.109 240);
+  --color-info-800: oklch(0.420 0.100 240);
+  --color-info-900: oklch(0.380 0.089 240);
+  --color-info-950: oklch(0.280 0.071 240);
+
+  /* Neutral - gray */
+  --color-neutral-50: oklch(0.985 0 0);
+  --color-neutral-100: oklch(0.970 0 0);
+  --color-neutral-200: oklch(0.922 0 0);
+  --color-neutral-300: oklch(0.870 0 0);
+  --color-neutral-400: oklch(0.708 0 0);
+  --color-neutral-500: oklch(0.556 0 0);
+  --color-neutral-600: oklch(0.439 0 0);
+  --color-neutral-700: oklch(0.371 0 0);
+  --color-neutral-800: oklch(0.269 0 0);
+  --color-neutral-900: oklch(0.205 0 0);
+  --color-neutral-950: oklch(0.145 0 0);
+}
+
+/* ===== Typography ===== */
+@font-face {
+  font-family: 'Raleway';
+  src: url('/fonts/raleway-v37-latin-300.woff2') format('woff2');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Raleway';
+  src: url('/fonts/raleway-v37-latin-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Raleway';
+  src: url('/fonts/raleway-v37-latin-500.woff2') format('woff2');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Raleway';
+  src: url('/fonts/raleway-v37-latin-600.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Raleway';
+  src: url('/fonts/raleway-v37-latin-700.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Agency FB';
+  src: url('/fonts/agencyfb.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  font-family: 'Raleway', sans-serif;
+}
+
+h1, h2 {
+  font-family: 'Agency FB', 'Arial Narrow', Arial, sans-serif;
+}
+
+/* ===== Force Light Mode for Admin Interface ===== */
+/* Override dark mode styles to ensure consistent light theme */
+:root {
+  color-scheme: light;
+}
+
+/* Ensure dropdowns and popover menus have dark text on white backgrounds */
+.bg-white,
+[class*="bg-white"] {
+  color: rgb(17 24 39);
+}
+
+/* Force dark text on light backgrounds in dropdown menus */
+div[class*="dropdown"],
+div[class*="menu"],
+div[class*="popover"],
+.absolute.z-10.bg-white {
+  color: rgb(17 24 39);
+}
+
+/* Ensure buttons in dropdowns have proper text color */
+.absolute.z-10 button,
+div[class*="dropdown"] button,
+div[class*="menu"] button {
+  color: rgb(17 24 39);
+}
+
 /* Modal improvements */
 .umodal-container {
   z-index: 9999 !important;
@@ -35,7 +275,6 @@ table button {
 
 table button:hover {
   background-color: rgba(0, 0, 0, 0.05);
-  border-radius: 0.375rem;
 }
 
 /* Toggle buttons (publication, app) should be more visible */
@@ -48,6 +287,12 @@ button[class*="color-blue"] svg {
 input[type="checkbox"] {
   width: 1rem;
   height: 1rem;
+  cursor: pointer;
+}
+
+/* Cells containing only a checkbox: full-cell clickable area */
+th:has(> input[type="checkbox"]:only-child),
+td:has(> input[type="checkbox"]:only-child) {
   cursor: pointer;
 }
 
@@ -71,66 +316,35 @@ header.sticky {
   z-index: 30;
 }
 
+/* ===== Browser Autofill Override ===== */
+/* Prevent browser autofill from overriding input background colors */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px white inset !important;
+  -webkit-text-fill-color: rgb(17 24 39) !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
 /* ===== Nuxt UI Component Improvements ===== */
 
-/* Buttons - ensure proper styling */
-button[class*="bg-blue"] {
-  background-color: rgb(37 99 235) !important;
-  color: white !important;
-}
+/* Buttons - removed overly broad [class*="bg-*"] selectors that
+   were overriding Tailwind utility classes (e.g. bg-primary-100 vs bg-primary-700).
+   Tailwind classes handle button colors correctly on their own. */
 
-button[class*="bg-blue"]:hover {
-  background-color: rgb(29 78 216) !important;
-}
-
-button[class*="bg-red"] {
-  background-color: rgb(220 38 38) !important;
-  color: white !important;
-}
-
-button[class*="bg-red"]:hover {
-  background-color: rgb(185 28 28) !important;
-}
-
-button[class*="bg-green"] {
-  background-color: rgb(22 163 74) !important;
-  color: white !important;
-}
-
-button[class*="bg-green"]:hover {
-  background-color: rgb(21 128 61) !important;
-}
-
-/* Input fields improvements */
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="number"],
+/* Input fields improvements - only for native inputs NOT inside Nuxt UI components */
 input[type="date"],
-textarea,
-select {
+select:not([data-ui]) {
   border: 1px solid rgb(209 213 219);
   border-radius: 0.375rem;
   padding: 0.5rem 0.75rem;
   font-size: 0.875rem;
   transition: border-color 0.2s, box-shadow 0.2s;
-  color: rgb(17 24 39) !important; /* Force dark text color */
-  background-color: white !important;
+  color: rgb(17 24 39);
 }
 
-/* Placeholder text - lighter gray */
-input::placeholder,
-textarea::placeholder {
-  color: rgb(156 163 175) !important;
-}
-
-input[type="text"]:focus,
-input[type="email"]:focus,
-input[type="password"]:focus,
-input[type="number"]:focus,
 input[type="date"]:focus,
-textarea:focus,
-select:focus {
+select:not([data-ui]):focus {
   outline: none;
   border-color: rgb(59 130 246);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
@@ -142,7 +356,8 @@ input[type="date"] {
 }
 
 /* Modal overlay improvements */
-[class*="backdrop"] {
+[role="dialog"] [class*="backdrop"],
+.backdrop-blur-sm {
   backdrop-filter: blur(4px);
 }
 
@@ -324,19 +539,7 @@ form button[type="submit"] {
 }
 
 /* ===== Toast/Notification Styles ===== */
-/* Ensure toasts are visible and properly positioned */
-[data-sonner-toaster] {
-  z-index: 99999 !important;
-  position: fixed !important;
-}
-
-[data-sonner-toast] {
-  background-color: white !important;
-  border: 1px solid rgb(229 231 235) !important;
-  border-radius: 0.5rem !important;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
-  padding: 1rem !important;
-}
+/* Toast styles are in toast.css (targeting Nuxt UI v4 / Reka UI selectors) */
 
 /* Ensure modals are centered */
 [role="dialog"] {
@@ -347,81 +550,9 @@ form button[type="submit"] {
   z-index: 10000;
 }
 
-/* ===== Fix UButton Styling ===== */
+/* UButton styling is handled by Nuxt UI v4 theme via @theme colors */
 
-/* Primary buttons (blue) */
-button[color="primary"],
-button[class*="color-primary"] {
-  background-color: rgb(37 99 235) !important;
-  color: white !important;
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-  font-weight: 500;
-  transition: background-color 0.2s;
-}
-
-button[color="primary"]:hover,
-button[class*="color-primary"]:hover {
-  background-color: rgb(29 78 216) !important;
-}
-
-/* Gray variant buttons */
-button[variant="ghost"][color="gray"],
-button[class*="variant-ghost"][class*="color-gray"] {
-  color: rgb(107 114 128) !important;
-  background-color: transparent !important;
-}
-
-button[variant="ghost"][color="gray"]:hover,
-button[class*="variant-ghost"][class*="color-gray"]:hover {
-  background-color: rgb(243 244 246) !important;
-}
-
-/* Soft variant buttons */
-button[variant="soft"] {
-  background-color: rgba(37, 99, 235, 0.1) !important;
-  color: rgb(37 99 235) !important;
-  padding: 0.5rem 1rem;
-  border-radius: 0.375rem;
-}
-
-button[variant="soft"]:hover {
-  background-color: rgba(37, 99, 235, 0.2) !important;
-}
-
-/* ===== Fix UInput Styling ===== */
-
-/* Input container */
-div[class*="input-wrapper"],
-div[class*="Input"] > div {
-  position: relative;
-  width: 100%;
-}
-
-/* Input with icon */
-div[class*="Input"] input {
-  width: 100%;
-  border: 1px solid rgb(209 213 219);
-  border-radius: 0.375rem;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.875rem;
-}
-
-div[class*="Input"][class*="icon"] input {
-  padding-left: 2.5rem;
-}
-
-/* Input icon */
-div[class*="Input"] svg {
-  position: absolute;
-  left: 0.75rem;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 1.25rem;
-  height: 1.25rem;
-  color: rgb(156 163 175);
-  pointer-events: none;
-}
+/* UInput styling is handled by Nuxt UI v4 theme via @theme colors */
 
 /* ===== Fix UCheckbox Styling ===== */
 
@@ -475,4 +606,90 @@ table a {
 /* Labels with inputs */
 label[for] {
   cursor: pointer;
+}
+
+/* ===== Inline Editable Cells ===== */
+/* Subtle visual indicator for fields that can be edited inline (click to edit) */
+.editable-cell {
+  cursor: pointer;
+  position: relative;
+  padding: 2px 6px;
+  border-radius: 1px;
+  border: 1.5px dashed rgb(190, 200, 213);
+  background-color: rgb(246, 250, 253);
+  transition: all 0.15s ease;
+}
+
+.editable-cell:hover {
+  background-color: rgb(219, 233, 252);
+  border-color: rgb(96 165 250);
+}
+
+/* Mobile variant - slightly more compact */
+@media (max-width: 767px) {
+  .editable-cell {
+    padding: 1px 4px;
+  }
+}
+
+/* ===== Link Value ===== */
+.link-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  background-color: rgb(249 250 251);
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: black;
+  text-decoration: none;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s;
+  cursor: pointer;
+}
+
+.link-value:hover {
+  background-color: rgb(229 231 235);
+}
+
+/* ===== Print Styles ===== */
+@media print {
+  /* Hide admin header, footer, mobile backdrop */
+  header.sticky,
+  footer,
+  .fixed.inset-0.z-30 {
+    display: none !important;
+  }
+
+  /* Remove page padding/margins for print */
+  main.flex-1 {
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+
+  /* Remove bg-gray-50 on body wrapper */
+  .flex.flex-col.min-h-screen {
+    background: white !important;
+    min-height: auto !important;
+  }
+
+  /* Ensure white backgrounds print */
+  .bg-white {
+    background-color: white !important;
+    box-shadow: none !important;
+  }
+
+  /* Remove shadows in print */
+  .shadow,
+  .shadow-sm {
+    box-shadow: none !important;
+  }
+
+  /* Print images */
+  img {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }

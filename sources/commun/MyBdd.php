@@ -481,12 +481,13 @@ class MyBdd
 		$pagaie_eca = $arrayToken[14];
 		$etat_certificat_aps = $arrayToken[15];
 		$etat_certificat_ck = $arrayToken[16];
+		$type_licence = isset($arrayToken[17]) ? trim($arrayToken[17]) : null;
 
 		return array(
 			$matric, $origine, $nom, $prenom, $sexe, $naissance, $club, $num_club,
 			$comite_dept, $num_comite_dept, $comite_reg, $num_comite_reg, $etat,
 			$pagaie_evi, $pagaie_mer, $pagaie_eca, null, null, null,
-			$etat_certificat_aps, $etat_certificat_ck
+			$etat_certificat_aps, $etat_certificat_ck, $type_licence
 		);
 	}
 
@@ -561,18 +562,23 @@ class MyBdd
 			if ($placeholders != '') {
 				$placeholders .= ',';
 			}
-			$placeholders .= '(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+			$placeholders .= '(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
 		}
-		$sql_licencies = "INSERT INTO kp_licence 
-			VALUES $placeholders 
-			ON DUPLICATE KEY UPDATE 
-				Matric = VALUES(Matric), Origine = VALUES(Origine), Nom = VALUES(Nom), 
-				Prenom = VALUES(Prenom), Sexe = VALUES(Sexe), Naissance = VALUES(Naissance), 
-				Club = VALUES(Club), Numero_club = VALUES(Numero_club), Comite_dept = VALUES(Comite_dept), 
-				Numero_comite_dept = VALUES(Numero_comite_dept), Comite_reg = VALUES(Comite_reg), Numero_comite_reg = VALUES(Numero_comite_reg), 
-				Etat = VALUES(Etat), Pagaie_EVI = VALUES(Pagaie_EVI), Pagaie_MER = VALUES(Pagaie_MER), 
-				Pagaie_ECA = VALUES(Pagaie_ECA), Date_certificat_CK = VALUES(Date_certificat_CK), Date_certificat_APS = VALUES(Date_certificat_APS), 
-				Reserve = VALUES(Reserve), Etat_certificat_CK = VALUES(Etat_certificat_CK), Etat_certificat_APS = VALUES(Etat_certificat_APS) 
+		$sql_licencies = "INSERT INTO kp_licence
+			(Matric, Origine, Nom, Prenom, Sexe, Naissance, Club, Numero_club,
+			Comite_dept, Numero_comite_dept, Comite_reg, Numero_comite_reg, Etat,
+			Pagaie_EVI, Pagaie_MER, Pagaie_ECA, Date_certificat_CK, Date_certificat_APS,
+			Reserve, Etat_certificat_APS, Etat_certificat_CK, Type_licence)
+			VALUES $placeholders
+			ON DUPLICATE KEY UPDATE
+				Matric = VALUES(Matric), Origine = VALUES(Origine), Nom = VALUES(Nom),
+				Prenom = VALUES(Prenom), Sexe = VALUES(Sexe), Naissance = VALUES(Naissance),
+				Club = VALUES(Club), Numero_club = VALUES(Numero_club), Comite_dept = VALUES(Comite_dept),
+				Numero_comite_dept = VALUES(Numero_comite_dept), Comite_reg = VALUES(Comite_reg), Numero_comite_reg = VALUES(Numero_comite_reg),
+				Etat = VALUES(Etat), Pagaie_EVI = VALUES(Pagaie_EVI), Pagaie_MER = VALUES(Pagaie_MER),
+				Pagaie_ECA = VALUES(Pagaie_ECA), Date_certificat_CK = VALUES(Date_certificat_CK), Date_certificat_APS = VALUES(Date_certificat_APS),
+				Reserve = VALUES(Reserve), Etat_certificat_CK = VALUES(Etat_certificat_CK), Etat_certificat_APS = VALUES(Etat_certificat_APS),
+				Type_licence = VALUES(Type_licence)
 				";
 		$stmt = $this->pdo->prepare($sql_licencies);
 		$stmt->execute($array_licencies) or array_push($this->m_arrayinfo, "Erreur SQL " . $stmt->errorInfo());

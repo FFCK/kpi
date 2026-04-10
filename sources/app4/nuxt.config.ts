@@ -2,6 +2,7 @@
 
 const baseUrl = process.env.BASE_URL ?? '/admin2'
 const api2BaseUrl = process.env.API2_BASE_URL ?? 'https://kpi.localhost/api2'
+const legacyBaseUrl = process.env.LEGACY_BASE_URL ?? 'https://kpi.localhost'
 
 export default defineNuxtConfig({
   ssr: false,
@@ -23,7 +24,8 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       baseUrl,
-      api2BaseUrl
+      api2BaseUrl,
+      legacyBaseUrl
     }
   },
 
@@ -41,6 +43,13 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@nuxt/ui'
   ],
+
+  // Force light mode for admin interface
+  colorMode: {
+    preference: 'light',
+    fallback: 'light',
+    classSuffix: ''
+  },
 
   icon: {
     provider: 'iconify',
@@ -72,11 +81,25 @@ export default defineNuxtConfig({
         'heroicons:exclamation-triangle',
         'heroicons:wifi',
         'heroicons:signal-slash',
-        'heroicons-solid:check-circle',
-        'heroicons-solid:x-circle',
-        'heroicons-solid:device-phone-mobile',
-        'heroicons-solid:pencil',
-        'heroicons-solid:trash'
+        'heroicons:check-circle-solid',
+        'heroicons:x-circle-solid',
+        'heroicons:device-phone-mobile-solid',
+        'heroicons:pencil-solid',
+        'heroicons:trash-solid',
+        'heroicons:user-group',
+        'heroicons:trophy',
+        'heroicons:chart-bar-square',
+        'heroicons:calendar',
+        'heroicons:shield-check',
+        'heroicons:document-duplicate',
+        'heroicons:table-cells',
+        'heroicons:arrow-top-right-on-square',
+        'heroicons:qr-code',
+        'heroicons:eye-solid',
+        'heroicons:map-pin-solid',
+        'heroicons:calendar-solid',
+        'heroicons:lock-closed-solid',
+        'heroicons:lock-open-solid'
       ]
     }
   },

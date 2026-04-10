@@ -13,29 +13,37 @@ class FeuilleListeMatchs extends MyPage
         parent::__construct();
         $myBdd = new MyBdd();
 
-        $filtreJour = utyGetSession('filtreJour', '');
+        // Mode URL : si des paramètres GET de filtre sont présents,
+        // ignorer les variables de session pour éviter les interférences
+        $urlMode = (utyGetGet('Compet', '') !== '' || utyGetGet('idEvenement', '') !== '' || utyGetGet('S', '') !== '');
+
+        $filtreJour = $urlMode ? '' : utyGetSession('filtreJour', '');
         $filtreJour = utyGetPost('filtreJour', $filtreJour);
         $filtreJour = utyGetGet('filtreJour', $filtreJour);
 
-        $filtreTerrain = utyGetSession('filtreTerrain', '');
+        $filtreTerrain = $urlMode ? '' : utyGetSession('filtreTerrain', '');
         $filtreTerrain = utyGetPost('filtreTerrain', $filtreTerrain);
         $filtreTerrain = utyGetGet('filtreTerrain', $filtreTerrain);
 
-        $filtreTour = utyGetSession('filtreTour', '');
+        $filtreTour = $urlMode ? '' : utyGetSession('filtreTour', '');
         $filtreTour = utyGetPost('filtreTour', $filtreTour);
         $filtreTour = utyGetGet('filtreTour', $filtreTour);
 
-        $filtreMatchsNonVerrouilles = utyGetSession('filtreMatchsNonVerrouilles', '');
+        $filtreMatchsNonVerrouilles = $urlMode ? '' : utyGetSession('filtreMatchsNonVerrouilles', '');
 
-        $lstJournee = utyGetSession('lstJournee', 0);
-        $arrayJournees = explode(',', $lstJournee);
+        if ($urlMode) {
+            $arrayJournees = [];
+        } else {
+            $lstJournee = utyGetSession('lstJournee', 0);
+            $arrayJournees = explode(',', $lstJournee);
+        }
 
         // Filtre Journée/Phase/Poule : si une journée spécifique est sélectionnée, utiliser celle-ci
-        $idSelJournee = utyGetSession('idSelJournee', '*');
+        $idSelJournee = $urlMode ? '*' : utyGetSession('idSelJournee', '*');
         if ($idSelJournee != '*' && $idSelJournee != '' && $idSelJournee > 0) {
             $arrayJournees = [$idSelJournee];
         }
-        $idEvenement = utyGetSession('idEvenement', -1);
+        $idEvenement = $urlMode ? -1 : utyGetSession('idEvenement', -1);
         $idEvenement = utyGetGet('idEvenement', $idEvenement);
         if (utyGetGet('idEvenement', 0) > 0) {
             $arrayJournees = [];
@@ -49,30 +57,35 @@ class FeuilleListeMatchs extends MyPage
         $codeSaison = $myBdd->GetActiveSaison();
         $codeSaison = utyGetGet('S', $codeSaison);
 
-        $orderMatchs = utyGetSession('orderMatchs', 'ORDER BY a.Date_match, d.Lieu, a.Heure_match, a.Terrain');
-        $laCompet = utyGetSession('codeCompet', 0);
+        $orderMatchs = $urlMode ? 'ORDER BY a.Date_match, d.Lieu, a.Heure_match, a.Terrain' : utyGetSession('orderMatchs', 'ORDER BY a.Date_match, d.Lieu, a.Heure_match, a.Terrain');
+        $laCompet = $urlMode ? 0 : utyGetSession('codeCompet', 0);
         $laCompet = utyGetGet('Compet', $laCompet);
         if ($laCompet != 0 && $laCompet != '*' && $laCompet != '') {
             $idEvenement = -1;
+            $arrayJournees = [];
         }
         $codeCompet = $laCompet;
-        $sql = "SELECT a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre, 
-            a.Date_match, a.Heure_match, a.Libelle, a.Terrain, b.Libelle EquipeA, 
-            c.Libelle EquipeB, a.Terrain, a.ScoreA, a.ScoreB, a.Arbitre_principal, 
-            a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire, 
-            d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee, 
-            e.Nom Nom_arb_prin, e.Prenom Prenom_arb_prin, f.Nom Nom_arb_sec, 
-            f.Prenom Prenom_arb_sec, cp.Soustitre2, a.Validation  
-            FROM kp_competition cp, kp_journee d, kp_match a 
-            LEFT OUTER JOIN kp_competition_equipe b ON (a.Id_equipeA = b.Id) 
-            LEFT OUTER JOIN kp_competition_equipe c ON (a.Id_equipeB = c.Id) 
-            LEFT OUTER JOIN kp_licence e ON (a.Matric_arbitre_principal = e.Matric) 
-            LEFT OUTER JOIN kp_licence f ON (a.Matric_arbitre_secondaire = f.Matric) 
-            WHERE a.Id_journee = d.Id 
-            AND d.Code_competition = cp.Code 
-            AND a.Publication = 'O' 
+        $sql = "SELECT a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre,
+            a.Date_match, a.Heure_match, a.Libelle, a.Terrain, b.Libelle EquipeA,
+            c.Libelle EquipeB, a.Terrain, a.ScoreA, a.ScoreB, a.Arbitre_principal,
+            a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire,
+            d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee,
+            e.Nom Nom_arb_prin, e.Prenom Prenom_arb_prin, f.Nom Nom_arb_sec,
+            f.Prenom Prenom_arb_sec, cp.Soustitre2, a.Validation
+            FROM kp_competition cp, kp_journee d, kp_match a
+            LEFT OUTER JOIN kp_competition_equipe b ON (a.Id_equipeA = b.Id)
+            LEFT OUTER JOIN kp_competition_equipe c ON (a.Id_equipeB = c.Id)
+            LEFT OUTER JOIN kp_licence e ON (a.Matric_arbitre_principal = e.Matric)
+            LEFT OUTER JOIN kp_licence f ON (a.Matric_arbitre_secondaire = f.Matric)
+            WHERE a.Id_journee = d.Id
+            AND d.Code_competition = cp.Code
+            AND a.Publication = 'O'
             AND d.Code_saison = cp.Code_saison ";
-        if (count($arrayJournees) == 0) {
+        if (count($arrayJournees) == 0 && ($laCompet == 0 || $laCompet == '*' || $laCompet == '')) {
+            // Toutes les compétitions de la saison
+            $sql .= "AND d.Code_saison = ? ";
+            $arrayQuery = array($codeSaison);
+        } elseif (count($arrayJournees) == 0) {
             $sql .= "AND d.Code_competition = ? AND d.Code_saison = ? ";
             $arrayQuery = array($laCompet, $codeSaison);
         } else {

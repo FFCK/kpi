@@ -31,10 +31,10 @@ cd ../..
 docker exec -it kpi_php php scripts/patch_mysmarty.php
 
 # 5. Redémarrer les conteneurs
-make dev_restart
+make docker_dev_restart
 
 # 6. Vérifier les logs
-make dev_logs
+make docker_dev_logs
 ```
 
 ### Pour Revenir en Arrière (si problème)
@@ -48,7 +48,7 @@ mv MySmarty.php.backup MySmarty.php
 
 # Redémarrer
 cd ../..
-make dev_restart
+make docker_dev_restart
 ```
 
 ### Pour Nettoyer Après Tests Réussis
@@ -73,10 +73,10 @@ docker ps | grep php
 docker exec -it kpi_php head -50 commun/MyLang_unified.ini
 
 # Vérifier les logs en temps réel
-make dev_logs
+make docker_dev_logs
 
 # Vérifier l'état des conteneurs
-make dev_status
+make docker_dev_status
 ```
 
 ## 📝 Tester la Migration
@@ -99,7 +99,7 @@ make dev_status
 
 ```bash
 # Suivre les logs en temps réel
-make dev_logs
+make docker_dev_logs
 
 # Rechercher des erreurs spécifiques
 docker logs kpi_php 2>&1 | grep -i "error\|warning" | tail -20
@@ -126,10 +126,10 @@ cd ../..
 docker exec -it kpi_prod_php php scripts/patch_mysmarty.php
 
 # 5. Redémarrer production
-make prod_restart
+make docker_prod_restart
 
 # 6. Surveiller les logs
-make prod_logs
+make docker_prod_logs
 ```
 
 ## ⚡ Commandes Alternatives
@@ -138,7 +138,7 @@ make prod_logs
 
 ```bash
 # Entrer dans le conteneur
-make php_bash
+make backend_bash
 
 # Dans le conteneur :
 cd /sources/scripts
@@ -156,7 +156,7 @@ cp MyLang.conf MyLang.conf.backup
 cp MyLang.ini MyLang.ini.backup
 mv MyLang_unified.ini MyLang.ini
 cd ../..
-make dev_restart
+make docker_dev_restart
 ```
 
 ### Mode Preview (Sans Modification)
@@ -216,7 +216,7 @@ rm -f MyLang_processed.conf MyLang_processed.ini
 
 # Redémarrer
 cd ../..
-make dev_restart
+make docker_dev_restart
 ```
 
 ### Erreurs dans les logs
@@ -226,7 +226,7 @@ make dev_restart
 docker logs kpi_php 2>&1 | grep -i error | tail -20
 
 # Suivre les logs en direct
-make dev_logs
+make docker_dev_logs
 ```
 
 ## 📚 Documentation Complète

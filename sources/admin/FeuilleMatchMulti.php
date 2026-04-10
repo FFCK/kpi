@@ -29,8 +29,38 @@ class FeuilleMatch extends MyPage
             $forceLangEn = false;
         }
 
-        $listMatch = utyGetGet('listMatch', -1);
-        if ($listMatch == -1 || $listMatch == '') {
+        $listMatch = utyGetGet('listMatch', '');
+        // Si pas de listMatch, résoudre les IDs depuis les filtres Compet/idEvenement/S
+        if ($listMatch == '' || $listMatch == '-1') {
+            $laCompet = utyGetGet('Compet', '');
+            $idEvenement = utyGetGet('idEvenement', '');
+            $codeSaison = utyGetGet('S', '');
+            if ($laCompet != '' || $idEvenement != '' || $codeSaison != '') {
+                if ($codeSaison == '') {
+                    $codeSaison = $myBdd->GetActiveSaison();
+                }
+                $sqlIds = "SELECT m.Id FROM kp_match m
+                    INNER JOIN kp_journee j ON m.Id_journee = j.Id
+                    WHERE j.Code_saison = ? ";
+                $paramsIds = [$codeSaison];
+                if ($idEvenement != '' && $idEvenement > 0) {
+                    $sqlIds .= "AND m.Id_journee IN (SELECT Id_journee FROM kp_evenement_journee WHERE Id_evenement = ?) ";
+                    $paramsIds[] = (int) $idEvenement;
+                } elseif ($laCompet != '' && $laCompet != '*' && $laCompet != '0') {
+                    $sqlIds .= "AND j.Code_competition = ? ";
+                    $paramsIds[] = $laCompet;
+                }
+                $sqlIds .= "ORDER BY m.Date_match, m.Heure_match, m.Terrain";
+                $stmtIds = $myBdd->pdo->prepare($sqlIds);
+                $stmtIds->execute($paramsIds);
+                $ids = [];
+                while ($r = $stmtIds->fetch()) {
+                    $ids[] = $r['Id'];
+                }
+                $listMatch = implode(',', $ids);
+            }
+        }
+        if ($listMatch == '' || $listMatch == '-1') {
             die('Aucun match à afficher !');
         }
         $chaqueMatch = explode(',', $listMatch);
@@ -244,8 +274,8 @@ class FeuilleMatch extends MyPage
                 $ScoreB = '';
             }
 
-            $Commentaires = $row['Commentaires_officiels'];
-            $Commentaires1 = str_split($Commentaires, 85); //85
+            $Commentaires = $row['Commentaires_officiels'] ?? '';
+            $Commentaires1 = $Commentaires !== '' ? str_split($Commentaires, 85) : [];
             $Commentaires1 = isset($Commentaires1[0]) ? $Commentaires1[0] : '';
             if (strlen($Commentaires) > 85) {
                 $Commentaires1 .= '...';
@@ -379,8 +409,8 @@ class FeuilleMatch extends MyPage
             $result5->execute(array($idMatch));
 
             $j = 0;
-            $scoreMitempsA = '';
-            $scoreMitempsB = '';
+            $scoreMitempsA = 0;
+            $scoreMitempsB = 0;
             $nblignes = 0;
 
             while ($row5 = $result5->fetch()) {
@@ -480,6 +510,7 @@ class FeuilleMatch extends MyPage
 
 
             // Production de la feuille de match PDF suivante
+            $pdf->SetTitle($lang['Feuille_de_marque']);
             $pdf->AddPage();
             $pdf->SetAutoPageBreak(true, 1);
 
@@ -898,7 +929,8 @@ class FeuilleMatch extends MyPage
 
             // QRCode
             $qrcode = new QRcode('https://kayak-polo.info/admin/FeuilleMarque2.php?idMatch=' . $idMatch, 'L'); // error level : L, M, Q, H
-            $qrcode->displayFPDF($pdf, 264, 164, 21);
+            $qrcode->displayFPDF($pdf, 264, 164, 21);  // Réduit de 21 à 15 pour réduire la consommation mémoire
+            unset($qrcode);  // Libérer la ressource QR code
 
             $pdf->SetY(190);
             $pdf->Cell(135, 3, $lang['impression'] . ": " . $dateprint . " " . date("H:i", strtotime($_SESSION['tzOffset'] ?? 'now')), 0, 1, 'R');
@@ -921,7 +953,7 @@ class FeuilleMatch extends MyPage
 
             $pdf->SetX(10);
 
-            // Commentaires sur la 2ème page
+            // Commentaires sur la 2ème page (ou fin de boucle)
             if (strlen($Commentaires) > 85 or $nblignes > 26) {
                 $pdf->AddPage();
                 $pdf->SetAutoPageBreak(true, 1);
@@ -1039,6 +1071,14 @@ class FeuilleMatch extends MyPage
                 $pdf->SetFont('Arial', '', 7);
                 $pdf->Cell(135, 3, "ID #" . $idMatch . " - " . $lang['impression'] . ": " . $dateprint . " " . date("H:i", strtotime($_SESSION['tzOffset'] ?? 'now')), 0, 0, 'L');
             }
+
+            // Libérer les ressources après chaque match pour éviter l'épuisement mémoire
+            unset($row);
+            unset($result5);
+            unset($detail);
+            unset($detail2);
+            unset($visuels);
+            gc_collect_cycles();  // Force garbage collection
         }
 
         // Sortie PDF avec mPDF v8 (Destination::INLINE pour affichage navigateur)

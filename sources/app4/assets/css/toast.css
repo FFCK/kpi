@@ -1,105 +1,52 @@
-/* Nuxt UI Toast Styles - Force visibility and positioning */
-/* Toast container positioning - bottom right */
-[data-sonner-toaster],
-ol[data-sonner-toaster],
-div[data-sonner-toaster] {
-  position: fixed !important;
-  bottom: 1rem !important;
-  right: 1rem !important;
-  top: auto !important;
-  left: auto !important;
-  transform: none !important;
-  z-index: 99999 !important;
-  max-width: calc(100vw - 2rem) !important;
-  pointer-events: auto !important;
+/* Nuxt UI v4 Toast Styles (Reka UI) */
+/* Ensure toasts are visible above modals and have opaque background */
+/* These rules must be unlayered + !important to override admin.css side-effects */
+
+/* Toast viewport - z-index above modals */
+[data-slot="viewport"][role="region"] {
+  z-index: 100000 !important;
 }
 
-/* Individual toast styles */
-[data-sonner-toast] {
-  background-color: white !important;
+/* Toast item - force opaque white background */
+li[data-slot="base"][role="alert"] {
+  background-color: #fff !important;
   color: #1f2937 !important;
-  border: 1px solid #e5e7eb !important;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
-  padding: 1rem !important;
-  border-radius: 0.5rem !important;
-  min-width: 300px !important;
-  max-width: 400px !important;
-  width: auto !important;
-  margin-bottom: 0.5rem !important;
 }
 
-/* Toast content wrapper */
-[data-sonner-toast] [data-content] {
-  display: flex !important;
-  flex-direction: column !important;
-  gap: 0.25rem !important;
+/* Toast title - force dark text (text-highlighted) */
+li[data-slot="base"][role="alert"] [data-slot="title"] {
+  color: #111827 !important;
 }
 
-/* Title styles */
-[data-sonner-toast] [data-title] {
-  color: #1f2937 !important;
-  font-weight: 600 !important;
-  font-size: 0.875rem !important;
-  line-height: 1.25rem !important;
-}
-
-/* Description styles */
-[data-sonner-toast] [data-description] {
+/* Toast description */
+li[data-slot="base"][role="alert"] [data-slot="description"] {
   color: #6b7280 !important;
-  font-size: 0.8125rem !important;
-  line-height: 1.25rem !important;
 }
 
-/* Icon styles */
-[data-sonner-toast] [data-icon] {
+/* Toast icon */
+li[data-slot="base"][role="alert"] [data-slot="icon"] {
   color: currentColor !important;
-  width: 1.25rem !important;
-  height: 1.25rem !important;
-  flex-shrink: 0 !important;
 }
 
-/* Toast colors by type */
-[data-sonner-toast][data-type="success"] {
-  border-left: 4px solid #22c55e !important;
+/* Progress bar track (bg-accented) */
+li[data-slot="base"][role="alert"] [role="progressbar"][data-slot="base"] {
+  background-color: #e5e7eb !important;
 }
 
-[data-sonner-toast][data-type="success"] [data-icon] {
-  color: #22c55e !important;
+/* Progress bar indicator - per color */
+li[data-slot="base"][role="alert"] [data-slot="indicator"].bg-success {
+  background-color: #22c55e !important;
 }
 
-[data-sonner-toast][data-type="error"] {
-  border-left: 4px solid #ef4444 !important;
+li[data-slot="base"][role="alert"] [data-slot="indicator"].bg-error {
+  background-color: #ef4444 !important;
 }
 
-[data-sonner-toast][data-type="error"] [data-icon] {
-  color: #ef4444 !important;
+li[data-slot="base"][role="alert"] [data-slot="indicator"].bg-warning {
+  background-color: #f59e0b !important;
 }
 
-[data-sonner-toast][data-type="warning"] {
-  border-left: 4px solid #f59e0b !important;
-}
-
-[data-sonner-toast][data-type="warning"] [data-icon] {
-  color: #f59e0b !important;
-}
-
-[data-sonner-toast][data-type="info"] {
-  border-left: 4px solid #3b82f6 !important;
-}
-
-[data-sonner-toast][data-type="info"] [data-icon] {
-  color: #3b82f6 !important;
-}
-
-/* Close button */
-[data-sonner-toast] [data-close-button] {
-  position: absolute !important;
-  top: 0.5rem !important;
-  right: 0.5rem !important;
-  color: #9ca3af !important;
-  cursor: pointer !important;
-}
-
-[data-sonner-toast] [data-close-button]:hover {
-  color: #6b7280 !important;
+li[data-slot="base"][role="alert"] [data-slot="indicator"].bg-info,
+li[data-slot="base"][role="alert"] [data-slot="indicator"].bg-primary {
+  background-color: #3b82f6 !important;
 }

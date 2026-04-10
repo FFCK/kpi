@@ -17,13 +17,13 @@ withDefaults(defineProps<Props>(), {
 <template>
   <div class="lg:hidden">
     <!-- Loading state -->
-    <div v-if="loading" class="bg-white rounded-lg shadow p-8 text-center text-gray-500">
+    <div v-if="loading" class="bg-white rounded-lg shadow p-8 text-center text-header-500">
       <UIcon name="heroicons:arrow-path" class="w-6 h-6 animate-spin mx-auto mb-2" />
       {{ loadingText }}
     </div>
 
     <!-- Empty state -->
-    <div v-else-if="empty" class="bg-white rounded-lg shadow p-8 text-center text-gray-500">
+    <div v-else-if="empty" class="bg-white rounded-lg shadow p-8 text-center text-header-500">
       {{ emptyText }}
     </div>
 

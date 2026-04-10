@@ -31,7 +31,7 @@ const emit = defineEmits<{
     <div class="flex items-center gap-2">
       <button
         v-if="showBulkDelete && selectedCount > 0"
-        class="inline-flex items-center gap-2 px-4 py-2 bg-red-50 text-red-700 rounded-lg font-medium text-sm hover:bg-red-100 transition-colors"
+        class="inline-flex items-center gap-2 px-4 py-2 bg-danger-50 text-danger-700 rounded-lg font-medium text-sm hover:bg-danger-100 transition-colors"
         @click="emit('bulk-delete')"
       >
         <UIcon name="heroicons:trash" class="w-5 h-5" />
@@ -47,21 +47,21 @@ const emit = defineEmits<{
       <div class="relative">
         <UIcon
           name="heroicons:magnifying-glass"
-          class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
+          class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-header-400 pointer-events-none"
         />
         <input
           v-model="search"
           type="text"
           :placeholder="searchPlaceholder"
-          class="w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        />
+          class="w-64 pl-10 pr-4 py-2 border border-header-300 rounded-lg text-primary-600 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+        >
       </div>
 
       <slot name="after-search" />
 
       <button
         v-if="showAdd"
-        class="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg font-medium text-sm hover:bg-blue-700 transition-colors"
+        class="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg font-medium text-sm hover:bg-primary-700 transition-colors"
         @click="emit('add')"
       >
         <UIcon name="heroicons:plus" class="w-5 h-5" />

@@ -219,10 +219,10 @@ display_errors = On;
 ```bash
 # Mettre à jour compose.dev.yaml pour utiliser PHP 8 par défaut
 # Redémarrer les containers
-make dev_restart
+make docker_dev_restart
 
 # Surveiller les logs
-make dev_logs
+make docker_dev_logs
 ```
 
 ### Checklist PHP 8

@@ -10,7 +10,7 @@ Ce guide vous permet de démarrer rapidement avec le nouveau système de worker 
 
 ```bash
 # Démarrer les conteneurs Docker
-make dev_up
+make docker_dev_up
 
 # Attendre que les conteneurs démarrent (30 secondes)
 
@@ -49,7 +49,7 @@ chmod 755 sources/live/logs
 | ❌ JavaScript setInterval() | ✅ Processus PHP serveur |
 | ❌ Perd la session si l'onglet se ferme | ✅ Continue même si vous fermez tout |
 | ⚠️ Difficile à monitorer | ✅ Interface de monitoring intégrée |
-| ⚠️ Pas de logs centralisés | ✅ Logs accessibles via `make event_worker_logs` |
+| ⚠️ Pas de logs centralisés | ✅ Logs accessibles via `make backend_worker_logs` |
 
 ---
 
@@ -57,16 +57,16 @@ chmod 755 sources/live/logs
 
 ```bash
 # Vérifier que le worker tourne
-make event_worker_status
+make backend_worker_status
 
 # Voir les logs en temps réel
-make event_worker_logs
+make backend_worker_logs
 
 # Redémarrer le worker
-make event_worker_restart
+make backend_worker_restart
 
 # Arrêter le worker
-make event_worker_stop
+make backend_worker_stop
 ```
 
 ---
@@ -96,11 +96,11 @@ Avant d'utiliser le worker en production :
 → Normal au premier démarrage. Configurez et cliquez sur "Start Worker"
 
 ### "Worker may not be running properly"
-→ Vérifier : `make event_worker_status`
-→ Redémarrer : `make event_worker_restart`
+→ Vérifier : `make backend_worker_status`
+→ Redémarrer : `make backend_worker_restart`
 
 ### Fichiers JSON non générés
-→ Vérifier les logs : `make event_worker_logs`
+→ Vérifier les logs : `make backend_worker_logs`
 → Vérifier les permissions sur `sources/live/cache/`
 
 ### API renvoie une erreur

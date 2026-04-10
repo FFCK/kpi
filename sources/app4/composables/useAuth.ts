@@ -1,4 +1,29 @@
-import type { AuthResponse } from '~/types'
+import type { MandateSummary, MandateFilters } from '~/types/users'
+
+interface LoginResponse {
+  token: string
+  user: {
+    id: string
+    name: string
+    firstname: string
+    profile: number
+    filters: MandateFilters
+    mandates: MandateSummary[]
+    activeMandate: { id: number; libelle: string } | null
+    effectiveProfile: number
+    effectiveFilters: MandateFilters
+  }
+  hasMandates: boolean
+}
+
+interface SwitchMandateResponse {
+  token: string
+  user: {
+    activeMandate: { id: number; libelle: string } | null
+    effectiveProfile: number
+    effectiveFilters: MandateFilters | null
+  }
+}
 
 export const useAuth = () => {
   const config = useRuntimeConfig()
@@ -7,7 +32,7 @@ export const useAuth = () => {
   const baseUrl = config.public.api2BaseUrl
 
   // Login with username and password
-  const login = async (username: string, password: string): Promise<boolean> => {
+  const login = async (username: string, password: string): Promise<{ hasMandates: boolean }> => {
     try {
       const response = await fetch(`${baseUrl}/auth/login`, {
         method: 'POST',
@@ -24,15 +49,18 @@ export const useAuth = () => {
         throw new Error('Login failed')
       }
 
-      const data: AuthResponse = await response.json()
+      const data: LoginResponse = await response.json()
 
-      // Check profile 1 restriction for beta phase
-      if (data.user.profile !== 1) {
-        throw new Error('Access restricted to profile 1 during beta')
-      }
+      authStore.setAuth(
+        data.user,
+        data.token,
+        data.user.mandates,
+        data.user.activeMandate,
+        data.user.effectiveProfile,
+        data.user.effectiveFilters
+      )
 
-      authStore.setAuth(data.user, data.token)
-      return true
+      return { hasMandates: data.hasMandates }
     } catch (error) {
       authStore.clearAuth()
       throw error
@@ -41,8 +69,6 @@ export const useAuth = () => {
 
   // Logout
   const logout = async (): Promise<void> => {
-    // Optionally call API to invalidate token
-    // For now, just clear local state
     authStore.clearAuth()
   }
 
@@ -69,9 +95,35 @@ export const useAuth = () => {
     }
   }
 
+  // Switch active mandate (or revert to base profile with mandateId = null)
+  const switchMandate = async (mandateId: number | null): Promise<void> => {
+    const response = await fetch(`${baseUrl}/auth/switch-mandate`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authStore.token}`
+      },
+      body: JSON.stringify({ mandateId })
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to switch mandate')
+    }
+
+    const data: SwitchMandateResponse = await response.json()
+
+    authStore.setMandate(
+      data.token,
+      data.user.activeMandate,
+      data.user.effectiveProfile,
+      data.user.effectiveFilters
+    )
+  }
+
   return {
     login,
     logout,
-    checkAuth
+    checkAuth,
+    switchMandate
   }
 }

@@ -213,7 +213,7 @@ crontab -e
 **Solution** :
 ```bash
 # Démarrer le conteneur
-make dev_up
+make docker_dev_up
 
 # Vérifier qu'il est actif
 docker ps | grep kpi_php

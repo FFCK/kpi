@@ -65,7 +65,11 @@
     "ClickToCopy": "Cliquez pour copier le lien",
     "LinkCopied": "Lien copié dans le presse-papiers !",
     "CopyFailed": "Échec de la copie du lien",
-    "ModeDescription": "Compétitions combinées"
+    "ModeDescription": "Compétitions combinées",
+    "TutoTitle": "Comment naviguer",
+    "TutoExample": "Exemple illustratif",
+    "TutoTeam": "Cliquez sur le nom d'une équipe pour accéder à sa page détaillée : matchs joués, résultats et avancement dans le tournoi.",
+    "TutoMatchSheet": "Cliquez sur un score ou un numéro de match pour ouvrir la feuille de match : composition des équipes, buts et événements."
   },
   "Section": {
     "Competitions_Internationales": "Compétitions Internationales",

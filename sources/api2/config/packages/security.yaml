@@ -13,9 +13,9 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        # Login endpoint - no authentication required
+        # Login and reset-password endpoints - no authentication required
         login:
-            pattern: ^/auth/login$
+            pattern: ^/auth/(login|reset-password)$
             stateless: true
             security: false
 
@@ -38,20 +38,30 @@ security:
             lazy: true
             stateless: true
 
-    # Role hierarchy
+    # Role hierarchy matching legacy profile levels
+    # 1=Super Admin, 2=Bureau CNAKP, 3=Resp. Division, 4=Resp. Compétition,
+    # 5=Délégué fédéral, 6=Organisateur journée, 7=Resp. club/équipe,
+    # 8=Consultation, 9=Table de marque, 10=Inutilisé
     role_hierarchy:
-        ROLE_SUPER_ADMIN: [ROLE_ADMIN, ROLE_MANAGER, ROLE_STAFF, ROLE_USER]
-        ROLE_ADMIN: [ROLE_MANAGER, ROLE_STAFF, ROLE_USER]
-        ROLE_MANAGER: [ROLE_STAFF, ROLE_USER]
-        ROLE_STAFF: [ROLE_USER]
+        ROLE_SUPER_ADMIN: [ROLE_ADMIN]
+        ROLE_ADMIN: [ROLE_DIVISION, ROLE_DELEGATE]
+        ROLE_DIVISION: [ROLE_COMPETITION]
+        ROLE_COMPETITION: [ROLE_ORGANIZER]
+        ROLE_DELEGATE: [ROLE_ORGANIZER]
+        ROLE_ORGANIZER: [ROLE_TEAM]
+        ROLE_TEAM: [ROLE_VIEWER]
+        ROLE_VIEWER: [ROLE_SCORER, ROLE_USER]
+        ROLE_SCORER: [ROLE_USER]
 
     # Access control rules
     access_control:
-        # Admin endpoints require ROLE_ADMIN (profile <= 2)
-        - { path: ^/admin, roles: ROLE_ADMIN }
+        # Admin endpoints require at least ROLE_USER (all authenticated profiles)
+        - { path: ^/admin, roles: ROLE_USER }
         # Auth me/refresh require authenticated user
         - { path: ^/auth/me, roles: ROLE_USER }
         - { path: ^/auth/refresh, roles: ROLE_USER }
+        - { path: ^/auth/mandates, roles: ROLE_USER }
+        - { path: ^/auth/switch-mandate, roles: ROLE_USER }
 
 when@test:
     security:

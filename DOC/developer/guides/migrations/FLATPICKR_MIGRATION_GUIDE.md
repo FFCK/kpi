@@ -59,7 +59,7 @@ New major version of npm available! 10.8.2 -> 11.6.2
 
 ```bash
 # Installation via container Node.js temporaire
-make npm_add_backend package=flatpickr
+make backend_npm_add package=flatpickr
 
 # Résultat attendu :
 # ⚠️  Aucun package.json trouvé. Initialisation...
@@ -191,8 +191,8 @@ document.addEventListener('DOMContentLoaded', function() {
 **Pourquoi `node_modules/` directement ?**
 - ✅ Pas de copie nécessaire (`sources/lib/`)
 - ✅ Cohérence avec stratégie npm production
-- ✅ Mises à jour faciles (`make npm_update_backend`)
-- ✅ En production : `make npm_install_backend` installe automatiquement
+- ✅ Mises à jour faciles (`make backend_npm_update`)
+- ✅ En production : `make backend_npm_install` installe automatiquement
 
 **⚠️ Important** : Répéter cette modification pour les **deux sections** dans `page.tpl` :
 - Ligne ~28 (section 1)
@@ -216,7 +216,7 @@ Les templates suivants chargent déjà Flatpickr via `page.tpl` (héritage), **a
 rm -rf sources/smarty/templates_c/*
 
 # Redémarrer PHP (si nécessaire)
-make dev_restart
+make docker_dev_restart
 ```
 
 #### 4.2. Tester les 10 Pages Admin
@@ -336,7 +336,7 @@ grep -r "dhtmlgoodies" sources/smarty/templates/ sources/js/ sources/css/
 
 ```bash
 # Optionnel : supprimer node_modules après copie dans lib/
-make npm_clean_backend
+make backend_npm_clean
 ```
 
 3. **Commit final**
@@ -397,7 +397,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 ```bash
 # 1. Vérifier node_modules existe
 ls -lh sources/node_modules/flatpickr/dist/
-# Si absent → make npm_install_backend
+# Si absent → make backend_npm_install
 
 # 2. Vérifier chemin dans page.tpl
 grep "flatpickr" sources/smarty/templates/page.tpl
@@ -407,7 +407,7 @@ grep "flatpickr" sources/smarty/templates/page.tpl
 rm -rf sources/smarty/templates_c/*
 
 # 4. Redémarrer PHP
-make dev_restart
+make docker_dev_restart
 ```
 
 ### Problème 2 : Datepicker ne s'ouvre pas (aucune erreur)
@@ -481,8 +481,8 @@ New major version of npm available! 10.8.2 -> 11.6.2
 **Chargement direct depuis node_modules/** (PAS de copie vers lib/) :
 - ✅ Cohérent avec stratégie npm production
 - ✅ Pas de duplication fichiers
-- ✅ Mises à jour faciles (`make npm_update_backend`)
-- ✅ Production : `make npm_install_backend` installe automatiquement
+- ✅ Mises à jour faciles (`make backend_npm_update`)
+- ✅ Production : `make backend_npm_install` installe automatiquement
 
 **Git versionne** :
 - ✅ `sources/package.json` (dépendances)

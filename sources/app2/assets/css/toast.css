@@ -1,65 +1,72 @@
-/* Nuxt UI Toast Styles - Force visibility and positioning */
-/* Toast container positioning - try multiple selectors */
-[data-sonner-toaster],
-ol[data-sonner-toaster],
-div[data-sonner-toaster] {
-  position: fixed !important;
-  bottom: 1rem !important;
+/* Nuxt UI v4 Toast Styles - Colored borders and progress bars */
+
+/* Fix toast container positioning - prevent overflow */
+ol[data-expanded] {
   right: 1rem !important;
   left: auto !important;
-  transform: none !important;
-  z-index: 9999 !important;
+  width: 24rem !important;
   max-width: calc(100vw - 2rem) !important;
-  pointer-events: auto !important;
+  overflow: visible !important;
 }
 
-/* Individual toast styles */
-[role="status"],
-[role="alert"],
-li[data-sonner-toast],
-div[data-sonner-toast] {
-  background-color: white !important;
-  color: #1f2937 !important;
-  border: 1px solid #e5e7eb !important;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
-  padding: 1rem !important;
-  border-radius: 0.5rem !important;
-  min-width: 300px !important;
-  max-width: 400px !important;
-  width: auto !important;
-  margin-bottom: 0.5rem !important;
-  transform: none !important;
+/* Ensure toast items stay within container */
+ol[data-expanded] > li {
   position: relative !important;
-  right: 0 !important;
   left: 0 !important;
-  display: flex !important;
-  align-items: flex-start !important;
-  gap: 0.75rem !important;
+  right: 0 !important;
+  width: auto !important;
+  max-width: 100% !important;
 }
 
-/* Title styles */
-[role="status"] [data-title],
-[role="alert"] [data-title],
-[data-sonner-toast] [data-title],
-[role="status"] > div:first-child,
-[role="alert"] > div:first-child {
-  color: #1f2937 !important;
-  font-weight: 600 !important;
-  font-size: 0.875rem !important;
-  line-height: 1.25rem !important;
-  display: block !important;
+/* Toast border colors by icon color */
+li[role="alert"]:has(.text-yellow),
+li[role="status"]:has(.text-yellow) {
+  border-left: 4px solid oklch(79.5% 0.184 86.05) !important;
 }
 
-/* Description styles */
-[role="status"] [data-description],
-[role="alert"] [data-description],
-[data-sonner-toast] [data-description],
-[role="status"] > div:last-child,
-[role="alert"] > div:last-child {
-  color: #6b7280 !important;
-  font-size: 0.75rem !important;
-  margin-top: 0.25rem !important;
-  line-height: 1rem !important;
-  word-break: break-all !important;
-  display: block !important;
+li[role="alert"]:has(.text-red),
+li[role="status"]:has(.text-red) {
+  border-left: 4px solid oklch(63.7% 0.237 25.33) !important;
+}
+
+li[role="alert"]:has(.text-green),
+li[role="status"]:has(.text-green) {
+  border-left: 4px solid oklch(72.3% 0.219 149.58) !important;
+}
+
+li[role="alert"]:has(.text-blue),
+li[role="status"]:has(.text-blue) {
+  border-left: 4px solid oklch(62.3% 0.214 259.81) !important;
+}
+
+li[role="alert"]:has(.text-primary),
+li[role="status"]:has(.text-primary) {
+  border-left: 4px solid var(--ui-primary) !important;
+}
+
+/* Make progress bar more visible */
+li[role="alert"] [role="progressbar"],
+li[role="status"] [role="progressbar"] {
+  height: 4px !important;
+}
+
+/* Progress bar fill colors */
+li[role="alert"]:has(.text-yellow) [role="progressbar"] > div,
+li[role="status"]:has(.text-yellow) [role="progressbar"] > div {
+  background-color: oklch(79.5% 0.184 86.05) !important;
+}
+
+li[role="alert"]:has(.text-green) [role="progressbar"] > div,
+li[role="status"]:has(.text-green) [role="progressbar"] > div {
+  background-color: oklch(72.3% 0.219 149.58) !important;
+}
+
+li[role="alert"]:has(.text-red) [role="progressbar"] > div,
+li[role="status"]:has(.text-red) [role="progressbar"] > div {
+  background-color: oklch(63.7% 0.237 25.33) !important;
+}
+
+li[role="alert"]:has(.text-blue) [role="progressbar"] > div,
+li[role="status"]:has(.text-blue) [role="progressbar"] > div {
+  background-color: oklch(62.3% 0.214 259.81) !important;
 }

@@ -16,8 +16,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $nom = null;
     private ?string $prenom = null;
     private ?string $filtreCompetition = null;
+    private ?string $filtreSaison = null;
+    private ?string $filtreJournee = null;
+    private ?string $idEvenement = null;
     private ?string $limitClubs = null;
     private ?string $club = null;
+    private ?int $activeMandateId = null;
+    private ?int $mandateNiveau = null;
+    private ?string $mandateFiltreCompetition = null;
+    private ?string $mandateFiltreSaison = null;
+    private ?string $mandateFiltreJournee = null;
+    private ?string $mandateIdEvenement = null;
+    private ?string $mandateLimitClubs = null;
 
     public function getCode(): string
     {
@@ -85,6 +95,39 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    public function getFiltreSaison(): ?string
+    {
+        return $this->filtreSaison;
+    }
+
+    public function setFiltreSaison(?string $filtreSaison): self
+    {
+        $this->filtreSaison = $filtreSaison;
+        return $this;
+    }
+
+    public function getFiltreJournee(): ?string
+    {
+        return $this->filtreJournee;
+    }
+
+    public function setFiltreJournee(?string $filtreJournee): self
+    {
+        $this->filtreJournee = $filtreJournee;
+        return $this;
+    }
+
+    public function getIdEvenement(): ?string
+    {
+        return $this->idEvenement;
+    }
+
+    public function setIdEvenement(?string $idEvenement): self
+    {
+        $this->idEvenement = $idEvenement;
+        return $this;
+    }
+
     public function getLimitClubs(): ?string
     {
         return $this->limitClubs;
@@ -107,7 +150,104 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    // UserInterface methods
+    // --- Mandate override ---
+
+    public function getActiveMandateId(): ?int
+    {
+        return $this->activeMandateId;
+    }
+
+    /**
+     * Apply mandate overrides to user filters.
+     * When a mandate is active, its filters replace the user's base filters.
+     */
+    public function applyMandate(int $mandateId, int $niveau, ?string $filtreSaison, ?string $filtreCompetition, ?string $limitClubs, ?string $filtreJournee, ?string $idEvenement): void
+    {
+        $this->activeMandateId = $mandateId;
+        $this->mandateNiveau = $niveau;
+        $this->mandateFiltreSaison = $filtreSaison;
+        $this->mandateFiltreCompetition = $filtreCompetition;
+        $this->mandateLimitClubs = $limitClubs;
+        $this->mandateFiltreJournee = $filtreJournee;
+        $this->mandateIdEvenement = $idEvenement;
+    }
+
+    /** Effective profile level (mandate overrides base) */
+    public function getEffectiveNiveau(): int
+    {
+        return $this->mandateNiveau ?? $this->niveau;
+    }
+
+    // --- Filter parsing methods ---
+
+    /**
+     * Parse pipe-delimited filter: "|val1|val2|" → ["val1", "val2"]
+     * Returns null if no restriction (empty string).
+     */
+    private static function parsePipeFilter(?string $value): ?array
+    {
+        if ($value === null || trim($value) === '') {
+            return null;
+        }
+        return array_values(array_filter(explode('|', trim($value, '|')), fn($v) => $v !== ''));
+    }
+
+    /**
+     * Parse comma-separated filter: "1,2,3" → ["1", "2", "3"]
+     * Returns null if no restriction (empty string).
+     */
+    private static function parseCommaFilter(?string $value): ?array
+    {
+        if ($value === null || trim($value) === '') {
+            return null;
+        }
+        return array_values(array_filter(explode(',', $value), fn($v) => trim($v) !== ''));
+    }
+
+    /** @return string[]|null Allowed seasons, or null if unrestricted */
+    public function getAllowedSeasons(): ?array
+    {
+        if ($this->activeMandateId !== null) {
+            return self::parsePipeFilter($this->mandateFiltreSaison);
+        }
+        return self::parsePipeFilter($this->filtreSaison);
+    }
+
+    /** @return string[]|null Allowed competition codes, or null if unrestricted */
+    public function getAllowedCompetitions(): ?array
+    {
+        if ($this->activeMandateId !== null) {
+            return self::parsePipeFilter($this->mandateFiltreCompetition);
+        }
+        return self::parsePipeFilter($this->filtreCompetition);
+    }
+
+    /** @return int[]|null Allowed event IDs, or null if unrestricted */
+    public function getAllowedEvents(): ?array
+    {
+        $raw = $this->activeMandateId !== null ? $this->mandateIdEvenement : $this->idEvenement;
+        $values = self::parsePipeFilter($raw);
+        return $values !== null ? array_map('intval', $values) : null;
+    }
+
+    /** @return int[]|null Allowed journee IDs, or null if unrestricted */
+    public function getAllowedJournees(): ?array
+    {
+        $raw = $this->activeMandateId !== null ? $this->mandateFiltreJournee : $this->filtreJournee;
+        $values = self::parseCommaFilter($raw);
+        return $values !== null ? array_map('intval', $values) : null;
+    }
+
+    /** @return string[]|null Allowed club codes, or null if unrestricted */
+    public function getAllowedClubs(): ?array
+    {
+        if ($this->activeMandateId !== null) {
+            return self::parseCommaFilter($this->mandateLimitClubs);
+        }
+        return self::parseCommaFilter($this->limitClubs);
+    }
+
+    // --- UserInterface methods ---
 
     public function getUserIdentifier(): string
     {
@@ -118,17 +258,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roles = ['ROLE_USER'];
 
-        // Map profile levels to roles
-        if ($this->niveau <= 1) {
-            $roles[] = 'ROLE_SUPER_ADMIN';
-            $roles[] = 'ROLE_ADMIN';
-        } elseif ($this->niveau <= 2) {
-            $roles[] = 'ROLE_ADMIN';
-        } elseif ($this->niveau <= 3) {
-            $roles[] = 'ROLE_MANAGER';
-        } elseif ($this->niveau <= 9) {
-            $roles[] = 'ROLE_STAFF';
-        }
+        // Map profile levels to granular roles
+        // Hierarchy is handled by security.yaml role_hierarchy
+        $roles[] = match (true) {
+            $this->niveau <= 1 => 'ROLE_SUPER_ADMIN',
+            $this->niveau <= 2 => 'ROLE_ADMIN',
+            $this->niveau <= 3 => 'ROLE_DIVISION',
+            $this->niveau <= 4 => 'ROLE_COMPETITION',
+            $this->niveau <= 5 => 'ROLE_DELEGATE',
+            $this->niveau <= 6 => 'ROLE_ORGANIZER',
+            $this->niveau <= 7 => 'ROLE_TEAM',
+            $this->niveau <= 8 => 'ROLE_VIEWER',
+            $this->niveau <= 9 => 'ROLE_SCORER',
+            default => 'ROLE_USER',
+        };
 
         return array_unique($roles);
     }
@@ -150,6 +293,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             'name' => $this->nom,
             'firstname' => $this->prenom,
             'profile' => $this->niveau,
+            'filters' => [
+                'seasons' => $this->getAllowedSeasons(),
+                'competitions' => $this->getAllowedCompetitions(),
+                'events' => $this->getAllowedEvents(),
+                'journees' => $this->getAllowedJournees(),
+                'clubs' => $this->getAllowedClubs(),
+            ],
         ];
     }
 }

@@ -70,19 +70,19 @@ chmod 755 sources/live/logs
 
 ```bash
 # Démarrer le worker
-make event_worker_start
+make backend_worker_start
 
 # Vérifier le statut
-make event_worker_status
+make backend_worker_status
 
 # Consulter les logs en temps réel
-make event_worker_logs
+make backend_worker_logs
 
 # Redémarrer le worker
-make event_worker_restart
+make backend_worker_restart
 
 # Arrêter le worker
-make event_worker_stop
+make backend_worker_stop
 ```
 
 ---
@@ -197,7 +197,7 @@ Ces fichiers sont utilisés par les pages d'incrustation pour afficher automatiq
 
 **Vérifier les logs** :
 ```bash
-make event_worker_logs
+make backend_worker_logs
 ```
 
 **Causes possibles** :
@@ -221,14 +221,14 @@ make event_worker_logs
 Cela signifie que le heartbeat n'a pas été mis à jour depuis plus de 3× le délai configuré.
 
 **Actions** :
-1. Vérifier que le processus tourne : `make event_worker_status`
-2. Si arrêté, redémarrer : `make event_worker_restart`
+1. Vérifier que le processus tourne : `make backend_worker_status`
+2. Si arrêté, redémarrer : `make backend_worker_restart`
 3. Vérifier les logs pour voir l'erreur
 
 ### Les fichiers JSON ne sont pas générés
 
 **Vérifier** :
-1. Le worker tourne : `make event_worker_status`
+1. Le worker tourne : `make backend_worker_status`
 2. La configuration est correcte dans l'interface
 3. Le statut est "running" (pas "paused" ou "stopped")
 4. Les permissions sur `sources/live/cache/`
@@ -271,9 +271,9 @@ if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
 ## 📞 Support
 
 Pour toute question ou problème :
-1. Consulter les logs : `make event_worker_logs`
-2. Vérifier le statut : `make event_worker_status`
-3. Redémarrer le worker : `make event_worker_restart`
+1. Consulter les logs : `make backend_worker_logs`
+2. Vérifier le statut : `make backend_worker_status`
+3. Redémarrer le worker : `make backend_worker_restart`
 
 ---
 

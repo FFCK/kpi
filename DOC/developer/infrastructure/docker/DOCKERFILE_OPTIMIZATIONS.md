@@ -222,13 +222,13 @@ docker history $(docker compose -f compose.dev.yaml images -q kpi)
 
 ```bash
 # Dev
-make dev_up
-make composer_install
-make php_bash
+make docker_dev_up
+make backend_composer_install
+make backend_bash
 composer --version
 
 # Prod
-make prod_up
+make docker_prod_up
 docker exec -ti kpi_php_prod composer --version
 ```
 
@@ -289,7 +289,7 @@ docker compose -f compose.prod.yaml up -d
 docker images | grep kpi
 
 # Fonctionnalité
-make php_bash
+make backend_bash
 php -v
 composer --version
 php -m | grep -E "(gd|zip|mysqli)"

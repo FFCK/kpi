@@ -367,10 +367,10 @@ if (
 
 ```bash
 # Development
-make dev_rebuild
+make docker_dev_rebuild
 
 # Production
-make prod_rebuild
+make docker_prod_rebuild
 ```
 
 ### Step 3: Verify
@@ -393,7 +393,7 @@ docker exec kpi_php php -i | grep auto_prepend_file
 auto_prepend_file => /var/www/html/commun/auto-prepend-cors.php
 ```
 
-**Solution**: Rebuild Docker image with `make dev_rebuild`
+**Solution**: Rebuild Docker image with `make docker_dev_rebuild`
 
 ### Issue: Duplicate CORS headers
 

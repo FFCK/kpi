@@ -25,7 +25,7 @@ This is a modern REST API built with Symfony 7.3 and API Platform 4.2, providing
 
 2. Install Composer dependencies:
    ```bash
-   make composer_install_api2
+   make api2_backend_composer_install
    ```
 
 The API dependencies are managed by Composer and will be installed in the `vendor/` directory.
@@ -179,6 +179,33 @@ CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1|.*\.localhost)(:[0-9]+)?$'
   }
   ```
 
+### Admin Endpoints (JWT Protected, app4)
+
+All admin endpoints are documented in detail in **[API2_ENDPOINTS.md](../../DOC/developer/reference/API2_ENDPOINTS.md)**.
+
+**Controllers:**
+- `AdminAuthController` - JWT login, me, refresh, reset password
+- `AdminAuthMandateController` - Multi-mandate support (list mandates, switch)
+- `AdminEventController` - Events CRUD
+- `AdminCompetitionsController` - Competitions CRUD, status, lock, publish
+- `AdminCompetitionCopyController` - Competition schema copy
+- `AdminGamedaysController` - Gamedays CRUD, bulk ops, officials, events
+- `AdminGamesController` - Games CRUD, bulk ops (26 routes), referee autocomplete
+- `AdminTeamsController` - Competition teams, pool/draw, colors, logos
+- `AdminGroupsController` - Groups CRUD, reorder
+- `AdminRankingsController` - Rankings compute, publish, transfer, initial
+- `AdminRcController` - Competition officials (RC)
+- `AdminPresenceController` - Team & match player compositions
+- `AdminStatsController` - Statistics data, filters, PDF/XLSX exports
+- `AdminAthletesController` - Athlete search, profile, participations
+- `AdminClubsController` - Clubs search, map, detail, teams, departmental committees
+- `AdminUsersController` - Users CRUD, mandates, password reset
+- `AdminTvController` - TV control (channels, presentations, scenarios, labels)
+- `AdminSchemaController` - Competition schema visualization
+- `AdminJournalController` - Action log consultation
+- `AdminOperationsController` - System operations (seasons, images, merges, imports)
+- `AdminFiltersController` - Shared filter data (seasons, competitions, events)
+
 ## Database Tables Used
 
 - `kp_evenement` - Events
@@ -196,6 +223,14 @@ CORS_ALLOW_ORIGIN='^https?://(localhost|127\.0\.0\.1|.*\.localhost)(:[0-9]+)?$'
 - `kp_scrutineering` - Equipment scrutineering data
 - `kp_chrono` - Game timer data
 - `kp_stats` - Game statistics
+- `kp_utilisateur` - Users
+- `kp_mandat` - User mandates
+- `kp_club` - Clubs
+- `kp_journal` - Action log
+- `kp_groupe` - Competition groups
+- `kp_schema` - Competition schemas
+- `kp_tv_channel` - TV channels
+- `kp_tv_scenario` - TV scenarios
 
 ## Development
 
@@ -245,10 +280,17 @@ This API provides the same endpoints and functionality as `/sources/api/` but wi
 - [x] ✅ Add authentication documentation
 - [x] ✅ Implement token validation service for staff and report endpoints
 - [x] ✅ Update Staff/Report endpoints to use `X-Auth-Token` header (compatible with app2)
+- [x] ✅ JWT authentication for admin endpoints
+- [x] ✅ Admin CRUD for all management pages (events, competitions, gamedays, games, teams, users, clubs, etc.)
+- [x] ✅ Multi-mandate authentication system
+- [x] ✅ Match player composition management (team mode + match mode)
+- [x] ✅ TV control endpoints
+- [x] ✅ Competition schema endpoint
+- [x] ✅ Journal/action log endpoint
+- [x] ✅ Logging for user actions (AdminLoggableTrait)
 - [ ] Add cache layer (similar to json_cache_read/write in legacy API)
 - [ ] Implement cache creation for WSM endpoints (CacheMatch equivalent)
 - [ ] Add rate limiting
-- [ ] Add logging for user actions
 - [ ] Add unit and functional tests
 - [ ] Optimize database queries with Doctrine Query Builder
 - [ ] Add API versioning support

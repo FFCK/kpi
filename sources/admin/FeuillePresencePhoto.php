@@ -16,8 +16,13 @@ class FeuillePresencePhoto extends MyPage
     $myBdd = new MyBdd();
 
     $codeCompet = utyGetSession('codeCompet');
+    $codeCompet = utyGetGet('Compet', $codeCompet);
+    $codeCompet = utyGetGet('compet', $codeCompet); // App4 uses 'compet'
     $codeSaison = $codeCompet === 'POOL' ? 1000 : $myBdd->GetActiveSaison();
+    $codeSaison = utyGetGet('S', $codeSaison);
+    $codeSaison = utyGetGet('season', $codeSaison); // App4 uses 'season'
     $codeEquipe = utyGetGet('equipe', '%');
+    $codeEquipe = utyGetGet('team', $codeEquipe); // App4 uses 'team'
 
     // Chargement des équipes ...
     $arrayEquipe = array();
@@ -228,7 +233,7 @@ class FeuillePresencePhoto extends MyPage
           }
           $pdf->Cell(60, $h, $arrayJoueur[$idEquipe][$j]['Nom'], 'B', 0, 'C');
           $pdf->Cell(60, $h, $arrayJoueur[$idEquipe][$j]['Prenom'], 'B', 0, 'C');
-          $pdf->Cell(23, $h, $arrayJoueur[$idEquipe][$j]['Naissance'], 'B', 0, 'C');
+          $pdf->Cell(25, $h, $arrayJoueur[$idEquipe][$j]['Naissance'], 'B', 0, 'C');
 
           // Photo joueur - Pattern 5: sauvegarder/restaurer position
           if (is_file('../img/KIP/players/' . $arrayJoueur[$idEquipe][$j]['Matric'] . '.png')) {
@@ -242,7 +247,10 @@ class FeuillePresencePhoto extends MyPage
 
           $pdf->Cell(60, $h, '', 'B', 0, 'C');
           $pdf->Cell(26, $h, $arrayJoueur[$idEquipe][$j]['Matric'], 'B', 0, 'C');
-          $pdf->Cell(20, $h, '[_]', 'B', 1, 'C');
+          $rowY = $pdf->y;
+          $pdf->Cell(18, $h, '', 'B', 1, 'C');
+          $pdf->Rect(271, $rowY + ($h / 2) - 3, 6, 6);
+          $pdf->SetX(10);
         }
       }
     }

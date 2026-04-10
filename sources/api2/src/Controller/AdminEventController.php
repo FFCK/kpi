@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Trait\AdminLoggableTrait;
+use App\Trait\DateValidationTrait;
 use Doctrine\DBAL\Connection;
+use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,8 +20,12 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  */
 #[Route('/admin/events')]
 #[IsGranted('ROLE_ADMIN')]
+#[OA\Tag(name: '22. App4 - Events')]
 class AdminEventController extends AbstractController
 {
+    use AdminLoggableTrait;
+    use DateValidationTrait;
+
     public function __construct(
         private readonly Connection $connection
     ) {
@@ -50,8 +57,14 @@ class AdminEventController extends AbstractController
         $params = [];
 
         if (!empty($search)) {
-            $whereClause = "WHERE Libelle LIKE ? OR Lieu LIKE ?";
-            $params = ["%$search%", "%$search%"];
+            // Check if search is a numeric ID
+            if (is_numeric($search)) {
+                $whereClause = "WHERE Id = ? OR Libelle LIKE ? OR Lieu LIKE ?";
+                $params = [(int) $search, "%$search%", "%$search%"];
+            } else {
+                $whereClause = "WHERE Libelle LIKE ? OR Lieu LIKE ?";
+                $params = ["%$search%", "%$search%"];
+            }
         }
 
         // Count total
@@ -166,7 +179,7 @@ class AdminEventController extends AbstractController
         $id = (int) $this->connection->lastInsertId();
 
         // Log action
-        $this->logAction('Ajout Evenement', $id, $libelle);
+        $this->logActionForEvent('Ajout Evenement', $id, $libelle);
 
         return $this->json([
             'id' => $id,
@@ -230,7 +243,7 @@ class AdminEventController extends AbstractController
         $stmt->executeStatement([$libelle, $lieu ?: null, $dateDebut, $dateFin, $id]);
 
         // Log action
-        $this->logAction('Modif Evenement', $id);
+        $this->logActionForEvent('Modif Evenement', $id);
 
         return $this->json([
             'id' => $id,
@@ -262,7 +275,7 @@ class AdminEventController extends AbstractController
             $stmt->executeStatement([$id]);
 
             // Log action
-            $this->logAction('Suppression Evenement', $id);
+            $this->logActionForEvent('Suppression Evenement', $id);
 
             return $this->json(null, Response::HTTP_NO_CONTENT);
         } catch (\Exception $e) {
@@ -300,7 +313,7 @@ class AdminEventController extends AbstractController
             $stmt->executeStatement($ids);
 
             // Log action
-            $this->logAction('Suppression Evenements', null, implode(',', $ids));
+            $this->logActionForEvent('Suppression Evenements', null, implode(',', $ids));
 
             return $this->json(['deleted' => count($ids)]);
         } catch (\Exception $e) {
@@ -333,7 +346,7 @@ class AdminEventController extends AbstractController
         $stmt->executeStatement([$newValue, $id]);
 
         // Log action
-        $this->logAction('Publication evenement', $id, $newValue);
+        $this->logActionForEvent('Publication evenement', $id, $newValue);
 
         return $this->json([
             'id' => $id,
@@ -364,7 +377,7 @@ class AdminEventController extends AbstractController
         $stmt->executeStatement([$newValue, $id]);
 
         // Log action
-        $this->logAction('App evenement', $id, $newValue);
+        $this->logActionForEvent('App evenement', $id, $newValue);
 
         return $this->json([
             'id' => $id,
@@ -372,34 +385,4 @@ class AdminEventController extends AbstractController
         ]);
     }
 
-    /**
-     * Validate date format (YYYY-MM-DD)
-     */
-    private function isValidDate(?string $date): bool
-    {
-        if (empty($date)) {
-            return true;
-        }
-        $d = \DateTime::createFromFormat('Y-m-d', $date);
-        return $d && $d->format('Y-m-d') === $date;
-    }
-
-    /**
-     * Log admin action to journal table
-     */
-    private function logAction(string $action, ?int $eventId = null, ?string $details = null): void
-    {
-        try {
-            $user = $this->getUser();
-            $userId = $user?->getUserIdentifier() ?? 'system';
-
-            $sql = "INSERT INTO kp_journal (Date, Heure, User, Action, Code_evenement, Details)
-                    VALUES (CURDATE(), CURTIME(), ?, ?, ?, ?)";
-
-            $stmt = $this->connection->prepare($sql);
-            $stmt->executeStatement([$userId, $action, $eventId, $details]);
-        } catch (\Exception $e) {
-            // Log silently fails - don't break the main operation
-        }
-    }
 }

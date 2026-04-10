@@ -39,15 +39,15 @@ const maxWidthClasses = {
         :class="maxWidthClasses[maxWidth]"
       >
         <!-- Header -->
-        <div v-if="title || $slots.header" class="flex items-center justify-between p-6 border-b border-gray-200">
+        <div v-if="title || $slots.header" class="flex items-center justify-between p-6 border-b border-header-200">
           <slot name="header">
-            <h3 class="text-lg font-semibold text-gray-900">
+            <h3 class="text-lg font-semibold text-header-900">
               {{ title }}
             </h3>
           </slot>
           <button
             type="button"
-            class="text-gray-400 hover:text-gray-600 p-1"
+            class="text-header-400 hover:text-header-600 p-1"
             @click="emit('close')"
           >
             <UIcon name="heroicons:x-mark" class="w-6 h-6" />

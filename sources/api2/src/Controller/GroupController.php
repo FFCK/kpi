@@ -411,6 +411,158 @@ class GroupController extends AbstractController
         return $response;
     }
 
+    #[Route('/group/{season}/{groupCode}/team/{teamId}/stats', name: 'group_team_stats', methods: ['GET'])]
+    #[OA\Get(
+        path: '/group/{season}/{groupCode}/team/{teamId}/stats',
+        summary: 'Get team statistics per competition within a group',
+        description: 'Returns player statistics for a team in each competition of the group (goals, cards, etc.), one entry per competition the team participates in. The team is identified by its kp_competition_equipe Id in any competition of the group; Code_club + Numero are used to find its entries in other competitions.',
+        tags: ['2. App2 - Public'],
+        parameters: [
+            new OA\Parameter(
+                name: 'season',
+                in: 'path',
+                required: true,
+                description: 'Season code (year)',
+                schema: new OA\Schema(type: 'string', example: '2026')
+            ),
+            new OA\Parameter(
+                name: 'groupCode',
+                in: 'path',
+                required: true,
+                description: 'Group code (e.g. N1H)',
+                schema: new OA\Schema(type: 'string', example: 'N1H')
+            ),
+            new OA\Parameter(
+                name: 'teamId',
+                in: 'path',
+                required: true,
+                description: 'kp_competition_equipe.Id for the team in any competition of the group',
+                schema: new OA\Schema(type: 'integer', example: 456)
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Returns an array of competitions with player statistics',
+                content: new OA\JsonContent(
+                    type: 'array',
+                    items: new OA\Items(
+                        properties: [
+                            new OA\Property(property: 'competition_code', type: 'string', example: 'N1H'),
+                            new OA\Property(property: 'competition_label', type: 'string', example: 'Nationale 1 Hommes'),
+                            new OA\Property(property: 'team_id', type: 'integer', example: 456),
+                            new OA\Property(
+                                property: 'players',
+                                type: 'array',
+                                items: new OA\Items(
+                                    properties: [
+                                        new OA\Property(property: 'licence', type: 'string', example: '123456'),
+                                        new OA\Property(property: 'name', type: 'string', example: 'Dupont'),
+                                        new OA\Property(property: 'firstname', type: 'string', example: 'Jean'),
+                                        new OA\Property(property: 'number', type: 'integer', example: 5),
+                                        new OA\Property(property: 'captain', type: 'string', example: 'C'),
+                                        new OA\Property(property: 'goals', type: 'integer', example: 3),
+                                        new OA\Property(property: 'green_cards', type: 'integer', example: 1),
+                                        new OA\Property(property: 'yellow_cards', type: 'integer', example: 0),
+                                        new OA\Property(property: 'red_cards', type: 'integer', example: 0),
+                                        new OA\Property(property: 'exclusions', type: 'integer', example: 0)
+                                    ]
+                                )
+                            )
+                        ]
+                    )
+                )
+            )
+        ]
+    )]
+    public function getGroupTeamStats(string $season, string $groupCode, int $teamId): JsonResponse
+    {
+        $conn = $this->entityManager->getConnection();
+
+        // Resolve Code_club + Numero for the given team entry
+        $resolveStmt = $conn->prepare("SELECT Code_club, Numero FROM kp_competition_equipe WHERE Id = ?");
+        $resolveStmt->bindValue(1, $teamId);
+        $resolveResult = $resolveStmt->executeQuery();
+        $teamRef = $resolveResult->fetchAssociative();
+
+        if (!$teamRef) {
+            return new JsonResponse([]);
+        }
+
+        // Find all team entries with the same Code_club + Numero in each competition of the group
+        $teamsSql = "
+            SELECT ce.Id AS team_id, c.Code AS competition_code, c.Soustitre2 AS competition_label
+            FROM kp_competition_equipe ce
+            INNER JOIN kp_competition c ON (ce.Code_compet = c.Code AND ce.Code_saison = c.Code_saison)
+            WHERE c.Code_ref = ?
+            AND c.Code_saison = ?
+            AND c.Publication = 'O'
+            AND ce.Code_club = ?
+            AND ce.Numero = ?
+            ORDER BY c.GroupOrder, c.Code
+        ";
+
+        $stmt = $conn->prepare($teamsSql);
+        $stmt->bindValue(1, $groupCode);
+        $stmt->bindValue(2, $season);
+        $stmt->bindValue(3, $teamRef['Code_club']);
+        $stmt->bindValue(4, $teamRef['Numero']);
+        $result = $stmt->executeQuery();
+        $teamEntries = $result->fetchAllAssociative();
+
+        if (empty($teamEntries)) {
+            return new JsonResponse([]);
+        }
+
+        $results = [];
+
+        foreach ($teamEntries as $entry) {
+            $teamId = (int) $entry['team_id'];
+
+            $statsSql = "
+                SELECT
+                    l.Matric AS licence, l.Nom AS name, l.Prenom AS firstname,
+                    l.Sexe AS gender, j.Numero AS number, j.Capitaine AS captain,
+                    CASE WHEN j.Capitaine = 'E' THEN 0 ELSE SUM(IF(md.Id_evt_match = 'B', 1, 0)) END AS goals,
+                    SUM(IF(md.Id_evt_match = 'V', 1, 0)) AS green_cards,
+                    CASE WHEN j.Capitaine = 'E' THEN 0 ELSE SUM(IF(md.Id_evt_match = 'J', 1, 0)) END AS yellow_cards,
+                    SUM(IF(md.Id_evt_match = 'R', 1, 0)) AS red_cards,
+                    SUM(IF(md.Id_evt_match = 'D', 1, 0)) AS exclusions
+                FROM kp_competition_equipe_joueur j
+                JOIN kp_licence l ON (j.Matric = l.Matric)
+                LEFT JOIN (
+                    kp_match_detail md
+                    JOIN kp_match m ON md.Id_match = m.Id
+                    JOIN kp_journee jou ON m.Id_journee = jou.Id
+                    JOIN kp_competition c ON (jou.Code_competition = c.Code AND jou.Code_saison = c.Code_saison)
+                ) ON l.Matric = md.Competiteur AND c.Code_ref = ? AND c.Code_saison = ? AND c.Code = ?
+                WHERE j.Id_equipe = ?
+                  AND (j.Capitaine IS NULL OR j.Capitaine NOT IN ('A', 'X'))
+                GROUP BY l.Matric, l.Nom, l.Prenom, l.Sexe, j.Numero, j.Capitaine
+                ORDER BY CASE WHEN j.Capitaine = 'E' THEN 1 ELSE 0 END, j.Numero ASC
+            ";
+
+            $stmt2 = $conn->prepare($statsSql);
+            $stmt2->bindValue(1, $groupCode);
+            $stmt2->bindValue(2, $season);
+            $stmt2->bindValue(3, $entry['competition_code']);
+            $stmt2->bindValue(4, $teamId);
+            $result2 = $stmt2->executeQuery();
+            $players = $result2->fetchAllAssociative();
+
+            $results[] = [
+                'competition_code' => $entry['competition_code'],
+                'competition_label' => $entry['competition_label'],
+                'team_id' => $teamId,
+                'players' => $players,
+            ];
+        }
+
+        $response = new JsonResponse($results);
+        $response->setEncodingOptions($response->getEncodingOptions() | JSON_UNESCAPED_UNICODE);
+        return $response;
+    }
+
     #[Route('/group/{season}/{groupCode}/teams', name: 'group_teams', methods: ['GET'])]
     #[OA\Get(
         path: '/group/{season}/{groupCode}/teams',

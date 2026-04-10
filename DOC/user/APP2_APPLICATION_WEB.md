@@ -71,6 +71,11 @@ L'application propose deux modes de navigation :
 - **URL directe par compétition** : `app.kayak-polo.info/group/{saison}/{code}`
   - Exemple : `app.kayak-polo.info/group/2026/N1H` pour la Nationale 1 Hommes
 
+**Guide de navigation illustré** :
+- Affiché sur la page d'accueil après sélection d'un événement ou d'une compétition
+- Deux captures d'écran annotées (version PC et smartphone) montrant les zones cliquables
+- Explications à gauche et à droite de l'image : accès à la fiche équipe, accès à la feuille de match
+
 **Exemple d'usage - Mode Compétitions** :
 ```
 1. Cliquer sur "Compétitions"
@@ -286,10 +291,13 @@ Fonctionnalité dédiée au contrôle du matériel des joueurs avant les matchs.
 - Depuis un classement → Accès à la fiche équipe complète
 - Depuis la recherche → Accès direct à l'équipe
 
-**Clic sur un statut de match** :
+**Clic sur un score ou un numéro de match** :
 - Depuis la liste des matchs → Accès à la feuille de marque détaillée
 - Depuis la fiche équipe → Accès au match complet avec événements
 - Navigation rapide et intuitive
+
+**Clic sur un statut de match** :
+- Depuis la liste des matchs → Accès à la feuille de marque détaillée
 
 ### Filtres Avancés
 

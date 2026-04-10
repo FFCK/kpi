@@ -97,15 +97,16 @@ class GestionParamUser extends MyPageSecure
 			$result->execute(array(utyGetSession('User')));
 
 			$row = $result->fetch();
-			$real_pass = $row['Pwd'];
-			
-			if (md5($pass1) == $real_pass) {
-				// Mise à jour du mot de passe
-				$sql = "UPDATE kp_user 
-					SET Pwd = ? 
-					WHERE Code = ? ";	 
+			$storedHash = $row['Pwd'];
+
+			// Verify old password: bcrypt first, then MD5 fallback
+			if (password_verify($pass1, $storedHash) || md5($pass1) === $storedHash) {
+				// Store new password as bcrypt
+				$sql = "UPDATE kp_user
+					SET Pwd = ?
+					WHERE Code = ? ";
 				$result = $myBdd->pdo->prepare($sql);
-				$result->execute(array(md5($pass2), utyGetSession('User')));
+				$result->execute(array(password_hash($pass2, PASSWORD_BCRYPT), utyGetSession('User')));
 			}
 			else
 				die("error change password");
