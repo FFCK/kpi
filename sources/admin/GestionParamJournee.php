@@ -311,7 +311,7 @@ class GestionParamJournee extends MyPageSecure
 		
 		if (isset($_SESSION['ParentUrl'])) {
 			$target = $_SESSION['ParentUrl'];
-			header("Location: http://".$_SERVER['HTTP_HOST'].$target);	
+			header("Location: " . utyGetScheme() . "://" . $_SERVER['HTTP_HOST'].$target);	
 			exit;	
 		}
 		return;
@@ -375,7 +375,7 @@ class GestionParamJournee extends MyPageSecure
 
 		if (isset($_SESSION['ParentUrl'])) {
 			$target = $_SESSION['ParentUrl'];
-			header("Location: http://".$_SERVER['HTTP_HOST'].$target);	
+			header("Location: " . utyGetScheme() . "://" . $_SERVER['HTTP_HOST'].$target);	
 			exit;	
 		}
 		return;
@@ -408,7 +408,7 @@ class GestionParamJournee extends MyPageSecure
 	{
 		if (isset($_SESSION['ParentUrl'])) {
 			$target = $_SESSION['ParentUrl'];
-			header("Location: http://".$_SERVER['HTTP_HOST'].$target);	
+			header("Location: " . utyGetScheme() . "://" . $_SERVER['HTTP_HOST'].$target);	
 			exit;	
 		}
 	}
@@ -450,7 +450,7 @@ class GestionParamJournee extends MyPageSecure
 		
 		if (isset($_SESSION['ParentUrl'])) {
 			$target = $_SESSION['ParentUrl'];
-			header("Location: http://".$_SERVER['HTTP_HOST'].$target);	
+			header("Location: " . utyGetScheme() . "://" . $_SERVER['HTTP_HOST'].$target);	
 			exit;	
 		}
 
@@ -490,7 +490,7 @@ class GestionParamJournee extends MyPageSecure
             }
 
             if ($alertMessage == '') {
-				header("Location: http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);	
+				header("Location: " . utyGetScheme() . "://" . $_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);	
 				exit;
 			}
 		}

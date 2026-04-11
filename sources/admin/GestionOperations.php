@@ -2178,6 +2178,16 @@ class GestionOperations extends MyPageSecure
 
 		list($width, $height) = $imageInfo;
 
+		// Check memory requirements before loading image (GD uses ~4-5 bytes per pixel)
+		$estimatedMemory = $width * $height * 5;
+		$memoryLimit = ini_get('memory_limit');
+		$memoryLimitBytes = (int)$memoryLimit * 1024 * 1024; // Assumes 'M' suffix
+		$currentUsage = memory_get_usage(true);
+		if ($estimatedMemory * 2 > ($memoryLimitBytes - $currentUsage)) {
+			array_push($this->m_arrayinfo, "Erreur : Image trop grande ({$width}x{$height} px). Veuillez réduire la taille de l'image avant de l'uploader.");
+			return;
+		}
+
 		// Check if resizing is needed
 		$needsResize = ($width > $config['max_width'] || $height > $config['max_height']);
 
@@ -2187,8 +2197,8 @@ class GestionOperations extends MyPageSecure
 			$newWidth = (int)($width * $ratio);
 			$newHeight = (int)($height * $ratio);
 
-			// Create image resource from uploaded file
-			if (in_array('image/png', $config['mime_types'])) {
+			// Create image resource from uploaded file based on actual MIME type
+			if ($mimeType === 'image/png') {
 				$sourceImage = imagecreatefrompng($imageFile['tmp_name']);
 			} else {
 				$sourceImage = imagecreatefromjpeg($imageFile['tmp_name']);
@@ -2203,7 +2213,7 @@ class GestionOperations extends MyPageSecure
 			$resizedImage = imagecreatetruecolor($newWidth, $newHeight);
 
 			// Preserve transparency for PNG
-			if (in_array('image/png', $config['mime_types'])) {
+			if ($mimeType === 'image/png') {
 				imagealphablending($resizedImage, false);
 				imagesavealpha($resizedImage, true);
 				$transparent = imagecolorallocatealpha($resizedImage, 0, 0, 0, 127);
@@ -2214,7 +2224,7 @@ class GestionOperations extends MyPageSecure
 			imagecopyresampled($resizedImage, $sourceImage, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
 
 			// Save resized image
-			if (in_array('image/png', $config['mime_types'])) {
+			if ($mimeType === 'image/png') {
 				$result = imagepng($resizedImage, $destinationPath, 9);
 			} else {
 				$result = imagejpeg($resizedImage, $destinationPath, 90);
@@ -2772,7 +2782,7 @@ class GestionOperations extends MyPageSecure
 
 			// Pour PurgeCache, CopyCompetitions et FusionAutomatique, on ne redirige pas car on affiche les résultats via $arrayinfo
 			if ($alertMessage == '' && $Cmd != 'PurgeCache' && $Cmd != 'FusionAutomatiqueLicenciesNonFederaux' && $Cmd != 'CopyCompetitions') {
-				header("Location: http://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
+				header("Location: " . utyGetScheme() . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
 				exit;
 			}
 		}

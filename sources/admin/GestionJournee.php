@@ -1802,7 +1802,7 @@ class GestionJournee extends MyPageSecure
 
 
 			if ($alertMessage == '') {
-				header("Location: http://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
+				header("Location: " . utyGetScheme() . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
 				exit;
 			}
 		}

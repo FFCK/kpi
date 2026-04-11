@@ -413,7 +413,7 @@ class GestionCalendrier extends MyPageSecure
 
 		if (isset($_SESSION['ParentUrl'])) {
 			$target = $_SESSION['ParentUrl'];
-			header("Location: http://" . $_SERVER['HTTP_HOST'] . $target);
+			header("Location: " . utyGetScheme() . "://" . $_SERVER['HTTP_HOST'] . $target);
 			exit;
 		}
 
@@ -557,7 +557,7 @@ class GestionCalendrier extends MyPageSecure
 			if ($Cmd == 'PubliMultiJournees') ($_SESSION['Profile'] <= 4) ? $this->PubliMultiJournees() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 
 			if ($alertMessage == '') {
-				header("Location: http://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
+				header("Location: " . utyGetScheme() . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
 				exit;
 			}
 		}

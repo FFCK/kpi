@@ -67,7 +67,7 @@ class GestionInstances extends MyPageSecure
 				($_SESSION['Profile'] <= 1) ? $this->Fonction() : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 				
 			if ($alertMessage == '') {
-				header("Location: http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);	
+				header("Location: " . utyGetScheme() . "://" . $_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);	
 				exit;
 			}
 		}
