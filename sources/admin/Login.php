@@ -160,7 +160,8 @@ class Login extends MyPage
 
 					// echo 'OK: ' . $_SERVER['HTTP_HOST'] . $_SESSION['loginTarget'] . '<br>';
 					$myBdd->utyJournal('Connexion', '', '', null, null, null, $row['Prenom'] . ' ' . $row['Nom']);
-					header("Location: http://" . $_SERVER['HTTP_HOST'] . $_SESSION['loginTarget']);
+					$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ? 'https' : 'http';
+					header("Location: $scheme://" . $_SERVER['HTTP_HOST'] . $_SESSION['loginTarget']);
 					exit;
 				}
 			}
