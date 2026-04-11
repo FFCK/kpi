@@ -441,6 +441,12 @@ function utyTimeInterval($time, $interval)
 	return $time;
 }
 
+// utyGetScheme - detect HTTP or HTTPS (supports reverse proxy)
+function utyGetScheme()
+{
+	return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ? 'https' : 'http';
+}
+
 // utyGetSession
 function utyGetSession($param, $default = '')
 {

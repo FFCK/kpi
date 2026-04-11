@@ -2782,7 +2782,7 @@ class GestionOperations extends MyPageSecure
 
 			// Pour PurgeCache, CopyCompetitions et FusionAutomatique, on ne redirige pas car on affiche les résultats via $arrayinfo
 			if ($alertMessage == '' && $Cmd != 'PurgeCache' && $Cmd != 'FusionAutomatiqueLicenciesNonFederaux' && $Cmd != 'CopyCompetitions') {
-				header("Location: http://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
+				header("Location: " . utyGetScheme() . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
 				exit;
 			}
 		}
