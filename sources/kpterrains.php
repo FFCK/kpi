@@ -109,9 +109,9 @@ class Matchs extends MyPage
         }
 
         if($codeCompet == '*' || count($arrayNavGroup) == 1) {
-            $codeCompet2 = $arrayNavGroup[0]['Code'];
+            $codeCompet2 = $arrayNavGroup[0]['Code'] ?? '';
             if(count($arrayNavGroup) == 1) {
-                $codeCompet = $arrayNavGroup[0]['Code'];
+                $codeCompet = $arrayNavGroup[0]['Code'] ?? '';
                 $_SESSION['idSelCompet'] = $codeCompet;
                 $this->m_tpl->assign('codeCompet', $codeCompet);
             }
@@ -157,6 +157,7 @@ class Matchs extends MyPage
             $result->execute(array_merge([$codeSaison], $arrayCompets));
         }
         $nbCompet = $result->rowCount();
+        $listCompet = [];
         while ($row = $result->fetch()) {
             array_push($arrayCompetition, $row);
             if($idSelCompet == '*' || $idSelCompet == $row["Code"]) {
@@ -167,7 +168,7 @@ class Matchs extends MyPage
         $this->m_tpl->assign('nbCompet', $nbCompet);
         // Chargement des Compétitions du groupe
         $arrayCompetitionDuGroupe = array();
-        
+
         if (!$listCompet) {
             $listCompet = ['0'];
         }

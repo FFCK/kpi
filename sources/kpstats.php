@@ -38,11 +38,11 @@ class Stats extends MyPage
         $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
         $this->m_tpl->assign('navGroup', 1);
 
-        $group = utyGetGet('Group', $arrayNavGroup[0]['Code_ref']);
+        $group = utyGetGet('Group', $arrayNavGroup[0]['Code_ref'] ?? '');
 		$this->m_tpl->assign('group', $group);
-        
+
 		if ($event > 0 && $codeCompet == '*') {
-            $codeCompet = $arrayNavGroup[0]['Code'];
+            $codeCompet = $arrayNavGroup[0]['Code'] ?? '';
             $_SESSION['codeCompet'] = $codeCompet;
             $this->m_tpl->assign('codeCompet', $codeCompet);
         }
