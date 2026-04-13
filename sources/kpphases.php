@@ -38,11 +38,11 @@ class Phases extends MyPage
         $this->m_tpl->assign('arrayNavGroup', $arrayNavGroup);
         $this->m_tpl->assign('navGroup', 1);
 
-        $group = utyGetGet('Group', $arrayNavGroup[0]['Code_ref']);
+        $group = utyGetGet('Group', $arrayNavGroup[0]['Code_ref'] ?? '');
 		$this->m_tpl->assign('group', $group);
 
 		if ($codeCompet == '*') {
-            $codeCompet = $arrayNavGroup[0]['Code'];
+            $codeCompet = $arrayNavGroup[0]['Code'] ?? '';
             $_SESSION['codeCompet'] = $codeCompet;
             $this->m_tpl->assign('codeCompet', $codeCompet);
         }
@@ -68,6 +68,10 @@ class Phases extends MyPage
 		$arrayEquipe_publi = array();
         $arrayJournee = array();
         $arrayMatchs = array();
+        $arrayJournees = array();
+        $arrayListJournees = array();
+        $arrayEquipes = array();
+        $etapes = 0;
 
 		// Par défaut type Championnat et compétition non internationale...
 		$typeClt = $recordCompetition['Code_typeclt'];
@@ -109,10 +113,6 @@ class Phases extends MyPage
             $this->m_tpl->assign('arrayEquipe_publi', $arrayEquipe_publi);
 
 			// Journées
-            $etapes = 0;
-            $arrayJournees = array();
-            $arrayListJournees = array();
-            $arrayEquipes = array();
             if ($event > 0) {
                 $sql = "SELECT j.Id Id_journee, j.Phase, j.Etape, j.Nbequipes, j.Niveau, 
                     j.Type, j.Date_debut, j.Date_fin, j.Lieu, j.Departement 

@@ -249,7 +249,7 @@ class PdfListeMatchs extends MyPage
             $phase_match = $row['Phase'];
             if ($row['Libelle'] != '') {
                 $libelle = explode(']', $row['Libelle']);
-                if ($libelle[1] != '') {
+                if (isset($libelle[1]) && $libelle[1] != '') {
                     $phase_match .= "  |  " . $libelle[1];
                 }
                 //Codes équipes	
