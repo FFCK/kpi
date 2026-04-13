@@ -32,7 +32,10 @@ function debug($variable, $die = false)
  */
 function redimImage($image, $largeurPage, $marge, $newHauteur, $position = 'C')
 {
-	$size = getimagesize($image);
+	$size = @getimagesize($image);
+	if (!$size || $size[1] === 0) {
+		return ['image' => $image, 'positionX' => $marge, 'newHauteur' => $newHauteur];
+	}
 	$largeurActuelle = $size[0];
 	$hauteurActuelle = $size[1];
 	$ratio = $newHauteur / $hauteurActuelle;
