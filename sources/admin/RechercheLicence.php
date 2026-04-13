@@ -333,7 +333,7 @@ class RechercheLicence extends MyPageSecure
 			$result = $myBdd->pdo->prepare($sql);
 			$result->execute(array($signature));
 			
-			header("Location: http://".$_SERVER['HTTP_HOST'].$parentUrl);	
+			header("Location: " . utyGetScheme() . "://" . $_SERVER['HTTP_HOST'].$parentUrl);	
 			exit;	
 		}
 	}
@@ -358,7 +358,7 @@ class RechercheLicence extends MyPageSecure
 			if ($Cmd == 'Find')
 				$this->Find();
 				
-			header("Location: http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);	
+			header("Location: " . utyGetScheme() . "://" . $_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);	
 			exit;	
 		}
 

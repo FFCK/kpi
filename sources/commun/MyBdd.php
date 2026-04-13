@@ -1654,7 +1654,7 @@ class MyBdd
 			'Kpi_ffck_actif' => '', 'Bandeau_actif' => '', 'Logo_actif' => '',
 			'Titre_actif' => '', 'Soustitre' => '', 'Soustitre2' => '',
 			'Sponsor_actif' => '', 'Publication' => '', 'Verrou' => '',
-			'commentairesCompet' => '',
+			'commentairesCompet' => '', 'Statut' => '',
 			'Calendar' => null
 		);
 	}

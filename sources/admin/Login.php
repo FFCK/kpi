@@ -160,7 +160,7 @@ class Login extends MyPage
 
 					// echo 'OK: ' . $_SERVER['HTTP_HOST'] . $_SESSION['loginTarget'] . '<br>';
 					$myBdd->utyJournal('Connexion', '', '', null, null, null, $row['Prenom'] . ' ' . $row['Nom']);
-					header("Location: http://" . $_SERVER['HTTP_HOST'] . $_SESSION['loginTarget']);
+					header("Location: " . utyGetScheme() . "://" . $_SERVER['HTTP_HOST'] . $_SESSION['loginTarget']);
 					exit;
 				}
 			}

@@ -105,7 +105,8 @@
             </div>
         </article>
     {else}
-        <article class="col-md-6 padTopBottom">        
+        <article class="col-md-6 padTopBottom">
+            {if isset($journee[0])}
             <div class="page-header">
                 <h3 class="text-info" id="journee">{$journee[0].Soustitre2}</h3>
             </div>
@@ -133,13 +134,14 @@
                 </div>
                 <div class="form-group">
                     <label class="col-sm-4">{#Delegue#}</label>
-                    <div class="col-sm-8" id="delegue">{if isset($journee[0])}{$journee[0].Delegue}{/if}</div>
+                    <div class="col-sm-8" id="delegue">{$journee[0].Delegue}</div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-4">{#Chef_arbitres#}</label>
-                    <div class="col-sm-8" id="chefarbitre">{if isset($journee[0])}{$journee[0].ChefArbitre}{/if}</div>
+                    <div class="col-sm-8" id="chefarbitre">{$journee[0].ChefArbitre}</div>
                 </div>
             </div>
+            {/if}
             <div class="form-horizontal">
                 <div class="page-header">
                     <h3 class="text-info">{#Autres_journees#}</h3>
@@ -162,7 +164,7 @@
 
                 {section name=i loop=$arrayListJournees}
                     <p class="col-sm-12">
-                        <a class="btn {if $arrayListJournees[i].Id_journee == $journee[0].Id_journee}btn-primary{else}btn-default{/if}" 
+                        <a class="btn {if isset($journee[0]) && $arrayListJournees[i].Id_journee == $journee[0].Id_journee}btn-primary{else}btn-default{/if}"
                            href="?Saison={$arrayListJournees[i].Code_saison}&event={$event}&Group={$arrayListJournees[i].Code_ref}&Compet={$arrayListJournees[i].Code_competition}&typ={$arrayListJournees[i].Code_typeclt}&J={$arrayListJournees[i].Id_journee}&Css={$Css}" role="button">
                             {$arrayListJournees[i].Date_debut|date_format:'%d/%m/%Y'} - {$arrayListJournees[i].Date_fin|date_format:'%d/%m/%Y'} à {$arrayListJournees[i].Lieu} ({$arrayListJournees[i].Departement})
                         </a>

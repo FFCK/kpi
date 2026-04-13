@@ -128,7 +128,7 @@ class GestionParamUser extends MyPageSecure
 			if ($Cmd == 'UpdatePassword')
 				$this->UpdatePassword();
 					
-			header("Location: http://".$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);	
+			header("Location: " . utyGetScheme() . "://" . $_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);	
 			exit;	
 		}
 

@@ -32,7 +32,10 @@ function debug($variable, $die = false)
  */
 function redimImage($image, $largeurPage, $marge, $newHauteur, $position = 'C')
 {
-	$size = getimagesize($image);
+	$size = @getimagesize($image);
+	if (!$size || $size[1] === 0) {
+		return ['image' => $image, 'positionX' => $marge, 'newHauteur' => $newHauteur];
+	}
 	$largeurActuelle = $size[0];
 	$hauteurActuelle = $size[1];
 	$ratio = $newHauteur / $hauteurActuelle;
@@ -439,6 +442,12 @@ function utyTimeInterval($time, $interval)
 	}
 
 	return $time;
+}
+
+// utyGetScheme - detect HTTP or HTTPS (supports reverse proxy)
+function utyGetScheme()
+{
+	return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ? 'https' : 'http';
 }
 
 // utyGetSession

@@ -240,7 +240,7 @@ class GestionGroupe extends MyPageSecure
 			if ($Cmd == 'UpOrder') ($_SESSION['Profile'] <= 2) ? $this->UpOrder($idGroupe, $ParamCmd) : $alertMessage = 'Vous n avez pas les droits pour cette action.';
 
 			if ($alertMessage == '') {
-				header("Location: http://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
+				header("Location: " . utyGetScheme() . "://" . $_SERVER['HTTP_HOST'] . $_SERVER['PHP_SELF']);
 				exit;
 			}
 		}
