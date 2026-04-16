@@ -409,8 +409,8 @@ class FeuilleMatch extends MyPage
             $result5->execute(array($idMatch));
 
             $j = 0;
-            $scoreMitempsA = 0;
-            $scoreMitempsB = 0;
+            $scoreMitempsA = '';
+            $scoreMitempsB = '';
             $nblignes = 0;
 
             while ($row5 = $result5->fetch()) {
