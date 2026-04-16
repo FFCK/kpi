@@ -76,7 +76,7 @@ class FeuilleMatch extends MyPage
             $matchcourant = $chaqueMatch[$h];
             $sql = "SELECT a.Id, a.Numero_ordre, a.Date_match, a.Heure_match, a.Heure_fin, 
                 a.Libelle Intitule, a.Terrain, a.Secretaire, a.Chronometre, a.Timeshoot, a.Ligne1, a.Ligne2, a.Type, 
-                a.Id_equipeA, a.Id_equipeB, a.Arbitre_principal, a.Arbitre_secondaire, a.ScoreA, 
+                a.Id_equipeA, a.Id_equipeB, a.Arbitre_principal, a.Arbitre_secondaire, a.ScoreA, a.Statut, a.Periode,
                 ce1.Code_club codeclubA, ce1.Libelle LibelleA, ce2.Code_club codeclubB, ce2.Libelle LibelleB, 
                 a.ScoreB, a.ColorA, a.ColorB, a.Commentaires_officiels,
                 ce1.color1 color1A, ce1.color2 color2A, ce1.colortext colortextA, 
@@ -501,10 +501,14 @@ class FeuilleMatch extends MyPage
                 $typeScore = $lang['Final'];
             }
 
-            if (($scoreMitempsA != '' || $typeScore == $lang['Final']) && $scoreMitempsB == '') {
+            $matchStatut = $row['Statut'] ?? 'ATT';
+            $matchPeriode = $row['Periode'] ?? '';
+            $mitempsPassee = ($matchStatut === 'END') || ($matchStatut === 'ON' && $matchPeriode !== 'M1' && $matchPeriode !== '');
+            $hasDetail = count($detail) > 0 || count($detail2) > 0;
+            if (($hasDetail || $mitempsPassee) && ($scoreMitempsA !== '' || $typeScore == $lang['Final']) && $scoreMitempsB == '') {
                 $scoreMitempsB = 0;
             }
-            if (($scoreMitempsB != '' || $typeScore == $lang['Final']) && $scoreMitempsA == '') {
+            if (($hasDetail || $mitempsPassee) && ($scoreMitempsB !== '' || $typeScore == $lang['Final']) && $scoreMitempsA == '') {
                 $scoreMitempsA = 0;
             }
 
