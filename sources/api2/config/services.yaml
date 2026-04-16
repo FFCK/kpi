@@ -23,3 +23,14 @@ services:
     App\Controller\AdminTvController:
         arguments:
             $liveDocumentRoot: '%live_document_root%'
+
+    App\Service\NotificationService:
+        arguments:
+            $mailFrom: '%env(MAILER_FROM)%'
+            $mailAdminTo: '%env(MAILER_ADMIN_TO)%'
+
+    App\Service\PceImportService:
+        arguments:
+            $ffckPceUrl: '%env(FFCK_PCE_URL)%'
+            $ffckPceUser: '%env(FFCK_PCE_USER)%'
+            $ffckPcePwd: '%env(FFCK_PCE_PWD)%'

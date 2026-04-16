@@ -127,7 +127,7 @@ class FeuilleCltNiveau extends MyPage
             WHERE Code_compet = ?
             AND Code_saison = ? 
             AND CltNiveau_publi != 0 
-            ORDER BY Libelle ";
+            ORDER BY CltNiveau_publi";
         $result = $myBdd->pdo->prepare($sql);
         $result->execute(array($codeCompet, $codeSaison));
 

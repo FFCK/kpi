@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Service\CompetitionLockService;
 use App\Service\EventExportImportService;
 use App\Service\ImageOperationsService;
+use App\Service\NotificationService;
+use App\Service\PceImportService;
 use App\Service\PlayerMergeService;
 use App\Service\SeasonOperationsService;
 use App\Service\TeamOperationsService;
@@ -37,7 +40,10 @@ class AdminOperationsController extends AbstractController
         private readonly ImageOperationsService $imageService,
         private readonly PlayerMergeService $playerService,
         private readonly TeamOperationsService $teamService,
-        private readonly EventExportImportService $eventService
+        private readonly EventExportImportService $eventService,
+        private readonly PceImportService $pceImportService,
+        private readonly CompetitionLockService $competitionLockService,
+        private readonly NotificationService $notificationService
     ) {
     }
 
@@ -560,20 +566,77 @@ class AdminOperationsController extends AbstractController
     }
 
     /**
-     * Import PCE license file
+     * Import PCE license file from FFCK extranet
      */
     #[Route('/licenses/import-pce', name: 'admin_operations_licenses_import_pce', methods: ['POST'])]
-    public function importPce(Request $request): JsonResponse
+    public function importPce(): JsonResponse
     {
-        $file = $request->files->get('licenseFile');
+        try {
+            $result = $this->pceImportService->importPce();
 
-        if (!$file) {
-            return $this->json(['message' => 'No file uploaded'], Response::HTTP_BAD_REQUEST);
+            $msg = sprintf(
+                "%s - PCE Import: %d licenciés (%d req.), %d arbitres (%d req.), %d surclassements (%d req.) - %ds",
+                date('Y-m-d H:i'),
+                $result['nbLicencies'], $result['nbReqLicencies'],
+                $result['nbArbitres'], $result['nbReqArbitres'],
+                $result['nbSurclassements'], $result['nbReqSurclassements'],
+                $result['totalTime']
+            );
+            $this->notificationService->sendAdminNotification('[KPI-CRON] Import PCE', $msg);
+
+            $this->logActionForSeason('Import PCE', $result['season'], sprintf(
+                '%d lic, %d arb, %d surc',
+                $result['nbLicencies'], $result['nbArbitres'], $result['nbSurclassements']
+            ));
+
+            return $this->json($result);
+        } catch (\Throwable $e) {
+            $this->notificationService->sendAdminNotification(
+                '[KPI-CRON] Import PCE - ERREUR',
+                date('Y-m-d H:i') . ' - Erreur import PCE: ' . $e->getMessage()
+            );
+
+            return $this->json([
+                'message' => 'Erreur import PCE: ' . $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
 
-        // This would require additional implementation similar to the PHP version
-        // For now, return a placeholder response
-        return $this->json(['message' => 'PCE import not yet implemented'], Response::HTTP_NOT_IMPLEMENTED);
+    /**
+     * Update competition locks (lock upcoming, unlock recent)
+     */
+    #[Route('/competitions/update-locks', name: 'admin_operations_competitions_update_locks', methods: ['POST'])]
+    public function updateCompetitionLocks(): JsonResponse
+    {
+        try {
+            $result = $this->competitionLockService->updateCompetitionLocks();
+
+            if (!empty($result['locked']) || !empty($result['unlocked'])) {
+                $msg = sprintf(
+                    "%s - Verrou compétitions : %s - Déverrou compétitions : %s",
+                    date('Y-m-d H:i'),
+                    implode(', ', $result['locked']) ?: 'aucune',
+                    implode(', ', $result['unlocked']) ?: 'aucune'
+                );
+                $this->notificationService->sendAdminNotification('[KPI-CRON] Verrou présences', $msg);
+            }
+
+            $this->logActionForSeason('Update Locks', null, sprintf(
+                'Verrouillées: %d, Déverrouillées: %d',
+                count($result['locked']), count($result['unlocked'])
+            ));
+
+            return $this->json($result);
+        } catch (\Throwable $e) {
+            $this->notificationService->sendAdminNotification(
+                '[KPI-CRON] Verrou présences - ERREUR',
+                date('Y-m-d H:i') . ' - Erreur verrou: ' . $e->getMessage()
+            );
+
+            return $this->json([
+                'message' => 'Erreur verrouillage: ' . $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     // ==================== CACHE ====================
