@@ -25,7 +25,11 @@
         "symfony/runtime": "7.4.*",
         "symfony/security-bundle": "7.4.*",
         "symfony/twig-bundle": "7.4.*",
-        "symfony/yaml": "7.4.*"
+        "symfony/yaml": "7.4.*",
+        "doctrine/dbal": "^3.10.4",
+        "doctrine/doctrine-bundle": "^2.18.2",
+        "doctrine/doctrine-migrations-bundle": "^3.7",
+        "doctrine/orm": "^3.6"
     },
     "config": {
         "allow-plugins": {
@@ -78,10 +82,6 @@
         }
     },
     "require-dev": {
-        "doctrine/dbal": "^3.10.4",
-        "doctrine/doctrine-bundle": "^2.18.2",
-        "doctrine/doctrine-migrations-bundle": "^3.7",
-        "doctrine/orm": "^3.6",
         "symfony/maker-bundle": "^1.65.1"
     }
 }
