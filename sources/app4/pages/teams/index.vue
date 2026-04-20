@@ -774,6 +774,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
     <AdminPageHeader
       :title="t('teams_page.title')"
       :competition-filtered-codes="workContext.pageFilteredCompetitionCodes"
+      :has-notices="!!competitionInfo?.verrou"
       @competition-change="onCompetitionChange"
     >
       <template #badges>
@@ -835,25 +836,30 @@ const getLogoUrl = (team: CompetitionTeam) => {
       <!-- Toolbar -->
       <div class="mb-4 bg-white rounded-lg shadow p-4">
         <div class="flex flex-wrap items-center gap-2">
-          <!-- Add button -->
-          <button
-            v-if="canAddDelete"
-            class="px-3 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-sm flex items-center gap-1"
-            @click="openAddModal"
-          >
-            <UIcon name="heroicons:plus" class="w-6 h-6" />
-            {{ t('teams_page.add') }}
-          </button>
+          <!-- Selection actions (left) -->
+          <template v-if="canAddDelete && teams.length > 0">
+            <!-- Select all / Deselect all -->
+            <button
+              class="px-3 py-2 border border-header-300 text-header-700 rounded-lg hover:bg-header-50 transition-colors text-sm"
+              @click="selectAll = !selectAll; toggleSelectAll()"
+            >
+              {{ selectAll ? t('teams_page.deselect_all') : t('teams_page.select_all') }}
+            </button>
 
-          <!-- Duplicate button -->
-          <button
-            v-if="canAddDelete"
-            class="px-3 py-2 bg-header-600 text-white rounded-lg hover:bg-header-700 transition-colors text-sm flex items-center gap-1"
-            @click="openDuplicateModal"
-          >
-            <UIcon name="heroicons:document-duplicate" class="w-6 h-6" />
-            {{ t('teams_page.duplicate') }}
-          </button>
+            <!-- Bulk delete -->
+            <button
+              v-if="selectedIds.length > 0"
+              class="px-3 py-2 bg-danger-600 text-white rounded-lg hover:bg-danger-700 transition-colors text-sm flex items-center gap-1"
+              @click="openBulkDeleteModal"
+            >
+              <UIcon name="heroicons:trash-solid" class="w-6 h-6" />
+              {{ t('teams_page.delete_selected') }} ({{ selectedIds.length }})
+            </button>
+          </template>
+
+          <div class="flex-1" />
+
+          <!-- Common actions (right) -->
 
           <!-- Init starters -->
           <button
@@ -881,34 +887,28 @@ const getLogoUrl = (team: CompetitionTeam) => {
           >
             <UIcon name="heroicons:document-text" class="w-6 h-6" />
             {{ t('teams_page.global_pdf') }}
+            <UIcon name="heroicons:chevron-down" class="w-4 h-4" />
           </button>
 
-          <div class="flex-1" />
+          <!-- Duplicate button -->
+          <button
+            v-if="canAddDelete"
+            class="px-3 py-2 bg-header-600 text-white rounded-lg hover:bg-header-700 transition-colors text-sm flex items-center gap-1"
+            @click="openDuplicateModal"
+          >
+            <UIcon name="heroicons:document-duplicate" class="w-6 h-6" />
+            {{ t('teams_page.duplicate') }}
+          </button>
 
-          <!-- Select all / Deselect all -->
-          <template v-if="canAddDelete && teams.length > 0">
-            <button
-              class="px-3 py-2 border border-header-300 text-header-700 rounded-lg hover:bg-header-50 transition-colors text-sm"
-              @click="selectAll = !selectAll; toggleSelectAll()"
-            >
-              {{ selectAll ? t('teams_page.deselect_all') : t('teams_page.select_all') }}
-            </button>
-
-            <!-- Bulk delete -->
-            <button
-              v-if="selectedIds.length > 0"
-              class="px-3 py-2 bg-danger-600 text-white rounded-lg hover:bg-danger-700 transition-colors text-sm flex items-center gap-1"
-              @click="openBulkDeleteModal"
-            >
-              <UIcon name="heroicons:trash-solid" class="w-6 h-6" />
-              {{ t('teams_page.delete_selected') }} ({{ selectedIds.length }})
-            </button>
-          </template>
-
-          <!-- Total count -->
-          <span class="text-sm text-header-500">
-            {{ t('teams_page.total', { count: total }) }}
-          </span>
+          <!-- Add button -->
+          <button
+            v-if="canAddDelete"
+            class="px-3 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-sm flex items-center gap-1"
+            @click="openAddModal"
+          >
+            <UIcon name="heroicons:plus" class="w-6 h-6" />
+            {{ t('teams_page.add') }}
+          </button>
         </div>
       </div>
 

@@ -395,6 +395,7 @@ const pdfLinks = computed(() => {
     <AdminPageHeader
       :title="t('presence.title_team')"
       :show-filters="false"
+      :has-notices="!!presenceStore.isLocked"
     >
       <template #badges>
         <div v-if="presenceStore.team" class="flex flex-wrap items-center gap-2 text-sm">

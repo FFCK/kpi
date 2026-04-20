@@ -600,6 +600,7 @@ const editValueForField = (field: string, value: number): string => {
     <AdminPageHeader
       :title="t('rankings.title')"
       :competition-filtered-codes="workContext.pageFilteredCompetitionCodes"
+      :has-notices="!!(competitionInfo && competitionInfo.statut !== 'ON')"
       @competition-change="onCompetitionChange"
     >
       <template #filters>
