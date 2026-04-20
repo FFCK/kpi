@@ -966,7 +966,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                     {{ t('teams_page.columns.pdf') }}
                   </th>                </tr>
               </thead>
-              <tbody class="divide-y divide-header-200">
+              <tbody class="divide-y divide-header-200 align-middle">
                 <tr
                   v-for="team in group.teams"
                   :key="team.id"
@@ -1032,21 +1032,22 @@ const getLogoUrl = (team: CompetitionTeam) => {
 
                   <!-- Logo + Colors -->
                   <td
-                    class="px-3 py-2 text-center"
+                    class="px-3 py-0 text-center"
                     :class="canEditProperties ? 'cursor-pointer hover:bg-primary-50' : ''"
                     @click="canEditProperties && openEditModal(team)"
                   >
-                    <div class="flex items-center justify-center">
+                    <div class="flex items-center justify-center gap-2">
                       <img
                         v-if="getLogoUrl(team)"
                         :src="getLogoUrl(team)!"
                         :alt="team.libelle"
-                        class="w-20 h-10 object-contain pe-2"
+                        class="w-20 h-10 object-contain shrink-0"
                         @error="($event.target as HTMLImageElement).style.display = 'none'"
                       >
+                      <span v-else class="w-20 h-10 shrink-0" />
                       <span
                         v-if="team.color1 || team.color2"
-                        class="inline-flex items-center justify-center w-8 h-8 rounded-sm aspect-square font-bold"
+                        class="inline-flex items-center justify-center w-8 h-8 rounded-sm aspect-square font-bold shrink-0"
                         :style="{
                           backgroundColor: team.color1 || '#000',
                           borderColor: team.color2 || 'transparent',
@@ -1058,7 +1059,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                       >
                         1
                       </span>
-                      <span v-if="!getLogoUrl(team) && !team.color1 && !team.color2" class="text-header-300 text-xs">-</span>
+                      <span v-else class="w-8 h-8 shrink-0" />
                     </div>
                   </td>
 
@@ -1107,7 +1108,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                         <UIcon name="heroicons:document-text" class="w-6 h-6" />
                       </button>
 
-                      <!-- Delete -->
+                      <!-- Delete or placeholder to keep PDF centered -->
                       <button
                         v-if="canAddDelete && team.nbMatchs === 0"
                         class="p-1 text-danger-600 hover:bg-danger-50 rounded"
@@ -1116,6 +1117,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                       >
                         <UIcon name="heroicons:trash-solid" class="w-6 h-6" />
                       </button>
+                      <span v-else-if="canAddDelete" class="inline-block w-8 h-8" />
                     </div>
                   </td>
                 </tr>
