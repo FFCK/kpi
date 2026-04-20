@@ -157,7 +157,7 @@ services:
         labels:
             - "traefik.enable=true"
             # Route /admin2/* to this nginx container
-            - "traefik.http.routers.nginx_app4.rule=Host(`${KPI_DOMAIN_NAME}`) && PathPrefix(`/admin2`)"
+            - "traefik.http.routers.nginx_app4.rule=(Host(`${KPI_DOMAIN_NAME}`) || Host(`www.${KPI_DOMAIN_NAME}`)) && PathPrefix(`/admin2`)"
             - "traefik.http.routers.nginx_app4.entrypoints=websecure"
             - "traefik.http.routers.nginx_app4.tls=true"
             - "traefik.http.routers.nginx_app4.tls.certresolver=myresolver"
