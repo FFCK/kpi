@@ -86,7 +86,10 @@ class FeuillePresencePhoto extends MyPage
               $capitaine = '-';
             }
             if ($capitaine === 'E') {
-              $capitaine = 'S';
+              $capitaine = 'Staff';
+            }
+            if ($capitaine === 'A') {
+              $capitaine = 'Arb.';
             }
 
             if (is_null($row2['arbitre'])) {
@@ -204,7 +207,7 @@ class FeuillePresencePhoto extends MyPage
         $pdf->Cell(24, $h, '', 'B', 0, 'C');
       } else {
         $pdf->Cell(16, $h, '#', 'B', 0, 'C');
-        $pdf->Cell(8, $h, 'Cap', 'B', 0, 'C');
+        $pdf->Cell(8, $h, 'Status', 'B', 0, 'C');
       }
       $pdf->Cell(60, $h, 'Family name', 'B', 0, 'C');
       $pdf->Cell(60, $h, 'Given name', 'B', 0, 'C');

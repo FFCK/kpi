@@ -92,12 +92,12 @@ accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mai
 		- ✅ Fiche Visa (`FeuillePresenceVisa.php`) et Fiche Contrôle (`FeuilleControle.php`) ajoutées en global et par équipe → **RÉSOLU**
 
 - Page Equipes ( Feuilles de présence)
-	* intitulé du bandeau des éditions PDF à revoir ? "Copier depuis" à modifier => "Editer la feuille de présence" ?
+	* ✅ intitulé du bandeau des éditions PDF à revoir ? "Copier depuis" à modifier => "Editer la feuille de présence" ? **RÉSOLU** Il ne s'agissait pas d'un intitulé mais d'un bouton qui a été déplacé à droite de la barre d'outils.
 	* sur le bandeau des éditions PDF : mêmes remarques qu'à la rubrique "page documents" concernant l'horodatage des feuilles de présence pour les 4 versions proposées
-	* Statut des inscrits : changer l'intitulé de colonne "CAP" par "Statut" ? et avoir un libellé plus explicite dans le menu déroulant sur chaque ligne (Joueur / Capitaine / Arbitre non joueur / Entraîneur / Inactif) (1 seule lettre n'est pas le plus clair, surtout confusion "Coach" et "Capitaine".
-	* Ergonomie/visuel : pour les joueurs inactifs, griser légèrement la ligne en plus du texte?
-	* Pour les novices : garder une "notice" en bas de page précisant que seuls les joueurs, capitaine et entraîneurs sont inscrits sur les feuilles de matchs de la prochaine journée.
-	* Garder un extrait du log en bas de page avec les dernières modifications effectuées (a minima qui et quand) ? c'est une info utile pour les RC, et si possible tracer également les simples changements de statut (inactif/actif en particulier, le principal étant de savoir quand et par qui ont eu lieu les dernières modifs sur la feuille de présence)
+	* ✅ Statut des inscrits : changer l'intitulé de colonne "CAP" par "Statut" ? et avoir un libellé plus explicite dans le menu déroulant sur chaque ligne (Joueur / Capitaine / Arbitre non joueur / Entraîneur / Inactif) (1 seule lettre n'est pas le plus clair, surtout confusion "Coach" et "Capitaine". — **RÉSOLU** (colonne renommée "Statut", libellés complets dans les menus déroulants et les entêtes de section ; "Entraîneur" renommé "Staff" FR+EN ; lettre A remplacée par "Arb."/"Ref." dans les PDF legacy ; PDF Contrôle ajouté dans le dropdown)
+	* ✅ Ergonomie/visuel : pour les joueurs inactifs, griser légèrement la ligne en plus du texte? — **RÉSOLU** (opacité réduite + italique sur les lignes inactifs)
+	* ✅ Pour les novices : garder une "notice" en bas de page précisant que seuls les joueurs, capitaine et entraîneurs sont inscrits sur les feuilles de matchs de la prochaine journée. — **RÉSOLU** (notice ajoutée sous le tableau, reprenant le texte du legacy : statut Inactif, règles staff/arbitres/statistiques/feuilles de match)
+	* ✅ Garder un extrait du log en bas de page avec les dernières modifications effectuées (a minima qui et quand) ? — **RÉSOLU** (horodatage de la dernière addition/suppression affiché sous la notice : "Dernière modification JJ/MM/AAAA HH:mm:ss par utilisateur" ; les logs étaient silencieusement ignorés à cause d'un mauvais schéma de colonnes dans `AdminLoggableTrait`, corrigé)
 	* Ajout de joueur : en mode ajout de joueur existant, recherche impossible, génère une erreur : "Accès refusé : vous n'avez pas les droits nécessaires" (idem autres recherches)
 
 - Page Journées/Phases

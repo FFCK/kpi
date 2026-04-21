@@ -1431,7 +1431,7 @@ class AdminPresenceController extends AbstractController
                 LIMIT 1";
 
         $stmt = $this->connection->prepare($sql);
-        $result = $stmt->executeQuery(["%{$table}%{$id}%"]);
+        $result = $stmt->executeQuery(["%Equipe {$id}%"]);
         $row = $result->fetchAssociative();
 
         if (!$row) {

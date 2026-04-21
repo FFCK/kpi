@@ -100,6 +100,12 @@ class FeuillePresence extends MyPage
                         if (strlen($capitaine) == 0) {
                             $capitaine = '-';
                         }
+                        if ($capitaine === 'E') {
+                            $capitaine = 'Staff';
+                        }
+                        if ($capitaine === 'A') {
+                            $capitaine = 'Arb.';
+                        }
 
                         if (is_null($row2['arbitre'])) {
                             $row2['arbitre'] = '';
@@ -202,7 +208,7 @@ class FeuillePresence extends MyPage
             $pdf->SetFont('Arial', 'BI', 10);
             $pdf->Cell(25, 9, '', '', 0, 'C');
             $pdf->Cell(16, 9, 'Num', 'B', 0, 'C');
-            $pdf->Cell(8, 9, 'Cap', 'B', 0, 'C');
+            $pdf->Cell(8, 9, 'Statut', 'B', 0, 'C');
             $pdf->Cell(25, 9, 'Licence', 'B', 0, 'C');
             $pdf->Cell(45, 9, 'Nom', 'B', 0, 'C');
             $pdf->Cell(45, 9, 'Prenom', 'B', 0, 'C');
