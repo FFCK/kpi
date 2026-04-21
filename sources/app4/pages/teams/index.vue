@@ -427,13 +427,22 @@ const searchClubs = () => {
     }
     clubSearchLoading.value = true
     try {
-      clubSearchResults.value = await api.get<Club[]>('/admin/clubs/search', { q: clubSearchQuery.value })
+      const params: Record<string, string> = { q: clubSearchQuery.value }
+      if (selectedCR.value) params.cr = selectedCR.value
+      if (selectedCD.value) params.cd = selectedCD.value
+      clubSearchResults.value = await api.get<Club[]>('/admin/clubs/search', params)
     } catch {
       clubSearchResults.value = []
     } finally {
       clubSearchLoading.value = false
     }
   }, 300)
+}
+
+const clearClubSearch = () => {
+  clubSearchQuery.value = ''
+  clubSearchResults.value = []
+  addFormData.value.codeClub = ''
 }
 
 const selectClub = (club: Club) => {
@@ -1397,9 +1406,17 @@ const getLogoUrl = (team: CompetitionTeam) => {
                   v-model="clubSearchQuery"
                   type="text"
                   :placeholder="t('teams_page.add_modal.search_club')"
-                  class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  class="w-full px-3 py-2 pr-8 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   @input="searchClubs"
                 >
+                <button
+                  v-if="clubSearchQuery"
+                  type="button"
+                  class="absolute right-2 top-1/2 -translate-y-1/2 text-header-400 hover:text-header-600"
+                  @click="clearClubSearch"
+                >
+                  <UIcon name="heroicons:x-mark" class="w-4 h-4" />
+                </button>
                 <div
                   v-if="clubSearchResults.length > 0"
                   class="absolute z-10 w-full mt-1 bg-white border border-header-300 rounded-lg shadow-lg max-h-48 overflow-y-auto"

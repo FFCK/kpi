@@ -211,20 +211,33 @@ class AdminTeamsController extends AbstractController
         }
 
         $q = trim($request->query->get('q', ''));
+        $cr = trim($request->query->get('cr', ''));
+        $cd = trim($request->query->get('cd', ''));
         $limit = min(50, max(1, (int) $request->query->get('limit', 20)));
 
         if (strlen($q) < 2) {
             return $this->json([]);
         }
 
+        $params = ["%$q%", "%$q%"];
+        $where = 'WHERE (Libelle LIKE ? OR Code LIKE ?)';
+
+        if ($cd !== '') {
+            $where .= ' AND Code_comite_dep = ?';
+            $params[] = $cd;
+        } elseif ($cr !== '') {
+            $where .= ' AND Code_comite_dep IN (SELECT Code FROM kp_cd WHERE Code_comite_reg = ?)';
+            $params[] = $cr;
+        }
+
         $sql = "SELECT Code, Libelle, Code_comite_dep
                 FROM kp_club
-                WHERE Libelle LIKE ? OR Code LIKE ?
+                $where
                 ORDER BY Libelle
                 LIMIT " . (int) $limit;
 
         $stmt = $this->connection->prepare($sql);
-        $result = $stmt->executeQuery(["%$q%", "%$q%"]);
+        $result = $stmt->executeQuery($params);
         $rows = $result->fetchAllAssociative();
 
         $clubs = array_map(function ($row) {
