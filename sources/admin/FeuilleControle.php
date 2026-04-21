@@ -15,7 +15,9 @@ class FeuilleControle extends MyPage
         $myBdd = new MyBdd();
 
         $codeCompet = utyGetSession('codeCompet');
+        $codeCompet = utyGetGet('compet', $codeCompet); // App4 uses 'compet'
         $codeSaison = $codeCompet === 'POOL' ? 1000 : $myBdd->GetActiveSaison();
+        $codeSaison = utyGetGet('season', $codeSaison); // App4 uses 'season'
         $equipe = utyGetGet('equipe', '%');
 
         // Chargement des équipes ...

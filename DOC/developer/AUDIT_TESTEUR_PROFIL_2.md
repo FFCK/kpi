@@ -85,10 +85,11 @@ accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mai
 	* ⚠️ ajout d'équipe : en mode "crétion manuelle"  : option comité régional / comité départemental : la liste des CDCK est en doublon et 1/2 ne donne pas accès à la liste des clubs du département → **PARTIELLEMENT RÉSOLU** (la recherche libre de club tient maintenant compte des filtres CR/CD sélectionnés via les paramètres `cr` et `cd` sur `/admin/clubs/search` ; la question de la renumérotation reste ouverte, cf. ligne 26)
 	* ⚠️ ajout d'équipe : en mode "crétion manuelle"  : option comité régional / comité départemental : comment rattacher une équipe à un CD ou un CR ? (option pas trouvée, dans la version actuelle de KPi on retrouve la structure "parente" dans la liste du sous niveau pour faire celà. → **PARTIELLEMENT RÉSOLU** (le champ de recherche dispose maintenant d'un bouton ✕ pour vider la sélection ; le filtre CR/CD restreint les résultats de l'autocomplete ; l'association directe équipe↔CD/CR n'est pas encore implémentée)
 
-	* Editions PDF : 
-		- Poules : PDF vide
-		- Les 4 autres editions PDF proposées dans le bandeau : erreur "aucune compétition sélectionnée"
-		- editions PDF proposées sur chacune des lignes d'équipes : idem  erreur "aucune compétition sélectionnée"
+	* ✅ Editions PDF → **RÉSOLU** (les paramètres `compet` et `season` sont maintenant passés en query string à tous les scripts PDF legacy ; ajout des fiches Visa et Contrôle dans les deux menus dropdown, global et par équipe)
+		- ✅ Poules : PDF vide → **RÉSOLU**
+		- ✅ Les éditions PDF du bandeau global : erreur "aucune compétition sélectionnée" → **RÉSOLU**
+		- ✅ Éditions PDF sur chacune des lignes d'équipes : idem erreur "aucune compétition sélectionnée" → **RÉSOLU**
+		- ✅ Fiche Visa (`FeuillePresenceVisa.php`) et Fiche Contrôle (`FeuilleControle.php`) ajoutées en global et par équipe → **RÉSOLU**
 
 - Page Equipes ( Feuilles de présence)
 	* intitulé du bandeau des éditions PDF à revoir ? "Copier depuis" à modifier => "Editer la feuille de présence" ?

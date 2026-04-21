@@ -714,15 +714,21 @@ const toggleLock = async () => {
 }
 
 // Global PDF URLs (competition-level)
-const globalPdfPoolsUrl = computed(() => `${legacyBase.value}/admin/FeuilleGroups.php`)
-const globalPdfPresenceFrUrl = computed(() => `${legacyBase.value}/admin/FeuillePresence.php`)
-const globalPdfPresenceEnUrl = computed(() => `${legacyBase.value}/admin/FeuillePresenceEN.php`)
-const globalPdfPresenceCatUrl = computed(() => `${legacyBase.value}/admin/FeuillePresenceCat.php`)
-const globalPdfPresencePhotoUrl = computed(() => {
-  if (competitionInfo.value?.code === 'POOL') return `${legacyBase.value}/admin/FeuillePresencePhotoRef.php`
-  return `${legacyBase.value}/admin/FeuillePresencePhoto.php`
+const globalPdfParams = computed(() => {
+  const compet = workContext.pageCompetitionCode || ''
+  const season = workContext.season || ''
+  return `compet=${encodeURIComponent(compet)}&season=${encodeURIComponent(season)}`
 })
-const globalPdfControlUrl = computed(() => `${legacyBase.value}/admin/FeuilleControle.php`)
+const globalPdfPoolsUrl = computed(() => `${legacyBase.value}/admin/FeuilleGroups.php?${globalPdfParams.value}`)
+const globalPdfPresenceFrUrl = computed(() => `${legacyBase.value}/admin/FeuillePresence.php?${globalPdfParams.value}`)
+const globalPdfPresenceEnUrl = computed(() => `${legacyBase.value}/admin/FeuillePresenceEN.php?${globalPdfParams.value}`)
+const globalPdfPresenceCatUrl = computed(() => `${legacyBase.value}/admin/FeuillePresenceCat.php?${globalPdfParams.value}`)
+const globalPdfPresencePhotoUrl = computed(() => {
+  const base = competitionInfo.value?.code === 'POOL' ? 'FeuillePresencePhotoRef' : 'FeuillePresencePhoto'
+  return `${legacyBase.value}/admin/${base}.php?${globalPdfParams.value}`
+})
+const globalPdfVisaUrl = computed(() => `${legacyBase.value}/admin/FeuillePresenceVisa.php?${globalPdfParams.value}`)
+const globalPdfControlUrl = computed(() => `${legacyBase.value}/admin/FeuilleControle.php?${globalPdfParams.value}`)
 
 // Status badge colors
 const getStatusColor = (status: string) => {
@@ -745,16 +751,19 @@ const getLevelColor = (level: string) => {
 
 // Legacy PDF links
 const getPresenceUrl = (team: CompetitionTeam) =>
-  `${legacyBase.value}/admin/FeuillePresence.php?equipe=${team.id}`
+  `${legacyBase.value}/admin/FeuillePresence.php?equipe=${team.id}&${globalPdfParams.value}`
 
 const getPresenceEnUrl = (team: CompetitionTeam) =>
-  `${legacyBase.value}/admin/FeuillePresenceEN.php?equipe=${team.id}`
+  `${legacyBase.value}/admin/FeuillePresenceEN.php?equipe=${team.id}&${globalPdfParams.value}`
 
 const getPresencePhotoUrl = (team: CompetitionTeam) =>
-  `${legacyBase.value}/admin/FeuillePresencePhoto.php?equipe=${team.id}`
+  `${legacyBase.value}/admin/FeuillePresencePhoto.php?equipe=${team.id}&${globalPdfParams.value}`
+
+const getVisaUrl = (team: CompetitionTeam) =>
+  `${legacyBase.value}/admin/FeuillePresenceVisa.php?equipe=${team.id}&${globalPdfParams.value}`
 
 const getControlUrl = (team: CompetitionTeam) =>
-  `${legacyBase.value}/admin/FeuillePresenceVisa.php?equipe=${team.id}`
+  `${legacyBase.value}/admin/FeuilleControle.php?equipe=${team.id}&${globalPdfParams.value}`
 
 // Logo image URL - fallback to club code convention like legacy PHP
 // Logo column should contain relative path within img/ (e.g. "KIP/logo/3512-logo.png" or "Nations/GER.png")
@@ -1291,11 +1300,21 @@ const getLogoUrl = (team: CompetitionTeam) => {
         <a :href="getPresencePhotoUrl({ id: openDropdownId } as CompetitionTeam)" target="_blank" class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50" @click="closePresenceDropdown">
           {{ t('teams_page.presence_sheet_photo') }}
         </a>
+        <div v-if="canEditProperties" class="border-t border-header-100" />
+        <a
+          v-if="canEditProperties"
+          :href="getVisaUrl({ id: openDropdownId } as CompetitionTeam)"
+          target="_blank"
+          class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50"
+          @click="closePresenceDropdown"
+        >
+          {{ t('teams_page.visa_sheet') }}
+        </a>
         <a
           v-if="canEditProperties"
           :href="getControlUrl({ id: openDropdownId } as CompetitionTeam)"
           target="_blank"
-          class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50 border-t border-header-100 rounded-b-lg"
+          class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50 rounded-b-lg"
           @click="closePresenceDropdown"
         >
           {{ t('teams_page.control_sheet') }}
@@ -1325,11 +1344,21 @@ const getLogoUrl = (team: CompetitionTeam) => {
         <a :href="globalPdfPresencePhotoUrl" target="_blank" class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50" @click="globalPdfOpen = false">
           {{ t('teams_page.presence_sheet_photo') }}
         </a>
+        <div v-if="canEditProperties" class="border-t border-header-100" />
+        <a
+          v-if="canEditProperties"
+          :href="globalPdfVisaUrl"
+          target="_blank"
+          class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50"
+          @click="globalPdfOpen = false"
+        >
+          {{ t('teams_page.visa_sheet') }}
+        </a>
         <a
           v-if="canEditProperties"
           :href="globalPdfControlUrl"
           target="_blank"
-          class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50 border-t border-header-100 rounded-b-lg"
+          class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50 rounded-b-lg"
           @click="globalPdfOpen = false"
         >
           {{ t('teams_page.control_sheet') }}
