@@ -52,7 +52,7 @@
     "sass": "^1.49.8",
     "sass-loader": "^10.1.1",
     "style-loader": "^2.0.0",
-    "uuid": "^8.3.2",
+    "uuid": "^14.0.0",
     "vue-cli-plugin-i18n": "~2.1.0",
     "vue-loader-v16": "npm:vue-loader@^16.0.0-alpha.3",
     "websocket": "^1.0.34",
