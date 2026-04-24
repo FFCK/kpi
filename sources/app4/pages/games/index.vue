@@ -1757,7 +1757,7 @@ const statusBtnClass = (game: Game) => {
                 <!-- Provisional score when ON or END -->
                 <div v-if="(g.statut === 'ON' || g.statut === 'END') && (g.scoreDetailA || g.scoreDetailB)" class="text-[9px] text-header-500 leading-tight">
                   {{ g.scoreDetailA || '0' }}-{{ g.scoreDetailB || '0' }}
-                  <span v-if="g.periode">({{ g.periode }})</span>
+                  <span v-if="g.periode && g.statut === 'ON'">({{ g.periode }})</span>
                 </div>
               </td>
 
