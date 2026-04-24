@@ -113,6 +113,27 @@
     "pagination": {
       "showing": "Showing {from} to {to} of {total} events",
       "items_per_page": "Items per page"
+    },
+    "manage_gameday_associations": "Manage gameday associations",
+    "association": {
+      "page_title": "Gameday associations",
+      "back_to_events": "Back to events",
+      "associated_count": "{count} gameday associated | {count} gamedays associated",
+      "filter_season": "Season",
+      "filter_competitions": "Competitions",
+      "filter_state": "State",
+      "filter_state_all": "All",
+      "filter_state_linked": "Linked",
+      "filter_state_unlinked": "Unlinked",
+      "search_placeholder": "Search (Phase, Name, Location, Id)…",
+      "linked_badge": "Linked",
+      "unlinked_badge": "Unlinked",
+      "action_link": "Link",
+      "action_unlink": "Remove link",
+      "linked": "Gameday linked to event.",
+      "unlinked": "Gameday unlinked from event.",
+      "event_not_found": "Event not found.",
+      "no_candidates": "No candidate gameday for the selected filters."
     }
   },
   "groups": {
@@ -1197,11 +1218,6 @@
     "bulk_calendar_updated": "Calendar updated for {count} gameday(s).",
     "bulk_deleted": "{deleted} gameday(s) deleted.",
     "bulk_deleted_partial": "{deleted} deleted, {skipped} skipped (linked games or events).",
-    "event_linked": "Gameday linked to event.",
-    "event_unlinked": "Gameday unlinked from event.",
-    "manage_event_association": "Manage associations",
-    "event_association_title": "Event association",
-    "event_association_hint": "Check the gamedays to associate with the selected event.",
     "calendar_public": "Public calendar",
     "bulk_officials_title": "Copy officials and calendar",
     "bulk_officials_hint": "Copy officials and public calendar settings from a source phase to the {count} selected phase(s).",

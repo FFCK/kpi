@@ -38,7 +38,6 @@ const bulkPublishConfirmOpen = ref(false)
 const bulkCalendarModalOpen = ref(false)
 const bulkOfficialsModalOpen = ref(false)
 const officialsModalOpen = ref(false)
-const eventAssociationOpen = ref(false)
 
 // Form
 const editingGameday = ref<Gameday | null>(null)
@@ -89,14 +88,9 @@ const editingCell = ref<{ id: number; field: string } | null>(null)
 const editingValue = ref('')
 const editingOriginalValue = ref('')
 
-// Event associations (loaded when panel is open)
-const eventAssociations = ref<Set<number>>(new Set())
-const eventAssociationLoading = ref(false)
-
 // ─── Permissions ───
 const canEdit = computed(() => authStore.profile <= 4)
 const canSelect = computed(() => authStore.profile <= 3)
-const canAssociateEvents = computed(() => authStore.profile <= 3)
 
 // Open schema page in a new tab with competition and season params
 const router = useRouter()
@@ -578,57 +572,6 @@ const confirmBulkDelete = async () => {
   }
 }
 
-// ─── Event Association ───
-const selectedEventId = computed(() => {
-  if (workContext.pageEventGroupType === 'event') {
-    return parseInt(workContext.pageEventGroupValue, 10)
-  }
-  return null
-})
-
-const openEventAssociation = async () => {
-  if (!selectedEventId.value) return
-  eventAssociationOpen.value = true
-  eventAssociationLoading.value = true
-
-  // Load current associations for this event
-  try {
-    const params: Record<string, string | number> = {
-      season: workContext.season || '',
-      event: selectedEventId.value,
-      limit: 9999,
-    }
-    if (workContext.hasValidContext && workContext.competitionCodes.length > 0) {
-      params.competitions = workContext.competitionCodes.join(',')
-    }
-    const response = await api.get<PaginatedResponse<Gameday>>('/admin/gamedays', params)
-    eventAssociations.value = new Set(response.items.map(g => g.id))
-  } catch {
-    // Silently fail
-  } finally {
-    eventAssociationLoading.value = false
-  }
-}
-
-const toggleEventAssociation = async (gamedayId: number) => {
-  const eventId = selectedEventId.value
-  if (!eventId) return
-
-  try {
-    if (eventAssociations.value.has(gamedayId)) {
-      await api.del(`/admin/gamedays/${gamedayId}/event/${eventId}`)
-      eventAssociations.value.delete(gamedayId)
-      toast.add({ title: t('common.success'), description: t('gamedays.event_unlinked'), color: 'success' })
-    } else {
-      await api.put(`/admin/gamedays/${gamedayId}/event/${eventId}`)
-      eventAssociations.value.add(gamedayId)
-      toast.add({ title: t('common.success'), description: t('gamedays.event_linked'), color: 'success' })
-    }
-  } catch {
-    // Error already shown
-  }
-}
-
 // ─── Months list ───
 const months = computed(() => {
   return Array.from({ length: 12 }, (_, i) => ({
@@ -833,18 +776,6 @@ const printJurySheet = (gamedayId: number) => {
               <UIcon name="heroicons:user-group" class="w-5 h-5 text-amber-600" />
               {{ t('gamedays.bulk_officials_title') }}
             </button>
-
-            <!-- ── Event association ── -->
-            <template v-if="canAssociateEvents && selectedEventId">
-              <div class="border-t border-header-100 my-1" />
-              <button
-                class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
-                @click="openEventAssociation(); bulkActionsOpen = false"
-              >
-                <UIcon name="heroicons:link" class="w-5 h-5 text-purple-600" />
-                {{ t('gamedays.manage_event_association') }}
-              </button>
-            </template>
 
             <!-- ── Danger section ── -->
             <div class="border-t border-header-100 my-1" />
@@ -1650,42 +1581,6 @@ const printJurySheet = (gamedayId: number) => {
           </button>
         </div>
       </form>
-    </AdminModal>
-
-    <!-- ═══════ EVENT ASSOCIATION MODAL ═══════ -->
-    <AdminModal
-      :open="eventAssociationOpen"
-      :title="t('gamedays.event_association_title')"
-      max-width="lg"
-      @close="eventAssociationOpen = false"
-    >
-      <div class="space-y-4">
-        <p class="text-sm text-header-600">
-          {{ t('gamedays.event_association_hint') }}
-        </p>
-        <div v-if="eventAssociationLoading" class="text-center py-4">
-          <UIcon name="heroicons:arrow-path" class="w-6 h-6 animate-spin mx-auto" />
-        </div>
-        <div v-else class="max-h-96 overflow-y-auto border rounded-lg divide-y">
-          <label
-            v-for="g in gamedays"
-            :key="g.id"
-            class="flex items-center gap-3 px-4 py-2 hover:bg-header-50 cursor-pointer"
-          >
-            <input
-              type="checkbox"
-              class="rounded border-header-300 text-purple-600"
-              :checked="eventAssociations.has(g.id)"
-              @change="toggleEventAssociation(g.id)"
-            >
-            <div class="text-sm">
-              <span class="font-medium">#{{ g.id }}</span>
-              <span class="text-header-600 ml-1">{{ g.codeCompetition }} - {{ g.phase }}</span>
-              <span v-if="g.nom" class="text-header-500 ml-1">| {{ g.nom }}</span>
-            </div>
-          </label>
-        </div>
-      </div>
     </AdminModal>
 
     <!-- ═══════ BULK OFFICIALS COPY MODAL (Feature 1) ═══════ -->

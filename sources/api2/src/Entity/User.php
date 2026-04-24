@@ -207,6 +207,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /** @return string[]|null Allowed seasons, or null if unrestricted */
     public function getAllowedSeasons(): ?array
     {
+        if ($this->getEffectiveNiveau() <= 2) return null;
         if ($this->activeMandateId !== null) {
             return self::parsePipeFilter($this->mandateFiltreSaison);
         }
@@ -216,6 +217,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /** @return string[]|null Allowed competition codes, or null if unrestricted */
     public function getAllowedCompetitions(): ?array
     {
+        if ($this->getEffectiveNiveau() <= 2) return null;
         if ($this->activeMandateId !== null) {
             return self::parsePipeFilter($this->mandateFiltreCompetition);
         }
@@ -225,6 +227,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /** @return int[]|null Allowed event IDs, or null if unrestricted */
     public function getAllowedEvents(): ?array
     {
+        if ($this->getEffectiveNiveau() <= 2) return null;
         $raw = $this->activeMandateId !== null ? $this->mandateIdEvenement : $this->idEvenement;
         $values = self::parsePipeFilter($raw);
         return $values !== null ? array_map('intval', $values) : null;
@@ -233,6 +236,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /** @return int[]|null Allowed journee IDs, or null if unrestricted */
     public function getAllowedJournees(): ?array
     {
+        if ($this->getEffectiveNiveau() <= 2) return null;
         $raw = $this->activeMandateId !== null ? $this->mandateFiltreJournee : $this->filtreJournee;
         $values = self::parseCommaFilter($raw);
         return $values !== null ? array_map('intval', $values) : null;
@@ -241,6 +245,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /** @return string[]|null Allowed club codes, or null if unrestricted */
     public function getAllowedClubs(): ?array
     {
+        if ($this->getEffectiveNiveau() <= 2) return null;
         if ($this->activeMandateId !== null) {
             return self::parseCommaFilter($this->mandateLimitClubs);
         }

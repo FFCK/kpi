@@ -113,6 +113,27 @@
     "pagination": {
       "showing": "Affichage de {from} à {to} sur {total} événements",
       "items_per_page": "Éléments par page"
+    },
+    "manage_gameday_associations": "Gérer les associations de journées",
+    "association": {
+      "page_title": "Associations de journées",
+      "back_to_events": "Retour aux événements",
+      "associated_count": "{count} journée associée | {count} journées associées",
+      "filter_season": "Saison",
+      "filter_competitions": "Compétitions",
+      "filter_state": "État",
+      "filter_state_all": "Toutes",
+      "filter_state_linked": "Associées",
+      "filter_state_unlinked": "Non associées",
+      "search_placeholder": "Rechercher (Phase, Nom, Lieu, Id)…",
+      "linked_badge": "Associée",
+      "unlinked_badge": "Non associée",
+      "action_link": "Associer",
+      "action_unlink": "Supprimer l'association",
+      "linked": "Journée associée à l'événement.",
+      "unlinked": "Journée dissociée de l'événement.",
+      "event_not_found": "Événement introuvable.",
+      "no_candidates": "Aucune journée candidate pour les filtres sélectionnés."
     }
   },
   "groups": {
@@ -1209,11 +1230,6 @@
     "bulk_calendar_updated": "Calendrier mis à jour pour {count} journée(s).",
     "bulk_deleted": "{deleted} journée(s) supprimée(s).",
     "bulk_deleted_partial": "{deleted} supprimée(s), {skipped} ignorée(s) (matchs ou événements liés).",
-    "event_linked": "Journée associée à l'événement.",
-    "event_unlinked": "Journée dissociée de l'événement.",
-    "manage_event_association": "Gérer les associations",
-    "event_association_title": "Association événement",
-    "event_association_hint": "Cochez les journées à associer à l'événement sélectionné.",
     "calendar_public": "Calendrier public",
     "bulk_officials_title": "Copier officiels et calendrier",
     "bulk_officials_hint": "Copier les officiels et paramètres du calendrier public depuis une phase source vers les {count} phase(s) sélectionnée(s).",

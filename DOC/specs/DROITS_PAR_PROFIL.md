@@ -96,3 +96,74 @@
 - Le système de **mandats** permet d'élever ou restreindre temporairement le profil effectif.
 - Les actions M/S sont bloquées si la ressource est **verrouillée**, indépendamment du profil.
 - Le profil **9 (Table de marque)** a un accès très ciblé : saisie des scores et feuilles de présence match uniquement.
+- **Bypass périmètre profils 1 et 2** (voir section suivante) : les filtres de périmètre sont ignorés pour les utilisateurs dont le niveau effectif est ≤ 2.
+
+---
+
+## Bypass périmètre pour profils 1 et 2
+
+### Règle
+
+Pour un utilisateur dont le **niveau effectif** est ≤ 2, tous les filtres de périmètre stockés en base sont **ignorés** :
+
+- `Filtre_saison` (saisons autorisées)
+- `Filtre_competition` (compétitions autorisées)
+- `Id_Evenement` (événements autorisés)
+- `Filtre_journee` (journées autorisées)
+- `Limit_clubs` (clubs autorisés)
+
+Ces utilisateurs voient et manipulent **tous** les événements, compétitions, saisons, journées et clubs du système, indépendamment des filtres renseignés sur leur profil.
+
+### Niveau effectif vs niveau de base
+
+Le bypass s'applique au **niveau effectif**, c'est-à-dire :
+
+- Si l'utilisateur a un **mandat actif**, le niveau du mandat (`mandateNiveau`) s'applique.
+- Sinon, le niveau de base (`niveau`) s'applique.
+
+**Conséquence concrète** :
+
+| Situation | Niveau de base | Mandat actif | Niveau effectif | Bypass appliqué ? |
+|-----------|---------------|--------------|----------------|-------------------|
+| Super Admin sans mandat | 1 | — | 1 | ✅ Oui |
+| Super Admin avec mandat profil 5 | 1 | niveau 5 | 5 | ❌ Non — filtres du mandat appliqués |
+| Bureau CNAKP sans mandat | 2 | — | 2 | ✅ Oui |
+| Resp. Division avec mandat profil 2 | 3 | niveau 2 | 2 | ✅ Oui — filtres du mandat ignorés |
+| Resp. Division sans mandat | 3 | — | 3 | ❌ Non — filtres de base appliqués |
+
+Cette logique permet à un super-admin de « simuler » temporairement un profil inférieur (pour tester les droits, aider un utilisateur, etc.) en endossant un mandat.
+
+### Pourquoi ce bypass ?
+
+Les profils 1 et 2 sont des rôles d'administration système qui peuvent avoir des filtres de périmètre renseignés en base (par exemple hérités d'une création historique ou d'une migration). Ces filtres n'ont pas vocation à restreindre leur vision : ces profils doivent pouvoir intervenir sur n'importe quelle compétition/événement/journée en cas de besoin (correction de données, support utilisateur, administration).
+
+### Implémentation technique
+
+Le bypass est centralisé dans l'entité `User` (`sources/api2/src/Entity/User.php`), dans les 5 méthodes d'accès aux filtres :
+
+- `getAllowedSeasons(): ?array`
+- `getAllowedCompetitions(): ?array`
+- `getAllowedEvents(): ?array`
+- `getAllowedJournees(): ?array`
+- `getAllowedClubs(): ?array`
+
+Chacune retourne `null` (= aucune restriction) lorsque `getEffectiveNiveau() <= 2`. Tous les contrôleurs API qui consomment ces méthodes héritent automatiquement du bypass, sans modification supplémentaire.
+
+```php
+// Exemple pour getAllowedSeasons
+public function getAllowedSeasons(): ?array
+{
+    if ($this->getEffectiveNiveau() <= 2) {
+        return null;  // bypass : aucune restriction
+    }
+    // ... logique existante (base ou mandat)
+}
+```
+
+### Impact côté frontend
+
+- **WorkContextSelector** : toutes les saisons, compétitions et événements sont listés pour les profils 1/2.
+- **UserEditModal** : quand un admin profil 1/2 édite un utilisateur, les listes de compétitions/événements/saisons disponibles dans le formulaire sont **complètes**.
+- **Pages filtrées par événement** (ex. `/events/{id}/gamedays`) : les profils 1/2 peuvent associer n'importe quelle journée, même hors de leur périmètre de base.
+
+Aucun changement n'est requis côté frontend : le bypass backend est transparent car les endpoints `/admin/filters/*` renvoient déjà les listes complètes pour ces profils.

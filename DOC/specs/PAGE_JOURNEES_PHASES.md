@@ -49,7 +49,7 @@ La page permet de lister, filtrer, créer, modifier, dupliquer et supprimer des 
 | 13 | Sélection multiple (checkboxes) | ≤ 3 | Essentielle | ✅ Conserver |
 | 14 | Publication en masse (toggle multi-sélection) | ≤ 4 | Essentielle | ✅ Conserver |
 | 15 | Suppression en masse | ≤ 4 | Essentielle | ✅ Conserver |
-| 16 | Mode Association événements (checkbox par journée) | ≤ 3 | Essentielle | ✅ Conserver |
+| 16 | Mode Association événements (checkbox par journée) | ≤ 3 | Essentielle | ❌ Retirée — déplacée vers [PAGE_ASSOCIATION_JOURNEES_EVENEMENTS.md](PAGE_ASSOCIATION_JOURNEES_EVENEMENTS.md) |
 | 17 | Lien "Voir tous les matchs" | ≤ 10 | Utile | ✅ Conserver |
 | 18 | Lien "Matchs" par journée | ≤ 10 | Essentielle | ✅ Conserver |
 | 19 | Lien "Schéma de compétition" | ≤ 10 | Utile | ✅ Conserver |
@@ -146,19 +146,9 @@ La page permet de lister, filtrer, créer, modifier, dupliquer et supprimer des 
 
 **Colonnes calendrier public** : Les colonnes **Nom**, **Date**, **Lieu**, **Dpt/Pays** sont visuellement distinguées (en-têtes avec un indicateur coloré vert, comme le legacy qui utilise la classe `colorPublic`). Cela indique aux utilisateurs que ces champs impactent le calendrier public affiché sur le site.
 
-### 3.2 Mode Association Événements
+### 3.2 Mode Association Événements (retiré)
 
-Quand le mode "Association événements" est activé (profil ≤ 3) :
-- La colonne d'actions (✏🗐📋) est remplacée par une checkbox
-- La checkbox est cochée si la journée est associée à l'événement sélectionné
-- Le clic sur la checkbox ajoute/retire l'association via AJAX
-- Le fond de la checkbox est rouge pour signaler le mode spécial
-
-```
-│☐│👁│ Id  │ ☑ │ Compét./Phase    │ Type │ Nom            │ Date       │ ...
-│  │🟢│ 8642│ ✓ │ T-COR - Poule A │ ≡    │ Tournoi Pierre │ 11/01-12/01│ ...
-│  │🟢│ 8643│ ✗ │ T-COR - Poule B │ ≡    │ Tournoi Pierre │ 11/01-12/01│ ...
-```
+Le mode Association événements a été **déplacé** sur une page dédiée : voir [PAGE_ASSOCIATION_JOURNEES_EVENEMENTS.md](PAGE_ASSOCIATION_JOURNEES_EVENEMENTS.md). L'entry-point se trouve désormais dans le tableau `/events` via une icône 🔗 (heroicons:link). La page `/gamedays` ne propose plus ce flux.
 
 ### 3.3 Vue Mobile (cartes)
 
@@ -264,24 +254,21 @@ Le rappel du contexte de travail est affiché en haut de page (pattern standard,
 - Toggle publication et type par clic
 - Édition inline des champs texte
 
-### 5.2 Mode Association Événements (modernisé)
+### 5.2 Mode Association Événements (déplacé)
 
-Le mode association est **modernisé** par rapport au legacy (qui utilisait un radio button global basculant toute la page).
+Le mode d'association des journées à un événement n'est plus accessible depuis `/gamedays`. Il a été extrait dans une page dédiée : **[PAGE_ASSOCIATION_JOURNEES_EVENEMENTS.md](PAGE_ASSOCIATION_JOURNEES_EVENEMENTS.md)**.
 
-**Nouvelle approche** : Un panel dédié ou une modal de type "gestionnaire d'associations" :
+**Raison du déplacement** (retour utilisateur du 2026-04-24) :
+- Le bouton "Gérer les associations" était caché dans le dropdown "Actions en masse" et n'était visible qu'après cocher au moins une journée ET sélectionner un événement dans le contexte de travail.
+- La modal ne listait que les journées **déjà associées** (l'endpoint backend fait un INNER JOIN sur `kp_evenement_journee`), rendant impossible l'ajout de nouvelles associations.
+- Pas de filtre compétition pour rechercher dans un gros volume de candidates.
 
-1. L'utilisateur sélectionne un événement dans le filtre
-2. Un bouton "Gérer les associations" (profil ≤ 3) ouvre un panel/modal dédié
-3. Le panel affiche la liste des journées avec des checkboxes
-4. Les journées déjà associées sont pré-cochées
-5. L'utilisateur peut filtrer/rechercher dans le panel
-6. Les modifications sont envoyées en AJAX (toggle individuel)
-7. Un compteur affiche le nombre de journées associées
+**Nouveau flux** :
+- Entry-point depuis le tableau `/events` via une icône 🔗 dans chaque ligne.
+- Page dédiée `/events/{id}/gamedays` avec filtres saison/compétition/état/recherche et pagination.
+- Toggle immédiat (PUT/DELETE) avec feedback toast.
 
-**Avantages vs legacy** :
-- Pas de changement de mode global qui modifie toute la page
-- Interface dédiée plus claire
-- Possibilité de voir simultanément les journées associées et non associées
+Voir la spec dédiée pour le détail.
 
 ---
 
@@ -504,12 +491,9 @@ Body: { "ids": [8642, 8643], "nom": "...", "dateDebut": "...", "dateFin": "...",
 2. Copie de tous les champs de la journée avec un nouvel Id
 3. Option de copier également les matchs (via le formulaire détaillé)
 
-### 8.6 Association événement (Panel modernisé)
+### 8.6 Association événement (déplacée)
 
-| Action | Méthode |
-|--------|---------|
-| Cocher checkbox | REPLACE INTO `kp_evenement_journee` |
-| Décocher checkbox | DELETE FROM `kp_evenement_journee` |
+L'action d'association des journées à un événement n'est plus accessible depuis cette page. Voir [PAGE_ASSOCIATION_JOURNEES_EVENEMENTS.md](PAGE_ASSOCIATION_JOURNEES_EVENEMENTS.md) §7.
 
 ---
 
@@ -606,6 +590,8 @@ Body: { "ids": [8642, 8643], "nom": "...", "dateDebut": "...", "dateFin": "...",
 Seuls les champs non vides/non null sont appliqués.
 
 ### 9.4 Association événements
+
+Les endpoints ci-dessous restent implémentés dans `AdminGamedaysController` mais sont désormais **consommés par la page dédiée** [PAGE_ASSOCIATION_JOURNEES_EVENEMENTS.md](PAGE_ASSOCIATION_JOURNEES_EVENEMENTS.md), plus par `/gamedays`.
 
 | Méthode | Endpoint | Description | Profil |
 |---------|----------|-------------|--------|
@@ -820,11 +806,12 @@ Cette page utilise :
     "added": "Journée créée.",
     "updated": "Journée modifiée.",
     "deleted": "Journée supprimée.",
-    "duplicated": "Journée dupliquée.",
-    "event_linked": "Journée associée à l'événement.",
-    "event_unlinked": "Journée dissociée de l'événement."
+    "duplicated": "Journée dupliquée."
   }
 }
+// Les clés `gamedays.event_linked`, `gamedays.event_unlinked`, `gamedays.manage_event_association`,
+// `gamedays.event_association_title`, `gamedays.event_association_hint` sont retirées :
+// elles appartiennent désormais à `events.association.*` — voir PAGE_ASSOCIATION_JOURNEES_EVENEMENTS.md §11.
 ```
 
 ### 12.2 Clés anglaises (`en.json`)
@@ -896,11 +883,12 @@ Cette page utilise :
     "added": "Gameday created.",
     "updated": "Gameday updated.",
     "deleted": "Gameday deleted.",
-    "duplicated": "Gameday duplicated.",
-    "event_linked": "Gameday linked to event.",
-    "event_unlinked": "Gameday unlinked from event."
+    "duplicated": "Gameday duplicated."
   }
 }
+// English keys `gamedays.event_linked`, `gamedays.event_unlinked`, `gamedays.manage_event_association`,
+// `gamedays.event_association_title`, `gamedays.event_association_hint` are removed —
+// they now belong to `events.association.*` — see PAGE_ASSOCIATION_JOURNEES_EVENEMENTS.md §11.
 ```
 
 ---
@@ -957,7 +945,7 @@ Toutes les opérations sont loguées dans `kp_journal` :
 | Notifications | alert() / confirm() | Toast Nuxt UI |
 | Schéma compétition | Page séparée GestionSchema.php | ⏳ Lien legacy redirect (différé) |
 | Officiels | Page séparée GestionInstances.php | ✅ Intégré dans la modal de journée |
-| Mode association | Radio button global basculant la page | ✅ Panel/modal dédié modernisé |
+| Mode association | Radio button global basculant la page | ✅ Extrait sur une page dédiée `/events/{id}/gamedays` (voir [PAGE_ASSOCIATION_JOURNEES_EVENEMENTS.md](PAGE_ASSOCIATION_JOURNEES_EVENEMENTS.md)) |
 
 ### 14.2 Pages legacy liées (non migrées)
 
@@ -990,11 +978,11 @@ Les champs suivants de `kp_journee` ne sont **pas** affichés dans l'interface :
 | Q4 | Page Schéma de compétition | ⏳ Différé, garder lien legacy redirect |
 | Q5 | Page Officiels (GestionInstances) | ✅ Intégrer dans le formulaire modal (section collapsible avec badges RC et autocomplete) |
 | Q6 | Édition inline vs formulaire uniquement | ✅ Conserver les deux : inline pour modifications rapides + formulaire pour création/édition complète |
-| Q7 | Mode Association événements | ✅ Moderniser : remplacer le mode radio global par un panel/modal dédié plus intuitif |
+| Q7 | Mode Association événements | ✅ (initialement) Modal dédiée dans `/gamedays` — **Révisé le 2026-04-24** : le flux est extrait sur une page dédiée `/events/{id}/gamedays`, accessible via une icône 🔗 depuis le tableau `/events`. Voir [PAGE_ASSOCIATION_JOURNEES_EVENEMENTS.md](PAGE_ASSOCIATION_JOURNEES_EVENEMENTS.md). |
 
 ---
 
 **Document créé le** : 13 février 2026
-**Dernière mise à jour** : 14 février 2026
-**Statut** : ✅ IMPLÉMENTÉ
+**Dernière mise à jour** : 2026-04-24 (extraction du flux d'association vers une spec dédiée)
+**Statut** : ✅ IMPLÉMENTÉ — association déplacée vers [PAGE_ASSOCIATION_JOURNEES_EVENEMENTS.md](PAGE_ASSOCIATION_JOURNEES_EVENEMENTS.md)
 **Auteur** : Claude Code
