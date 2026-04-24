@@ -102,11 +102,11 @@ accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mai
 
 - Page Journées/Phases
 	* ✅ Les liens vers les schémas de compétitions ne fonctionnent pas (erreur 404) — **RÉSOLU, à tester**
-	* Comment peut-on associer des journées à un événement ? je n'ai pas retrouvé l'option dans cette nouvelle interface 
+	* ✅ Comment peut-on associer des journées à un événement ? je n'ai pas retrouvé l'option dans cette nouvelle interface **RÉSOLU** (l'association des journées à un événement est désormais accessible depuis une page dédiée, depuis la page des événements (nouveau bouton d'action dans le tableau)
 
 - Page Matchs :
-	* Etat des matchs (partie centrale sous le cadenas, au niveau du score) : pour les matchs finalisés (statut "end" et verrouillés), il est affiché comme si ils étaient en cours (M1 ou M2) selon les dernières modifications faites dans la feuille de match en ligne et la mi-temps laissée "active" avant passage au statut "terminé" et verrouillage
-	* Création de matchs : si on créée les matchs en mode manuel, malgré le fait de renseigner le champ "intervalle", par défaut pour le match suivant il faut resaisir la date ainsi que l'heure non calculée automatiquement (testé en ajoutant des matchs à une journée déjà existante)
+	* ✅ Etat des matchs (partie centrale sous le cadenas, au niveau du score) : pour les matchs finalisés (statut "end" et verrouillés), il est affiché comme si ils étaient en cours (M1 ou M2) selon les dernières modifications faites dans la feuille de match en ligne et la mi-temps laissée "active" avant passage au statut "terminé" et verrouillage — **RÉSOLU** période masquée lorsque le statut est "terminé".
+	* ✅ Création de matchs : si on créée les matchs en mode manuel, malgré le fait de renseigner le champ "intervalle", par défaut pour le match suivant il faut resaisir la date ainsi que l'heure non calculée automatiquement (testé en ajoutant des matchs à une journée déjà existante) — **RÉSOLU** (bouton "Enregistrer et ajouter" : conserve journée, date, terrain, type, intervalle ; calcule heure suivante = heure + intervalle ; incrémente le numéro de match de 1 ; réinitialise les autres champs)
 	
 - Page classements : 
 	* Menu Extraction PDF : les liens classement général / détail par équipe / déroulement renvoient un classement vide, sur une compétition à Belfast ;) (en mode championnat ou coupe)

@@ -1396,6 +1396,8 @@
       "pitches_5_8_phases": "Terrains 5-8 (Phases)"
     },
     "added": "Match créé.",
+    "save_and_add": "Enregistrer et ajouter",
+    "save_and_close": "Enregistrer et fermer",
     "updated": "Match modifié.",
     "deleted": "Match supprimé.",
     "bulk_published": "{count} match(s) modifié(s).",

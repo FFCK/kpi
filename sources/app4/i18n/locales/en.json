@@ -1384,6 +1384,8 @@
       "pitches_5_8_phases": "Pitches 5-8 (Phases)"
     },
     "added": "Game created.",
+    "save_and_add": "Save and add",
+    "save_and_close": "Save and close",
     "updated": "Game updated.",
     "deleted": "Game deleted.",
     "bulk_published": "{count} game(s) modified.",
