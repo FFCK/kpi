@@ -9,8 +9,8 @@ definePageMeta({
 const { t } = useI18n()
 const authStore = useAuthStore()
 
-// Redirect if not super admin
-if (!authStore.isSuperAdmin) {
+// Redirect if not admin (profile <= 2)
+if (!authStore.hasProfile(2)) {
   navigateTo('/')
 }
 

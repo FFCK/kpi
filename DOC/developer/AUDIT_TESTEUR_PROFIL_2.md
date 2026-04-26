@@ -1,17 +1,17 @@
 ## App mobile (app2) :
 
-- ✅ Accès à la feuille de match : pas évident de trouver l'endroit où il faut cliquer pour accéder à la feuille (a priori n° du match, à mettre en valeur ou icone ?) — *résolu : le n° de match est maintenant cliquable (comme le score) ; guide illustré ajouté sur la page d'accueil*
-- ✅ Équipe - Fiche Complète  : stats des joueurs invisibles si on filtre par compétition au départ ; ne semble fonctionner que pour l'événement sélectionné quand on filtre par ce mode (le reste OK : matchs joués,à venir, progression et classement) — *résolu : nouvel endpoint API2 `/group/{season}/{groupCode}/team/{teamId}/stats` qui identifie l'équipe physique par `Code_club + Numero` et retourne les stats par compétition ; en mode groupe, la fiche affiche un tableau de stats par compétition (une section par compétition où l'équipe participe)*
+- ✅ Accès à la feuille de match : pas évident de trouver l'endroit où il faut cliquer pour accéder à la feuille (a priori n° du match, à mettre en valeur ou icone ?) — **RÉSOLU** : le n° de match est maintenant cliquable (comme le score) ; guide illustré ajouté sur la page d'accueil
+- ✅ Équipe - Fiche Complète  : stats des joueurs invisibles si on filtre par compétition au départ ; ne semble fonctionner que pour l'événement sélectionné quand on filtre par ce mode (le reste OK : matchs joués,à venir, progression et classement) — **RÉSOLU** : nouvel endpoint API2 `/group/{season}/{groupCode}/team/{teamId}/stats` qui identifie l'équipe physique par `Code_club + Numero` et retourne les stats par compétition ; en mode groupe, la fiche affiche un tableau de stats par compétition (une section par compétition où l'équipe participe)
 
 
 ## Legacy interface administration :
 
 ### Event Cache Manager
-- marche uniquement sur profil 1 ? pas réusssi à acceder mais probablement normal
+- ✅ marche uniquement sur profil 1 ? pas réusssi à acceder mais probablement normal - **RÉSOLU** Dans App4, n0uvelle interface et nouvel accès depuis le menu Administration → "Cache des événements" (accessible aux profils 1 et 2) ; le cache est désormais géré par événement, via un "worker" (en arrière plan) et non plus globalement. Chaque worker peut être contrôlé individuellement (lancer, arrêter, réinitialiser) et affiche son statut (en cours, terminé, erreur), son état de santé, ses paramètres, et peut générer un monitoring pour voir les matchs actifs et en attente sur chaque terrain.
 
 ### Gestion d'images / uploader
-- marche uniquement sur profil 1 ? pas réusssi à acceder, ni pour logo compétition ni pour logo équipe
-accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mais je n'ai pas trouvé comment faire avec un profil 2
+- ✅ marche uniquement sur profil 1 ? pas réusssi à acceder, ni pour logo compétition ni pour logo équipe
+accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mais je n'ai pas trouvé comment faire avec un profil 2 - **RÉSOLU** Dans App4, accès élargi au profil 2 depuis le menu Administration -> Opérations -> Images.
 
 ### ✅ Stats contrôle de cohérence des matchs — résolu, à tester :
 - Règlement RP KAP 26.4 maintenant pris en compte, avec différenciation par niveau/type de compétition :
@@ -20,11 +20,10 @@ accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mai
 	* ✅ Plus de 3 matchs sur 4 heures — toutes compétitions
 	* ✅ Plus de 4 matchs/jour (Championnat) — limité aux compétitions Code_typeclt = CHPT
 	* ✅ Plus de 6 matchs/jour (International) — limité aux compétitions Code_niveau = INT
-- Multi-compétitions : les calculs s'appuient désormais sur le champ Numero de l'équipe (commun toutes compétitions/saisons) ; une équipe engagée sur 2 compétitions simultanées (ex. REG-18 + T-R18) voit bien tous ses matchs agrégés pour les contrôles de cohérence.
+- ✅ Multi-compétitions : les calculs s'appuient désormais sur le champ Numero de l'équipe (commun toutes compétitions/saisons) ; une équipe engagée sur 2 compétitions simultanées (ex. REG-18 + T-R18) voit bien tous ses matchs agrégés pour les contrôles de cohérence.
 
 ### Réflexions générales :
 - renumérotation des clubs/CD/CR dans la base suivant exalto, avec 6 chiffres ?
-
 
 
 ## Nouvelle interface administration (app4) :
@@ -47,7 +46,7 @@ accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mai
 	Reste à imaginer l'organisation pour le renouvellement annuel des droits des utilisateurs...
 
 - Page contrôle TV : 
-	* à quoi correspond la fonction "split URL" ?
+	* ✅ à quoi correspond la fonction "split URL" ? → **EXPLICATION** : permet de partager une page web en 2, 3 ou 4 parties, chacune affichant une url différente, pour faciliter le suivi de plusieurs pages en même temps (ex. feuille de match + classement + live score + vidéo). L'intérêt reste à démontrer.
 	
 - ✅ Schémas de compétitions : erreur 404 sur les liens vers les schémas — **RÉSOLU, à tester** (les liens `window.open()` et `NuxtLink target="_blank"` ne préfixaient pas `/admin2` ; corrigé via `router.resolve()` dans `gamedays/index.vue` et `competitions/copy.vue`)
 

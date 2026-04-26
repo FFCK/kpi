@@ -173,7 +173,7 @@ const adminMenuGroups = computed<MenuGroup[]>(() => {
       label: t('menu.copy')
     })
   }
-  if (profile === 1) {
+  if (profile <= 2) {
     operations.push({
       to: '/operations',
       icon: 'heroicons:wrench-screwdriver',
