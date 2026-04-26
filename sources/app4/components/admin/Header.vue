@@ -164,49 +164,6 @@ const adminMenuGroups = computed<MenuGroup[]>(() => {
     })
   }
 
-  // Droits: utilisateurs, journal
-  const rights: MenuItem[] = []
-  if (profile <= 4) {
-    rights.push({
-      to: '/users',
-      icon: 'heroicons:users',
-      label: t('menu.users')
-    })
-  }
-  if (profile <= 2) {
-    rights.push({
-      to: '/journal',
-      icon: 'heroicons:document-text',
-      label: t('menu.journal')
-    })
-  }
-  if (rights.length > 0) {
-    groups.push({
-      key: 'rights',
-      label: t('menu.rights'),
-      icon: 'heroicons:shield-check',
-      items: rights
-    })
-  }
-
-  // Live: TV
-  const live: MenuItem[] = []
-  if (profile <= 2) {
-    live.push({
-      to: '/tv',
-      icon: 'heroicons:tv',
-      label: t('menu.tv')
-    })
-  }
-  if (live.length > 0) {
-    groups.push({
-      key: 'live',
-      label: t('menu.live'),
-      icon: 'heroicons:signal',
-      items: live
-    })
-  }
-
   // Opérations: copie système de jeu, opérations
   const operations: MenuItem[] = []
   if (profile <= 2) {
@@ -229,6 +186,49 @@ const adminMenuGroups = computed<MenuGroup[]>(() => {
       label: t('menu.operations_group'),
       icon: 'heroicons:cog-6-tooth',
       items: operations
+    })
+  }
+
+  // Live: TV
+  const live: MenuItem[] = []
+  if (profile <= 2) {
+    live.push({
+      to: '/tv',
+      icon: 'heroicons:tv',
+      label: t('menu.tv')
+    })
+  }
+  if (live.length > 0) {
+    groups.push({
+      key: 'live',
+      label: t('menu.live'),
+      icon: 'heroicons:signal',
+      items: live
+    })
+  }
+
+  // Droits: utilisateurs, journal
+  const rights: MenuItem[] = []
+  if (profile <= 4) {
+    rights.push({
+      to: '/users',
+      icon: 'heroicons:users',
+      label: t('menu.users')
+    })
+  }
+  if (profile <= 2) {
+    rights.push({
+      to: '/journal',
+      icon: 'heroicons:document-text',
+      label: t('menu.journal')
+    })
+  }
+  if (rights.length > 0) {
+    groups.push({
+      key: 'rights',
+      label: t('menu.rights'),
+      icon: 'heroicons:shield-check',
+      items: rights
     })
   }
 
