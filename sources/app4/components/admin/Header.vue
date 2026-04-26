@@ -197,6 +197,11 @@ const adminMenuGroups = computed<MenuGroup[]>(() => {
       icon: 'heroicons:tv',
       label: t('menu.tv')
     })
+    live.push({
+      to: '/live/cache-manager',
+      icon: 'heroicons:server-stack',
+      label: t('menu.event_cache_manager')
+    })
   }
   if (live.length > 0) {
     groups.push({

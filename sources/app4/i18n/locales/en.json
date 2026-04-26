@@ -31,6 +31,7 @@
     "journal": "Activity Log",
     "copy": "Game system copy",
     "tv": "TV Control",
+    "event_cache_manager": "Event cache",
     "referentials": "Referentials",
     "rights": "Rights",
     "live": "Live",
@@ -2074,6 +2075,79 @@
       "with_stats": "Players with stats",
       "all": "All players",
       "without_stats": "All without stats"
+    }
+  },
+  "eventCacheManager": {
+    "title": "Event Cache Manager",
+    "subtitle": "Control the automatic cache generation worker",
+    "active_workers": {
+      "title": "Active workers",
+      "none": "No active worker",
+      "stop_all": "Stop all",
+      "monitor": "Monitor",
+      "pause": "Pause",
+      "resume": "Resume",
+      "stop": "Stop",
+      "executions": "Executions",
+      "last_execution": "Last",
+      "current_time": "Simulated time",
+      "initial_time": "Initial time",
+      "date": "Date",
+      "pitches": "Pitches",
+      "delay": "Delay",
+      "warmup": "Warm-up",
+      "healthy": "Healthy",
+      "unhealthy": "Inactive (missed heartbeat)"
+    },
+    "form": {
+      "title": "New configuration",
+      "event": "Event",
+      "event_placeholder": "Select an event",
+      "quick_date": "Quick select",
+      "date": "Date",
+      "hour": "Start time",
+      "hour_help": "Initial reference time",
+      "offset": "Warm-up (min)",
+      "pitch": "Number of pitches",
+      "delay": "Refresh delay (sec)",
+      "start": "Start worker"
+    },
+    "status": {
+      "running": "Running",
+      "paused": "Paused",
+      "stopped": "Stopped"
+    },
+    "monitor": {
+      "title": "Live monitoring",
+      "event": "Event",
+      "date": "Date",
+      "initial_time": "Initial time",
+      "refresh_every": "Refresh every {seconds}s",
+      "pitch": "Pitch",
+      "current_game": "Current game",
+      "next_game": "Next game",
+      "time": "Time",
+      "num": "No.",
+      "match_id": "Game ID",
+      "waiting": "Waiting...",
+      "time_current": "Current time:",
+      "time_working": "Working time:",
+      "last_update": "Last update: {time}",
+      "load_failed": "Failed to load monitoring"
+    },
+    "confirm": {
+      "stop_one": "Stop worker for event #{id}?",
+      "stop_all": "Stop ALL active workers?"
+    },
+    "toasts": {
+      "started": "Worker started successfully",
+      "stopped": "Worker stopped",
+      "paused": "Worker paused",
+      "resumed": "Worker resumed",
+      "stop_all_done": "All workers have been stopped"
+    },
+    "errors": {
+      "missing_fields": "Event, date and time are required"
     }
   }
 }

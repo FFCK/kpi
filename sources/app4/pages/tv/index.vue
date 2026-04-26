@@ -223,13 +223,12 @@ onMounted(async () => {
 
       <!-- Quick links -->
       <div class="mt-8 pt-4 border-t border-header-200 flex flex-wrap gap-4 text-sm">
-        <a
-          :href="`${backendBaseUrl}/live/event.php`"
-          target="_blank"
+        <NuxtLink
+          to="/live/cache-manager"
           class="text-primary-600 hover:text-primary-800 hover:underline"
         >
           {{ t('tv.links.event_cache') }}
-        </a>
+        </NuxtLink>
         <a
           :href="`${backendBaseUrl}/live/spliturl.php`"
           target="_blank"

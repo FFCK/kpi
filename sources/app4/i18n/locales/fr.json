@@ -31,6 +31,7 @@
     "journal": "Journal",
     "copy": "Copie système de jeu",
     "tv": "Contrôle TV",
+    "event_cache_manager": "Cache d'événement",
     "referentials": "Référentiels",
     "rights": "Droits",
     "live": "Live",
@@ -2086,6 +2087,79 @@
       "with_stats": "Joueurs avec stats",
       "all": "Tous les joueurs",
       "without_stats": "Tous sans stats"
+    }
+  },
+  "eventCacheManager": {
+    "title": "Gestion du cache d'événement",
+    "subtitle": "Contrôle du worker de génération automatique des caches",
+    "active_workers": {
+      "title": "Workers actifs",
+      "none": "Aucun worker actif",
+      "stop_all": "Tout arrêter",
+      "monitor": "Monitor",
+      "pause": "Pause",
+      "resume": "Reprendre",
+      "stop": "Arrêter",
+      "executions": "Exécutions",
+      "last_execution": "Dernière",
+      "current_time": "Heure simulée",
+      "initial_time": "Heure initiale",
+      "date": "Date",
+      "pitches": "Terrains",
+      "delay": "Délai",
+      "warmup": "Warm-up",
+      "healthy": "Sain",
+      "unhealthy": "Inactif (heartbeat manqué)"
+    },
+    "form": {
+      "title": "Nouvelle configuration",
+      "event": "Événement",
+      "event_placeholder": "Sélectionner un événement",
+      "quick_date": "Sélection rapide",
+      "date": "Date",
+      "hour": "Heure de départ",
+      "hour_help": "Heure initiale de référence",
+      "offset": "Warm-up (min)",
+      "pitch": "Nombre de terrains",
+      "delay": "Délai de rafraîchissement (sec)",
+      "start": "Démarrer le worker"
+    },
+    "status": {
+      "running": "En cours",
+      "paused": "En pause",
+      "stopped": "Arrêté"
+    },
+    "monitor": {
+      "title": "Monitoring temps réel",
+      "event": "Événement",
+      "date": "Date",
+      "initial_time": "Heure initiale",
+      "refresh_every": "Rafraîchissement toutes les {seconds}s",
+      "pitch": "Terrain",
+      "current_game": "Match en cours",
+      "next_game": "Match suivant",
+      "time": "Heure",
+      "num": "N°",
+      "match_id": "ID match",
+      "waiting": "En attente...",
+      "time_current": "Heure courante :",
+      "time_working": "Heure de travail :",
+      "last_update": "Dernière mise à jour : {time}",
+      "load_failed": "Impossible de charger le monitoring"
+    },
+    "confirm": {
+      "stop_one": "Arrêter le worker pour l'événement #{id} ?",
+      "stop_all": "Arrêter TOUS les workers actifs ?"
+    },
+    "toasts": {
+      "started": "Worker démarré avec succès",
+      "stopped": "Worker arrêté",
+      "paused": "Worker en pause",
+      "resumed": "Worker repris",
+      "stop_all_done": "Tous les workers ont été arrêtés"
+    },
+    "errors": {
+      "missing_fields": "Événement, date et heure sont obligatoires"
     }
   }
 }
