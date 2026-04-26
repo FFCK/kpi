@@ -31,25 +31,61 @@ class AdminClubsController extends AbstractController
     }
 
     /**
-     * Search clubs by name or code (accessible to all authenticated users)
+     * Search clubs by name or code, with optional dept/region cascade filters
      */
     #[Route('/admin/clubs/search-all', name: 'admin_clubs_search_all', methods: ['GET'])]
+    #[OA\Get(
+        path: '/admin/clubs/search-all',
+        summary: 'Search clubs by name or code (autocomplete). Optional cascade: dept_code, region_code.',
+        tags: ['27. App4 - Clubs']
+    )]
+    #[OA\Parameter(name: 'q', in: 'query', required: false, description: 'Search term (min 2 chars, required if no filter active)', schema: new OA\Schema(type: 'string'))]
+    #[OA\Parameter(name: 'dept_code', in: 'query', required: false, description: 'Restrict to clubs of this departmental committee', schema: new OA\Schema(type: 'string'))]
+    #[OA\Parameter(name: 'region_code', in: 'query', required: false, description: 'Restrict to clubs of this regional committee (via dept)', schema: new OA\Schema(type: 'string'))]
+    #[OA\Parameter(name: 'limit', in: 'query', required: false, schema: new OA\Schema(type: 'integer'))]
     public function searchAll(Request $request): JsonResponse
     {
-        $q = trim($request->query->get('q', ''));
-        $limit = min(50, max(1, (int) $request->query->get('limit', 20)));
+        $q          = trim($request->query->get('q', ''));
+        $deptCode   = trim($request->query->get('dept_code', ''));
+        $regionCode = trim($request->query->get('region_code', ''));
+        $limit      = min(50, max(1, (int) $request->query->get('limit', 20)));
 
-        if (strlen($q) < 2) {
+        $hasFilter = $deptCode !== '' || $regionCode !== '';
+
+        if (strlen($q) < 2 && !$hasFilter) {
             return $this->json([]);
         }
 
-        $sql = "SELECT Code, Libelle, Code_comite_dep
-                FROM kp_club
-                WHERE Libelle LIKE ? OR Code LIKE ?
-                ORDER BY Libelle
+        $where  = [];
+        $params = [];
+
+        if (strlen($q) >= 2) {
+            $where[]  = "(c.Libelle LIKE ? OR c.Code LIKE ?)";
+            $params[] = "%$q%";
+            $params[] = "%$q%";
+        }
+
+        if ($deptCode !== '') {
+            $where[]  = "c.Code_comite_dep = ?";
+            $params[] = $deptCode;
+        } elseif ($regionCode !== '') {
+            $where[]  = "cd.Code_comite_reg = ?";
+            $params[] = $regionCode;
+        }
+
+        $whereClause = $where ? 'WHERE ' . implode(' AND ', $where) : '';
+        $joinCd = ($regionCode !== '' && $deptCode === '')
+            ? "JOIN kp_cd cd ON cd.Code = c.Code_comite_dep"
+            : "";
+
+        $sql = "SELECT c.Code, c.Libelle, c.Code_comite_dep
+                FROM kp_club c
+                $joinCd
+                $whereClause
+                ORDER BY c.Libelle
                 LIMIT " . (int) $limit;
 
-        $rows = $this->connection->fetchAllAssociative($sql, ["%$q%", "%$q%"]);
+        $rows = $this->connection->fetchAllAssociative($sql, $params);
 
         return $this->json(array_map(fn(array $row) => [
             'code' => $row['Code'],

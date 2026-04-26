@@ -102,6 +102,14 @@ export interface AthleteParticipations {
   matchs: AthleteMatch[]
 }
 
+export interface AthleteSearchFilters {
+  regionCode: string
+  deptCode: string
+  clubCode: string
+  sexe: string
+  arbNiveau: string
+}
+
 export interface AthleteUpdatePayload {
   nom: string
   prenom: string

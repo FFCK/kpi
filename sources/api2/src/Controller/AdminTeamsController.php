@@ -257,7 +257,7 @@ class AdminTeamsController extends AbstractController
     #[Route('/admin/regional-committees', name: 'admin_regional_committees', methods: ['GET'])]
     public function listRegionalCommittees(): JsonResponse
     {
-        $sql = "SELECT Code, Libelle FROM kp_cr ORDER BY Libelle";
+        $sql = "SELECT Code, Libelle FROM kp_cr ORDER BY Code";
         $stmt = $this->connection->prepare($sql);
         $result = $stmt->executeQuery();
         $rows = $result->fetchAllAssociative();
@@ -290,7 +290,7 @@ class AdminTeamsController extends AbstractController
 
         $whereClause = !empty($whereConditions) ? 'WHERE ' . implode(' AND ', $whereConditions) : '';
 
-        $sql = "SELECT Code, Libelle, Code_comite_reg FROM kp_cd $whereClause ORDER BY Libelle";
+        $sql = "SELECT Code, Libelle, Code_comite_reg FROM kp_cd $whereClause ORDER BY Code";
         $stmt = $this->connection->prepare($sql);
         $result = $stmt->executeQuery($params);
         $rows = $result->fetchAllAssociative();

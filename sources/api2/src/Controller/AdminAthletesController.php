@@ -50,42 +50,90 @@ class AdminAthletesController extends AbstractController
         summary: 'Search athletes by name, first name or licence number (autocomplete)',
         tags: ['28. App4 - Athletes']
     )]
-    #[OA\Parameter(name: 'q', in: 'query', required: true, description: 'Search term (min 2 chars)', schema: new OA\Schema(type: 'string'))]
+    #[OA\Parameter(name: 'q', in: 'query', required: false, description: 'Search term (min 2 chars, required if no filter active)', schema: new OA\Schema(type: 'string'))]
     #[OA\Parameter(name: 'limit', in: 'query', required: false, description: 'Max results (default 20, max 50)', schema: new OA\Schema(type: 'integer'))]
+    #[OA\Parameter(name: 'region_code', in: 'query', required: false, description: 'Filter by regional committee code', schema: new OA\Schema(type: 'string'))]
+    #[OA\Parameter(name: 'dept_code', in: 'query', required: false, description: 'Filter by departmental committee code', schema: new OA\Schema(type: 'string'))]
+    #[OA\Parameter(name: 'club_code', in: 'query', required: false, description: 'Filter by club code', schema: new OA\Schema(type: 'string'))]
+    #[OA\Parameter(name: 'sexe', in: 'query', required: false, description: 'Filter by sex (M or F)', schema: new OA\Schema(type: 'string'))]
+    #[OA\Parameter(name: 'arb_niveau', in: 'query', required: false, description: 'Filter by refereeing qualification (Reg, IR, Nat, Int, OTM, JO)', schema: new OA\Schema(type: 'string'))]
     #[OA\Response(response: 200, description: 'Array of matching athletes')]
     public function search(Request $request): JsonResponse
     {
         $q = trim($request->query->get('q', ''));
         $limit = min(50, max(1, (int) $request->query->get('limit', 20)));
 
-        if (mb_strlen($q) < 2) {
+        $regionCode = trim($request->query->get('region_code', ''));
+        $deptCode   = trim($request->query->get('dept_code', ''));
+        $clubCode   = trim($request->query->get('club_code', ''));
+        $sexe       = trim($request->query->get('sexe', ''));
+        $arbNiveau  = trim($request->query->get('arb_niveau', ''));
+
+        $hasFilter = $regionCode !== '' || $deptCode !== '' || $clubCode !== '' || $sexe !== '' || $arbNiveau !== '';
+
+        // Require at least 2 chars OR an active filter
+        if (mb_strlen($q) < 2 && !$hasFilter) {
             return $this->json([]);
         }
 
-        // If query is numeric, search by Matric or ICF number (Reserve); otherwise search by name
-        if (ctype_digit($q)) {
-            $sql = "SELECT l.Matric, l.Nom, l.Prenom, l.Sexe, l.Naissance,
-                           c.Libelle AS clubLibelle, l.Numero_club AS codeClub
-                    FROM kp_licence l
-                    LEFT JOIN kp_club c ON c.Code = l.Numero_club
-                    WHERE l.Matric = ? OR l.Reserve = ?
-                    ORDER BY l.Nom, l.Prenom
-                    LIMIT " . (int) $limit;
-            $rows = $this->connection->fetchAllAssociative($sql, [(int) $q, (int) $q]);
-        } else {
-            $likeQ = "%$q%";
-            $sql = "SELECT l.Matric, l.Nom, l.Prenom, l.Sexe, l.Naissance,
-                           c.Libelle AS clubLibelle, l.Numero_club AS codeClub
-                    FROM kp_licence l
-                    LEFT JOIN kp_club c ON c.Code = l.Numero_club
-                    WHERE l.Nom LIKE ?
-                       OR l.Prenom LIKE ?
-                       OR CONCAT(l.Nom, ' ', l.Prenom) LIKE ?
-                       OR CONCAT(l.Prenom, ' ', l.Nom) LIKE ?
-                    ORDER BY l.Nom, l.Prenom
-                    LIMIT " . (int) $limit;
-            $rows = $this->connection->fetchAllAssociative($sql, [$likeQ, $likeQ, $likeQ, $likeQ]);
+        $params = [];
+        $where  = [];
+
+        // Base JOIN: always join club; join arbitre only when needed
+        $joins = "LEFT JOIN kp_club c ON c.Code = l.Numero_club";
+        if ($arbNiveau !== '') {
+            $joins .= " JOIN kp_arbitre arb ON arb.Matric = l.Matric";
         }
+
+        // Text search condition
+        if (mb_strlen($q) >= 2) {
+            if (ctype_digit($q)) {
+                $where[] = "(l.Matric = ? OR l.Reserve = ?)";
+                $params[] = (int) $q;
+                $params[] = (int) $q;
+            } else {
+                $likeQ = "%$q%";
+                $where[] = "(l.Nom LIKE ? OR l.Prenom LIKE ? OR CONCAT(l.Nom, ' ', l.Prenom) LIKE ? OR CONCAT(l.Prenom, ' ', l.Nom) LIKE ?)";
+                $params[] = $likeQ;
+                $params[] = $likeQ;
+                $params[] = $likeQ;
+                $params[] = $likeQ;
+            }
+        }
+
+        // Optional filters
+        if ($clubCode !== '') {
+            $where[] = "l.Numero_club = ?";
+            $params[] = $clubCode;
+        } elseif ($deptCode !== '') {
+            $where[] = "l.Numero_comite_dept = ?";
+            $params[] = $deptCode;
+        } elseif ($regionCode !== '') {
+            $where[] = "l.Numero_comite_reg = ?";
+            $params[] = $regionCode;
+        }
+
+        if ($sexe !== '' && in_array($sexe, ['M', 'F'], true)) {
+            $where[] = "l.Sexe = ?";
+            $params[] = $sexe;
+        }
+
+        if ($arbNiveau !== '') {
+            $where[] = "arb.arbitre = ?";
+            $params[] = $arbNiveau;
+        }
+
+        $whereClause = $where ? 'WHERE ' . implode(' AND ', $where) : '';
+
+        $sql = "SELECT l.Matric, l.Nom, l.Prenom, l.Sexe, l.Naissance,
+                       c.Libelle AS clubLibelle, l.Numero_club AS codeClub
+                FROM kp_licence l
+                $joins
+                $whereClause
+                ORDER BY l.Nom, l.Prenom
+                LIMIT " . (int) $limit;
+
+        $rows = $this->connection->fetchAllAssociative($sql, $params);
 
         return $this->json(array_map(fn(array $row) => [
             'matric' => (int) $row['Matric'],

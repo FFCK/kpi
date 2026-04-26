@@ -1589,6 +1589,22 @@
       "A": "Ref.",
       "X": "Unavailable",
       "-": ""
+    },
+    "filters": {
+      "toggle": "Filters",
+      "region": "Region",
+      "region_placeholder": "All regions",
+      "dept": "Dept. committee",
+      "dept_placeholder": "All committees",
+      "club": "Club",
+      "club_placeholder": "Search a club...",
+      "sexe": "Gender",
+      "sexe_all": "All",
+      "sexe_m": "Male",
+      "sexe_f": "Female",
+      "arb_niveau": "Refereeing",
+      "arb_all": "All levels",
+      "reset": "Reset"
     }
   },
   "users": {

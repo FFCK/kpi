@@ -23,20 +23,20 @@ accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mai
 - ✅ Multi-compétitions : les calculs s'appuient désormais sur le champ Numero de l'équipe (commun toutes compétitions/saisons) ; une équipe engagée sur 2 compétitions simultanées (ex. REG-18 + T-R18) voit bien tous ses matchs agrégés pour les contrôles de cohérence.
 
 ### Réflexions générales :
-- renumérotation des clubs/CD/CR dans la base suivant exalto, avec 6 chiffres ?
+- ⚠️ renumérotation des clubs/CD/CR dans la base suivant exalto, avec 6 chiffres ? → **EXPLICATION** : la renumérotation sera nécessaire mais nécessite une évaluation des impacts, une refonte de la mise à jour des licenciés, et une planification pour éviter les perturbations en pleine saison.
 
 
 ## Nouvelle interface administration (app4) :
 
 - Remarques / erreurs générales : 
-	* ✅ l'actualisation des différentes pages dans le navigateur (F5) renvoie une erreur 404 à part la page de connexion https://preprod.kayak-polo.info/admin2/ → **RÉSOLU** (fix nginx-app4-prod.conf `try_files`)
+	* ✅ l'actualisation des différentes pages dans le navigateur (F5) renvoie une erreur 404 à part la page de connexion https://preprod.kayak-polo.info/admin2/ → **RÉSOLU** correction de la configuration du serveur web spécifique à cette app.
 
 
 - Page "Athlètes"
 	* ✅ afficher la catégorie d'âge pour la saison en cours → **RÉSOLU**
 	* ✅ afficher le surclassement → **RÉSOLU**
 	* ✅ afficher le type de licence (même si normalement seules les licences 1 an compétition remontent j'ai déjà eu des surprises) → **RÉSOLU**
-	* plus de "recherche avancée" permettant par exemple d'avoir la liste des adhérents d'un club?
+	* ✅ plus de "recherche avancée" permettant par exemple d'avoir la liste des adhérents d'un club? → **RÉSOLU** nouveaux filtres dans la recherche de licenciés : par comité régional, par comité départemental, par club, par sexe, par niveau d'arbitrage
 
 - Page gestion des RC → **RÉSOLU**
 	* ✅ impossible d'en ajouter, y compris pour une compétition régionale, message d'erreur "Accès refusé / vous n'avez pas les droits nécessaires" y compris au stade de la recherche d'un licencié avant même de valider l'ajout → **RÉSOLU** (canDelete et bulk-delete côté API étaient restreints au profil 1 au lieu de 2 ; select des compétitions groupait tout dans "Autres" à cause d'une erreur dans CompetitionGroupedSelect)

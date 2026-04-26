@@ -1601,6 +1601,22 @@
       "A": "Arbitre",
       "X": "Inactif",
       "-": ""
+    },
+    "filters": {
+      "toggle": "Filtres",
+      "region": "Région",
+      "region_placeholder": "Toutes les régions",
+      "dept": "Comité dép.",
+      "dept_placeholder": "Tous les comités",
+      "club": "Club",
+      "club_placeholder": "Rechercher un club...",
+      "sexe": "Sexe",
+      "sexe_all": "Tous",
+      "sexe_m": "Masculin",
+      "sexe_f": "Féminin",
+      "arb_niveau": "Arbitrage",
+      "arb_all": "Tous niveaux",
+      "reset": "Réinitialiser"
     }
   },
   "users": {
