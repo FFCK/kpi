@@ -460,7 +460,10 @@
       "detail_gameday": "Detail by gameday",
       "detail_phase": "Detail by phase",
       "multi": "Multi-competition ranking",
-      "no_type": "Ranking type not defined for this competition"
+      "no_type": "Ranking type not defined for this competition",
+      "computed": "Computed ranking",
+      "published": "Published ranking",
+      "provisional": "Provisional ranking"
     },
     "stats": {
       "scorers": "Goal scorers",

@@ -461,7 +461,10 @@
       "detail_gameday": "Détail par journée",
       "detail_phase": "Détail par phase",
       "multi": "Classement multi-compétition",
-      "no_type": "Type de classement non défini pour cette compétition"
+      "no_type": "Type de classement non défini pour cette compétition",
+      "computed": "Classement calculé",
+      "published": "Classement publié",
+      "provisional": "Classement provisoire"
     },
     "stats": {
       "scorers": "Buteurs",

@@ -73,7 +73,7 @@ accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mai
 		
 	* ✅ Classements / détail par équipes  : ordre des équipes OK si compétition type championnat
 	* ✅ Classements / détail par équipes  : ordre des équipes erroné si compétition type coupe, a priori classées par ordre alphabétique et non de résultats → **RÉSOLU**
-	* pour l'ensemble des documents de "classement" : classement indiqué "provisoire" alors que la compétition est au statut terminée
+	* ✅ pour l'ensemble des documents de "classement" : classement indiqué "provisoire" alors que la compétition est au statut terminée → **RÉSOLU** (sous-rubrique "Classement calculé" renommée en "Classement provisoire" ; une sous-rubrique distincte "Classement publié" pointe vers les PDF publics `PdfClt*.php`)
 			
 	* ✅ Si on navigue du menu documents à matchs puis retour à documents (sans autre action), le lien documents / matchs / Feuilles de marque indique "aucun match" et ne permet pas de les charger → **RÉSOLU** (`onMounted` appelle désormais `loadMatchIds()` directement si une compétition est déjà sélectionnée, car `initContext()` est sans effet au retour de navigation puisque le store est déjà initialisé)
 	
@@ -113,4 +113,4 @@ accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mai
 
 - Page statistiques : 
 	* Les liens export Excel et PDF génèrent une "erreur serveur" 
-	* a priori les statistiques sont cohérentes avec la version actuelle de KPI, testé sur plusieurs calculs (buteurs, cartons, irrégularités, contrôle cohérence) sur 1-2 compétitions
+	* ✅ a priori les statistiques sont cohérentes avec la version actuelle de KPI, testé sur plusieurs calculs (buteurs, cartons, irrégularités, contrôle cohérence) sur 1-2 compétitions
