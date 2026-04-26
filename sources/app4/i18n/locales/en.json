@@ -1797,6 +1797,9 @@
       "admin": "Admin PDFs (provisional)",
       "public": "Public PDFs",
       "general": "General ranking",
+      "provisional": "Provisional ranking",
+      "computed_label": "Computed ranking",
+      "published_label": "Published ranking",
       "progress": "Progress",
       "detail": "Detail per team",
       "matches": "Games"

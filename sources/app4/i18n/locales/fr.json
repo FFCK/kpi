@@ -1809,6 +1809,9 @@
       "admin": "PDFs Admin (provisoire)",
       "public": "PDFs Public",
       "general": "Classement général",
+      "provisional": "Classement provisoire",
+      "computed_label": "Classement calculé",
+      "published_label": "Classement publié",
       "progress": "Déroulement",
       "detail": "Détail par équipe",
       "matches": "Matchs"

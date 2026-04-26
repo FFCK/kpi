@@ -71,7 +71,7 @@ accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mai
 		- Evenements / match événement EN : date du 01/01/1970 à 00:00
 		- Contrôle / Carton cumulés : à horodater en pied de page?
 		
-	* Classements / détail par équipes  : ordre des équipes OK si compétition type championnat
+	* ✅ Classements / détail par équipes  : ordre des équipes OK si compétition type championnat
 	* ✅ Classements / détail par équipes  : ordre des équipes erroné si compétition type coupe, a priori classées par ordre alphabétique et non de résultats → **RÉSOLU**
 	* pour l'ensemble des documents de "classement" : classement indiqué "provisoire" alors que la compétition est au statut terminée
 			
@@ -109,7 +109,7 @@ accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mai
 	* ✅ Création de matchs : si on créée les matchs en mode manuel, malgré le fait de renseigner le champ "intervalle", par défaut pour le match suivant il faut resaisir la date ainsi que l'heure non calculée automatiquement (testé en ajoutant des matchs à une journée déjà existante) — **RÉSOLU** (bouton "Enregistrer et ajouter" : conserve journée, date, terrain, type, intervalle ; calcule heure suivante = heure + intervalle ; incrémente le numéro de match de 1 ; réinitialise les autres champs)
 	
 - Page classements : 
-	* Menu Extraction PDF : les liens classement général / détail par équipe / déroulement renvoient un classement vide, sur une compétition à Belfast ;) (en mode championnat ou coupe)
+	* ✅ Menu Extraction PDF : les liens classement général / détail par équipe / déroulement renvoient un classement vide, sur une compétition à Belfast ;) (en mode championnat ou coupe) — **RÉSOLU** (les paramètres `Compet` et `S` n'étaient pas transmis aux scripts PDF legacy pour les liens général/détail/déroulement ; corrigé)
 
 - Page statistiques : 
 	* Les liens export Excel et PDF génèrent une "erreur serveur" 
