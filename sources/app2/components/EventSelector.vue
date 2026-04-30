@@ -267,13 +267,7 @@ const loadGroups = async () => {
   groupStore.loading = true
   showSelector.value = false
   try {
-    // Restore season from preferences if available and not already set differently
-    const lastSeason = preferenceStore.preferences.lastSeason
-    if (lastSeason && selectedSeason.value === currentYear.toString()) {
-      selectedSeason.value = lastSeason
-    }
-
-    // Use selected season
+    // Use selected season (restored from preferences in onMounted if needed)
     const season = selectedSeason.value
     groupStore.selectSeason(season)
 
@@ -287,6 +281,7 @@ const loadGroups = async () => {
 
     // Restore group selection only if it matches the current season
     const lastGroup = preferenceStore.preferences.lastGroup
+    const lastSeason = preferenceStore.preferences.lastSeason
     if (lastGroup && lastSeason === season) {
       selectedGroupCode.value = lastGroup.code
     } else {
