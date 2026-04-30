@@ -653,26 +653,34 @@ jq(document).ready(function () { //Jquery + NoConflict='J'
 	// onChange="arbitre1_matric.value=this.options[this.selectedIndex].value; arbitre1.value=this.options[this.selectedIndex].text;"
 
 	jq("#comboarbitre1b").change(function () {
+		var equipe = jq("#comboarbitre1b option:selected").text().trim()
 		if (jq('#arbitre1_matric').val() != '' && jq('#arbitre1_matric').val() != '-1') {
 			var arbitre = jq('#arbitre1').val()
 			var regExp = /\(([^)]+)\)/ // valeur entre parenthèses
 			var matches = regExp.exec(arbitre)
-			var remplace = arbitre.replace(matches[1], jq("#comboarbitre1b option:selected").text())
-			jq('#arbitre1').val(remplace)
+			if (matches) {
+				jq('#arbitre1').val(arbitre.replace(matches[1], equipe))
+			} else {
+				jq('#arbitre1').val(arbitre + ' (' + equipe + ')')
+			}
 		} else {
-			jq('#arbitre1').val(jq("#comboarbitre1b option:selected").text())
+			jq('#arbitre1').val(equipe)
 		}
 	})
 
 	jq("#comboarbitre2b").change(function () {
+		var equipe = jq("#comboarbitre2b option:selected").text().trim()
 		if (jq('#arbitre2_matric').val() != '' && jq('#arbitre2_matric').val() != '-1') {
 			var arbitre = jq('#arbitre2').val()
 			var regExp = /\(([^)]+)\)/ // valeur entre parenthèses
 			var matches = regExp.exec(arbitre)
-			var remplace = arbitre.replace(matches[1], jq("#comboarbitre2b option:selected").text())
-			jq('#arbitre2').val(remplace)
+			if (matches) {
+				jq('#arbitre2').val(arbitre.replace(matches[1], equipe))
+			} else {
+				jq('#arbitre2').val(arbitre + ' (' + equipe + ')')
+			}
 		} else {
-			jq('#arbitre2').val(jq("#comboarbitre2b option:selected").text())
+			jq('#arbitre2').val(equipe)
 		}
 	})
 
