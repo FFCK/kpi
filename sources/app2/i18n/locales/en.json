@@ -114,6 +114,7 @@
     "Prev": "Previous games",
     "Next": "Next games",
     "games": "games",
+    "NoGames": "No games available — the competition may be pending or no games have been published yet.",
     "Game": "Game",
     "Pitch": "Pitch",
     "Date": "Date",
@@ -128,6 +129,7 @@
     "MatchSheet": "Open game sheet",
     "Status": {
       "ATT": "Pending",
+      "ATT_chart": "Competition pending — the chart will be available soon.",
       "ON": "In progress",
       "END": "Completed",
       "Provisional": "Provisional"

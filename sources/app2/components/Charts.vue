@@ -14,6 +14,9 @@
           :show-flags="showFlags"
         />
       </div>
+      <div v-else-if="category.status === 'ATT'" class="flex items-center justify-center py-8 text-gray-400 italic text-sm">
+        {{ t('Games.Status.ATT_chart') }}
+      </div>
       <div v-else>
         <!-- Final Ranking - Centered with optimal width -->
         <div
@@ -68,6 +71,7 @@
 
 <script setup>
 import { computed, ref, onMounted, onUnmounted } from 'vue'
+const { t } = useI18n()
 import ChartGroup from './ChartGroup.vue'
 import ChartGame from './ChartGame.vue'
 import ChartChptRanking from './ChartChptRanking.vue'

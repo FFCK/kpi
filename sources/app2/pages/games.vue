@@ -158,7 +158,10 @@
       </div>
     </div>
 
-    <GameList :games="filteredGames" :show-refs="showRefs" :show-flags="showFlags" :games-count="gamesCount" :filtered-games-count="filteredGamesCount" :is-group-mode="isGroupMode" :key="locale" />
+    <div v-if="isEmpty" class="flex items-center justify-center py-12 text-gray-400 italic text-sm">
+      {{ t('Games.NoGames') }}
+    </div>
+    <GameList v-else :games="filteredGames" :show-refs="showRefs" :show-flags="showFlags" :games-count="gamesCount" :filtered-games-count="filteredGamesCount" :is-group-mode="isGroupMode" :key="locale" />
 
     <button @click="scrollToTop" class="fixed bottom-8 right-4 bg-gray-800 hover:bg-gray-700 text-white font-bold p-3 rounded-full">
       <UIcon name="i-heroicons-arrow-up" class="h-6 w-6" />
@@ -170,6 +173,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useGames } from '~/composables/useGames'
+import { useGameStore } from '~/stores/gameStore'
 import GameList from '~/components/GameList.vue'
 
 // Protect this page - require event selection
@@ -209,6 +213,9 @@ const {
   changeFav,
   resetAllFilters
 } = useGames()
+
+const gameStore = useGameStore()
+const isEmpty = computed(() => gamesCount.value === 0 && !gameStore.loading)
 
 const handleRefresh = () => {
   visibleButton.value = false

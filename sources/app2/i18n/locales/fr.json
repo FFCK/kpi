@@ -115,6 +115,7 @@
     "Prev": "Précédents matchs",
     "Next": "Prochains matchs",
     "games": "matchs",
+    "NoGames": "Aucun match disponible — la compétition est peut-être en attente ou aucun match n'est encore publié.",
     "Game": "Match",
     "Pitch": "Terr.",
     "Date": "Date",
@@ -128,6 +129,7 @@
     "MatchSheet": "Ouvrir la feuille de marque",
     "Status": {
       "ATT": "En attente",
+      "ATT_chart": "Compétition en attente — le tableau sera disponible prochainement.",
       "ON": "En cours",
       "END": "Terminé",
       "Provisional": "Provisoire"
