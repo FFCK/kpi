@@ -532,6 +532,14 @@ const formatDate = (date: string | null) => {
                     <UIcon name="heroicons:pencil-solid" class="w-6 h-6" />
                   </button>
                   <button
+                    v-if="authStore.profile <= 3"
+                    class="p-1.5 text-purple-600 hover:text-purple-800"
+                    :title="t('events.manage_gameday_associations')"
+                    @click="navigateTo(`/events/${event.id}/gamedays`)"
+                  >
+                    <UIcon name="heroicons:link" class="w-6 h-6" />
+                  </button>
+                  <button
                     v-if="authStore.isSuperAdmin"
                     class="p-1.5 text-danger-600"
                     :title="t('common.delete')"
@@ -628,6 +636,13 @@ const formatDate = (date: string | null) => {
             @click="openEditModal(event)"
           >
             {{ t('common.edit') }}
+          </AdminActionButton>
+          <AdminActionButton
+            v-if="authStore.profile <= 3"
+            icon="heroicons:link"
+            @click="navigateTo(`/events/${event.id}/gamedays`)"
+          >
+            {{ t('events.manage_gameday_associations') }}
           </AdminActionButton>
           <AdminActionButton
             v-if="authStore.isSuperAdmin"

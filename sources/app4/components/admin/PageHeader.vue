@@ -9,12 +9,14 @@ interface Props {
   showFilters?: boolean
   showAllOption?: boolean
   competitionFilteredCodes?: string[] | null
+  hasNotices?: boolean
 }
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   showFilters: true,
   showAllOption: false,
   competitionFilteredCodes: null,
+  hasNotices: false,
 })
 
 const emit = defineEmits<{
@@ -24,7 +26,6 @@ const emit = defineEmits<{
 
 // Notices dismissal state
 const noticesDismissed = ref(false)
-const hasNotices = computed(() => !!slots.notices && !noticesDismissed.value)
 
 // Reset dismissed state when slot content might change (competition change)
 watch(() => workContext.pageCompetitionCode, () => {
@@ -83,7 +84,7 @@ watch(() => workContext.pageCompetitionCodeAll, () => {
     </div>
 
     <!-- Notices (dismissable) -->
-    <div v-if="slots.notices && !noticesDismissed" class="mt-2 relative">
+    <div v-if="props.hasNotices && !noticesDismissed" class="mt-2 relative">
       <slot name="notices" />
       <button
         class="absolute top-1 right-1 p-1 text-header-400 hover:text-header-600 rounded transition-colors"

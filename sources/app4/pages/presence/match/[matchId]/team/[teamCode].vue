@@ -324,6 +324,7 @@ const formatDate = (dateStr: string) => {
     <AdminPageHeader
       :title="t('presence.title_match')"
       :show-filters="false"
+      :has-notices="!!presenceStore.isLocked"
     >
       <template #badges>
         <div v-if="presenceStore.match" class="flex flex-wrap items-center gap-2 text-sm">

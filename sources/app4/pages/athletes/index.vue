@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import type {
   AthleteSearchResult,
+  AthleteSearchFilters,
   AthleteDetail,
   AthleteParticipations,
 } from '~/types/athletes'
+import type { RegionalCommittee, DepartmentalCommittee, ClubSearchResult } from '~/types/clubs'
 
 definePageMeta({
   layout: 'admin',
@@ -25,6 +27,117 @@ const searchLoading = ref(false)
 const searchOpen = ref(false)
 const searchRef = ref<HTMLElement | null>(null)
 let searchTimer: ReturnType<typeof setTimeout> | null = null
+
+// ── Filters ──
+const filtersOpen = ref(false)
+const filters = ref<AthleteSearchFilters>({
+  regionCode: '',
+  deptCode: '',
+  clubCode: '',
+  sexe: '',
+  arbNiveau: '',
+})
+
+const regions = ref<RegionalCommittee[]>([])
+const depts = ref<DepartmentalCommittee[]>([])
+const allDepts = ref<DepartmentalCommittee[]>([])
+
+// Club filter autocomplete
+const clubSearch = ref('')
+const clubResults = ref<ClubSearchResult[]>([])
+const clubLoading = ref(false)
+const clubOpen = ref(false)
+const clubFilterRef = ref<HTMLElement | null>(null)
+let clubTimer: ReturnType<typeof setTimeout> | null = null
+const selectedClubLabel = ref('')
+
+const ARB_NIVEAUX = ['Reg', 'IR', 'Nat', 'Int', 'OTM', 'JO']
+
+const hasActiveFilters = computed(() =>
+  filters.value.regionCode !== ''
+  || filters.value.deptCode !== ''
+  || filters.value.clubCode !== ''
+  || filters.value.sexe !== ''
+  || filters.value.arbNiveau !== ''
+)
+
+// Filtered depts based on selected region (cascade)
+const availableDepts = computed(() =>
+  filters.value.regionCode
+    ? allDepts.value.filter(d => d.codeComiteReg === filters.value.regionCode)
+    : allDepts.value
+)
+
+function onRegionChange() {
+  // Reset dept and club when region changes
+  filters.value.deptCode = ''
+  filters.value.clubCode = ''
+  clubSearch.value = ''
+  selectedClubLabel.value = ''
+  triggerSearch()
+}
+
+function onDeptChange() {
+  // Reset club when dept changes
+  filters.value.clubCode = ''
+  clubSearch.value = ''
+  selectedClubLabel.value = ''
+  triggerSearch()
+}
+
+function onFilterChange() {
+  triggerSearch()
+}
+
+function resetFilters() {
+  filters.value = { regionCode: '', deptCode: '', clubCode: '', sexe: '', arbNiveau: '' }
+  clubSearch.value = ''
+  selectedClubLabel.value = ''
+  triggerSearch()
+}
+
+// Club autocomplete in filter panel
+function onClubSearchInput() {
+  if (clubTimer) clearTimeout(clubTimer)
+  const q = clubSearch.value.trim()
+  if (q.length < 2 && !filters.value.deptCode && !filters.value.regionCode) {
+    clubResults.value = []
+    clubOpen.value = false
+    return
+  }
+  clubTimer = setTimeout(async () => {
+    clubLoading.value = true
+    try {
+      const params: Record<string, string> = { limit: '30' }
+      if (q.length >= 2) params.q = q
+      if (filters.value.deptCode) params.dept_code = filters.value.deptCode
+      else if (filters.value.regionCode) params.region_code = filters.value.regionCode
+      const results = await api.get<ClubSearchResult[]>('/admin/clubs/search-all', params)
+      clubResults.value = results
+      clubOpen.value = results.length > 0
+    } catch {
+      clubResults.value = []
+    } finally {
+      clubLoading.value = false
+    }
+  }, 300)
+}
+
+function selectClub(club: ClubSearchResult) {
+  filters.value.clubCode = club.code
+  selectedClubLabel.value = `${club.code} ${club.libelle}`
+  clubSearch.value = selectedClubLabel.value
+  clubOpen.value = false
+  triggerSearch()
+}
+
+function clearClubFilter() {
+  filters.value.clubCode = ''
+  clubSearch.value = ''
+  selectedClubLabel.value = ''
+  clubResults.value = []
+  triggerSearch()
+}
 
 // ── Athlete detail ──
 const athlete = ref<AthleteDetail | null>(null)
@@ -68,10 +181,22 @@ function formatDateShort(dateStr: string | null): string {
 }
 
 // ── Search autocomplete ──
-function onSearchInput() {
+function buildSearchParams(): Record<string, string | number> {
+  const q = search.value.trim()
+  const params: Record<string, string | number> = { limit: 20 }
+  if (q.length >= 2) params.q = q
+  if (filters.value.regionCode) params.region_code = filters.value.regionCode
+  if (filters.value.deptCode) params.dept_code = filters.value.deptCode
+  if (filters.value.clubCode) params.club_code = filters.value.clubCode
+  if (filters.value.sexe) params.sexe = filters.value.sexe
+  if (filters.value.arbNiveau) params.arb_niveau = filters.value.arbNiveau
+  return params
+}
+
+function triggerSearch() {
   if (searchTimer) clearTimeout(searchTimer)
   const q = search.value.trim()
-  if (q.length < 2) {
+  if (q.length < 2 && !hasActiveFilters.value) {
     searchResults.value = []
     searchOpen.value = false
     return
@@ -79,7 +204,7 @@ function onSearchInput() {
   searchTimer = setTimeout(async () => {
     searchLoading.value = true
     try {
-      const results = await api.get<AthleteSearchResult[]>('/admin/athletes/search', { q, limit: 20 })
+      const results = await api.get<AthleteSearchResult[]>('/admin/athletes/search', buildSearchParams())
       searchResults.value = results
       searchOpen.value = results.length > 0
     } catch {
@@ -88,6 +213,10 @@ function onSearchInput() {
       searchLoading.value = false
     }
   }, 300)
+}
+
+function onSearchInput() {
+  triggerSearch()
 }
 
 function clearSearch() {
@@ -158,11 +287,14 @@ async function onAthleteSaved() {
   }
 }
 
-// ── Close dropdown on outside click ──
+// ── Close dropdowns on outside click ──
 function handleGlobalClick(e: MouseEvent) {
   const target = e.target as HTMLElement
   if (searchRef.value && !searchRef.value.contains(target)) {
     searchOpen.value = false
+  }
+  if (clubFilterRef.value && !clubFilterRef.value.contains(target)) {
+    clubOpen.value = false
   }
 }
 
@@ -170,6 +302,17 @@ onMounted(async () => {
   await workContext.initContext()
   participationsSeason.value = workContext.season || ''
   document.addEventListener('click', handleGlobalClick)
+
+  // Load regions and depts for filter panel
+  try {
+    const [r, d] = await Promise.all([
+      api.get<RegionalCommittee[]>('/admin/regional-committees'),
+      api.get<DepartmentalCommittee[]>('/admin/departmental-committees'),
+    ])
+    regions.value = r
+    allDepts.value = d
+    depts.value = d
+  } catch { /* non-blocking */ }
 
   // Auto-load athlete from query param ?matric=
   const matric = Number(route.query.matric)
@@ -189,6 +332,135 @@ onBeforeUnmount(() => {
     <h1 class="text-2xl font-bold text-header-900 mb-6">
       {{ t('athletes.title') }}
     </h1>
+
+    <!-- ═══ Filter Panel ═══ -->
+    <div class="mb-4">
+      <button
+        type="button"
+        class="flex items-center gap-2 text-sm font-medium px-3 py-1.5 rounded-lg border transition-colors"
+        :class="hasActiveFilters
+          ? 'border-primary-400 bg-primary-50 text-primary-700'
+          : 'border-header-300 text-header-600 hover:bg-header-50'"
+        @click="filtersOpen = !filtersOpen"
+      >
+        <UIcon name="i-heroicons-funnel" class="w-4 h-4" />
+        {{ t('athletes.filters.toggle') }}
+        <span v-if="hasActiveFilters" class="ml-1 w-2 h-2 rounded-full bg-primary-500" />
+        <UIcon :name="filtersOpen ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'" class="w-3 h-3 ml-1" />
+      </button>
+
+      <div v-if="filtersOpen" class="mt-3 bg-white border border-header-200 rounded-lg p-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-3">
+
+          <!-- Région -->
+          <div>
+            <label class="block text-xs font-medium text-header-600 mb-1">{{ t('athletes.filters.region') }}</label>
+            <select
+              v-model="filters.regionCode"
+              class="w-full px-2 py-1.5 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              @change="onRegionChange"
+            >
+              <option value="">{{ t('athletes.filters.region_placeholder') }}</option>
+              <option v-for="r in regions" :key="r.code" :value="r.code">{{ r.code }} {{ r.libelle }}</option>
+            </select>
+          </div>
+
+          <!-- Comité dép. (cascade région) -->
+          <div>
+            <label class="block text-xs font-medium text-header-600 mb-1">{{ t('athletes.filters.dept') }}</label>
+            <select
+              v-model="filters.deptCode"
+              class="w-full px-2 py-1.5 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              @change="onDeptChange"
+            >
+              <option value="">{{ t('athletes.filters.dept_placeholder') }}</option>
+              <option v-for="d in availableDepts" :key="d.code" :value="d.code">{{ d.code }} {{ d.libelle }}</option>
+            </select>
+          </div>
+
+          <!-- Club (cascade dept/région) -->
+          <div ref="clubFilterRef" class="relative">
+            <label class="block text-xs font-medium text-header-600 mb-1">{{ t('athletes.filters.club') }}</label>
+            <div class="relative">
+              <input
+                v-model="clubSearch"
+                type="text"
+                :placeholder="t('athletes.filters.club_placeholder')"
+                class="w-full px-2 py-1.5 pr-7 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                :class="filters.clubCode ? 'border-primary-400 bg-primary-50' : ''"
+                @input="onClubSearchInput"
+                @focus="onClubSearchInput"
+              >
+              <UIcon v-if="clubLoading" name="i-heroicons-arrow-path" class="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-header-400 animate-spin" />
+              <button
+                v-else-if="filters.clubCode"
+                type="button"
+                class="absolute right-2 top-1/2 -translate-y-1/2 text-header-400 hover:text-header-600"
+                @click="clearClubFilter"
+              >
+                <UIcon name="i-heroicons-x-mark" class="w-4 h-4" />
+              </button>
+            </div>
+            <div
+              v-if="clubOpen && clubResults.length > 0"
+              class="absolute z-30 mt-1 w-full max-h-48 overflow-y-auto bg-white border border-header-200 rounded-lg shadow-lg"
+            >
+              <button
+                v-for="club in clubResults"
+                :key="club.code"
+                class="w-full px-3 py-2 text-left text-xs text-header-900 hover:bg-primary-50 focus:bg-primary-100 focus:outline-none"
+                @click="selectClub(club)"
+              >
+                <span class="font-mono text-header-500">{{ club.code }}</span>
+                <span class="ml-2">{{ club.libelle }}</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Sexe -->
+          <div>
+            <label class="block text-xs font-medium text-header-600 mb-1">{{ t('athletes.filters.sexe') }}</label>
+            <select
+              v-model="filters.sexe"
+              class="w-full px-2 py-1.5 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              @change="onFilterChange"
+            >
+              <option value="">{{ t('athletes.filters.sexe_all') }}</option>
+              <option value="M">{{ t('athletes.filters.sexe_m') }}</option>
+              <option value="F">{{ t('athletes.filters.sexe_f') }}</option>
+            </select>
+          </div>
+
+          <!-- Niveau arbitrage -->
+          <div>
+            <label class="block text-xs font-medium text-header-600 mb-1">{{ t('athletes.filters.arb_niveau') }}</label>
+            <select
+              v-model="filters.arbNiveau"
+              class="w-full px-2 py-1.5 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              @change="onFilterChange"
+            >
+              <option value="">{{ t('athletes.filters.arb_all') }}</option>
+              <option v-for="n in ARB_NIVEAUX" :key="n" :value="n">
+                {{ t(`athletes.arbitrage.qualification.${n}`, n) }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Reset -->
+          <div class="flex items-end">
+            <button
+              v-if="hasActiveFilters"
+              type="button"
+              class="w-full px-3 py-1.5 text-sm font-medium text-danger-600 border border-danger-200 rounded-lg hover:bg-danger-50 transition-colors"
+              @click="resetFilters"
+            >
+              {{ t('athletes.filters.reset') }}
+            </button>
+          </div>
+
+        </div>
+      </div>
+    </div>
 
     <!-- ═══ Search Bar ═══ -->
     <div ref="searchRef" class="mb-6 relative">

@@ -31,6 +31,7 @@
     "journal": "Activity Log",
     "copy": "Game system copy",
     "tv": "TV Control",
+    "event_cache_manager": "Event cache",
     "referentials": "Referentials",
     "rights": "Rights",
     "live": "Live",
@@ -113,6 +114,27 @@
     "pagination": {
       "showing": "Showing {from} to {to} of {total} events",
       "items_per_page": "Items per page"
+    },
+    "manage_gameday_associations": "Manage gameday associations",
+    "association": {
+      "page_title": "Gameday associations",
+      "back_to_events": "Back to events",
+      "associated_count": "{count} gameday associated | {count} gamedays associated",
+      "filter_season": "Season",
+      "filter_competitions": "Competitions",
+      "filter_state": "State",
+      "filter_state_all": "All",
+      "filter_state_linked": "Linked",
+      "filter_state_unlinked": "Unlinked",
+      "search_placeholder": "Search (Phase, Name, Location, Id)…",
+      "linked_badge": "Linked",
+      "unlinked_badge": "Unlinked",
+      "action_link": "Link",
+      "action_unlink": "Remove link",
+      "linked": "Gameday linked to event.",
+      "unlinked": "Gameday unlinked from event.",
+      "event_not_found": "Event not found.",
+      "no_candidates": "No candidate gameday for the selected filters."
     }
   },
   "groups": {
@@ -214,6 +236,8 @@
     "no_results": "No results",
     "club": "Club",
     "exports": "PDF Exports",
+    "pdf_editions": "PDF Editions",
+    "more_actions": "More actions",
     "all": "All",
     "select": "Select",
     "copy": "Copy"
@@ -437,7 +461,10 @@
       "detail_gameday": "Detail by gameday",
       "detail_phase": "Detail by phase",
       "multi": "Multi-competition ranking",
-      "no_type": "Ranking type not defined for this competition"
+      "no_type": "Ranking type not defined for this competition",
+      "computed": "Computed ranking",
+      "published": "Published ranking",
+      "provisional": "Provisional ranking"
     },
     "stats": {
       "scorers": "Goal scorers",
@@ -961,6 +988,7 @@
     "presence_sheet_en": "Roster sheet (EN)",
     "presence_sheet_cat": "Roster by category",
     "presence_sheet_photo": "Roster with photos",
+    "visa_sheet": "Presence with visa",
     "control_sheet": "Control sheet",
     "locked": "Competition locked",
     "unlocked": "Competition unlocked",
@@ -1072,7 +1100,7 @@
     "national_validation_required": "Enhanced validation (national competition)",
     "status_player": "Player",
     "status_captain": "Captain",
-    "status_coach": "Coach",
+    "status_coach": "Staff",
     "status_referee": "Referee",
     "status_inactive": "Inactive",
     "player_added": "Player added",
@@ -1101,10 +1129,11 @@
     "pdf_en": "PDF EN",
     "pdf_photo": "PDF Photo",
     "pdf_visa": "PDF Visa",
+    "pdf_controle": "PDF Control",
     "confirm_delete_players": "Delete {count} player(s) from composition?",
-    "section_coaches": "Coaches (E)",
-    "section_referees": "Non-playing referees (A)",
-    "section_inactive": "Inactive players (X)",
+    "section_coaches": "Staff",
+    "section_referees": "Non-playing referees",
+    "section_inactive": "Inactive players",
     "sex": "Sex",
     "birth_date": "Birth date",
     "status": "Status",
@@ -1120,7 +1149,11 @@
     "referee_nat": "National",
     "referee_int": "International",
     "referee_otm": "Game Official",
-    "referee_jo": "Young Official"
+    "referee_jo": "Young Official",
+    "notice_inactive": "Use Unavailable (X) status to set a player unavailable without removing them from the roster (absent or suspended players on one or more games, on one or more days).",
+    "notice_staff_referee": "Coaches (E) and referees (A) are not counted in statistics. Unavailable players (X) and referees (A) are not transferred to game reports.",
+    "last_addition_or_deletion": "Last addition or deletion",
+    "last_update_by": "by"
   },
   "gamedays": {
     "title": "Gamedays / Phases",
@@ -1189,11 +1222,6 @@
     "bulk_calendar_updated": "Calendar updated for {count} gameday(s).",
     "bulk_deleted": "{deleted} gameday(s) deleted.",
     "bulk_deleted_partial": "{deleted} deleted, {skipped} skipped (linked games or events).",
-    "event_linked": "Gameday linked to event.",
-    "event_unlinked": "Gameday unlinked from event.",
-    "manage_event_association": "Manage associations",
-    "event_association_title": "Event association",
-    "event_association_hint": "Check the gamedays to associate with the selected event.",
     "calendar_public": "Public calendar",
     "bulk_officials_title": "Copy officials and calendar",
     "bulk_officials_hint": "Copy officials and public calendar settings from a source phase to the {count} selected phase(s).",
@@ -1360,6 +1388,8 @@
       "pitches_5_8_phases": "Pitches 5-8 (Phases)"
     },
     "added": "Game created.",
+    "save_and_add": "Save and add",
+    "save_and_close": "Save and close",
     "updated": "Game updated.",
     "deleted": "Game deleted.",
     "bulk_published": "{count} game(s) modified.",
@@ -1559,6 +1589,22 @@
       "A": "Ref.",
       "X": "Unavailable",
       "-": ""
+    },
+    "filters": {
+      "toggle": "Filters",
+      "region": "Region",
+      "region_placeholder": "All regions",
+      "dept": "Dept. committee",
+      "dept_placeholder": "All committees",
+      "club": "Club",
+      "club_placeholder": "Search a club...",
+      "sexe": "Gender",
+      "sexe_all": "All",
+      "sexe_m": "Male",
+      "sexe_f": "Female",
+      "arb_niveau": "Refereeing",
+      "arb_all": "All levels",
+      "reset": "Reset"
     }
   },
   "users": {
@@ -1771,6 +1817,9 @@
       "admin": "Admin PDFs (provisional)",
       "public": "Public PDFs",
       "general": "General ranking",
+      "provisional": "Provisional ranking",
+      "computed_label": "Computed ranking",
+      "published_label": "Published ranking",
       "progress": "Progress",
       "detail": "Detail per team",
       "matches": "Games"
@@ -2042,6 +2091,79 @@
       "with_stats": "Players with stats",
       "all": "All players",
       "without_stats": "All without stats"
+    }
+  },
+  "eventCacheManager": {
+    "title": "Event Cache Manager",
+    "subtitle": "Control the automatic cache generation worker",
+    "active_workers": {
+      "title": "Active workers",
+      "none": "No active worker",
+      "stop_all": "Stop all",
+      "monitor": "Monitor",
+      "pause": "Pause",
+      "resume": "Resume",
+      "stop": "Stop",
+      "executions": "Executions",
+      "last_execution": "Last",
+      "current_time": "Simulated time",
+      "initial_time": "Initial time",
+      "date": "Date",
+      "pitches": "Pitches",
+      "delay": "Delay",
+      "warmup": "Warm-up",
+      "healthy": "Healthy",
+      "unhealthy": "Inactive (missed heartbeat)"
+    },
+    "form": {
+      "title": "New configuration",
+      "event": "Event",
+      "event_placeholder": "Select an event",
+      "quick_date": "Quick select",
+      "date": "Date",
+      "hour": "Start time",
+      "hour_help": "Initial reference time",
+      "offset": "Warm-up (min)",
+      "pitch": "Number of pitches",
+      "delay": "Refresh delay (sec)",
+      "start": "Start worker"
+    },
+    "status": {
+      "running": "Running",
+      "paused": "Paused",
+      "stopped": "Stopped"
+    },
+    "monitor": {
+      "title": "Live monitoring",
+      "event": "Event",
+      "date": "Date",
+      "initial_time": "Initial time",
+      "refresh_every": "Refresh every {seconds}s",
+      "pitch": "Pitch",
+      "current_game": "Current game",
+      "next_game": "Next game",
+      "time": "Time",
+      "num": "No.",
+      "match_id": "Game ID",
+      "waiting": "Waiting...",
+      "time_current": "Current time:",
+      "time_working": "Working time:",
+      "last_update": "Last update: {time}",
+      "load_failed": "Failed to load monitoring"
+    },
+    "confirm": {
+      "stop_one": "Stop worker for event #{id}?",
+      "stop_all": "Stop ALL active workers?"
+    },
+    "toasts": {
+      "started": "Worker started successfully",
+      "stopped": "Worker stopped",
+      "paused": "Worker paused",
+      "resumed": "Worker resumed",
+      "stop_all_done": "All workers have been stopped"
+    },
+    "errors": {
+      "missing_fields": "Event, date and time are required"
     }
   }
 }

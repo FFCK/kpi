@@ -31,6 +31,7 @@
     "journal": "Journal",
     "copy": "Copie système de jeu",
     "tv": "Contrôle TV",
+    "event_cache_manager": "Cache d'événement",
     "referentials": "Référentiels",
     "rights": "Droits",
     "live": "Live",
@@ -113,6 +114,27 @@
     "pagination": {
       "showing": "Affichage de {from} à {to} sur {total} événements",
       "items_per_page": "Éléments par page"
+    },
+    "manage_gameday_associations": "Gérer les associations de journées",
+    "association": {
+      "page_title": "Associations de journées",
+      "back_to_events": "Retour aux événements",
+      "associated_count": "{count} journée associée | {count} journées associées",
+      "filter_season": "Saison",
+      "filter_competitions": "Compétitions",
+      "filter_state": "État",
+      "filter_state_all": "Toutes",
+      "filter_state_linked": "Associées",
+      "filter_state_unlinked": "Non associées",
+      "search_placeholder": "Rechercher (Phase, Nom, Lieu, Id)…",
+      "linked_badge": "Associée",
+      "unlinked_badge": "Non associée",
+      "action_link": "Associer",
+      "action_unlink": "Supprimer l'association",
+      "linked": "Journée associée à l'événement.",
+      "unlinked": "Journée dissociée de l'événement.",
+      "event_not_found": "Événement introuvable.",
+      "no_candidates": "Aucune journée candidate pour les filtres sélectionnés."
     }
   },
   "groups": {
@@ -214,6 +236,8 @@
     "no_results": "Aucun résultat",
     "club": "Club",
     "exports": "Exports PDF",
+    "pdf_editions": "Éditions PDF",
+    "more_actions": "Plus d'actions",
     "all": "Tous",
     "select": "Sélectionner",
     "copy": "Copier"
@@ -438,7 +462,10 @@
       "detail_gameday": "Détail par journée",
       "detail_phase": "Détail par phase",
       "multi": "Classement multi-compétition",
-      "no_type": "Type de classement non défini pour cette compétition"
+      "no_type": "Type de classement non défini pour cette compétition",
+      "computed": "Classement calculé",
+      "published": "Classement publié",
+      "provisional": "Classement provisoire"
     },
     "stats": {
       "scorers": "Buteurs",
@@ -973,6 +1000,7 @@
     "presence_sheet_en": "Feuille de présence (EN)",
     "presence_sheet_cat": "Présence par catégorie",
     "presence_sheet_photo": "Présence avec photo",
+    "visa_sheet": "Présence avec visa",
     "control_sheet": "Fiche contrôle",
     "locked": "Compétition verrouillée",
     "unlocked": "Compétition déverrouillée",
@@ -1084,7 +1112,7 @@
     "national_validation_required": "Validation renforcée (compétition nationale)",
     "status_player": "Joueur",
     "status_captain": "Capitaine",
-    "status_coach": "Entraîneur",
+    "status_coach": "Staff",
     "status_referee": "Arbitre",
     "status_inactive": "Inactif",
     "player_added": "Joueur ajouté",
@@ -1113,10 +1141,11 @@
     "pdf_en": "PDF EN",
     "pdf_photo": "PDF Photo",
     "pdf_visa": "PDF Visa",
+    "pdf_controle": "PDF Contrôle",
     "confirm_delete_players": "Supprimer {count} joueur(s) de la composition ?",
-    "section_coaches": "Entraîneurs (E)",
-    "section_referees": "Arbitres non-joueurs (A)",
-    "section_inactive": "Joueurs inactifs (X)",
+    "section_coaches": "Staff",
+    "section_referees": "Arbitres non-joueurs",
+    "section_inactive": "Joueurs inactifs",
     "sex": "Sexe",
     "birth_date": "Date de naissance",
     "status": "Statut",
@@ -1132,7 +1161,11 @@
     "referee_nat": "National",
     "referee_int": "International",
     "referee_otm": "Officiel Table de Marque",
-    "referee_jo": "Jeune Officiel"
+    "referee_jo": "Jeune Officiel",
+    "notice_inactive": "Utilisez le statut Inactif (X) pour rendre indisponible un joueur sans le supprimer de la liste (joueurs absents ou suspendus sur un ou plusieurs matchs, sur une ou plusieurs journées).",
+    "notice_staff_referee": "Les membres du staff (E) et arbitres (A) ne sont pas comptabilisés dans les statistiques. Les joueurs inactifs (X) et les arbitres (A) ne sont pas transférés sur les feuilles de match.",
+    "last_addition_or_deletion": "Dernière addition ou suppression",
+    "last_update_by": "par"
   },
   "gamedays": {
     "title": "Journées / Phases",
@@ -1201,11 +1234,6 @@
     "bulk_calendar_updated": "Calendrier mis à jour pour {count} journée(s).",
     "bulk_deleted": "{deleted} journée(s) supprimée(s).",
     "bulk_deleted_partial": "{deleted} supprimée(s), {skipped} ignorée(s) (matchs ou événements liés).",
-    "event_linked": "Journée associée à l'événement.",
-    "event_unlinked": "Journée dissociée de l'événement.",
-    "manage_event_association": "Gérer les associations",
-    "event_association_title": "Association événement",
-    "event_association_hint": "Cochez les journées à associer à l'événement sélectionné.",
     "calendar_public": "Calendrier public",
     "bulk_officials_title": "Copier officiels et calendrier",
     "bulk_officials_hint": "Copier les officiels et paramètres du calendrier public depuis une phase source vers les {count} phase(s) sélectionnée(s).",
@@ -1372,6 +1400,8 @@
       "pitches_5_8_phases": "Terrains 5-8 (Phases)"
     },
     "added": "Match créé.",
+    "save_and_add": "Enregistrer et ajouter",
+    "save_and_close": "Enregistrer et fermer",
     "updated": "Match modifié.",
     "deleted": "Match supprimé.",
     "bulk_published": "{count} match(s) modifié(s).",
@@ -1571,6 +1601,22 @@
       "A": "Arbitre",
       "X": "Inactif",
       "-": ""
+    },
+    "filters": {
+      "toggle": "Filtres",
+      "region": "Région",
+      "region_placeholder": "Toutes les régions",
+      "dept": "Comité dép.",
+      "dept_placeholder": "Tous les comités",
+      "club": "Club",
+      "club_placeholder": "Rechercher un club...",
+      "sexe": "Sexe",
+      "sexe_all": "Tous",
+      "sexe_m": "Masculin",
+      "sexe_f": "Féminin",
+      "arb_niveau": "Arbitrage",
+      "arb_all": "Tous niveaux",
+      "reset": "Réinitialiser"
     }
   },
   "users": {
@@ -1783,6 +1829,9 @@
       "admin": "PDFs Admin (provisoire)",
       "public": "PDFs Public",
       "general": "Classement général",
+      "provisional": "Classement provisoire",
+      "computed_label": "Classement calculé",
+      "published_label": "Classement publié",
       "progress": "Déroulement",
       "detail": "Détail par équipe",
       "matches": "Matchs"
@@ -2054,6 +2103,79 @@
       "with_stats": "Joueurs avec stats",
       "all": "Tous les joueurs",
       "without_stats": "Tous sans stats"
+    }
+  },
+  "eventCacheManager": {
+    "title": "Gestion du cache d'événement",
+    "subtitle": "Contrôle du worker de génération automatique des caches",
+    "active_workers": {
+      "title": "Workers actifs",
+      "none": "Aucun worker actif",
+      "stop_all": "Tout arrêter",
+      "monitor": "Monitor",
+      "pause": "Pause",
+      "resume": "Reprendre",
+      "stop": "Arrêter",
+      "executions": "Exécutions",
+      "last_execution": "Dernière",
+      "current_time": "Heure simulée",
+      "initial_time": "Heure initiale",
+      "date": "Date",
+      "pitches": "Terrains",
+      "delay": "Délai",
+      "warmup": "Warm-up",
+      "healthy": "Sain",
+      "unhealthy": "Inactif (heartbeat manqué)"
+    },
+    "form": {
+      "title": "Nouvelle configuration",
+      "event": "Événement",
+      "event_placeholder": "Sélectionner un événement",
+      "quick_date": "Sélection rapide",
+      "date": "Date",
+      "hour": "Heure de départ",
+      "hour_help": "Heure initiale de référence",
+      "offset": "Warm-up (min)",
+      "pitch": "Nombre de terrains",
+      "delay": "Délai de rafraîchissement (sec)",
+      "start": "Démarrer le worker"
+    },
+    "status": {
+      "running": "En cours",
+      "paused": "En pause",
+      "stopped": "Arrêté"
+    },
+    "monitor": {
+      "title": "Monitoring temps réel",
+      "event": "Événement",
+      "date": "Date",
+      "initial_time": "Heure initiale",
+      "refresh_every": "Rafraîchissement toutes les {seconds}s",
+      "pitch": "Terrain",
+      "current_game": "Match en cours",
+      "next_game": "Match suivant",
+      "time": "Heure",
+      "num": "N°",
+      "match_id": "ID match",
+      "waiting": "En attente...",
+      "time_current": "Heure courante :",
+      "time_working": "Heure de travail :",
+      "last_update": "Dernière mise à jour : {time}",
+      "load_failed": "Impossible de charger le monitoring"
+    },
+    "confirm": {
+      "stop_one": "Arrêter le worker pour l'événement #{id} ?",
+      "stop_all": "Arrêter TOUS les workers actifs ?"
+    },
+    "toasts": {
+      "started": "Worker démarré avec succès",
+      "stopped": "Worker arrêté",
+      "paused": "Worker en pause",
+      "resumed": "Worker repris",
+      "stop_all_done": "Tous les workers ont été arrêtés"
+    },
+    "errors": {
+      "missing_fields": "Événement, date et heure sont obligatoires"
     }
   }
 }

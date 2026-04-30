@@ -737,18 +737,20 @@ const onFormJourneeChange = async () => {
   }
 }
 
-const submitForm = async () => {
+const validateForm = (): boolean => {
   formError.value = ''
-
   if (!formData.value.idJournee || formData.value.idJournee <= 0) {
     formError.value = t('games.select_journee')
-    return
+    return false
   }
   if (!formData.value.dateMatch) {
     formError.value = t('games.date_empty')
-    return
+    return false
   }
+  return true
+}
 
+const saveGame = async (): Promise<boolean> => {
   formSaving.value = true
   try {
     if (editingGame.value) {
@@ -758,13 +760,56 @@ const submitForm = async () => {
       await api.post('/admin/games', formData.value)
       toast.add({ title: t('common.success'), description: t('games.added'), color: 'success' })
     }
-    formModalOpen.value = false
-    await loadGames()
+    return true
   } catch (error: any) {
     formError.value = error.message || t('common.error')
+    return false
   } finally {
     formSaving.value = false
   }
+}
+
+const submitForm = async () => {
+  if (!validateForm()) return
+  const ok = await saveGame()
+  if (ok) {
+    formModalOpen.value = false
+    await loadGames()
+  }
+}
+
+const submitFormAndAdd = async () => {
+  if (!validateForm()) return
+  const snapshot = { ...formData.value }
+  const ok = await saveGame()
+  if (!ok) return
+  await loadGames()
+
+  // Compute next hour = saved hour + intervalle minutes
+  let nextHeure = ''
+  if (snapshot.heureMatch) {
+    const [h, m] = snapshot.heureMatch.split(':').map(Number)
+    const totalMinutes = h * 60 + m + (snapshot.intervalle || 0)
+    const nextH = Math.floor(totalMinutes / 60) % 24
+    const nextM = totalMinutes % 60
+    nextHeure = `${String(nextH).padStart(2, '0')}:${String(nextM).padStart(2, '0')}`
+  }
+
+  formData.value = {
+    ...getDefaultFormData(),
+    idJournee: snapshot.idJournee,
+    dateMatch: snapshot.dateMatch,
+    terrain: snapshot.terrain,
+    intervalle: snapshot.intervalle,
+    type: snapshot.type,
+    heureMatch: nextHeure,
+    numeroOrdre: snapshot.numeroOrdre != null ? snapshot.numeroOrdre + 1 : null,
+  }
+  // Reload teams for the kept journee
+  if (formData.value.idJournee) {
+    formTeams.value = await loadTeamsForJournee(formData.value.idJournee)
+  }
+  formError.value = ''
 }
 
 // ─── Delete ───
@@ -1757,7 +1802,7 @@ const statusBtnClass = (game: Game) => {
                 <!-- Provisional score when ON or END -->
                 <div v-if="(g.statut === 'ON' || g.statut === 'END') && (g.scoreDetailA || g.scoreDetailB)" class="text-[9px] text-header-500 leading-tight">
                   {{ g.scoreDetailA || '0' }}-{{ g.scoreDetailB || '0' }}
-                  <span v-if="g.periode">({{ g.periode }})</span>
+                  <span v-if="g.periode && g.statut === 'ON'">({{ g.periode }})</span>
                 </div>
               </td>
 
@@ -2309,7 +2354,7 @@ const statusBtnClass = (game: Game) => {
           </div>
           <div>
             <label class="block text-sm font-medium text-header-700 mb-1">{{ t('games.field.type') }}</label>
-            <div class="flex items-center gap-4 mt-2">
+            <div class="flex flex-col gap-2 mt-2">
               <label class="flex items-center gap-2">
                 <input v-model="formData.type" type="radio" value="C" class="text-primary-600">
                 <span class="text-sm">{{ t('games.type_classification') }}</span>
@@ -2420,11 +2465,20 @@ const statusBtnClass = (game: Game) => {
             {{ t('common.cancel') }}
           </button>
           <button
+            v-if="!editingGame"
+            type="button"
+            class="px-4 py-2 text-sm font-medium text-primary-700 bg-primary-50 border border-primary-300 rounded-lg hover:bg-primary-100 disabled:opacity-50"
+            :disabled="formSaving"
+            @click="submitFormAndAdd"
+          >
+            {{ formSaving ? t('common.loading') : t('games.save_and_add') }}
+          </button>
+          <button
             type="submit"
             class="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 disabled:opacity-50"
             :disabled="formSaving"
           >
-            {{ formSaving ? t('common.loading') : t('common.save') }}
+            {{ formSaving ? t('common.loading') : (editingGame ? t('common.save') : t('games.save_and_close')) }}
           </button>
         </div>
       </form>

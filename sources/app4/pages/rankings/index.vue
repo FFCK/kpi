@@ -525,22 +525,24 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutsideDropdo
 const pdfUrls = computed(() => {
   if (!competitionInfo.value) return null
   const code = competitionInfo.value.code
+  const saison = workContext.season
   const base = legacyBase.value
   const type = effectiveType.value
+  const qs = `Compet=${code}&S=${saison}`
 
   const urls: Record<string, { admin?: string; public?: string }> = {}
 
   if (type === 'CHPT') {
-    urls.general = { admin: `${base}/admin/FeuilleCltChpt.php`, public: `${base}/admin/PdfCltChpt.php` }
-    urls.detail = { admin: `${base}/admin/FeuilleCltChptDetail.php`, public: `${base}/admin/PdfCltChptDetail.php` }
-    urls.matches = { admin: `${base}/admin/FeuilleListeMatchs.php?Compet=${code}`, public: `${base}/admin/PdfListeMatchs.php?Compet=${code}` }
+    urls.general = { admin: `${base}/admin/FeuilleCltChpt.php?${qs}`, public: `${base}/admin/PdfCltChpt.php?${qs}` }
+    urls.detail = { admin: `${base}/admin/FeuilleCltChptDetail.php?${qs}`, public: `${base}/admin/PdfCltChptDetail.php?${qs}` }
+    urls.matches = { admin: `${base}/admin/FeuilleListeMatchs.php?${qs}`, public: `${base}/admin/PdfListeMatchs.php?${qs}` }
   } else if (type === 'CP') {
-    urls.general = { admin: `${base}/admin/FeuilleCltNiveau.php`, public: `${base}/admin/PdfCltNiveau.php` }
-    urls.progress = { admin: `${base}/admin/FeuilleCltNiveauPhase.php`, public: `${base}/admin/PdfCltNiveauPhase.php` }
-    urls.detail = { admin: `${base}/admin/FeuilleCltNiveauDetail.php`, public: `${base}/admin/PdfCltNiveauDetail.php` }
-    urls.matches = { admin: `${base}/admin/FeuilleListeMatchs.php?Compet=${code}`, public: `${base}/admin/PdfListeMatchs.php?Compet=${code}` }
+    urls.general = { admin: `${base}/admin/FeuilleCltNiveau.php?${qs}`, public: `${base}/admin/PdfCltNiveau.php?${qs}` }
+    urls.progress = { admin: `${base}/admin/FeuilleCltNiveauPhase.php?${qs}`, public: `${base}/admin/PdfCltNiveauPhase.php?${qs}` }
+    urls.detail = { admin: `${base}/admin/FeuilleCltNiveauDetail.php?${qs}`, public: `${base}/admin/PdfCltNiveauDetail.php?${qs}` }
+    urls.matches = { admin: `${base}/admin/FeuilleListeMatchs.php?${qs}`, public: `${base}/admin/PdfListeMatchs.php?${qs}` }
   } else if (type === 'MULTI') {
-    urls.general = { admin: `${base}/admin/FeuilleCltMulti.php`, public: `${base}/admin/PdfCltMulti.php` }
+    urls.general = { admin: `${base}/admin/FeuilleCltMulti.php?${qs}`, public: `${base}/admin/PdfCltMulti.php?${qs}` }
   }
 
   return urls
@@ -600,6 +602,7 @@ const editValueForField = (field: string, value: number): string => {
     <AdminPageHeader
       :title="t('rankings.title')"
       :competition-filtered-codes="workContext.pageFilteredCompetitionCodes"
+      :has-notices="false"
       @competition-change="onCompetitionChange"
     >
       <template #filters>
@@ -632,10 +635,14 @@ const editValueForField = (field: string, value: number): string => {
           </span>
           <!-- Status badge (clickable for profil ≤ 3) -->
           <span
-            class="px-2 py-1 text-xs font-medium rounded uppercase"
+            class="px-2 py-1 text-xs font-medium rounded uppercase flex items-center gap-1"
             :class="[getStatusColor(competitionInfo.statut), canChangeStatus ? 'cursor-pointer' : '']"
             @click="canChangeStatus && cycleStatus()"
           >
+            <UIcon
+              :name="competitionInfo.statut === 'ON' ? 'heroicons:lock-open' : 'heroicons:lock-closed'"
+              class="w-3 h-3"
+            />
             {{ t(`competitions.status.${competitionInfo.statut}`) }}
           </span>
           <!-- Goal-average info -->
@@ -644,15 +651,7 @@ const editValueForField = (field: string, value: number): string => {
           </span>
         </div>
       </template>
-      <template #notices>
-        <div
-          v-if="competitionInfo && competitionInfo.statut !== 'ON'"
-          class="flex items-center gap-2 p-3 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800"
-        >
-          <UIcon name="heroicons:exclamation-triangle" class="w-5 h-5 shrink-0" />
-          {{ t('rankings.status_restriction') }}
-        </div>
-      </template>
+      <template #notices />
     </AdminPageHeader>
 
     <!-- No competition selected -->
@@ -1686,6 +1685,9 @@ const editValueForField = (field: string, value: number): string => {
         class="pdf-dropdown-menu z-9999 bg-white rounded-lg shadow-lg border border-header-200 py-1 min-w-50"
         :style="pdfDropdownStyle"
       >
+        <div class="px-4 py-1.5 text-xs text-header-400 font-medium select-none">
+          {{ activeTab === 'computed' ? t('rankings.pdf.computed_label') : t('rankings.pdf.published_label') }}
+        </div>
         <a
           v-if="pdfDropdownMode === 'admin' ? pdfUrls.general?.admin : pdfUrls.general?.public"
           :href="pdfDropdownMode === 'admin' ? pdfUrls.general!.admin : pdfUrls.general!.public"
@@ -1694,7 +1696,7 @@ const editValueForField = (field: string, value: number): string => {
           @click="pdfDropdownOpen = false"
         >
           <UIcon name="heroicons:document-text" class="w-4 h-4 text-header-400" />
-          {{ t('rankings.pdf.general') }}
+          {{ activeTab === 'computed' ? t('rankings.pdf.provisional') : t('rankings.pdf.general') }}
         </a>
         <a
           v-if="pdfDropdownMode === 'admin' ? pdfUrls.progress?.admin : pdfUrls.progress?.public"

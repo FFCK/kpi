@@ -150,6 +150,23 @@ Dans la modale de creation/modification d'un utilisateur, une section "Mandats" 
 - Modifier ou supprimer un mandat existant
 - Les memes restrictions de profil s'appliquent : un admin profil 3 ne peut pas creer un mandat avec un profil < 3
 
+### 3.2 Bypass perimetre pour profils 1 et 2
+
+**Regle** : un administrateur dont le **niveau effectif** est <= 2 (Super Admin ou Bureau CNAKP, en tenant compte du mandat actif) voit les listes d'assignation **completes** dans le formulaire d'edition d'utilisateur :
+
+- Liste des saisons proposees dans le filtre saisons : toutes les saisons
+- Liste des competitions proposees dans le filtre competitions : toutes les competitions
+- Liste des evenements proposees dans le filtre evenements : tous les evenements
+- Liste des clubs proposees dans le filtre clubs : tous les clubs
+
+Les filtres de perimetre propres a l'administrateur (`Filtre_saison`, `Filtre_competition`, `Id_Evenement`, `Filtre_journee`, `Limit_clubs`) sont **ignores** pour ces profils.
+
+**Cas d'usage** : un Super Admin qui cree ou edite un utilisateur profil 6 (Organisateur de journee) peut lui attribuer n'importe quelle competition/evenement/club, meme hors du perimetre de l'administrateur. C'est coherent avec le role d'administration systeme des profils 1 et 2.
+
+**Implementation** : aucune modification specifique cote frontend. Le bypass est applique cote backend dans l'entite `User` (methodes `getAllowedSeasons/Competitions/Events/Journees/Clubs()`) et se propage transparentement aux endpoints `/admin/filters/*` consommes par la modale `UserEditModal`.
+
+Voir [DROITS_PAR_PROFIL.md](DROITS_PAR_PROFIL.md) section "Bypass perimetre pour profils 1 et 2" pour le detail de la regle (niveau effectif, mandats, etc.).
+
 ---
 
 ## 4. Structure de la Page
@@ -1330,6 +1347,8 @@ export interface AuthUser {
 | Creer/modifier un mandat | <= 3 | ROLE_DIVISION | Le profil du mandat respecte les memes restrictions que le profil principal (Q4) |
 | Supprimer un mandat | <= 3 | ROLE_DIVISION | |
 | Changer de mandat actif | Authentifie | ROLE_USER | Uniquement ses propres mandats |
+
+**Note sur les perimetres (profils 1 et 2)** : pour un administrateur dont le niveau effectif est <= 2, les filtres de perimetre (saisons/competitions/evenements/journees/clubs) sont **ignores** — il peut attribuer a l'utilisateur edite n'importe quelle valeur, independamment de ses propres filtres en base. Voir [DROITS_PAR_PROFIL.md](DROITS_PAR_PROFIL.md) section "Bypass perimetre pour profils 1 et 2" et §3.2 de la presente spec.
 
 ### 11.2 Validation backend
 

@@ -211,20 +211,33 @@ class AdminTeamsController extends AbstractController
         }
 
         $q = trim($request->query->get('q', ''));
+        $cr = trim($request->query->get('cr', ''));
+        $cd = trim($request->query->get('cd', ''));
         $limit = min(50, max(1, (int) $request->query->get('limit', 20)));
 
         if (strlen($q) < 2) {
             return $this->json([]);
         }
 
+        $params = ["%$q%", "%$q%"];
+        $where = 'WHERE (Libelle LIKE ? OR Code LIKE ?)';
+
+        if ($cd !== '') {
+            $where .= ' AND Code_comite_dep = ?';
+            $params[] = $cd;
+        } elseif ($cr !== '') {
+            $where .= ' AND Code_comite_dep IN (SELECT Code FROM kp_cd WHERE Code_comite_reg = ?)';
+            $params[] = $cr;
+        }
+
         $sql = "SELECT Code, Libelle, Code_comite_dep
                 FROM kp_club
-                WHERE Libelle LIKE ? OR Code LIKE ?
+                $where
                 ORDER BY Libelle
                 LIMIT " . (int) $limit;
 
         $stmt = $this->connection->prepare($sql);
-        $result = $stmt->executeQuery(["%$q%", "%$q%"]);
+        $result = $stmt->executeQuery($params);
         $rows = $result->fetchAllAssociative();
 
         $clubs = array_map(function ($row) {
@@ -244,7 +257,7 @@ class AdminTeamsController extends AbstractController
     #[Route('/admin/regional-committees', name: 'admin_regional_committees', methods: ['GET'])]
     public function listRegionalCommittees(): JsonResponse
     {
-        $sql = "SELECT Code, Libelle FROM kp_cr ORDER BY Libelle";
+        $sql = "SELECT Code, Libelle FROM kp_cr ORDER BY Code";
         $stmt = $this->connection->prepare($sql);
         $result = $stmt->executeQuery();
         $rows = $result->fetchAllAssociative();
@@ -277,7 +290,7 @@ class AdminTeamsController extends AbstractController
 
         $whereClause = !empty($whereConditions) ? 'WHERE ' . implode(' AND ', $whereConditions) : '';
 
-        $sql = "SELECT Code, Libelle, Code_comite_reg FROM kp_cd $whereClause ORDER BY Libelle";
+        $sql = "SELECT Code, Libelle, Code_comite_reg FROM kp_cd $whereClause ORDER BY Code";
         $stmt = $this->connection->prepare($sql);
         $result = $stmt->executeQuery($params);
         $rows = $result->fetchAllAssociative();

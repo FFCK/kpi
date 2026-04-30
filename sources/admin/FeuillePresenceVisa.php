@@ -82,6 +82,12 @@ class FeuillePresenceVisa extends MyPage
             if (strlen($capitaine) == 0) {
               $capitaine = '-';
             }
+            if ($capitaine === 'E') {
+              $capitaine = 'Staff';
+            }
+            if ($capitaine === 'A') {
+              $capitaine = 'Arb.';
+            }
 
             if (is_null($row2['arbitre'])) {
               $row2['arbitre'] = '';
@@ -186,7 +192,7 @@ class FeuillePresenceVisa extends MyPage
 
       $pdf->SetFont('Arial', 'BI', 10);
       $pdf->Cell(16, 10, 'Num', 'B', 0, 'C');
-      $pdf->Cell(8, 10, 'Cap', 'B', 0, 'C');
+      $pdf->Cell(8, 10, 'Statut', 'B', 0, 'C');
       $pdf->Cell(25, 10, 'Licence', 'B', 0, 'C');
       $pdf->Cell(45, 10, 'Nom', 'B', 0, 'C');
       $pdf->Cell(45, 10, 'Prenom', 'B', 0, 'C');

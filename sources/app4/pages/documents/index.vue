@@ -94,6 +94,14 @@ const pdfUrl = (file: string, extra?: Record<string, string | number>): string =
   return `${legacyBase}/admin/${file}?${params.toString()}`
 }
 
+// Build public PDF URL (PdfXxx.php at root, not /admin/)
+const publicPdfUrl = (file: string): string => {
+  const params = new URLSearchParams()
+  params.set('S', workContext.season)
+  params.set('Compet', workContext.pageCompetitionCode)
+  return `${legacyBase}/${file}?${params.toString()}`
+}
+
 // Build event PDF URL
 const eventPdfUrl = (file: string, paramName: string): string => {
   if (!selectedEventId.value) return '#'
@@ -310,87 +318,176 @@ onMounted(async () => {
           <UIcon name="heroicons:chart-bar" class="w-7 h-7 text-white" />
           <h2 class="text-white font-semibold">{{ t('documents.categories.rankings') }}</h2>
         </div>
-        <div class="p-4 space-y-2">
-          <!-- CHPT type -->
-          <template v-if="competitionType === 'CHPT'">
-            <a
-              :href="pdfUrl('FeuilleCltChpt.php')"
-              target="_blank"
-              class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-header-50 text-header-700 transition-colors"
-              :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
-            >
-              <UIcon name="heroicons:document-text" class="w-6 h-6 text-header-400" />
-              {{ t('documents.rankings.general') }}
-            </a>
-            <a
-              :href="pdfUrl('FeuilleCltChptDetail.php')"
-              target="_blank"
-              class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-header-50 text-header-700 transition-colors"
-              :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
-            >
-              <UIcon name="heroicons:document-text" class="w-6 h-6 text-header-400" />
-              {{ t('documents.rankings.detail_team') }}
-            </a>
-            <a
-              :href="pdfUrl('FeuilleCltNiveauJournee.php')"
-              target="_blank"
-              class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-header-50 text-header-700 transition-colors"
-              :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
-            >
-              <UIcon name="heroicons:document-text" class="w-6 h-6 text-header-400" />
-              {{ t('documents.rankings.detail_gameday') }}
-            </a>
-          </template>
-
-          <!-- CP type -->
-          <template v-else-if="competitionType === 'CP'">
-            <a
-              :href="pdfUrl('FeuilleCltNiveau.php')"
-              target="_blank"
-              class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-header-50 text-header-700 transition-colors"
-              :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
-            >
-              <UIcon name="heroicons:document-text" class="w-6 h-6 text-header-400" />
-              {{ t('documents.rankings.general') }}
-            </a>
-            <a
-              :href="pdfUrl('FeuilleCltNiveauPhase.php')"
-              target="_blank"
-              class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-header-50 text-header-700 transition-colors"
-              :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
-            >
-              <UIcon name="heroicons:document-text" class="w-6 h-6 text-header-400" />
-              {{ t('documents.rankings.detail_phase') }}
-            </a>
-            <a
-              :href="pdfUrl('FeuilleCltNiveauDetail.php')"
-              target="_blank"
-              class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-header-50 text-header-700 transition-colors"
-              :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
-            >
-              <UIcon name="heroicons:document-text" class="w-6 h-6 text-header-400" />
-              {{ t('documents.rankings.detail_team') }}
-            </a>
-          </template>
-
-          <!-- MULTI type -->
-          <template v-else-if="competitionType === 'MULTI'">
-            <a
-              :href="pdfUrl('FeuilleCltMulti.php')"
-              target="_blank"
-              class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-header-50 text-header-700 transition-colors"
-              :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
-            >
-              <UIcon name="heroicons:document-text" class="w-6 h-6 text-header-400" />
-              {{ t('documents.rankings.multi') }}
-            </a>
-          </template>
-
+        <div class="p-4 space-y-4">
           <!-- No type / no competition selected -->
-          <template v-else>
+          <template v-if="!competitionType">
             <p class="px-3 py-2 text-sm text-header-400 italic">
               {{ hasCompetition ? t('documents.rankings.no_type') : t('documents.select_competition') }}
             </p>
+          </template>
+
+          <template v-else>
+            <!-- Sub-section: Classement calculé -->
+            <div>
+              <p class="px-3 text-xs font-semibold text-header-500 uppercase tracking-wide mb-1">
+                {{ t('documents.rankings.computed') }}
+              </p>
+              <div class="space-y-1">
+                <!-- CHPT -->
+                <template v-if="competitionType === 'CHPT'">
+                  <a
+                    :href="pdfUrl('FeuilleCltChpt.php')"
+                    target="_blank"
+                    class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-header-50 text-header-700 transition-colors"
+                    :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
+                  >
+                    <UIcon name="heroicons:document-text" class="w-6 h-6 text-header-400" />
+                    {{ t('documents.rankings.provisional') }}
+                  </a>
+                  <a
+                    :href="pdfUrl('FeuilleCltChptDetail.php')"
+                    target="_blank"
+                    class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-header-50 text-header-700 transition-colors"
+                    :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
+                  >
+                    <UIcon name="heroicons:document-text" class="w-6 h-6 text-header-400" />
+                    {{ t('documents.rankings.detail_team') }}
+                  </a>
+                  <a
+                    :href="pdfUrl('FeuilleCltNiveauJournee.php')"
+                    target="_blank"
+                    class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-header-50 text-header-700 transition-colors"
+                    :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
+                  >
+                    <UIcon name="heroicons:document-text" class="w-6 h-6 text-header-400" />
+                    {{ t('documents.rankings.detail_gameday') }}
+                  </a>
+                </template>
+                <!-- CP -->
+                <template v-else-if="competitionType === 'CP'">
+                  <a
+                    :href="pdfUrl('FeuilleCltNiveau.php')"
+                    target="_blank"
+                    class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-header-50 text-header-700 transition-colors"
+                    :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
+                  >
+                    <UIcon name="heroicons:document-text" class="w-6 h-6 text-header-400" />
+                    {{ t('documents.rankings.provisional') }}
+                  </a>
+                  <a
+                    :href="pdfUrl('FeuilleCltNiveauPhase.php')"
+                    target="_blank"
+                    class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-header-50 text-header-700 transition-colors"
+                    :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
+                  >
+                    <UIcon name="heroicons:document-text" class="w-6 h-6 text-header-400" />
+                    {{ t('documents.rankings.detail_phase') }}
+                  </a>
+                  <a
+                    :href="pdfUrl('FeuilleCltNiveauDetail.php')"
+                    target="_blank"
+                    class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-header-50 text-header-700 transition-colors"
+                    :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
+                  >
+                    <UIcon name="heroicons:document-text" class="w-6 h-6 text-header-400" />
+                    {{ t('documents.rankings.detail_team') }}
+                  </a>
+                </template>
+                <!-- MULTI -->
+                <template v-else-if="competitionType === 'MULTI'">
+                  <a
+                    :href="pdfUrl('FeuilleCltMulti.php')"
+                    target="_blank"
+                    class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-header-50 text-header-700 transition-colors"
+                    :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
+                  >
+                    <UIcon name="heroicons:document-text" class="w-6 h-6 text-header-400" />
+                    {{ t('documents.rankings.multi') }}
+                  </a>
+                </template>
+              </div>
+            </div>
+
+            <!-- Sub-section: Classement publié -->
+            <div>
+              <p class="px-3 text-xs font-semibold text-header-500 uppercase tracking-wide mb-1">
+                {{ t('documents.rankings.published') }}
+              </p>
+              <div class="space-y-1">
+                <!-- CHPT -->
+                <template v-if="competitionType === 'CHPT'">
+                  <a
+                    :href="publicPdfUrl('PdfCltChpt.php')"
+                    target="_blank"
+                    class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-header-50 text-header-700 transition-colors"
+                    :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
+                  >
+                    <UIcon name="heroicons:document-text" class="w-6 h-6 text-header-400" />
+                    {{ t('documents.rankings.general') }}
+                  </a>
+                  <a
+                    :href="publicPdfUrl('PdfCltChptDetail.php')"
+                    target="_blank"
+                    class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-header-50 text-header-700 transition-colors"
+                    :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
+                  >
+                    <UIcon name="heroicons:document-text" class="w-6 h-6 text-header-400" />
+                    {{ t('documents.rankings.detail_team') }}
+                  </a>
+                  <a
+                    :href="publicPdfUrl('PdfCltNiveauJournee.php')"
+                    target="_blank"
+                    class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-header-50 text-header-700 transition-colors"
+                    :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
+                  >
+                    <UIcon name="heroicons:document-text" class="w-6 h-6 text-header-400" />
+                    {{ t('documents.rankings.detail_gameday') }}
+                  </a>
+                </template>
+                <!-- CP -->
+                <template v-else-if="competitionType === 'CP'">
+                  <a
+                    :href="publicPdfUrl('PdfCltNiveau.php')"
+                    target="_blank"
+                    class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-header-50 text-header-700 transition-colors"
+                    :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
+                  >
+                    <UIcon name="heroicons:document-text" class="w-6 h-6 text-header-400" />
+                    {{ t('documents.rankings.general') }}
+                  </a>
+                  <a
+                    :href="publicPdfUrl('PdfCltNiveauPhase.php')"
+                    target="_blank"
+                    class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-header-50 text-header-700 transition-colors"
+                    :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
+                  >
+                    <UIcon name="heroicons:document-text" class="w-6 h-6 text-header-400" />
+                    {{ t('documents.rankings.detail_phase') }}
+                  </a>
+                  <a
+                    :href="publicPdfUrl('PdfCltNiveauDetail.php')"
+                    target="_blank"
+                    class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-header-50 text-header-700 transition-colors"
+                    :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
+                  >
+                    <UIcon name="heroicons:document-text" class="w-6 h-6 text-header-400" />
+                    {{ t('documents.rankings.detail_team') }}
+                  </a>
+                </template>
+                <!-- MULTI -->
+                <template v-else-if="competitionType === 'MULTI'">
+                  <a
+                    :href="publicPdfUrl('PdfCltMulti.php')"
+                    target="_blank"
+                    class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-header-50 text-header-700 transition-colors"
+                    :class="{ 'opacity-40 pointer-events-none': !hasCompetition }"
+                  >
+                    <UIcon name="heroicons:document-text" class="w-6 h-6 text-header-400" />
+                    {{ t('documents.rankings.multi') }}
+                  </a>
+                </template>
+              </div>
+            </div>
           </template>
         </div>
       </div>

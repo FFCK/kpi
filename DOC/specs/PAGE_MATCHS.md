@@ -91,6 +91,7 @@ C'est la page la plus complexe de l'administration, avec 4 modes de rendu selon 
 | 57 | Type automatique selon journée sélectionnée (hérite le type C/E de la journée) | ≤ 6 | Essentielle | ✅ Conserver |
 | 58 | Lien vers pool d'arbitres (GestionEquipeJoueur) | ≤ 6 | Utile | ✅ Conserver (lien) |
 | 59 | Validation formulaire : date requise, heure format HH:MM, journée obligatoire | ≤ 6 | Essentielle | ✅ Conserver |
+| 60 | Bouton "Enregistrer et ajouter" (création uniquement) : enregistre et rouvre le formulaire pré-rempli | ≤ 6 | Essentielle | ✅ Implémenté |
 
 ### 2.3 Actions en masse (Sélection)
 
@@ -514,8 +515,10 @@ Le format stocké est : `"NOM Prénom (Club) NIVEAU"` avec le matricule séparé
 
 ### 7.3 Comportement du formulaire
 
-- **Création** : Bouton "Ajouter" → valide les champs → POST
-- **Édition** : Bouton "Modifier" (activé uniquement si un match est chargé via ParamMatch) → PUT
+- **Création** :
+  - Bouton "Enregistrer et fermer" → valide les champs → POST → ferme le modal
+  - Bouton "Enregistrer et ajouter" → valide les champs → POST → rouvre le formulaire pré-rempli (voir §7.5)
+- **Édition** : Bouton "Enregistrer" → PUT → ferme le modal
 - **Annuler** : Remet le formulaire à l'état par défaut (Raz)
 - Le type C/E change automatiquement quand on change de journée (hérite le type de la journée)
 - Le focus sur les champs arbitre déclenche une vérification que la journée est sélectionnée
@@ -525,6 +528,24 @@ Le format stocké est : `"NOM Prénom (Club) NIVEAU"` avec le matricule séparé
 1. La date est **obligatoire** (alert si vide)
 2. L'heure doit être au format HH:MM (confirmation si invalide, mais autorise à continuer)
 3. La journée est **obligatoire** (alert si "*")
+
+### 7.5 Pré-remplissage après "Enregistrer et ajouter"
+
+Après l'enregistrement, le formulaire est réinitialisé avec les valeurs suivantes conservées du match qui vient d'être créé :
+
+| Champ | Valeur pré-remplie |
+|-------|--------------------|
+| Journée/Phase | Identique |
+| Date | Identique |
+| Terrain | Identique |
+| Type C/E | Identique |
+| Intervalle | Identique |
+| Heure | Heure du match enregistré + intervalle (minutes) |
+| N° match | Numéro du match enregistré + 1 (null si le numéro était vide) |
+| Intitulé/codage | Réinitialisé (vide) |
+| Équipe A / B | Réinitialisés (Aucun(e)) |
+| Coefficients A / B | Réinitialisés (1) |
+| Arbitres 1 / 2 | Réinitialisés (vide) |
 
 ---
 

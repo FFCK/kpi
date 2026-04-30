@@ -84,6 +84,32 @@ watch(
   }
 )
 
+// Actions dropdown
+// PDF dropdown
+const pdfDropdownOpen = ref(false)
+const pdfDropdownStyle = ref<{ top: string; left: string }>({ top: '0px', left: '0px' })
+
+const togglePdfDropdown = (event: MouseEvent) => {
+  if (pdfDropdownOpen.value) { pdfDropdownOpen.value = false; return }
+  const btn = event.currentTarget as HTMLElement
+  const rect = btn.getBoundingClientRect()
+  const dropdownHeight = 160
+  const spaceBelow = window.innerHeight - rect.bottom
+  const openAbove = spaceBelow < dropdownHeight + 8
+  pdfDropdownStyle.value = {
+    top: openAbove ? `${rect.top - dropdownHeight - 4}px` : `${rect.bottom + 4}px`,
+    left: `${Math.min(rect.left, window.innerWidth - 220)}px`
+  }
+  pdfDropdownOpen.value = true
+}
+
+const handleClickOutsideActions = (e: MouseEvent) => {
+  const target = e.target as HTMLElement
+  if (pdfDropdownOpen.value && !target.closest('.pdf-dropdown-trigger') && !target.closest('.pdf-dropdown-menu')) {
+    pdfDropdownOpen.value = false
+  }
+}
+
 // Copy composition modal
 const copyModalOpen = ref(false)
 const copyFormData = ref<CopyCompositionFormData>({ sourceCompetition: '', sourceSeason: '' })
@@ -130,6 +156,11 @@ onMounted(async () => {
   await workContext.initContext()
   await presenceStore.initTeamMode(teamId.value, api)
   await loadSiblingTeams()
+  document.addEventListener('click', handleClickOutsideActions)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutsideActions)
 })
 
 // Computed
@@ -370,6 +401,24 @@ const getLicenseDisplay = (player: Player): string => {
   return licenseNumber
 }
 
+// Format date from "YYYY-MM-DD HH:mm:ss" to "DD/MM/YYYY HH:mm:ss"
+const formatLastUpdateDate = (date: string): string => {
+  const m = date.match(/^(\d{4})-(\d{2})-(\d{2})(.*)$/)
+  return m ? `${m[3]}/${m[2]}/${m[1]}${m[4]}` : date
+}
+
+// Status label mapping
+const statusLabel = (capitaine: string): string => {
+  const map: Record<string, string> = {
+    '-': '',
+    'C': t('presence.status_captain'),
+    'E': t('presence.status_coach'),
+    'A': t('presence.status_referee'),
+    'X': t('presence.status_inactive')
+  }
+  return map[capitaine] ?? capitaine
+}
+
 // PDF Links
 const pdfLinks = computed(() => {
   if (!presenceStore.team || !presenceStore.competition) return {}
@@ -384,7 +433,8 @@ const pdfLinks = computed(() => {
     fr: `${config.public.legacyBaseUrl}/admin/FeuillePresence.php?${params}`,
     en: `${config.public.legacyBaseUrl}/admin/FeuillePresenceEN.php?${params}`,
     photo: `${config.public.legacyBaseUrl}/admin/FeuillePresencePhoto.php?${params}`,
-    visa: `${config.public.legacyBaseUrl}/admin/FeuillePresenceVisa.php?${params}`
+    visa: `${config.public.legacyBaseUrl}/admin/FeuillePresenceVisa.php?${params}`,
+    controle: `${config.public.legacyBaseUrl}/admin/FeuilleControle.php?${params}`
   }
 })
 </script>
@@ -395,6 +445,7 @@ const pdfLinks = computed(() => {
     <AdminPageHeader
       :title="t('presence.title_team')"
       :show-filters="false"
+      :has-notices="!!presenceStore.isLocked"
     >
       <template #badges>
         <div v-if="presenceStore.team" class="flex flex-wrap items-center gap-2 text-sm">
@@ -477,38 +528,51 @@ const pdfLinks = computed(() => {
       @add="addModalOpen = true"
       @bulk-delete="confirmBulkDelete"
     >
-      <template #left>
+      <template #before-search>
+        <!-- PDF dropdown -->
+        <button
+          v-if="Object.keys(pdfLinks).length > 0"
+          class="pdf-dropdown-trigger px-3 py-2 border border-header-300 text-header-700 rounded-lg hover:bg-header-50 transition-colors text-sm flex items-center gap-1"
+          @click="togglePdfDropdown($event)"
+        >
+          <UIcon name="heroicons:document-text" class="w-5 h-5" />
+          {{ t('common.pdf_editions') }}
+          <UIcon name="heroicons:chevron-down" class="w-4 h-4" />
+        </button>
+      </template>
+
+      <template #right>
+        <!-- Copy from button -->
         <button
           v-if="canCopy"
-          class="px-3 py-1 text-sm font-medium text-primary-700 bg-primary-50 hover:bg-primary-100 rounded-lg transition-colors"
+          class="px-3 py-2 border border-header-300 text-header-700 rounded-lg hover:bg-header-50 transition-colors text-sm flex items-center gap-1"
           @click="openCopyModal"
         >
-          <UIcon name="i-heroicons-document-duplicate" class="w-4 h-4 inline mr-1" />
+          <UIcon name="heroicons:document-duplicate" class="w-5 h-5" />
           {{ t('presence.copy_from') }}
         </button>
+      </template>
+    </AdminToolbar>
 
-        <!-- PDF links: buttons on desktop, select on mobile -->
+    <!-- PDF dropdown (teleported to body to avoid overflow clipping) -->
+    <Teleport to="body">
+      <div
+        v-if="pdfDropdownOpen"
+        class="pdf-dropdown-menu fixed w-52 bg-white rounded-lg shadow-lg border border-header-200 z-50"
+        :style="pdfDropdownStyle"
+      >
         <a
           v-for="(link, key) in pdfLinks"
           :key="key"
           :href="link"
           target="_blank"
-          class="hidden sm:inline-flex px-3 py-1 text-sm font-medium text-header-700 bg-white border border-header-300 hover:bg-header-50 rounded-lg transition-colors"
+          class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50 first:rounded-t-lg last:rounded-b-lg"
+          @click="pdfDropdownOpen = false"
         >
-          <UIcon name="i-heroicons-document-text" class="w-4 h-4 inline mr-1" />
           {{ t(`presence.pdf_${key}`) }}
         </a>
-        <select
-          class="sm:hidden px-3 py-1 text-sm font-medium text-header-700 bg-white border border-header-300 rounded-lg"
-          @change="(e: Event) => { const el = e.target as HTMLSelectElement; if (el.value) { navigateTo(el.value, { external: true, open: { target: '_blank' } }); el.selectedIndex = 0 } }"
-        >
-          <option value="">{{ t('common.exports') }}</option>
-          <option v-for="(link, key) in pdfLinks" :key="key" :value="link">
-            {{ t(`presence.pdf_${key}`) }}
-          </option>
-        </select>
-      </template>
-    </AdminToolbar>
+      </div>
+    </Teleport>
 
     <!-- Loading state -->
     <div v-if="presenceStore.loading" class="text-center py-12">
@@ -536,7 +600,7 @@ const pdfLinks = computed(() => {
               />
             </th>
             <th class="w-16 px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">#</th>
-            <th class="w-12 px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">Cap</th>
+            <th class="w-24 px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('presence.status') }}</th>
             <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.last_name') }}</th>
             <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.first_name') }}</th>
             <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.license') }}</th>
@@ -594,7 +658,7 @@ const pdfLinks = computed(() => {
                 :class="canEdit ? 'editable-cell' : ''"
                 @click="canEdit && startEdit(player, 'capitaine')"
               >
-                {{ player.capitaine }}
+                {{ statusLabel(player.capitaine) }}
               </span>
               <select
                 v-else
@@ -603,11 +667,11 @@ const pdfLinks = computed(() => {
                 class="px-2 py-1 border border-primary-400 rounded text-sm focus:ring-2 focus:ring-primary-500"
                 @blur="saveInlineEdit"
               >
-                <option value="-">-</option>
-                <option value="C">C</option>
-                <option value="E">E</option>
-                <option value="A">A</option>
-                <option value="X">X</option>
+                <option value="-">{{ t('presence.status_player') }}</option>
+                <option value="C">{{ t('presence.status_captain') }}</option>
+                <option value="E">{{ t('presence.status_coach') }}</option>
+                <option value="A">{{ t('presence.status_referee') }}</option>
+                <option value="X">{{ t('presence.status_inactive') }}</option>
               </select>
             </td>
 
@@ -672,8 +736,8 @@ const pdfLinks = computed(() => {
 
           <!-- Coaches (E) -->
           <template v-if="coaches.length > 0">
-            <tr class="bg-header-100">
-              <td :colspan="canEdit ? 11 : 10" class="px-3 py-1 text-xs text-header-500 text-center">
+            <tr class="bg-header-800">
+              <td :colspan="canEdit ? 11 : 10" class="px-3 py-1 text-xs text-header-50 text-center">
                 {{ t('presence.section_coaches') }}
               </td>
             </tr>
@@ -711,7 +775,7 @@ const pdfLinks = computed(() => {
                   :class="canEdit ? 'editable-cell' : ''"
                   @click="canEdit && startEdit(player, 'capitaine')"
                 >
-                  {{ player.capitaine }}
+                  {{ statusLabel(player.capitaine) }}
                 </span>
                 <select
                   v-else
@@ -721,11 +785,11 @@ const pdfLinks = computed(() => {
                   @change="saveInlineEdit"
                   @blur="saveInlineEdit"
                 >
-                  <option value="-">-</option>
-                  <option value="C">C</option>
-                  <option value="E">E</option>
-                  <option value="A">A</option>
-                  <option value="X">X</option>
+                  <option value="-">{{ t('presence.status_player') }}</option>
+                  <option value="C">{{ t('presence.status_captain') }}</option>
+                  <option value="E">{{ t('presence.status_coach') }}</option>
+                  <option value="A">{{ t('presence.status_referee') }}</option>
+                  <option value="X">{{ t('presence.status_inactive') }}</option>
                 </select>
               </td>
               <td class="px-3 py-1 text-sm font-medium text-header-900">{{ player.nom }}</td>
@@ -763,8 +827,8 @@ const pdfLinks = computed(() => {
 
           <!-- Referees (A) -->
           <template v-if="referees.length > 0">
-            <tr class="bg-header-100">
-              <td :colspan="canEdit ? 11 : 10" class="px-3 py-1 text-xs text-header-500 text-center">
+            <tr class="bg-header-800">
+              <td :colspan="canEdit ? 11 : 10" class="px-3 py-1 text-xs text-header-50 text-center">
                 {{ t('presence.section_referees') }}
               </td>
             </tr>
@@ -802,7 +866,7 @@ const pdfLinks = computed(() => {
                   :class="canEdit ? 'editable-cell' : ''"
                   @click="canEdit && startEdit(player, 'capitaine')"
                 >
-                  {{ player.capitaine }}
+                  {{ statusLabel(player.capitaine) }}
                 </span>
                 <select
                   v-else
@@ -812,11 +876,11 @@ const pdfLinks = computed(() => {
                   @change="saveInlineEdit"
                   @blur="saveInlineEdit"
                 >
-                  <option value="-">-</option>
-                  <option value="C">C</option>
-                  <option value="E">E</option>
-                  <option value="A">A</option>
-                  <option value="X">X</option>
+                  <option value="-">{{ t('presence.status_player') }}</option>
+                  <option value="C">{{ t('presence.status_captain') }}</option>
+                  <option value="E">{{ t('presence.status_coach') }}</option>
+                  <option value="A">{{ t('presence.status_referee') }}</option>
+                  <option value="X">{{ t('presence.status_inactive') }}</option>
                 </select>
               </td>
               <td class="px-3 py-1 text-sm font-medium text-header-900">{{ player.nom }}</td>
@@ -854,15 +918,15 @@ const pdfLinks = computed(() => {
 
           <!-- Inactive players (X) -->
           <template v-if="inactivePlayers.length > 0">
-            <tr class="bg-header-100">
-              <td :colspan="canEdit ? 11 : 10" class="px-3 py-1 text-xs text-header-500 text-center">
+            <tr class="bg-header-800">
+              <td :colspan="canEdit ? 11 : 10" class="px-3 py-1 text-xs text-header-50 text-center">
                 {{ t('presence.section_inactive') }}
               </td>
             </tr>
             <tr
               v-for="player in inactivePlayers"
               :key="player.matric"
-              class="hover:bg-header-200 opacity-60 italic"
+              class="bg-dark-200 opacity-80 italic"
             >
               <td v-if="canEdit" class="px-3 py-1">
                 <input v-model="selectedPlayerIds" type="checkbox" :value="player.matric" class="rounded border-header-300" />
@@ -893,7 +957,7 @@ const pdfLinks = computed(() => {
                   :class="canEdit ? 'editable-cell' : ''"
                   @click="canEdit && startEdit(player, 'capitaine')"
                 >
-                  {{ player.capitaine }}
+                  {{ statusLabel(player.capitaine) }}
                 </span>
                 <select
                   v-else
@@ -903,11 +967,11 @@ const pdfLinks = computed(() => {
                   @change="saveInlineEdit"
                   @blur="saveInlineEdit"
                 >
-                  <option value="-">-</option>
-                  <option value="C">C</option>
-                  <option value="E">E</option>
-                  <option value="A">A</option>
-                  <option value="X">X</option>
+                  <option value="-">{{ t('presence.status_player') }}</option>
+                  <option value="C">{{ t('presence.status_captain') }}</option>
+                  <option value="E">{{ t('presence.status_coach') }}</option>
+                  <option value="A">{{ t('presence.status_referee') }}</option>
+                  <option value="X">{{ t('presence.status_inactive') }}</option>
                 </select>
               </td>
               <td class="px-3 py-1 text-sm font-medium text-header-900">{{ player.nom }}</td>
@@ -950,11 +1014,19 @@ const pdfLinks = computed(() => {
         <div class="flex items-center justify-between">
           <div>
             {{ t('presence.total_players', { count: presenceStore.players.length }) }}
-            <span v-if="presenceStore.lastUpdate" class="ml-4 text-xs text-header-500">
-              {{ t('presence.last_update') }}: {{ presenceStore.lastUpdate.date }} - {{ presenceStore.lastUpdate.user }}
-            </span>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Notice + last update (desktop & mobile) -->
+    <div v-if="!presenceStore.loading && filteredPlayers.length >= 0" class="mt-3 space-y-2">
+      <div class="px-4 py-3 bg-blue-50 border border-blue-200 rounded-lg text-xs text-blue-800 text-center space-y-1">
+        <p>{{ t('presence.notice_inactive') }}</p>
+        <p>{{ t('presence.notice_staff_referee') }}</p>
+      </div>
+      <div v-if="presenceStore.lastUpdate" class="px-4 py-2 bg-header-50 border border-header-200 rounded-lg text-xs text-header-500 text-center">
+        {{ t('presence.last_update') }} {{ formatLastUpdateDate(presenceStore.lastUpdate.date) }} {{ t('presence.last_update_by') }} {{ presenceStore.lastUpdate.user }}
       </div>
     </div>
 
@@ -1017,7 +1089,7 @@ const pdfLinks = computed(() => {
               ]"
               @click="canEdit && startEdit(player, 'capitaine')"
             >
-              {{ player.capitaine }}
+              {{ statusLabel(player.capitaine) }}
             </span>
             <select
               v-else
@@ -1027,11 +1099,11 @@ const pdfLinks = computed(() => {
               @change="saveInlineEdit"
               @blur="saveInlineEdit"
             >
-              <option value="-">-</option>
-              <option value="C">C</option>
-              <option value="E">E</option>
-              <option value="A">A</option>
-              <option value="X">X</option>
+              <option value="-">{{ t('presence.status_player') }}</option>
+              <option value="C">{{ t('presence.status_captain') }}</option>
+              <option value="E">{{ t('presence.status_coach') }}</option>
+              <option value="A">{{ t('presence.status_referee') }}</option>
+              <option value="X">{{ t('presence.status_inactive') }}</option>
             </select>
           </div>
         </div>

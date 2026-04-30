@@ -427,13 +427,22 @@ const searchClubs = () => {
     }
     clubSearchLoading.value = true
     try {
-      clubSearchResults.value = await api.get<Club[]>('/admin/clubs/search', { q: clubSearchQuery.value })
+      const params: Record<string, string> = { q: clubSearchQuery.value }
+      if (selectedCR.value) params.cr = selectedCR.value
+      if (selectedCD.value) params.cd = selectedCD.value
+      clubSearchResults.value = await api.get<Club[]>('/admin/clubs/search', params)
     } catch {
       clubSearchResults.value = []
     } finally {
       clubSearchLoading.value = false
     }
   }, 300)
+}
+
+const clearClubSearch = () => {
+  clubSearchQuery.value = ''
+  clubSearchResults.value = []
+  addFormData.value.codeClub = ''
 }
 
 const selectClub = (club: Club) => {
@@ -705,15 +714,21 @@ const toggleLock = async () => {
 }
 
 // Global PDF URLs (competition-level)
-const globalPdfPoolsUrl = computed(() => `${legacyBase.value}/admin/FeuilleGroups.php`)
-const globalPdfPresenceFrUrl = computed(() => `${legacyBase.value}/admin/FeuillePresence.php`)
-const globalPdfPresenceEnUrl = computed(() => `${legacyBase.value}/admin/FeuillePresenceEN.php`)
-const globalPdfPresenceCatUrl = computed(() => `${legacyBase.value}/admin/FeuillePresenceCat.php`)
-const globalPdfPresencePhotoUrl = computed(() => {
-  if (competitionInfo.value?.code === 'POOL') return `${legacyBase.value}/admin/FeuillePresencePhotoRef.php`
-  return `${legacyBase.value}/admin/FeuillePresencePhoto.php`
+const globalPdfParams = computed(() => {
+  const compet = workContext.pageCompetitionCode || ''
+  const season = workContext.season || ''
+  return `compet=${encodeURIComponent(compet)}&season=${encodeURIComponent(season)}`
 })
-const globalPdfControlUrl = computed(() => `${legacyBase.value}/admin/FeuilleControle.php`)
+const globalPdfPoolsUrl = computed(() => `${legacyBase.value}/admin/FeuilleGroups.php?${globalPdfParams.value}`)
+const globalPdfPresenceFrUrl = computed(() => `${legacyBase.value}/admin/FeuillePresence.php?${globalPdfParams.value}`)
+const globalPdfPresenceEnUrl = computed(() => `${legacyBase.value}/admin/FeuillePresenceEN.php?${globalPdfParams.value}`)
+const globalPdfPresenceCatUrl = computed(() => `${legacyBase.value}/admin/FeuillePresenceCat.php?${globalPdfParams.value}`)
+const globalPdfPresencePhotoUrl = computed(() => {
+  const base = competitionInfo.value?.code === 'POOL' ? 'FeuillePresencePhotoRef' : 'FeuillePresencePhoto'
+  return `${legacyBase.value}/admin/${base}.php?${globalPdfParams.value}`
+})
+const globalPdfVisaUrl = computed(() => `${legacyBase.value}/admin/FeuillePresenceVisa.php?${globalPdfParams.value}`)
+const globalPdfControlUrl = computed(() => `${legacyBase.value}/admin/FeuilleControle.php?${globalPdfParams.value}`)
 
 // Status badge colors
 const getStatusColor = (status: string) => {
@@ -736,16 +751,19 @@ const getLevelColor = (level: string) => {
 
 // Legacy PDF links
 const getPresenceUrl = (team: CompetitionTeam) =>
-  `${legacyBase.value}/admin/FeuillePresence.php?equipe=${team.id}`
+  `${legacyBase.value}/admin/FeuillePresence.php?equipe=${team.id}&${globalPdfParams.value}`
 
 const getPresenceEnUrl = (team: CompetitionTeam) =>
-  `${legacyBase.value}/admin/FeuillePresenceEN.php?equipe=${team.id}`
+  `${legacyBase.value}/admin/FeuillePresenceEN.php?equipe=${team.id}&${globalPdfParams.value}`
 
 const getPresencePhotoUrl = (team: CompetitionTeam) =>
-  `${legacyBase.value}/admin/FeuillePresencePhoto.php?equipe=${team.id}`
+  `${legacyBase.value}/admin/FeuillePresencePhoto.php?equipe=${team.id}&${globalPdfParams.value}`
+
+const getVisaUrl = (team: CompetitionTeam) =>
+  `${legacyBase.value}/admin/FeuillePresenceVisa.php?equipe=${team.id}&${globalPdfParams.value}`
 
 const getControlUrl = (team: CompetitionTeam) =>
-  `${legacyBase.value}/admin/FeuillePresenceVisa.php?equipe=${team.id}`
+  `${legacyBase.value}/admin/FeuilleControle.php?equipe=${team.id}&${globalPdfParams.value}`
 
 // Logo image URL - fallback to club code convention like legacy PHP
 // Logo column should contain relative path within img/ (e.g. "KIP/logo/3512-logo.png" or "Nations/GER.png")
@@ -774,6 +792,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
     <AdminPageHeader
       :title="t('teams_page.title')"
       :competition-filtered-codes="workContext.pageFilteredCompetitionCodes"
+      :has-notices="!!competitionInfo?.verrou"
       @competition-change="onCompetitionChange"
     >
       <template #badges>
@@ -835,25 +854,30 @@ const getLogoUrl = (team: CompetitionTeam) => {
       <!-- Toolbar -->
       <div class="mb-4 bg-white rounded-lg shadow p-4">
         <div class="flex flex-wrap items-center gap-2">
-          <!-- Add button -->
-          <button
-            v-if="canAddDelete"
-            class="px-3 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-sm flex items-center gap-1"
-            @click="openAddModal"
-          >
-            <UIcon name="heroicons:plus" class="w-6 h-6" />
-            {{ t('teams_page.add') }}
-          </button>
+          <!-- Selection actions (left) -->
+          <template v-if="canAddDelete && teams.length > 0">
+            <!-- Select all / Deselect all -->
+            <button
+              class="px-3 py-2 border border-header-300 text-header-700 rounded-lg hover:bg-header-50 transition-colors text-sm"
+              @click="selectAll = !selectAll; toggleSelectAll()"
+            >
+              {{ selectAll ? t('teams_page.deselect_all') : t('teams_page.select_all') }}
+            </button>
 
-          <!-- Duplicate button -->
-          <button
-            v-if="canAddDelete"
-            class="px-3 py-2 bg-header-600 text-white rounded-lg hover:bg-header-700 transition-colors text-sm flex items-center gap-1"
-            @click="openDuplicateModal"
-          >
-            <UIcon name="heroicons:document-duplicate" class="w-6 h-6" />
-            {{ t('teams_page.duplicate') }}
-          </button>
+            <!-- Bulk delete -->
+            <button
+              v-if="selectedIds.length > 0"
+              class="px-3 py-2 bg-danger-600 text-white rounded-lg hover:bg-danger-700 transition-colors text-sm flex items-center gap-1"
+              @click="openBulkDeleteModal"
+            >
+              <UIcon name="heroicons:trash-solid" class="w-6 h-6" />
+              {{ t('teams_page.delete_selected') }} ({{ selectedIds.length }})
+            </button>
+          </template>
+
+          <div class="flex-1" />
+
+          <!-- Common actions (right) -->
 
           <!-- Init starters -->
           <button
@@ -881,34 +905,28 @@ const getLogoUrl = (team: CompetitionTeam) => {
           >
             <UIcon name="heroicons:document-text" class="w-6 h-6" />
             {{ t('teams_page.global_pdf') }}
+            <UIcon name="heroicons:chevron-down" class="w-4 h-4" />
           </button>
 
-          <div class="flex-1" />
+          <!-- Duplicate button -->
+          <button
+            v-if="canAddDelete"
+            class="px-3 py-2 bg-header-600 text-white rounded-lg hover:bg-header-700 transition-colors text-sm flex items-center gap-1"
+            @click="openDuplicateModal"
+          >
+            <UIcon name="heroicons:document-duplicate" class="w-6 h-6" />
+            {{ t('teams_page.duplicate') }}
+          </button>
 
-          <!-- Select all / Deselect all -->
-          <template v-if="canAddDelete && teams.length > 0">
-            <button
-              class="px-3 py-2 border border-header-300 text-header-700 rounded-lg hover:bg-header-50 transition-colors text-sm"
-              @click="selectAll = !selectAll; toggleSelectAll()"
-            >
-              {{ selectAll ? t('teams_page.deselect_all') : t('teams_page.select_all') }}
-            </button>
-
-            <!-- Bulk delete -->
-            <button
-              v-if="selectedIds.length > 0"
-              class="px-3 py-2 bg-danger-600 text-white rounded-lg hover:bg-danger-700 transition-colors text-sm flex items-center gap-1"
-              @click="openBulkDeleteModal"
-            >
-              <UIcon name="heroicons:trash-solid" class="w-6 h-6" />
-              {{ t('teams_page.delete_selected') }} ({{ selectedIds.length }})
-            </button>
-          </template>
-
-          <!-- Total count -->
-          <span class="text-sm text-header-500">
-            {{ t('teams_page.total', { count: total }) }}
-          </span>
+          <!-- Add button -->
+          <button
+            v-if="canAddDelete"
+            class="px-3 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors text-sm flex items-center gap-1"
+            @click="openAddModal"
+          >
+            <UIcon name="heroicons:plus" class="w-6 h-6" />
+            {{ t('teams_page.add') }}
+          </button>
         </div>
       </div>
 
@@ -966,7 +984,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                     {{ t('teams_page.columns.pdf') }}
                   </th>                </tr>
               </thead>
-              <tbody class="divide-y divide-header-200">
+              <tbody class="divide-y divide-header-200 align-middle">
                 <tr
                   v-for="team in group.teams"
                   :key="team.id"
@@ -1032,21 +1050,22 @@ const getLogoUrl = (team: CompetitionTeam) => {
 
                   <!-- Logo + Colors -->
                   <td
-                    class="px-3 py-2 text-center"
+                    class="px-3 py-0 text-center"
                     :class="canEditProperties ? 'cursor-pointer hover:bg-primary-50' : ''"
                     @click="canEditProperties && openEditModal(team)"
                   >
-                    <div class="flex items-center justify-center">
+                    <div class="flex items-center justify-center gap-2">
                       <img
                         v-if="getLogoUrl(team)"
                         :src="getLogoUrl(team)!"
                         :alt="team.libelle"
-                        class="w-20 h-10 object-contain pe-2"
+                        class="w-20 h-10 object-contain shrink-0"
                         @error="($event.target as HTMLImageElement).style.display = 'none'"
                       >
+                      <span v-else class="w-20 h-10 shrink-0" />
                       <span
                         v-if="team.color1 || team.color2"
-                        class="inline-flex items-center justify-center w-8 h-8 rounded-sm aspect-square font-bold"
+                        class="inline-flex items-center justify-center w-8 h-8 rounded-sm aspect-square font-bold shrink-0"
                         :style="{
                           backgroundColor: team.color1 || '#000',
                           borderColor: team.color2 || 'transparent',
@@ -1058,7 +1077,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                       >
                         1
                       </span>
-                      <span v-if="!getLogoUrl(team) && !team.color1 && !team.color2" class="text-header-300 text-xs">-</span>
+                      <span v-else class="w-8 h-8 shrink-0" />
                     </div>
                   </td>
 
@@ -1107,7 +1126,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                         <UIcon name="heroicons:document-text" class="w-6 h-6" />
                       </button>
 
-                      <!-- Delete -->
+                      <!-- Delete or placeholder to keep PDF centered -->
                       <button
                         v-if="canAddDelete && team.nbMatchs === 0"
                         class="p-1 text-danger-600 hover:bg-danger-50 rounded"
@@ -1116,6 +1135,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                       >
                         <UIcon name="heroicons:trash-solid" class="w-6 h-6" />
                       </button>
+                      <span v-else-if="canAddDelete" class="inline-block w-8 h-8" />
                     </div>
                   </td>
                 </tr>
@@ -1280,11 +1300,21 @@ const getLogoUrl = (team: CompetitionTeam) => {
         <a :href="getPresencePhotoUrl({ id: openDropdownId } as CompetitionTeam)" target="_blank" class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50" @click="closePresenceDropdown">
           {{ t('teams_page.presence_sheet_photo') }}
         </a>
+        <div v-if="canEditProperties" class="border-t border-header-100" />
+        <a
+          v-if="canEditProperties"
+          :href="getVisaUrl({ id: openDropdownId } as CompetitionTeam)"
+          target="_blank"
+          class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50"
+          @click="closePresenceDropdown"
+        >
+          {{ t('teams_page.visa_sheet') }}
+        </a>
         <a
           v-if="canEditProperties"
           :href="getControlUrl({ id: openDropdownId } as CompetitionTeam)"
           target="_blank"
-          class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50 border-t border-header-100 rounded-b-lg"
+          class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50 rounded-b-lg"
           @click="closePresenceDropdown"
         >
           {{ t('teams_page.control_sheet') }}
@@ -1314,11 +1344,21 @@ const getLogoUrl = (team: CompetitionTeam) => {
         <a :href="globalPdfPresencePhotoUrl" target="_blank" class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50" @click="globalPdfOpen = false">
           {{ t('teams_page.presence_sheet_photo') }}
         </a>
+        <div v-if="canEditProperties" class="border-t border-header-100" />
+        <a
+          v-if="canEditProperties"
+          :href="globalPdfVisaUrl"
+          target="_blank"
+          class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50"
+          @click="globalPdfOpen = false"
+        >
+          {{ t('teams_page.visa_sheet') }}
+        </a>
         <a
           v-if="canEditProperties"
           :href="globalPdfControlUrl"
           target="_blank"
-          class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50 border-t border-header-100 rounded-b-lg"
+          class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50 rounded-b-lg"
           @click="globalPdfOpen = false"
         >
           {{ t('teams_page.control_sheet') }}
@@ -1395,9 +1435,17 @@ const getLogoUrl = (team: CompetitionTeam) => {
                   v-model="clubSearchQuery"
                   type="text"
                   :placeholder="t('teams_page.add_modal.search_club')"
-                  class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  class="w-full px-3 py-2 pr-8 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   @input="searchClubs"
                 >
+                <button
+                  v-if="clubSearchQuery"
+                  type="button"
+                  class="absolute right-2 top-1/2 -translate-y-1/2 text-header-400 hover:text-header-600"
+                  @click="clearClubSearch"
+                >
+                  <UIcon name="heroicons:x-mark" class="w-4 h-4" />
+                </button>
                 <div
                   v-if="clubSearchResults.length > 0"
                   class="absolute z-10 w-full mt-1 bg-white border border-header-300 rounded-lg shadow-lg max-h-48 overflow-y-auto"

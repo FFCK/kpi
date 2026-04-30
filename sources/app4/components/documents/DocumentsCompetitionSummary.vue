@@ -168,7 +168,7 @@ onMounted(() => {
 
 <template>
   <div v-if="loading" class="bg-white rounded-lg shadow p-6 text-center">
-    <UIcon name="heroicons:arrow-path" class="w-6 h-6 animate-spin text-header-400 mx-auto" />
+    <UIcon name="heroicons:arrow-path" class="w-6 h-6 animate-spin text-header-600 mx-auto" />
   </div>
 
   <div v-else-if="competition" class="bg-white rounded-lg shadow overflow-hidden">
@@ -208,15 +208,24 @@ onMounted(() => {
         <span class="px-2 py-1 text-xs font-medium rounded" :class="getTypeColor(competition.codeTypeclt)">
           {{ competition.codeTypeclt }}
         </span>
-        <span class="px-2 py-1 text-xs font-medium rounded bg-header-100 text-header-700">
+        <NuxtLink
+          to="/teams"
+          class="px-2 py-1 text-xs font-medium rounded bg-header-100 text-header-700 hover:bg-header-200 transition-colors"
+        >
           {{ t('documents.summary.teams_count', { count: competition.nbEquipes }, competition.nbEquipes) }}
-        </span>
-        <span class="px-2 py-1 text-xs font-medium rounded bg-header-100 text-header-700">
+        </NuxtLink>
+        <NuxtLink
+          to="/gamedays"
+          class="px-2 py-1 text-xs font-medium rounded bg-header-100 text-header-700 hover:bg-header-200 transition-colors"
+        >
           {{ t('documents.summary.phases_count', { count: competition.nbJournees }, competition.nbJournees) }}
-        </span>
-        <span class="px-2 py-1 text-xs font-medium rounded bg-header-100 text-header-700">
+        </NuxtLink>
+        <NuxtLink
+          to="/games"
+          class="px-2 py-1 text-xs font-medium rounded bg-header-100 text-header-700 hover:bg-header-200 transition-colors"
+        >
           {{ t('documents.summary.matches_count', { count: competition.nbMatchs }, competition.nbMatchs) }}
-        </span>
+        </NuxtLink>
         <span
           v-if="isCp && competition.qualifies > 0"
           class="px-2 py-1 text-xs font-medium rounded bg-emerald-50 text-emerald-700"
@@ -267,7 +276,7 @@ onMounted(() => {
                 </span>
                 <span class="text-sm font-medium text-header-700 truncate">{{ phase.phase }}</span>
                 </div>
-              <div class="flex items-center justify-center text-xs text-header-400">
+              <div class="flex items-center justify-center text-xs text-header-600">
                 <span v-if="phase.nbequipes">{{ phase.nbequipes }} {{ t('documents.summary.teams_short', { count: phase.nbequipes }, phase.nbequipes) }} - </span>{{ phase.nbMatchs }} {{ t('documents.summary.matches_short', { count: phase.nbMatchs }, phase.nbMatchs) }}
               </div>
             </NuxtLink>
@@ -284,19 +293,19 @@ onMounted(() => {
           class="px-3 py-2 bg-header-50 rounded-lg hover:bg-header-100 transition-colors"
         >
           <div class="text-sm font-medium text-header-800">{{ phase.phase }}</div>
-          <div class="text-xs text-header-500 mt-0.5 space-y-0.5">
+          <div class="text-xs text-header-800 mt-0.5 space-y-0.5">
             <div v-if="formatDateRange(phase.dateDebut, phase.dateFin)" class="flex items-center gap-1">
-              <UIcon name="heroicons:calendar" class="w-3 h-3 text-header-400" />
+              <UIcon name="heroicons:calendar" class="w-3 h-3 text-header-600" />
               {{ formatDateRange(phase.dateDebut, phase.dateFin) }}
             </div>
             <div v-if="phase.lieu || phase.departement" class="flex items-center gap-1">
-              <UIcon name="heroicons:map-pin" class="w-3 h-3 text-header-400" />
+              <UIcon name="heroicons:map-pin" class="w-3 h-3 text-header-600" />
               <span v-if="phase.lieu">{{ phase.lieu }}</span>
               <span v-if="phase.lieu && phase.departement"> · </span>
               <span v-if="phase.departement">{{ phase.departement }}</span>
             </div>
             <div class="flex items-center gap-1">
-              <UIcon name="heroicons:user-group" class="w-3 h-3 text-header-400" />
+              <UIcon name="heroicons:user-group" class="w-3 h-3 text-header-600" />
               {{ countTeamsFromMatches(phase) }} {{ t('documents.summary.teams_short', { count: countTeamsFromMatches(phase) }, countTeamsFromMatches(phase)) }}
               -
               {{ phase.nbMatchs }} {{ t('documents.summary.matches_short', { count: phase.nbMatchs }, phase.nbMatchs) }}
@@ -306,14 +315,14 @@ onMounted(() => {
       </div>
 
       <!-- MULTI -->
-      <p v-else-if="isMulti" class="text-sm text-header-500 italic">
+      <p v-else-if="isMulti" class="text-sm text-header-800 italic">
         {{ t('documents.summary.multi_competition') }}
       </p>
     </div>
 
     <!-- No phases (only show if schema was loaded but returned empty) -->
     <div v-else-if="!loading && !isMulti && schemaData !== null" class="px-6 py-4">
-      <p class="text-sm text-header-400 italic">{{ t('documents.summary.no_phases') }}</p>
+      <p class="text-sm text-header-600 italic">{{ t('documents.summary.no_phases') }}</p>
     </div>
 
     <!-- Sponsor (below phases) -->

@@ -164,6 +164,54 @@ const adminMenuGroups = computed<MenuGroup[]>(() => {
     })
   }
 
+  // Opérations: copie système de jeu, opérations
+  const operations: MenuItem[] = []
+  if (profile <= 2) {
+    operations.push({
+      to: '/competitions/copy',
+      icon: 'heroicons:document-duplicate',
+      label: t('menu.copy')
+    })
+  }
+  if (profile <= 2) {
+    operations.push({
+      to: '/operations',
+      icon: 'heroicons:wrench-screwdriver',
+      label: t('menu.operations')
+    })
+  }
+  if (operations.length > 0) {
+    groups.push({
+      key: 'operations',
+      label: t('menu.operations_group'),
+      icon: 'heroicons:cog-6-tooth',
+      items: operations
+    })
+  }
+
+  // Live: TV
+  const live: MenuItem[] = []
+  if (profile <= 2) {
+    live.push({
+      to: '/tv',
+      icon: 'heroicons:tv',
+      label: t('menu.tv')
+    })
+    live.push({
+      to: '/live/cache-manager',
+      icon: 'heroicons:server-stack',
+      label: t('menu.event_cache_manager')
+    })
+  }
+  if (live.length > 0) {
+    groups.push({
+      key: 'live',
+      label: t('menu.live'),
+      icon: 'heroicons:signal',
+      items: live
+    })
+  }
+
   // Droits: utilisateurs, journal
   const rights: MenuItem[] = []
   if (profile <= 4) {
@@ -186,49 +234,6 @@ const adminMenuGroups = computed<MenuGroup[]>(() => {
       label: t('menu.rights'),
       icon: 'heroicons:shield-check',
       items: rights
-    })
-  }
-
-  // Live: TV
-  const live: MenuItem[] = []
-  if (profile <= 2) {
-    live.push({
-      to: '/tv',
-      icon: 'heroicons:tv',
-      label: t('menu.tv')
-    })
-  }
-  if (live.length > 0) {
-    groups.push({
-      key: 'live',
-      label: t('menu.live'),
-      icon: 'heroicons:signal',
-      items: live
-    })
-  }
-
-  // Opérations: copie système de jeu, opérations
-  const operations: MenuItem[] = []
-  if (profile <= 2) {
-    operations.push({
-      to: '/competitions/copy',
-      icon: 'heroicons:document-duplicate',
-      label: t('menu.copy')
-    })
-  }
-  if (profile === 1) {
-    operations.push({
-      to: '/operations',
-      icon: 'heroicons:wrench-screwdriver',
-      label: t('menu.operations')
-    })
-  }
-  if (operations.length > 0) {
-    groups.push({
-      key: 'operations',
-      label: t('menu.operations_group'),
-      icon: 'heroicons:cog-6-tooth',
-      items: operations
     })
   }
 
