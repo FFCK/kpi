@@ -40,9 +40,9 @@ class FeuilleCards extends MyPage
         }
 
         if (($arrayCompetition['En_actif'] ?? '') == 'O') {
-            $dateprint = date('Y-m-d H:i');
+            $dateprint = utyGetPrintDatetime()->format('Y-m-d H:i');
         } else {
-            $dateprint = date('d/m/Y H:i');
+            $dateprint = utyGetPrintDatetime()->format('d/m/Y H:i');
         }
 
         //Création

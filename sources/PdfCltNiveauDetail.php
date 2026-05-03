@@ -17,6 +17,7 @@ class FeuilleCltNiveau extends MyPage
         $myBdd = new MyBdd();
 
         $codeCompet = utyGetSession('codeCompet', '');
+        $codeCompet = utyGetGet('Compet', $codeCompet);
         $codeCompet = utyGetGet('codeCompet', $codeCompet);
         //Saison
         $codeSaison = $myBdd->GetActiveSaison();
@@ -78,23 +79,48 @@ class FeuilleCltNiveau extends MyPage
         $qrcode->displayFPDF($pdf, 177, 240, 24);
 
         // Pattern 8: REACTIVER AutoPageBreak après les images
-        // Marge de 30mm pour laisser la place au sponsor (16mm) + QRCode
-        $pdf->SetAutoPageBreak(true, 30);
+        if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
+            $pdf->SetAutoPageBreak(true, 30);
+        } else {
+            $pdf->SetAutoPageBreak(true, 15);
+        }
+
+        // Aligner les marges mPDF sur celles du contenu (10mm) AVANT SetHTMLFooter
+        $pdf->SetLeftMargin(10);
+        $pdf->SetRightMargin(10);
+
+        // Footer HTML : pagination à gauche, horodatage à droite
+        $datetime = ($lang == $langue['en'])
+            ? utyGetPrintDatetime()->format('Y-m-d H:i')
+            : utyGetPrintDatetime()->format('d/m/Y à H:i');
+        $footerLine = '<table width="100%" style="font-family:Arial;font-size:8pt;font-style:italic;margin-top:2mm;"><tr>'
+            . '<td width="50%" align="left">Page {PAGENO}</td>'
+            . '<td width="50%" align="right">' . $datetime . '</td>'
+            . '</tr></table>';
+        if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
+            $imgSponsorFooter = redimImage($visuels['sponsor'], 210, 10, 16, 'C');
+            $footerHTML = '<div style="text-align: center;">'
+                . '<img src="' . $imgSponsorFooter['image'] . '" style="height: ' . $imgSponsorFooter['newHauteur'] . 'mm;" /></div>'
+                . $footerLine;
+            $pdf->SetHTMLFooter($footerHTML);
+        } else {
+            $pdf->SetHTMLFooter($footerLine);
+        }
 
         // titre - Positionner le curseur après le bandeau
         $pdf->SetY(30);
         $pdf->SetFont('Arial', 'B', 14);
         if ($arrayCompetition['Titre_actif'] == 'O') {
-            $pdf->Cell(190, 5, $arrayCompetition['Libelle'], 0, 1, 'C');
+            $pdf->Cell(180, 5, $arrayCompetition['Libelle'], 0, 1, 'C');
         } else {
-            $pdf->Cell(190, 5, $arrayCompetition['Soustitre'], 0, 1, 'C');
+            $pdf->Cell(180, 5, $arrayCompetition['Soustitre'], 0, 1, 'C');
         }
         if ($arrayCompetition['Soustitre2'] != '') {
-            $pdf->Cell(190, 5, $arrayCompetition['Soustitre2'], 0, 1, 'C');
+            $pdf->Cell(180, 5, $arrayCompetition['Soustitre2'], 0, 1, 'C');
         }
         $pdf->Ln(4);
         $pdf->SetFont('Arial', 'BI', 10);
-        $pdf->Cell(190, 5, $lang['DETAIL_PAR_EQUIPE'], 0, 0, 'C');
+        $pdf->Cell(180, 5, $lang['DETAIL_PAR_EQUIPE'], 0, 0, 'C');
         $pdf->Ln(10);
 
         //données
@@ -104,33 +130,41 @@ class FeuilleCltNiveau extends MyPage
             FROM kp_competition_equipe 
             WHERE Code_compet = ?
             AND Code_saison = ? 
-            AND CltNiveau_publi != 0 
-            ORDER BY Libelle ";
+            AND CltNiveau_publi != 0
+            ORDER BY CltNiveau_publi ASC ";
         $result = $myBdd->pdo->prepare($sql);
         $result->execute(array($codeCompet, $codeSaison));
 
         while ($row = $result->fetch()) {
             $idEquipe = $row['Id'];
             $pdf->SetFont('Arial', 'B', 12);
-            $pdf->Cell(55, 6, '', 0, '0', 'L');
+            $pdf->SetX(55);
             // médailles
             if ($row['CltNiveau_publi'] <= 3 && $row['CltNiveau_publi'] != 0 && $arrayCompetition['Code_tour'] == 'F') {
+                $savedY = $pdf->y;
+                $savedX = $pdf->x;
                 $pdf->Image('img/medal' . $row['CltNiveau_publi'] . '.gif', $pdf->x, $pdf->y + 1, 3, 3);
+                $pdf->SetY($savedY);
+                $pdf->SetX($savedX);
             }
-            $pdf->Cell(20, 6, '', 0, '0', 'C');
+            $pdf->Cell(30, 6, $row['CltNiveau_publi'] . '.', 0, '0', 'C');
             // drapeaux
             if ($arrayCompetition['Code_niveau'] == 'INT') {
                 $pays = substr($row['Code_club'], 0, 3);
                 if (is_numeric($pays[0]) || is_numeric($pays[1]) || is_numeric($pays[2])) {
                     $pays = 'FRA';
                 }
+                $savedY = $pdf->y;
+                $savedX = $pdf->x;
                 $pdf->Image('img/Pays/' . $pays . '.png', $pdf->x, $pdf->y + 1, 7, 4);
+                $pdf->SetY($savedY);
+                $pdf->SetX($savedX);
                 $pdf->Cell(10, 6, '', 0, '0', 'C'); //Pays
             } else {
                 $pdf->Cell(10, 6, '', 0, '0', 'C');
             }
 
-            $pdf->Cell(190, 6, $row['Libelle'], 0, 1, 'L');
+            $pdf->Cell(85, 6, $row['Libelle'], 0, 1, 'L');
             //Détail
             $sql2 = "SELECT a.Id_equipeA, a.ScoreA, c.Libelle LibelleA, a.Id_equipeB, a.ScoreB,
                 d.Libelle LibelleB, a.Id, a.Id_journee, a.Validation, b.Niveau, b.Phase
@@ -167,22 +201,22 @@ class FeuilleCltNiveau extends MyPage
                     $oldNiveauPhase = $niveauPhase;
                     $pdf->Ln(2);
                     $pdf->SetFont('Arial', 'BI', 10);
-                    $pdf->Cell(190, 5, $row2['Phase'], 0, 1, 'C');
+                    $pdf->Cell(180, 5, $row2['Phase'], 0, 1, 'C');
                 }
                 if ($row2['Validation'] != 'O') {
                     $pdf->SetFont('Arial', '', 9);
-                    $pdf->Cell(89, 4, $row2['LibelleA'], 0, 0, 'R');
+                    $pdf->Cell(84, 4, $row2['LibelleA'], 0, 0, 'R');
                     $pdf->Cell(5, 4, '', 0, 0, 'C');
                     $pdf->Cell(2, 4, '-', 0, 0, 'C');
                     $pdf->Cell(5, 4, '', 0, 0, 'C');
-                    $pdf->Cell(89, 4, $row2['LibelleB'], 0, 1, 'L');
+                    $pdf->Cell(84, 4, $row2['LibelleB'], 0, 1, 'L');
                 } else {
                     if ($row2['ScoreA'] > $row2['ScoreB']) {
                         $pdf->SetFont('Arial', 'B', 9);
                     } else {
                         $pdf->SetFont('Arial', '', 9);
                     }
-                    $pdf->Cell(89, 4, $row2['LibelleA'], 0, 0, 'R');
+                    $pdf->Cell(84, 4, $row2['LibelleA'], 0, 0, 'R');
                     $pdf->Cell(5, 4, $row2['ScoreA'], 0, 0, 'C');
                     $pdf->SetFont('Arial', '', 9);
                     $pdf->Cell(2, 4, '-', 0, 0, 'C');
@@ -192,13 +226,13 @@ class FeuilleCltNiveau extends MyPage
                         $pdf->SetFont('Arial', '', 9);
                     }
                     $pdf->Cell(5, 4, $row2['ScoreB'], 0, 0, 'C');
-                    $pdf->Cell(89, 4, $row2['LibelleB'], 0, 1, 'L');
+                    $pdf->Cell(84, 4, $row2['LibelleB'], 0, 1, 'L');
                 }
             }
             $pdf->Ln(8);
         }
 
-        $pdf->Output('Detail par equipe ' . $codeCompet . '.pdf', 'I');
+        $pdf->Output('Detail par equipe ' . $codeCompet . '.pdf', \Mpdf\Output\Destination::INLINE);
     }
 }
 

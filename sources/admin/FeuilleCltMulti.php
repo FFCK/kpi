@@ -78,16 +78,16 @@ class FeuilleCltMulti extends MyPage
                 . '<img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /><br/>'
                 . '<span style="font-family:Arial;font-size:8pt;font-style:italic;">'
                 . (($lang == $langue['en'])
-                    ? date('Y-m-d H:i', strtotime($_SESSION['tzOffset'] ?? ''))
-                    : date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'] ?? '')))
+                    ? utyGetPrintDatetime()->format('Y-m-d H:i')
+                    : utyGetPrintDatetime()->format('d/m/Y à H:i'))
                 . '</span></div>';
             $pdf->SetHTMLFooter($footerHTML);
         } else {
             // Footer HTML simple avec date/heure seule
             $footerHTML = '<div style="text-align:center;font-family:Arial;font-size:8pt;font-style:italic;margin-top:2mm;">'
                 . (($lang == $langue['en'])
-                    ? date('Y-m-d H:i', strtotime($_SESSION['tzOffset'] ?? ''))
-                    : date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'] ?? '')))
+                    ? utyGetPrintDatetime()->format('Y-m-d H:i')
+                    : utyGetPrintDatetime()->format('d/m/Y à H:i'))
                 . '</div>';
             $pdf->SetHTMLFooter($footerHTML);
         }

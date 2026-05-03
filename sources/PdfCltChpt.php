@@ -19,8 +19,10 @@ class FeuilleCltNiveau extends MyPage
         $myBdd = new MyBdd();
 
         $codeCompet = utyGetSession('codeCompet', '');
+        $codeCompet = utyGetGet('Compet', $codeCompet);
         //Saison
         $codeSaison = $myBdd->GetActiveSaison();
+        $codeSaison = utyGetGet('S', $codeSaison);
         $titreDate = "Saison " . $codeSaison;
 
         $arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
@@ -83,20 +85,19 @@ class FeuilleCltNiveau extends MyPage
         if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
             $img = redimImage($visuels['sponsor'], 297, 10, 16, 'C');
             $footerHTML = '<div style="text-align: center;">'
-                . '<img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /><br/>'
-                . '<span style="font-family:Arial;font-size:8pt;font-style:italic;">'
+                . '<img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /></div>'
+                . '<div style="text-align:right;font-family:Arial;font-size:8pt;font-style:italic;">'
                 . (($lang == $langue['en'])
-                    ? date('Y-m-d H:i', strtotime($_SESSION['tzOffset'] ?? ''))
-                    : date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'] ?? '')))
-                . '</span></div>';
+                    ? utyGetPrintDatetime()->format('Y-m-d H:i')
+                    : utyGetPrintDatetime()->format('d/m/Y à H:i'))
+                . '</div>';
             $pdf->SetHTMLFooter($footerHTML);
             $pdf->SetAutoPageBreak(true, 30);
         } else {
-            // Footer HTML simple avec date/heure seule
-            $footerHTML = '<div style="text-align:center;font-family:Arial;font-size:8pt;font-style:italic;margin-top:2mm;">'
+            $footerHTML = '<div style="text-align:right;font-family:Arial;font-size:8pt;font-style:italic;margin-top:2mm;">'
                 . (($lang == $langue['en'])
-                    ? date('Y-m-d H:i', strtotime($_SESSION['tzOffset'] ?? ''))
-                    : date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'] ?? '')))
+                    ? utyGetPrintDatetime()->format('Y-m-d H:i')
+                    : utyGetPrintDatetime()->format('d/m/Y à H:i'))
                 . '</div>';
             $pdf->SetHTMLFooter($footerHTML);
             $pdf->SetAutoPageBreak(true, 15);
@@ -127,18 +128,18 @@ class FeuilleCltNiveau extends MyPage
 
         $pdf->SetFont('Arial', 'B', 14);
         if ($arrayCompetition['Titre_actif'] == 'O') {
-            $pdf->Cell(273, 5, $arrayCompetition['Libelle'], 0, 1, 'C');
+            $pdf->Cell(267, 5, $arrayCompetition['Libelle'], 0, 1, 'C');
         } else {
-            $pdf->Cell(273, 5, $arrayCompetition['Soustitre'], 0, 1, 'C');
+            $pdf->Cell(267, 5, $arrayCompetition['Soustitre'], 0, 1, 'C');
         }
 
         $pdf->Ln(4);
         if ($arrayCompetition['Soustitre2'] != '') {
-            $pdf->Cell(273, 5, $arrayCompetition['Soustitre2'], 0, 1, 'C');
+            $pdf->Cell(267, 5, $arrayCompetition['Soustitre2'], 0, 1, 'C');
         }
         $pdf->Ln(4);
         $pdf->SetFont('Arial', 'BI', 10);
-        $pdf->Cell(273, 5, $lang['CLASSEMENT_GENERAL'], 0, 0, 'C');
+        $pdf->Cell(267, 5, $lang['CLASSEMENT_GENERAL'], 0, 0, 'C');
         $pdf->Ln(10);
 
         //données

@@ -4,23 +4,6 @@ include_once('../commun/MyBdd.php');
 include_once('../commun/MyTools.php');
 require_once('../commun/MyPDF.php');
 
-// Pieds de page
-class PDF extends MyPDF
-{
-
-    function Footer()
-    {
-        //Positionnement à 1,5 cm du bas
-        $this->SetY(-15);
-        //Police Arial italique 8
-        $this->SetFont('Arial', 'I', 8);
-        //Numéro de page à gauche
-        $this->Cell(135, 10, 'Page ' . $this->PageNo(), 0, 0, 'L');
-        //Date à droite
-        $this->Cell(135, 10, date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'])), 0, 0, 'R');
-    }
-}
-
 // liste des présents par équipe
 class FeuillePresence extends MyPage
 {
@@ -153,6 +136,12 @@ class FeuillePresence extends MyPage
         $pdf->SetAuthor("Kayak-polo.info");
         $pdf->SetCreator("Kayak-polo.info avec mPDF");
 
+        $footerHTML = '<table width="100%" style="font-family:Arial;font-size:8pt;font-style:italic;margin-top:2mm;"><tr>'
+            . '<td align="left" width="50%">Page {PAGENO}</td>'
+            . '<td align="right" width="50%">' . utyGetPrintDatetime()->format('d/m/Y à H:i') . '</td>'
+            . '</tr></table>';
+        $pdf->SetHTMLFooter($footerHTML);
+
         $yStart = 10;
 
         foreach ($resultarray as $row) {
@@ -244,13 +233,6 @@ class FeuillePresence extends MyPage
                 }
             }
         }
-
-        // Footer HTML pour numéro de page à gauche et date/heure à droite
-        $footerHTML = '<table width="100%" style="font-family:Arial;font-size:8pt;font-style:italic;margin-top:2mm;"><tr>'
-            . '<td align="left" width="50%">Page {PAGENO}</td>'
-            . '<td align="right" width="50%">' . date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'] ?? '')) . '</td>'
-            . '</tr></table>';
-        $pdf->SetHTMLFooter($footerHTML);
 
         $pdf->Output('FeuillePresence.pdf', \Mpdf\Output\Destination::INLINE);
     }

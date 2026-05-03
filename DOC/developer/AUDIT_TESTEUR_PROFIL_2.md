@@ -11,7 +11,7 @@
 
 ### Gestion d'images / uploader
 - ✅ marche uniquement sur profil 1 ? pas réusssi à acceder, ni pour logo compétition ni pour logo équipe
-accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mais je n'ai pas trouvé comment faire avec un profil 2 - **RÉSOLU** Dans App4, accès élargi au profil 2 depuis le menu Administration -> Opérations -> Images.
+accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mais je n'ai pas trouvé comment faire avec un profil 2 - **RÉSOLU, à tester** Dans App4, accès élargi au profil 2 depuis le menu Administration -> Opérations -> Images.
 
 ### ✅ Stats contrôle de cohérence des matchs — résolu, à tester :
 - Règlement RP KAP 26.4 maintenant pris en compte, avec différenciation par niveau/type de compétition :
@@ -56,19 +56,20 @@ accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mai
 
 - Page Documents :
 	* ✅ export des listes de match en format tableur ODS : le numéro du match n'est pas exporté dans le fichier (idem depuis la liste des matchs), c'est pourtant utile → **RÉSOLU**
-	* horodatage "variable" sur les fichiers PDF
-		- Equipes / feuilles de présence FR : uniquement sur la dernière page, date du 01/01/1970 à 00:00 ? / horodater chacune des pages en pied de page ?
-		- Equipes / feuilles de présence EN : aucun horodatage / horodater chacune des pages en pied de page ?
-		- Equipes / Présence avec VISA et Présence avec photo : aucun horodatage / horodater chacune des pages en pied de page ?
-		- Matchs / Liste des matchs FR : date du jour OK mais heure fixe à 00h00
-		- Matchs / Liste des matchs EN : date du 01/01/1970 à 00:00
-		- Matchs / feuilles de marque : date du jour OK mais heure en UTC+00
-		- Classements / classement général : date du 01/01/1970 à 00:00
-		- Classements / détail par phases : date du 01/01/1970 à 00:00
-		- Classements / détail par équipes : date du 01/01/1970 à 00:00 pour les 2 cas compétition type championnat ou coupe
-		- Evenements / match événement FR : date du jour OK mais heure fixe à 00h00
-		- Evenements / match événement EN : date du 01/01/1970 à 00:00
-		- Contrôle / Carton cumulés : à horodater en pied de page?
+	* ✅ horodatage "variable" sur les fichiers PDF — **RÉSOLU** : nouvel helper `utyGetPrintTimestamp()` dans `MyTools.php` ; app4 passe le paramètre `tz` (IANA timezone du navigateur, ex. `Europe/Paris`) dans tous les liens PDF legacy ; le PHP utilise ce paramètre en priorité, puis le `$_SESSION['tzOffset']` legacy, puis l'heure serveur. Timestamps ajoutés en pied de page sur FeuillePresenceEN, FeuillePresenceVisa et FeuillePresencePhoto.
+		- ✅ Equipes / feuilles de présence FR : date 01/01/1970 → heure locale correcte
+		- ✅ Equipes / feuilles de présence EN : horodatage ajouté en pied de page (format Y-m-d H:i)
+		- ✅ Equipes / Présence avec VISA et Présence avec photo : horodatage ajouté en pied de page
+		- ✅ Matchs / Liste des matchs FR : heure 00h00 → heure locale correcte
+		- ✅ Matchs / Liste des matchs EN : date 01/01/1970 → heure locale correcte
+		- ✅ Matchs / feuilles de marque : heure UTC+00 → heure locale correcte
+		- ✅ Classements / classement général : date 01/01/1970 → heure locale correcte
+		- ✅ Classements / détail par phases : date 01/01/1970 → heure locale correcte
+		- ✅ Classements / détail par équipes (CHPT et CP) : date 01/01/1970 → heure locale correcte
+		- ✅ Evenements / match événement FR : heure 00h00 → heure locale correcte
+		- ✅ Evenements / match événement EN : date 01/01/1970 → heure locale correcte
+		- ✅ Contrôle / Carton cumulés : horodatage avec heure locale correcte
+		- ✅ Problème identique sur les Classements publiés (PDF publics `PdfClt*.php`) : horodatage 01/01/1970 → heure locale correcte — **RÉSOLU** : pagination et horodatage ajoutés sur tous les fichiers PDF publics `PdfClt*.php`
 		
 	* ✅ Classements / détail par équipes  : ordre des équipes OK si compétition type championnat
 	* ✅ Classements / détail par équipes  : ordre des équipes erroné si compétition type coupe, a priori classées par ordre alphabétique et non de résultats → **RÉSOLU**

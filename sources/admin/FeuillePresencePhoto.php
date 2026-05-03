@@ -140,6 +140,12 @@ class FeuillePresencePhoto extends MyPage
     $pdf->SetAuthor("Kayak-polo.info");
     $pdf->SetCreator("Kayak-polo.info avec mPDF");
 
+    $footerHTML = '<table width="100%" style="font-family:Arial;font-size:8pt;font-style:italic;margin-top:2mm;"><tr>'
+        . '<td align="left" width="50%">Page {PAGENO}</td>'
+        . '<td align="right" width="50%">Print ' . utyGetPrintDatetime()->format('Y-m-d H:i') . '</td>'
+        . '</tr></table>';
+    $pdf->SetHTMLFooter($footerHTML);
+
     $yStart = 10;
 
     foreach ($resultarray as $key => $row) {

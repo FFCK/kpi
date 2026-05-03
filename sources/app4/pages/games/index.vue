@@ -126,6 +126,7 @@ const documentsRef = ref<HTMLDivElement | null>(null)
 
 // ─── Legacy base URL ───
 const legacyBase = computed(() => useRuntimeConfig().public.legacyBaseUrl || 'https://kpi.localhost')
+const tzParam = encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZone)
 
 // ─── Permissions ───
 const canEdit = computed(() => authStore.profile <= 6)
@@ -1054,7 +1055,8 @@ const confirmBulkChangeGroup = async () => {
 const openBulkMatchSheets = () => {
   bulkActionsOpen.value = false
   const ids = selectedIds.value.join(',')
-  window.open(`${legacyBase.value}/admin/FeuilleMatchMulti.php?listMatch=${ids}`, '_blank')
+  const tz = encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZone)
+  window.open(`${legacyBase.value}/admin/FeuilleMatchMulti.php?listMatch=${ids}&tz=${tz}`, '_blank')
 }
 
 // ─── Document export URLs (all games with current filters) ───
@@ -1063,6 +1065,7 @@ const openBulkMatchSheets = () => {
 const docBaseParams = computed(() => {
   const params = new URLSearchParams()
   params.set('S', workContext.season || '')
+  params.set('tz', Intl.DateTimeFormat().resolvedOptions().timeZone)
 
   if (workContext.pageEventGroupType === 'event') {
     // Event selected → pass idEvenement only (no Compet, it would override)
@@ -1556,7 +1559,7 @@ const statusBtnClass = (game: Game) => {
               </td>
               <td v-if="canEdit || canEditScores" class="px-1 py-1 text-center" @click.stop>
                 <div class="flex items-center text-center gap-0.5">
-                  <a v-if="canEdit" :href="`${legacyBase}/admin/FeuilleMatchMulti.php?listMatch=${g.id}`" target="_blank" :title="t('games.scoresheet_pdf')" class="p-0.5 text-danger-600 hover:text-danger-800">
+                  <a v-if="canEdit" :href="`${legacyBase}/admin/FeuilleMatchMulti.php?listMatch=${g.id}&tz=${tzParam}`" target="_blank" :title="t('games.scoresheet_pdf')" class="p-0.5 text-danger-600 hover:text-danger-800">
                     <UIcon name="heroicons:document-text" class="w-6 h-6" />
                     <br>
                     <span class="text-xs text-header-700">PDF</span>
@@ -2271,7 +2274,7 @@ const statusBtnClass = (game: Game) => {
           <AdminActionButton v-if="canEdit && !isLocked(g)" icon="heroicons:pencil" @click="openEditModal(g)">
             {{ t('common.edit') }}
           </AdminActionButton>
-          <a v-if="canEdit" :href="`${legacyBase}/admin/FeuilleMatchMulti.php?listMatch=${g.id}`" target="_blank" class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-danger-600 hover:text-danger-800">
+          <a v-if="canEdit" :href="`${legacyBase}/admin/FeuilleMatchMulti.php?listMatch=${g.id}&tz=${tzParam}`" target="_blank" class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-danger-600 hover:text-danger-800">
             <UIcon name="heroicons:document-text" class="w-4 h-4" />
             {{ t('games.scoresheet_pdf') }}
           </a>

@@ -76,7 +76,7 @@ class FeuilleCltNiveauNiveau extends MyPage
         $pdf->Cell(190, 5, "Classement par niveau", 0, 1, 'C');
 
         $pdf->SetFont('Arial', 'BI', 8);
-        $pdf->Cell(95, 5, "Edité le " . date("d/m/Y") . " à " . date("H:i", strtotime($_SESSION['tzOffset'] ?? '')), 0, 0, 'L');
+        $pdf->Cell(95, 5, "Edité le " . utyGetPrintDatetime()->format('d/m/Y à H:i'), 0, 0, 'L');
         $pdf->Cell(95, 5, "Classement provisoire", 0, 1, 'R');
 
         // données

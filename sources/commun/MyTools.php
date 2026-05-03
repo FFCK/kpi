@@ -497,6 +497,32 @@ function utyGetGet($param, $default = '')
 	return $default;
 }
 
+// utyGetPrintDatetime - formats current datetime in the appropriate timezone
+// Priority: ?tz=<IANA name> GET param → $_SESSION['tzOffset'] (legacy) → server time
+// Returns a DateTime object in the resolved timezone; use ->format() to display.
+function utyGetPrintDatetime(): DateTime
+{
+    $tzParam = isset($_GET['tz']) ? preg_replace('/[^A-Za-z0-9\/_+-]/', '', $_GET['tz']) : '';
+    if ($tzParam !== '' && @timezone_open($tzParam) !== false) {
+        return new DateTime('now', new DateTimeZone($tzParam));
+    }
+    $sessionOffset = $_SESSION['tzOffset'] ?? '';
+    if ($sessionOffset !== '') {
+        $ts = strtotime($sessionOffset);
+        if ($ts !== false) {
+            // Legacy: strtotime('120 minutes') gives epoch+offset — use as absolute time
+            return new DateTime('@' . $ts);
+        }
+    }
+    return new DateTime('now');
+}
+
+// utyGetPrintTimestamp - kept for backward compatibility, use utyGetPrintDatetime() for new code
+function utyGetPrintTimestamp(): int
+{
+    return (int) utyGetPrintDatetime()->format('U');
+}
+
 // utyGetInt
 function utyGetInt($array, $param, $default = 1)
 {

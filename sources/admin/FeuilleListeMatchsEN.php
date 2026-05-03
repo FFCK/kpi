@@ -161,7 +161,7 @@ class FeuilleListeMatchs extends MyPage
         }
         $footerHTML .= '<table width="100%" style="font-family: Arial; font-size: 8pt; font-style: italic;"><tr>';
         $footerHTML .= '<td width="50%" align="left">Page {PAGENO}</td>';
-        $footerHTML .= '<td width="50%" align="right">Print ' . date("Y-m-d H:i", strtotime($_SESSION['tzOffset'] ?? '')) . '</td>';
+        $footerHTML .= '<td width="50%" align="right">Print ' . utyGetPrintDatetime()->format('Y-m-d H:i') . '</td>';
         $footerHTML .= '</tr></table>';
         $pdf->SetHTMLFooter($footerHTML);
 

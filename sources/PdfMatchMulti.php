@@ -1034,7 +1034,7 @@ class FeuilleMatch extends MyPage
                 $pdf->Cell(38, 4, $lang['Capitaine'] . " B", '1', '0', 'C');
                 $pdf->Cell(38, 4, $lang['Arbitre_1'], '1', '1', 'C');
                 $pdf->SetFont('Arial', '', 7);
-                $pdf->Cell(135, 3, "ID #" . $idMatch . " - " . $lang['impression'] . ": " . $dateprint . " " . date("H:i", strtotime($_SESSION['tzOffset'])), 0, 0, 'L');
+                $pdf->Cell(135, 3, "ID #" . $idMatch . " - " . $lang['impression'] . ": " . $dateprint . " " . utyGetPrintDatetime()->format('H:i'), 0, 0, 'L');
             }
         }
 

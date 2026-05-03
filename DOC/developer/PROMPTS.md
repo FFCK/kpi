@@ -61,10 +61,9 @@ Exploiter la charte graphique :
 
 
 TODO :
+* Compétitions : formulaire de création/modification : manque sélection des images (logo, bandeau, sponsor) !
 * Uniformisation header des pages de gestion de compétition
 * Synthèse d'une compétition (mise en page des logos, décomptes...)
-* Journées/Phases : lien vers les matchs mieux mis en avant,
-* Matchs : liens vers actions (feuille de marque V2, V3, pdf, etc...),
 * Matchs : saisie arbitres ? (inline + formulaire)
 * gamesday et games : manque toast de confirmation lors d'une modification en ligne.
 * Journées/Phases : autocomplete sur les officiels, etc...
@@ -74,7 +73,7 @@ TODO :
 * Journées/Phases : 
   * copier les officiels et les paramètres du calendrier public depuis une phase sur toutes les autres phases de la compétition (type CP) (depuis le formulaire ? depuis une action sur la liste ? )
   * Générer la feuille de jury d'appel à partir des officiels de la compétition, avec possibilité de modifier les données avant impression
-
+* App2 : masquer la progression pout les compétitions en attente. 
 
 - Reproduire les pdf en stateless ?
 

@@ -18,6 +18,7 @@ class FeuilleCltNiveau extends MyPage
 		$myBdd = new MyBdd();
 
 		$codeCompet = utyGetSession('codeCompet', '');
+		$codeCompet = utyGetGet('Compet', $codeCompet);
 		$codeCompet = utyGetGet('codeCompet', $codeCompet);
 		//Saison
 		$codeSaison = $myBdd->GetActiveSaison();
@@ -83,7 +84,7 @@ class FeuilleCltNiveau extends MyPage
 		// QRCode
 		$qrcode = new QRcode('https://www.kayak-polo.info/kpclassements.php?Compet=' . $codeCompet . '&Group=' . $arrayCompetition['Code_ref'] . '&Saison=' . $codeSaison, 'L'); // error level : L, M, Q, H
 		//$qrcode->displayFPDF($fpdf, $x, $y, $s, $background, $color);
-		$qrcode->displayFPDF($pdf, 177, 238, 24);
+		$qrcode->displayFPDF($pdf, 177, 250, 24);
 
 		// Pattern 8: REACTIVER AutoPageBreak après les images
 		if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
@@ -199,19 +200,19 @@ class FeuilleCltNiveau extends MyPage
 		if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
 			$img = redimImage($visuels['sponsor'], 210, 10, 16, 'C');
 			$footerHTML = '<div style="text-align: center;">'
-				. '<img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /><br/>'
-				. '<span style="font-family:Arial;font-size:8pt;font-style:italic;">'
+				. '<img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /></div>'
+				. '<div style="text-align:right;font-family:Arial;font-size:8pt;font-style:italic;">'
 				. (($lang == $langue['en'])
-					? date('Y-m-d H:i', strtotime($_SESSION['tzOffset'] ?? ''))
-					: date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'] ?? '')))
-				. '</span></div>';
+					? utyGetPrintDatetime()->format('Y-m-d H:i')
+					: utyGetPrintDatetime()->format('d/m/Y à H:i'))
+				. '</div>';
 			$pdf->SetHTMLFooter($footerHTML);
 			$pdf->SetAutoPageBreak(true, 30);
 		} else {
-			$footerHTML = '<div style="text-align:center;font-family:Arial;font-size:8pt;font-style:italic;margin-top:2mm;">'
+			$footerHTML = '<div style="text-align:right;font-family:Arial;font-size:8pt;font-style:italic;margin-top:2mm;">'
 				. (($lang == $langue['en'])
-					? date('Y-m-d H:i', strtotime($_SESSION['tzOffset'] ?? ''))
-					: date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'] ?? '')))
+					? utyGetPrintDatetime()->format('Y-m-d H:i')
+					: utyGetPrintDatetime()->format('d/m/Y à H:i'))
 				. '</div>';
 			$pdf->SetHTMLFooter($footerHTML);
 			$pdf->SetAutoPageBreak(true, 15);

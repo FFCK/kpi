@@ -937,7 +937,7 @@ class FeuilleMatch extends MyPage
             unset($qrcode);  // Libérer la ressource QR code
 
             $pdf->SetY(190);
-            $pdf->Cell(135, 3, $lang['impression'] . ": " . $dateprint . " " . date("H:i", strtotime($_SESSION['tzOffset'] ?? 'now')), 0, 1, 'R');
+            $pdf->Cell(135, 3, $lang['impression'] . ": " . $dateprint . " " . utyGetPrintDatetime()->format('H:i'), 0, 1, 'R');
 
             // mPDF: Sauvegarder position actuelle avant insertion drapeaux (images absolues)
             $currentY = $pdf->y;
@@ -1073,7 +1073,7 @@ class FeuilleMatch extends MyPage
                 $pdf->Cell(38, 4, $lang['Capitaine'] . " B", '1', '0', 'C');
                 $pdf->Cell(38, 4, $lang['Arbitre_1'], '1', '1', 'C');
                 $pdf->SetFont('Arial', '', 7);
-                $pdf->Cell(135, 3, "ID #" . $idMatch . " - " . $lang['impression'] . ": " . $dateprint . " " . date("H:i", strtotime($_SESSION['tzOffset'] ?? 'now')), 0, 0, 'L');
+                $pdf->Cell(135, 3, "ID #" . $idMatch . " - " . $lang['impression'] . ": " . $dateprint . " " . utyGetPrintDatetime()->format('H:i'), 0, 0, 'L');
             }
 
             // Libérer les ressources après chaque match pour éviter l'épuisement mémoire

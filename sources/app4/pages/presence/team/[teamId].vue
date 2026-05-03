@@ -426,7 +426,8 @@ const pdfLinks = computed(() => {
   const params = new URLSearchParams({
     team: teamId.value.toString(),
     compet: presenceStore.competition.code,
-    season: presenceStore.team.codeSaison.toString()
+    season: presenceStore.team.codeSaison.toString(),
+    tz: Intl.DateTimeFormat().resolvedOptions().timeZone
   })
 
   return {

@@ -60,29 +60,30 @@ class FeuilleCltNiveau extends MyPage
 		$headerHTML .= '</div>';
 		$pdf->SetHTMLHeader($headerHTML);
 
-		// Footer HTML pour sponsor + date/heure en dessous
+		// Aligner les marges mPDF sur celles du contenu (10mm) AVANT SetHTMLFooter
+		$pdf->SetLeftMargin(10);
+		$pdf->SetRightMargin(10);
+
+		// Footer HTML : pagination à gauche, horodatage à droite
+		$datetime = ($lang == $langue['en'])
+			? utyGetPrintDatetime()->format('Y-m-d H:i')
+			: utyGetPrintDatetime()->format('d/m/Y à H:i');
+		$footerLine = '<table width="100%" style="font-family:Arial;font-size:8pt;font-style:italic;margin-top:2mm;"><tr>'
+			. '<td width="50%" align="left">Page {PAGENO}</td>'
+			. '<td width="50%" align="right">' . $datetime . '</td>'
+			. '</tr></table>';
 		if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
-			$img = redimImage($visuels['sponsor'], 210, 10, 16, 'C');
+			$imgSponsor = redimImage($visuels['sponsor'], 210, 10, 16, 'C');
 			$footerHTML = '<div style="text-align: center;">'
-				. '<img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /><br/>'
-				. '<span style="font-family:Arial;font-size:8pt;font-style:italic;">'
-				. (($lang == $langue['en'])
-					? date('Y-m-d H:i', strtotime($_SESSION['tzOffset'] ?? ''))
-					: date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'] ?? '')))
-				. '</span></div>';
+				. '<img src="' . $imgSponsor['image'] . '" style="height: ' . $imgSponsor['newHauteur'] . 'mm;" /></div>'
+				. $footerLine;
 			$pdf->SetHTMLFooter($footerHTML);
 			$pdf->SetAutoPageBreak(true, 30);
 		} else {
-			$footerHTML = '<div style="text-align:center;font-family:Arial;font-size:8pt;font-style:italic;margin-top:2mm;">'
-				. (($lang == $langue['en'])
-					? date('Y-m-d H:i', strtotime($_SESSION['tzOffset'] ?? ''))
-					: date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'] ?? '')))
-				. '</div>';
-			$pdf->SetHTMLFooter($footerHTML);
+			$pdf->SetHTMLFooter($footerLine);
 			$pdf->SetAutoPageBreak(true, 15);
 		}
 
-		// Configurer les marges pour éviter chevauchement avec header/footer
 		$pdf->SetTopMargin(30);
 
 		$pdf->AddPage();
@@ -91,16 +92,16 @@ class FeuilleCltNiveau extends MyPage
 		$pdf->Ln(2);
 		$pdf->SetFont('Arial', 'B', 14);
 		if (($arrayCompetition['Titre_actif'] ?? '') == 'O') {
-			$pdf->Cell(190, 5, $arrayCompetition['Libelle'], 0, 1, 'C');
+			$pdf->Cell(180, 5, $arrayCompetition['Libelle'], 0, 1, 'C');
 		} else {
-			$pdf->Cell(190, 5, $arrayCompetition['Soustitre'] ?? '', 0, 1, 'C');
+			$pdf->Cell(180, 5, $arrayCompetition['Soustitre'] ?? '', 0, 1, 'C');
 		}
 		if (($arrayCompetition['Soustitre2'] ?? '') != '') {
-			$pdf->Cell(190, 5, $arrayCompetition['Soustitre2'], 0, 1, 'C');
+			$pdf->Cell(180, 5, $arrayCompetition['Soustitre2'], 0, 1, 'C');
 		}
 		$pdf->Ln(4);
 		$pdf->SetFont('Arial', 'BI', 10);
-		$pdf->Cell(190, 5, ($lang['DETAIL_PAR_EQUIPE'] ?? 'Détail par équipe') . ' ' . ($lang['PROVISOIRE'] ?? ''), 0, 0, 'C');
+		$pdf->Cell(180, 5, ($lang['DETAIL_PAR_EQUIPE'] ?? 'Détail par équipe') . ' ' . ($lang['PROVISOIRE'] ?? ''), 0, 0, 'C');
 		$pdf->Ln(10);
 
 		//données
@@ -117,7 +118,8 @@ class FeuilleCltNiveau extends MyPage
 		while ($row = $result->fetch()) {
 			$idEquipe = $row['Id'];
 			$pdf->SetFont('Arial', 'B', 12);
-			$pdf->Cell(55, 6, '', 0, '0', 'L');
+			// Centrer rang+drapeau+nom (30+10+60=100mm) dans 180mm utile : SetX = 15 + (180-100)/2 = 55mm
+			$pdf->SetX(55);
 			// médailles - Pattern 5: Sauvegarder position
 			// Utiliser $arrayCompetition['Code_tour'] pour la condition
 			if ($row['Clt'] <= 3 && $row['Clt'] != 0 && (($arrayCompetition['Code_tour'] ?? '') == 'F')) {
@@ -176,22 +178,22 @@ class FeuilleCltNiveau extends MyPage
 					$oldId_journee = $Id_journee;
 					$pdf->Ln(2);
 					$pdf->SetFont('Arial', 'BI', 10);
-					$pdf->Cell(190, 5, utyDateUsToFr($row2['Date_debut']) . ' - ' . $row2['Lieu'], 0, 1, 'C');
+					$pdf->Cell(180, 5, utyDateUsToFr($row2['Date_debut']) . ' - ' . $row2['Lieu'], 0, 1, 'C');
 				}
 				if ($row2['Validation'] != 'O') {
 					$pdf->SetFont('Arial', '', 9);
-					$pdf->Cell(89, 4, $row2['LibelleA'], 0, 0, 'R');
+					$pdf->Cell(84, 4, $row2['LibelleA'], 0, 0, 'R');
 					$pdf->Cell(5, 4, '', 0, 0, 'C');
 					$pdf->Cell(2, 4, '-', 0, 0, 'C');
 					$pdf->Cell(5, 4, '', 0, 0, 'C');
-					$pdf->Cell(89, 4, $row2['LibelleB'], 0, 1, 'L');
+					$pdf->Cell(84, 4, $row2['LibelleB'], 0, 1, 'L');
 				} else {
 					if ($row2['ScoreA'] > $row2['ScoreB']) {
 						$pdf->SetFont('Arial', 'B', 9);
 					} else {
 						$pdf->SetFont('Arial', '', 9);
 					}
-					$pdf->Cell(89, 4, $row2['LibelleA'], 0, 0, 'R');
+					$pdf->Cell(84, 4, $row2['LibelleA'], 0, 0, 'R');
 					$pdf->Cell(5, 4, $row2['ScoreA'], 0, 0, 'C');
 					$pdf->SetFont('Arial', '', 9);
 					$pdf->Cell(2, 4, '-', 0, 0, 'C');
@@ -201,7 +203,7 @@ class FeuilleCltNiveau extends MyPage
 						$pdf->SetFont('Arial', '', 9);
 					}
 					$pdf->Cell(5, 4, $row2['ScoreB'], 0, 0, 'C');
-					$pdf->Cell(89, 4, $row2['LibelleB'], 0, 1, 'L');
+					$pdf->Cell(84, 4, $row2['LibelleB'], 0, 1, 'L');
 				}
 			}
 			$pdf->Ln(8);

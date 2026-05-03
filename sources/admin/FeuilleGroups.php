@@ -79,8 +79,19 @@ class FeuilleGroups extends MyPage
             $hasSponsor = true;
         }
 
-        // Footer HTML pour numéro de page sous le sponsor
-        $footerHTML = '<div style="text-align:center;font-family:Arial;font-size:8pt;font-style:italic;margin-top:2mm;">Page {PAGENO}</div>';
+        // Aligner les marges mPDF sur celles du contenu (10mm) AVANT SetHTMLFooter
+        // pour que le tableau width="100%" du footer s'étende de 10mm à 200mm
+        $pdf->SetLeftMargin(10);
+        $pdf->SetRightMargin(10);
+
+        // Footer HTML : pagination à gauche, horodatage à droite
+        $datetime = ($lang == $langue['en'])
+            ? utyGetPrintDatetime()->format('Y-m-d H:i')
+            : utyGetPrintDatetime()->format('d/m/Y à H:i');
+        $footerHTML = '<table width="100%" style="font-family:Arial;font-size:8pt;font-style:italic;margin-top:2mm;"><tr>'
+            . '<td width="50%" align="left">Page {PAGENO}</td>'
+            . '<td width="50%" align="right">' . $datetime . '</td>'
+            . '</tr></table>';
         $pdf->SetHTMLFooter($footerHTML);
 
         // Réactiver AutoPageBreak avec marge basse adaptée
@@ -128,9 +139,9 @@ class FeuilleGroups extends MyPage
 
         //Colonne 1
         if ($num_results > 20) {
-            $x0 = 10;
+            $x0 = 20;
         } else {
-            $x0 = 70;
+            $x0 = 80;
         }
         $pdf->SetLeftMargin($x0);
         $pdf->SetX($x0);
@@ -178,6 +189,10 @@ class FeuilleGroups extends MyPage
             $pdf->Cell(65, 6, $row['Libelle'], 0, 1, 'L');
             $i++;
         }
+
+        // Réinitialiser marge gauche et X avant le rendu du footer (sinon le footer hérite du dernier x0)
+        $pdf->SetLeftMargin(10);
+        $pdf->SetX(10);
 
         $pdf->Output($lang['Poules'] . ' ' . $codeCompet . '.pdf', \Mpdf\Output\Destination::INLINE);
     }

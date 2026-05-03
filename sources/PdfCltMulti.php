@@ -19,8 +19,10 @@ class PdfCltMulti extends MyPage
         $myBdd = new MyBdd();
 
         $codeCompet = utyGetSession('codeCompet', '');
+        $codeCompet = utyGetGet('Compet', $codeCompet);
         //Saison
         $codeSaison = $myBdd->GetActiveSaison();
+        $codeSaison = utyGetGet('S', $codeSaison);
         $titreDate = "Saison " . $codeSaison;
 
         $arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
@@ -88,8 +90,8 @@ class PdfCltMulti extends MyPage
                 . '<img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /><br/>'
                 . '<span style="font-family:Arial;font-size:8pt;font-style:italic;">'
                 . (($lang == $langue['en'])
-                    ? date('Y-m-d H:i', strtotime($_SESSION['tzOffset'] ?? ''))
-                    : date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'] ?? '')))
+                    ? utyGetPrintDatetime()->format('Y-m-d H:i')
+                    : utyGetPrintDatetime()->format('d/m/Y à H:i'))
                 . '</span></div>';
             $pdf->SetHTMLFooter($footerHTML);
             $pdf->SetAutoPageBreak(true, 30);
@@ -97,8 +99,8 @@ class PdfCltMulti extends MyPage
             // Footer HTML simple avec date/heure seule
             $footerHTML = '<div style="text-align:center;font-family:Arial;font-size:8pt;font-style:italic;margin-top:2mm;">'
                 . (($lang == $langue['en'])
-                    ? date('Y-m-d H:i', strtotime($_SESSION['tzOffset'] ?? ''))
-                    : date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'] ?? '')))
+                    ? utyGetPrintDatetime()->format('Y-m-d H:i')
+                    : utyGetPrintDatetime()->format('d/m/Y à H:i'))
                 . '</div>';
             $pdf->SetHTMLFooter($footerHTML);
             $pdf->SetAutoPageBreak(true, 15);

@@ -82,12 +82,16 @@ watch(
   },
 )
 
+// Browser IANA timezone name (e.g. "Europe/Paris")
+const browserTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone
+
 // Build legacy PDF URL with season + competition params
 // Uses full legacy base URL (different host from app4)
 const pdfUrl = (file: string, extra?: Record<string, string | number>): string => {
   const params = new URLSearchParams()
   params.set('S', workContext.season)
   params.set('Compet', workContext.pageCompetitionCode)
+  params.set('tz', browserTimezone)
   if (extra) {
     Object.entries(extra).forEach(([k, v]) => params.set(k, String(v)))
   }
@@ -99,6 +103,7 @@ const publicPdfUrl = (file: string): string => {
   const params = new URLSearchParams()
   params.set('S', workContext.season)
   params.set('Compet', workContext.pageCompetitionCode)
+  params.set('tz', browserTimezone)
   return `${legacyBase}/${file}?${params.toString()}`
 }
 
@@ -107,6 +112,7 @@ const eventPdfUrl = (file: string, paramName: string): string => {
   if (!selectedEventId.value) return '#'
   const params = new URLSearchParams()
   params.set(paramName, String(selectedEventId.value))
+  params.set('tz', browserTimezone)
   // Public PDFs (PdfXxx.php) are at root, admin PDFs at /admin/
   if (file.startsWith('Pdf')) {
     return `${legacyBase}/${file}?${params.toString()}`

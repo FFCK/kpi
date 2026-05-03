@@ -232,7 +232,7 @@ class FeuilleControle extends MyPage
         // Footer HTML: page number left, print date/time right (table for strict alignment)
         $footerHTML = '<table width="100%" style="font-family:Arial;font-size:8pt;font-style:italic;margin-top:2mm;"><tr>'
             . '<td align="left" width="50%">Page {PAGENO}</td>'
-            . '<td align="right" width="50%">' . date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'] ?? '')) . '</td>'
+            . '<td align="right" width="50%">' . utyGetPrintDatetime()->format('d/m/Y à H:i') . '</td>'
             . '</tr></table>';
         $pdf->SetHTMLFooter($footerHTML);
 

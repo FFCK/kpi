@@ -177,7 +177,7 @@ class PdfListeMatchs extends MyPage
         // Footer HTML pour numéro de page et sponsor
         $footerHTML = '<table width="100%" style="font-family: Arial; font-size: 8pt; font-style: italic;"><tr>';
         $footerHTML .= '<td width="50%" align="left">Page {PAGENO}</td>';
-        $footerHTML .= '<td width="50%" align="right">Edité le ' . date("d/m/Y") . ' à ' . date("H:i", strtotime($_SESSION['tzOffset'] ?? '')) . '</td>';
+        $footerHTML .= '<td width="50%" align="right">Edité le ' . utyGetPrintDatetime()->format('d/m/Y à H:i') . '</td>';
         $footerHTML .= '</tr></table>';
 
         if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {

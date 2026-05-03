@@ -17,7 +17,9 @@ class FeuilleCltNiveauJournee extends MyPage
         $myBdd = new MyBdd();
 
         $codeCompet = utyGetSession('codeCompet', '');
+        $codeCompet = utyGetGet('Compet', $codeCompet);
         $codeSaison = $myBdd->GetActiveSaison();
+        $codeSaison = utyGetGet('S', $codeSaison);
         //Saison
 
         $arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
@@ -42,6 +44,11 @@ class FeuilleCltNiveauJournee extends MyPage
         $pdf->SetTitle("Classement par journee");
         $pdf->SetAuthor("kayak-polo.info");
         $pdf->SetCreator("kayak-polo.info avec mPDF");
+
+        // Marges définies avant SetHTMLHeader pour cohérence header/contenu
+        $pdf->SetTopMargin(30);
+        $pdf->SetLeftMargin(10);
+        $pdf->SetRightMargin(10);
 
         // Construire le header HTML pour affichage sur toutes les pages
         $headerHTML = '<div style="text-align: center;">';
@@ -70,15 +77,24 @@ class FeuilleCltNiveauJournee extends MyPage
         $headerHTML .= '</div>';
         $pdf->SetHTMLHeader($headerHTML);
 
-        // Construire le footer HTML pour affichage sur toutes les pages
+        // Footer HTML : pagination à gauche, horodatage à droite (marges 10mm déjà définies plus haut)
+        $datetime = ($lang == $langue['en'])
+            ? utyGetPrintDatetime()->format('Y-m-d H:i')
+            : utyGetPrintDatetime()->format('d/m/Y à H:i');
+        $footerLine = '<table width="100%" style="font-family:Arial;font-size:8pt;font-style:italic;margin-top:2mm;"><tr>'
+            . '<td width="50%" align="left">Page {PAGENO}</td>'
+            . '<td width="50%" align="right">' . $datetime . '</td>'
+            . '</tr></table>';
         if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
-            $img = redimImage($visuels['sponsor'], 210, 10, 16, 'C');
-            $footerHTML = '<div style="text-align: center;"><img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /></div>';
+            $imgSponsor = redimImage($visuels['sponsor'], 210, 10, 16, 'C');
+            $footerHTML = '<div style="text-align: center;"><img src="' . $imgSponsor['image'] . '" style="height: ' . $imgSponsor['newHauteur'] . 'mm;" /></div>'
+                . $footerLine;
             $pdf->SetHTMLFooter($footerHTML);
+            $pdf->SetAutoPageBreak(true, 30);
+        } else {
+            $pdf->SetHTMLFooter($footerLine);
+            $pdf->SetAutoPageBreak(true, 15);
         }
-
-        // Configurer les marges pour éviter chevauchement avec header/footer
-        $pdf->SetTopMargin(30);  // Marge haute pour laisser place au bandeau/logo
 
         $pdf->AddPage();
 
@@ -90,19 +106,17 @@ class FeuilleCltNiveauJournee extends MyPage
 
         // QRCode en bas à droite - displayFPDF fonctionne avec MyPDF !
         $qrcode = new QRcode('https://www.kayak-polo.info/Classements.php?Compet=' . $codeCompet . '&Group=' . $arrayCompetition['Code_ref'] . '&Saison=' . $codeSaison, 'L');
-        $qrcode->displayFPDF($pdf, 177, 240, 24);
+        $qrcode->displayFPDF($pdf, 177, 250, 24);
 
-        // Pattern 8: Réactiver AutoPageBreak avec marges appropriées
+        // Réactiver AutoPageBreak après le QRCode
         if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
-            $pdf->SetAutoPageBreak(true, 30);  // Marge basse pour footer sponsor
+            $pdf->SetAutoPageBreak(true, 30);
         } else {
             $pdf->SetAutoPageBreak(true, 15);
         }
 
-        // Pattern 8: FORCER le curseur à la position de départ du contenu
+        // Forcer le curseur à la position de départ du contenu
         $pdf->SetY($yStart);
-        $pdf->SetLeftMargin(10);
-        $pdf->SetRightMargin(10);
         $pdf->SetX(10);
 
         // titre - le curseur est déjà positionné par TopMargin
@@ -110,19 +124,19 @@ class FeuilleCltNiveauJournee extends MyPage
 
         $pdf->SetFont('Arial', 'B', 14);
         if ($arrayCompetition['Titre_actif'] == 'O') {
-            $pdf->Cell(190, 5, $arrayCompetition['Libelle'], 0, 1, 'C');
+            $pdf->Cell(180, 5, $arrayCompetition['Libelle'], 0, 1, 'C');
         } else {
-            $pdf->Cell(190, 5, $arrayCompetition['Soustitre'], 0, 1, 'C');
+            $pdf->Cell(180, 5, $arrayCompetition['Soustitre'], 0, 1, 'C');
         }
 
         if ($arrayCompetition['Soustitre2'] != '') {
-            $pdf->Cell(190, 5, $arrayCompetition['Soustitre2'], 0, 1, 'C');
+            $pdf->Cell(180, 5, $arrayCompetition['Soustitre2'], 0, 1, 'C');
         }
 
         $pdf->Ln(4);
 
         $pdf->SetFont('Arial', 'BI', 10);
-        $pdf->Cell(190, 5, $lang['CLASSEMENT_PAR_JOURNEE'], 0, 0, 'C');
+        $pdf->Cell(180, 5, $lang['CLASSEMENT_PAR_JOURNEE'], 0, 0, 'C');
 
         $pdf->Ln(4);
 

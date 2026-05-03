@@ -16,6 +16,7 @@ class FeuilleCltNiveauPhase extends MyPage
         $myBdd = new MyBdd();
 
         $codeCompet = utyGetSession('codeCompet', '');
+        $codeCompet = utyGetGet('Compet', $codeCompet);
         $codeCompet = utyGetGet('codeCompet', $codeCompet);
         //Saison
         $codeSaison = $myBdd->GetActiveSaison();
@@ -93,10 +94,30 @@ class FeuilleCltNiveauPhase extends MyPage
             $pdf->SetAutoPageBreak(true, 15);
         }
 
-        // Pattern 8: FORCER le curseur à la position de départ du contenu
-        $pdf->SetY($yStart);
+        // Footer HTML défini AVANT la boucle pour qu'il apparaisse sur toutes les pages
+        // Aligner les marges mPDF sur celles du contenu (10mm)
         $pdf->SetLeftMargin(10);
         $pdf->SetRightMargin(10);
+
+        $datetime = ($lang == $langue['en'])
+            ? utyGetPrintDatetime()->format('Y-m-d H:i')
+            : utyGetPrintDatetime()->format('d/m/Y à H:i');
+        $footerLine = '<table width="100%" style="font-family:Arial;font-size:8pt;font-style:italic;margin-top:2mm;"><tr>'
+            . '<td width="50%" align="left">Page {PAGENO}</td>'
+            . '<td width="50%" align="right">' . $datetime . '</td>'
+            . '</tr></table>';
+        if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
+            $imgSponsorFooter = redimImage($visuels['sponsor'], 210, 10, 16, 'C');
+            $footerHTML = '<div style="text-align: center;">'
+                . '<img src="' . $imgSponsorFooter['image'] . '" style="height: ' . $imgSponsorFooter['newHauteur'] . 'mm;" /></div>'
+                . $footerLine;
+            $pdf->SetHTMLFooter($footerHTML);
+        } else {
+            $pdf->SetHTMLFooter($footerLine);
+        }
+
+        // Pattern 8: FORCER le curseur à la position de départ du contenu
+        $pdf->SetY($yStart);
         $pdf->SetX(10);
 
         // titre
@@ -197,13 +218,9 @@ class FeuilleCltNiveauPhase extends MyPage
                     $idJournee = $row['Id_journee'];
 
                     $pdf->Ln(5);
-                    if (($arrayCompetition['Points'] ?? '') == '4-2-1-0') {
-                        $pdf->Cell(26, 4, '', 0, 0, 'C');
-                    } else {
-                        $pdf->Cell(30, 4, '', 0, 0, 'C');
-                    }
+                    $pdf->SetX(($arrayCompetition['Points'] ?? '') == '4-2-1-0' ? 41 : 44);
                     $pdf->SetFont('Arial', 'BI', 10);
-                    $pdf->Cell(61, 4, $row['Phase'], 'B', 0, 'C'); //     "JOURNEE ".$codeCompet.'/'.$idJournee.'/'.
+                    $pdf->Cell(61, 4, $row['Phase'], 'B', 0, 'C');
                     $pdf->SetFont('Arial', 'BI', 9);
                     $pdf->Cell(8, 4, "Pts", 'B', 0, 'C');
                     $pdf->Cell(7, 4, $lang['Joue'], 'B', 0, 'C');
@@ -229,11 +246,7 @@ class FeuilleCltNiveauPhase extends MyPage
                 }
                 if ($row['J_publi'] != '0') {
                     $pdf->SetFont('Arial', '', 9);
-                    if (($arrayCompetition['Points'] ?? '') == '4-2-1-0') {
-                        $pdf->Cell(26, 4, '', 0, 0, 'C');
-                    } else {
-                        $pdf->Cell(30, 4, '', 0, 0, 'C');
-                    }
+                    $pdf->SetX(($arrayCompetition['Points'] ?? '') == '4-2-1-0' ? 41 : 44);
                     $pdf->Cell(61, 4, $row['Clt_publi'] . '. ' . $row['Libelle'], 'B', 0, 'L');
                     $pdf->Cell(8, 4, $pts, 'B', 0, 'C');
                     $pdf->Cell(7, 4, $row['J_publi'], 'B', 0, 'C');
@@ -248,11 +261,7 @@ class FeuilleCltNiveauPhase extends MyPage
                     $pdf->Cell(8, 4, $row['Diff_publi'], 'B', 1, 'C');
                 } else {
                     $pdf->SetFont('Arial', '', 9);
-                    if (($arrayCompetition['Points'] ?? '') == '4-2-1-0') {
-                        $pdf->Cell(26, 4, '', 0, 0, 'C');
-                    } else {
-                        $pdf->Cell(30, 4, '', 0, 0, 'C');
-                    }
+                    $pdf->SetX(($arrayCompetition['Points'] ?? '') == '4-2-1-0' ? 41 : 44);
                     $pdf->Cell(61, 4, $row['Libelle'], 'B', 0, 'L');
                     $pdf->Cell(8, 4, '', 'B', 0, 'C');
                     $pdf->Cell(7, 4, '', 'B', 0, 'C');
@@ -269,17 +278,6 @@ class FeuilleCltNiveauPhase extends MyPage
             }
         }
 
-        $pdf->SetFont('Arial', 'I', 8);
-        if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
-            $pdf->SetXY(165, 263);
-        } else {
-            $pdf->SetXY(165, 270);
-        }
-        if (isset($lang) && isset($langue['en']) && $lang == $langue['en']) {
-            $pdf->Write(4, date('Y-m-d H:i', strtotime($_SESSION['tzOffset'] ?? '')));
-        } else {
-            $pdf->Write(4, date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'] ?? '')));
-        }
         $pdf->Output('Classement par phase ' . $codeCompet . '.pdf', \Mpdf\Output\Destination::INLINE);
     }
 }

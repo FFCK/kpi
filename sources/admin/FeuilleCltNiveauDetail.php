@@ -67,9 +67,10 @@ class FeuilleCltNiveau extends MyPage
         }
         // Sponsor
         $hasSponsor = false;
+        $imgSponsor = null;
         if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
-            $img = redimImage($visuels['sponsor'], 210, 10, 16, 'C');
-            $pdf->Image($img['image'], $img['positionX'], 267, 0, $img['newHauteur']);
+            $imgSponsor = redimImage($visuels['sponsor'], 210, 10, 16, 'C');
+            $pdf->Image($imgSponsor['image'], $imgSponsor['positionX'], 267, 0, $imgSponsor['newHauteur']);
             $hasSponsor = true;
         }
 
@@ -77,24 +78,26 @@ class FeuilleCltNiveau extends MyPage
         // $qrcode = new QRcode('https://www.kayak-polo.info/kpclassements.php?Compet=' . $codeCompet . '&Group=' . $arrayCompetition['Code_ref'] . '&Saison=' . $codeSaison, 'L');
         // $qrcode->displayFPDF($pdf, 177, 240, 24);
 
-        // Footer HTML pour sponsor + date/heure en dessous
+        // Aligner les marges mPDF sur celles du contenu (10mm) AVANT SetHTMLFooter
+        $pdf->SetLeftMargin(10);
+        $pdf->SetRightMargin(10);
+
+        // Footer HTML : pagination à gauche, horodatage à droite
+        $datetime = ($lang == $langue['en'])
+            ? utyGetPrintDatetime()->format('Y-m-d H:i')
+            : utyGetPrintDatetime()->format('d/m/Y à H:i');
+        $footerLine = '<table width="100%" style="font-family:Arial;font-size:8pt;font-style:italic;margin-top:2mm;"><tr>'
+            . '<td width="50%" align="left">Page {PAGENO}</td>'
+            . '<td width="50%" align="right">' . $datetime . '</td>'
+            . '</tr></table>';
         if ($hasSponsor) {
             $footerHTML = '<div style="text-align: center;">'
-                . '<img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /><br/>'
-                . '<span style="font-family:Arial;font-size:8pt;font-style:italic;">'
-                . (($lang == $langue['en'])
-                    ? date('Y-m-d H:i', strtotime($_SESSION['tzOffset'] ?? ''))
-                    : date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'] ?? '')))
-                . '</span></div>';
+                . '<img src="' . $imgSponsor['image'] . '" style="height: ' . $imgSponsor['newHauteur'] . 'mm;" /></div>'
+                . $footerLine;
             $pdf->SetHTMLFooter($footerHTML);
             $pdf->SetAutoPageBreak(true, 30);
         } else {
-            $footerHTML = '<div style="text-align:center;font-family:Arial;font-size:8pt;font-style:italic;margin-top:2mm;">'
-                . (($lang == $langue['en'])
-                    ? date('Y-m-d H:i', strtotime($_SESSION['tzOffset'] ?? ''))
-                    : date('d/m/Y à H:i', strtotime($_SESSION['tzOffset'] ?? '')))
-                . '</div>';
-            $pdf->SetHTMLFooter($footerHTML);
+            $pdf->SetHTMLFooter($footerLine);
             $pdf->SetAutoPageBreak(true, 15);
         }
 

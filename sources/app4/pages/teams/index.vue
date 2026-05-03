@@ -717,7 +717,8 @@ const toggleLock = async () => {
 const globalPdfParams = computed(() => {
   const compet = workContext.pageCompetitionCode || ''
   const season = workContext.season || ''
-  return `compet=${encodeURIComponent(compet)}&season=${encodeURIComponent(season)}`
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
+  return `compet=${encodeURIComponent(compet)}&season=${encodeURIComponent(season)}&tz=${encodeURIComponent(tz)}`
 })
 const globalPdfPoolsUrl = computed(() => `${legacyBase.value}/admin/FeuilleGroups.php?${globalPdfParams.value}`)
 const globalPdfPresenceFrUrl = computed(() => `${legacyBase.value}/admin/FeuillePresence.php?${globalPdfParams.value}`)

@@ -62,13 +62,26 @@ class FeuilleCltNiveauJournee extends MyPage
         $headerHTML .= '</div>';
         $pdf->SetHTMLHeader($headerHTML);
 
-        // Footer HTML pour sponsor (si présent)
+        // Aligner les marges mPDF sur celles du contenu (10mm) AVANT SetHTMLFooter
+        $pdf->SetLeftMargin(10);
+        $pdf->SetRightMargin(10);
+
+        // Footer HTML : pagination à gauche, horodatage à droite
+        $datetime = ($lang == $langue['en'])
+            ? utyGetPrintDatetime()->format('Y-m-d H:i')
+            : utyGetPrintDatetime()->format('d/m/Y à H:i');
+        $footerLine = '<table width="100%" style="font-family:Arial;font-size:8pt;font-style:italic;margin-top:2mm;"><tr>'
+            . '<td width="50%" align="left">Page {PAGENO}</td>'
+            . '<td width="50%" align="right">' . $datetime . '</td>'
+            . '</tr></table>';
         if (($arrayCompetition['Sponsor_actif'] ?? '') == 'O' && isset($visuels['sponsor'])) {
-            $img = redimImage($visuels['sponsor'], 210, 10, 16, 'C');
-            $footerHTML = '<div style="text-align: center;"><img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /></div>';
+            $imgSponsor = redimImage($visuels['sponsor'], 210, 10, 16, 'C');
+            $footerHTML = '<div style="text-align: center;"><img src="' . $imgSponsor['image'] . '" style="height: ' . $imgSponsor['newHauteur'] . 'mm;" /></div>'
+                . $footerLine;
             $pdf->SetHTMLFooter($footerHTML);
             $pdf->SetAutoPageBreak(true, 30);
         } else {
+            $pdf->SetHTMLFooter($footerLine);
             $pdf->SetAutoPageBreak(true, 15);
         }
 
@@ -81,17 +94,17 @@ class FeuilleCltNiveauJournee extends MyPage
         $pdf->Ln(2);
         $pdf->SetFont('Arial', 'B', 14);
         if (($arrayCompetition['Titre_actif'] ?? '') == 'O') {
-            $pdf->Cell(190, 5, $arrayCompetition['Libelle'], 0, 1, 'C');
+            $pdf->Cell(180, 5, $arrayCompetition['Libelle'], 0, 1, 'C');
         } else {
-            $pdf->Cell(190, 5, $arrayCompetition['Soustitre'] ?? '', 0, 1, 'C');
+            $pdf->Cell(180, 5, $arrayCompetition['Soustitre'] ?? '', 0, 1, 'C');
         }
         if (($arrayCompetition['Soustitre2'] ?? '') != '') {
-            $pdf->Cell(190, 5, $arrayCompetition['Soustitre2'], 0, 1, 'C');
+            $pdf->Cell(180, 5, $arrayCompetition['Soustitre2'], 0, 1, 'C');
         }
         $pdf->Ln(4);
 
         $pdf->SetFont('Arial', 'BI', 10);
-        $pdf->Cell(190, 5, ($lang['CLASSEMENT_PAR_JOURNEE'] ?? 'Classement par journée') . ' ' . ($lang['PROVISOIRE'] ?? ''), 0, 0, 'C');
+        $pdf->Cell(180, 5, ($lang['CLASSEMENT_PAR_JOURNEE'] ?? 'Classement par journée') . ' ' . ($lang['PROVISOIRE'] ?? ''), 0, 0, 'C');
         $pdf->Ln(4);
 
         // données
