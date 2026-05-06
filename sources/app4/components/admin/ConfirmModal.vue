@@ -51,7 +51,7 @@ const emit = defineEmits<{
       @click.self="emit('close')"
     >
       <!-- Backdrop -->
-      <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" @click="emit('close')" />
+      <div class="absolute inset-0 bg-black/50" @click="emit('close')" />
 
       <!-- Modal content -->
       <div class="relative bg-white rounded-lg shadow-xl max-w-md w-full">

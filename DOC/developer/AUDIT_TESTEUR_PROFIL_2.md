@@ -98,7 +98,7 @@ accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mai
 	* ✅ Ergonomie/visuel : pour les joueurs inactifs, griser légèrement la ligne en plus du texte? — **RÉSOLU** (opacité réduite + italique sur les lignes inactifs)
 	* ✅ Pour les novices : garder une "notice" en bas de page précisant que seuls les joueurs, capitaine et entraîneurs sont inscrits sur les feuilles de matchs de la prochaine journée. — **RÉSOLU** (notice ajoutée sous le tableau, reprenant le texte du legacy : statut Inactif, règles staff/arbitres/statistiques/feuilles de match)
 	* ✅ Garder un extrait du log en bas de page avec les dernières modifications effectuées (a minima qui et quand) ? — **RÉSOLU** (horodatage de la dernière addition/suppression affiché sous la notice : "Dernière modification JJ/MM/AAAA HH:mm:ss par utilisateur" ; les logs étaient silencieusement ignorés à cause d'un mauvais schéma de colonnes dans `AdminLoggableTrait`, corrigé)
-	* Ajout de joueur : en mode ajout de joueur existant, recherche impossible, génère une erreur : "Accès refusé : vous n'avez pas les droits nécessaires" (idem autres recherches)
+	* ✅ Ajout de joueur : en mode ajout de joueur existant, recherche impossible, génère une erreur : "Accès refusé : vous n'avez pas les droits nécessaires" (idem autres recherches) — **RÉSOLU** correction des droits profil 2
 
 - Page Journées/Phases
 	* ✅ Les liens vers les schémas de compétitions ne fonctionnent pas (erreur 404) — **RÉSOLU, à tester**
@@ -112,5 +112,5 @@ accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mai
 	* ✅ Menu Extraction PDF : les liens classement général / détail par équipe / déroulement renvoient un classement vide, sur une compétition à Belfast ;) (en mode championnat ou coupe) — **RÉSOLU** (les paramètres `Compet` et `S` n'étaient pas transmis aux scripts PDF legacy pour les liens général/détail/déroulement ; corrigé)
 
 - Page statistiques : 
-	* Les liens export Excel et PDF génèrent une "erreur serveur" 
+	* ✅ Les liens export Excel et PDF génèrent une "erreur serveur" — **RÉSOLU** (problème de droits profil 2)
 	* ✅ a priori les statistiques sont cohérentes avec la version actuelle de KPI, testé sur plusieurs calculs (buteurs, cartons, irrégularités, contrôle cohérence) sur 1-2 compétitions
