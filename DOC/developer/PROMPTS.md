@@ -61,7 +61,9 @@ Exploiter la charte graphique :
 
 
 TODO :
-* Compétitions : formulaire de création/modification : manque sélection des images (logo, bandeau, sponsor) !
+* Compétitions : formulaire de création/modification : manque sélection des images (logo, bandeau, sponsor)
+  * A tester !
+  
 * Uniformisation header des pages de gestion de compétition
 * Synthèse d'une compétition (mise en page des logos, décomptes...)
 * Matchs : saisie arbitres ? (inline + formulaire)

@@ -9,9 +9,8 @@ La page Compétitions permet de gérer les compétitions d'une saison : créatio
 **Accès** :
 - Profil ≤ 10 : Lecture seule
 - Profil ≤ 4 : Toggle publication
-- Profil ≤ 3 : Ajout/Modification/Verrouillage
-- Profil ≤ 2 : Suppression
-- Profil = 9 : Redirigé vers SelectFeuille.php
+- Profil ≤ 3 : Ajout / Modification / Verrouillage / Images
+- Profil ≤ 2 : Suppression / Code de compétition modifiable à l'import
 
 **Page PHP Legacy** : `GestionCompetition.php`
 
@@ -21,53 +20,78 @@ La page Compétitions permet de gérer les compétitions d'une saison : créatio
 
 ### 2.1 Liste des compétitions
 
-| # | Fonctionnalité | Profil | Évaluation | Décision |
-|---|----------------|--------|------------|----------|
-| 1 | Liste par saison avec filtres | ≤ 10 | Essentielle | ✅ Conserver |
-| 2 | Filtrer par niveau (INT/NAT/REG) | ≤ 10 | Utile | ✅ Conserver |
-| 3 | Filtrer par type (N, CF, section) | ≤ 10 | Utile | ✅ Conserver |
-| 4 | Groupement par section | ≤ 10 | Essentielle | ✅ Conserver |
-| 5 | Afficher nb matchs | ≤ 10 | Utile | ✅ Conserver |
-| 6 | Afficher présence RC | ≤ 10 | Utile | ✅ Conserver |
-| 7 | Toggle publication (O/N) | ≤ 4 | Essentielle | ✅ Conserver |
-| 8 | Toggle verrou FDM | ≤ 3 | Essentielle | ✅ Conserver |
-| 9 | Statut compétition (ATT/ON/END) | ≤ 3 | Essentielle | ✅ Conserver |
+| # | Fonctionnalité | Profil | Statut |
+|---|----------------|--------|--------|
+| 1 | Liste par saison (contexte de travail) | ≤ 10 | ✅ Implémenté |
+| 2 | Groupement par section avec accordion | ≤ 10 | ✅ Implémenté |
+| 3 | Recherche texte client-side (code/libellé/groupe) | ≤ 10 | ✅ Implémenté |
+| 4 | Replier/déplier toutes les sections | ≤ 10 | ✅ Implémenté |
+| 5 | Afficher nb équipes / journées / matchs | ≤ 10 | ✅ Implémenté |
+| 6 | Toggle publication | ≤ 4 | ✅ Implémenté |
+| 7 | Toggle verrou FDM | ≤ 3 | ✅ Implémenté |
+| 8 | Changement de statut (ATT→ON→END, cycle) | ≤ 3 | ✅ Implémenté |
+| 9 | Import depuis saison précédente (autocomplete) | ≤ 3 | ✅ Implémenté |
 
-### 2.2 Création de compétition
+### 2.2 Formulaire création/modification
 
-| # | Fonctionnalité | Profil | Évaluation | Décision |
-|---|----------------|--------|------------|----------|
-| 1 | Code unique | ≤ 2 | Essentielle | ✅ Conserver |
-| 2 | Niveau (INT/NAT/REG) | ≤ 3 | Essentielle | ✅ Conserver |
-| 3 | Labels (principal, public, catégorie) | ≤ 3 | Essentielle | ✅ Conserver |
-| 4 | Groupe et ordre | ≤ 3 | Essentielle | ✅ Conserver |
-| 5 | Type (CHPT/CP/MULTI) | ≤ 3 | Essentielle | ✅ Conserver |
-| 6 | Grille points (MULTI) | ≤ 2 | Spécialisé | ✅ Conserver |
-| 7 | Compétitions sources (MULTI) | ≤ 2 | Spécialisé | ✅ Conserver |
-| 8 | Type classement (MULTI) | ≤ 2 | Spécialisé | ✅ Conserver |
-| 9 | Tour/Phase | ≤ 3 | Essentielle | ✅ Conserver |
-| 10 | Qualifiés/Éliminés | ≤ 3 | Essentielle | ✅ Conserver |
-| 11 | Points (4-2-1-0 ou 3-1-0-0) | ≤ 3 | Essentielle | ✅ Conserver |
-| 12 | Goal average (général/particulier) | ≤ 3 | Essentielle | ✅ Conserver |
-| 13 | Images (bandeau/logo/sponsor) | ≤ 3 | Essentielle | ✅ Conserver |
-| 14 | Options affichage (checkboxes) | ≤ 2 | Essentielle | ✅ Conserver |
-| 15 | Création journée initiale | ≤ 3 | Utile | ✅ Conserver |
+| # | Fonctionnalité | Profil | Statut |
+|---|----------------|--------|--------|
+| 1 | Code unique par saison (max 12 car.) | ≤ 3 (≤2 modifiable à l'import) | ✅ Implémenté |
+| 2 | Niveau (INT/NAT/REG) | ≤ 3 | ✅ Implémenté |
+| 3 | Type de classement (CHPT/CP/MULTI) | ≤ 3 | ✅ Implémenté |
+| 4 | Libellé, sous-titre, catégorie | ≤ 3 | ✅ Implémenté |
+| 5 | Groupe et ordre dans le groupe | ≤ 3 | ✅ Implémenté |
+| 6 | Tour/Phase, statut | ≤ 3 | ✅ Implémenté |
+| 7 | Qualifiés / Éliminés (hors MULTI) | ≤ 3 | ✅ Implémenté |
+| 8 | Barème de points (hors MULTI) | ≤ 3 | ✅ Implémenté |
+| 9 | Goal average (hors MULTI) | ≤ 3 | ✅ Implémenté |
+| 10 | Compétitions sources MULTI | ≤ 3 | ✅ Implémenté |
+| 11 | Grille de points MULTI | ≤ 3 | ✅ Implémenté |
+| 12 | Type de classement MULTI | ≤ 3 | ✅ Implémenté |
+| 13 | Lien web | ≤ 3 | ✅ Implémenté |
+| 14 | Options d'affichage (checkboxes) | ≤ 3 | ✅ Implémenté |
+| 15 | Images bandeau / logo / sponsor | ≤ 3 | ✅ Implémenté |
+| 16 | Commentaires privés | ≤ 3 | ✅ Implémenté |
 
-### 2.3 Modification de compétition
+### 2.3 Gestion des images
 
-| # | Fonctionnalité | Profil | Évaluation | Décision |
-|---|----------------|--------|------------|----------|
-| 1 | Modifier tous champs (sauf code) | ≤ 3 | Essentielle | ✅ Conserver |
-| 2 | Commentaires privés | ≤ 3 | Utile | ✅ Conserver |
-| 3 | Mettre à jour images | ≤ 3 | Essentielle | ✅ Conserver |
+Chaque image (bandeau, logo, sponsor) dispose d'un picker à 3 modes, accessible uniquement au profil ≤ 3.
 
-### 2.4 Liens vers autres pages
+| Mode | Description |
+|------|-------------|
+| **Existante** | Recherche parmi les fichiers déjà présents dans `/img/logo/` (min. 2 caractères, 5 résultats max) |
+| **Upload** | Upload d'un fichier local — redimensionnement automatique si dépassement des dimensions max |
+| **URL externe** | Import serveur-side depuis une URL : téléchargement, validation (magic bytes + MIME), redimensionnement si nécessaire |
 
-| # | Lien | Page cible | Profil | Décision |
-|---|------|-----------|--------|----------|
-| 1 | Copie de structure | GestionCopieCompetition | ≤ 3 | ✅ Conserver |
-| 2 | Gestion des RC | GestionRc | ≤ 2 | ✅ Conserver |
-| 3 | Documents | GestionDoc | ≤ 10 | ✅ Conserver |
+**Nommage normalisé** :
+- Bandeau : `B-{CODE}-{SAISON}.ext`  (max 2480×250 px)
+- Logo    : `L-{CODE}-{SAISON}.ext`  (max 1000×1000 px)
+- Sponsor : `S-{CODE}-{SAISON}.ext`  (max 2480×250 px)
+
+Formats acceptés : JPG ou PNG. Stockage dans `/img/logo/` (backend PHP legacy).
+
+**Comportement** :
+- L'upload et l'import URL sont immédiats (indépendants du save du formulaire)
+- Le code et la saison doivent être renseignés pour construire le nom normalisé
+- "Retirer" vide le champ en base uniquement — le fichier physique n'est pas supprimé
+- La prévisualisation utilise `legacyBaseUrl + /img/logo/{filename}`
+
+### 2.4 Suppression
+
+- Possible uniquement si la compétition n'a ni équipes, ni journées, ni matchs
+- Confirmation requise (modal)
+- Suppression en masse possible via sélection (profil ≤ 2)
+
+### 2.5 Liens vers autres pages
+
+| Lien | Page cible | Profil |
+|------|-----------|--------|
+| Code → icône document | Page Documents | ≤ 10 |
+| Icône RC | Page RC | ≤ 10 |
+| Nb équipes | Page Équipes (filtrée) | ≤ 10 |
+| Nb journées | Page Journées | ≤ 10 |
+| Nb matchs | Page Matchs | ≤ 10 |
+| Bouton "Copier" | Page Copie de compétition | ≤ 3 |
 
 ---
 
@@ -77,374 +101,316 @@ La page Compétitions permet de gérer les compétitions d'une saison : créatio
 ┌─────────────────────────────────────────────────────────────────────────┐
 │  Header : Gestion des compétitions                                       │
 ├─────────────────────────────────────────────────────────────────────────┤
-│  Contexte de travail (lecture seule) :                                   │
-│  ┌─────────────────────────────────────────────────────────────────────┐│
-│  │ 📅 Saison: 2026  │  🔽 Périmètre: Groupe N1H (2 compétitions)       ││
-│  │                                                    [Modifier]       ││
-│  └─────────────────────────────────────────────────────────────────────┘│
-│                                                                          │
-│  [+ Ajouter compétition]                                                 │
+│  Toolbar : [Recherche]  [Replier tout] [Déplier tout]  [Copier] [+ Ajouter] │
 ├─────────────────────────────────────────────────────────────────────────┤
 │                                                                          │
-│  === Section: National ===                                               │
-│  ┌───┬────────┬─────┬────────────────────────────┬────────┬─────────────┐
-│  │👁️ │ Code   │ Niv │ Libellé                    │ Groupe │ Type │Statut│
-│  ├───┼────────┼─────┼────────────────────────────┼────────┼─────────────┤
-│  │ 🟢│ N1M    │ NAT │ 📋 Nationale 1 Masculine   │ N1     │ CHPT │ ON   │
-│  │ 🟢│ N1F    │ NAT │ 📋 Nationale 1 Féminine    │ N1     │ CHPT │ ON   │
-│  │ 🔴│ N2M-PH │ NAT │ 📋 Nationale 2 Masculine   │ N2     │ CP   │ ATT  │
-│  └───┴────────┴─────┴────────────────────────────┴────────┴─────────────┘
+│  ▼ Section: National                                                     │
+│  ┌───┬──────┬─────┬────────────────────────┬──────┬──────┬───────┬────┐ │
+│  │👁️ │ Code │ ✏️  │ Libellé                │ Niv  │Groupe│Statut │... │ │
+│  ├───┼──────┼─────┼────────────────────────┼──────┼──────┼───────┼────┤ │
+│  │🟢 │ N1M  │ ✏️  │ Nationale 1 Masculine  │ NAT  │ N1   │  ON   │... │ │
+│  └───┴──────┴─────┴────────────────────────┴──────┴──────┴───────┴────┘ │
 │                                                                          │
-│  === Section: Coupe de France ===                                        │
-│  ┌───┬────────┬─────┬────────────────────────────┬────────┬─────────────┐
-│  │👁️ │ Code   │ Niv │ Libellé                    │ Groupe │ Type │Statut│
-│  ├───┼────────┼─────┼────────────────────────────┼────────┼─────────────┤
-│  │ 🟢│ CFM    │ NAT │ 📋 Coupe de France Masc.   │ CF     │ CP   │ ON   │
-│  └───┴────────┴─────┴────────────────────────────┴────────┴─────────────┘
-│                                                                          │
+│  ▶ Section: Coupe de France  (collapsed)                                 │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 3.1 Colonnes du tableau
+### 3.1 Colonnes du tableau (desktop)
 
-| Colonne | Description | Actions |
-|---------|-------------|---------|
-| 👁️ Publication | Icône vert=publié, rouge=privé | Click pour toggle (profil ≤4) |
-| Code | Code unique de la compétition | Lien vers Documents |
-| ✏️ | Modifier | Ouvre modal d'édition (profil ≤3) |
-| Niv | Niveau (INT/NAT/REG) | - |
-| RC | Indicateur référent assigné | Lien vers GestionRc |
-| Libellé | Nom de la compétition | Tooltip avec détails |
-| Groupe | Code du groupe | - |
-| Tour | Numéro de tour/phase | - |
-| Type | CHPT/CP/MULTI | - |
-| Statut | ATT/ON/END | Click pour changer (profil ≤3) |
-| Équipes | Nombre d'équipes inscrites | - |
-| 🔒 Verrou | Verrouiller les FDM | Click pour toggle (profil ≤3) |
-| Matchs | Nombre de matchs | - |
-| 🗑️ | Supprimer | Confirmation requise (profil ≤2) |
+| Colonne | Description | Action |
+|---------|-------------|--------|
+| 👁️ Publication | Vert = publié, gris = privé | Toggle (profil ≤4) |
+| Code | Code unique | Lien vers Documents |
+| ✏️ | Modifier | Ouvre modal (profil ≤3) |
+| Libellé | Nom + sous-titre | - |
+| Niveau | INT / NAT / REG | - |
+| Groupe | Code du groupe | Lien vers Journées (groupe) |
+| Étape | Numéro de tour/phase | - |
+| Type | CHPT / CP / MULTI | - |
+| Statut | ATT / ON / END | Click pour changer statut (profil ≤3) |
+| Équipes | Nombre d'équipes | Lien vers page Équipes |
+| 🔒 Verrou | Verrouiller FDM | Toggle (profil ≤3) |
+| Journées | Nb journées/phases | Lien vers Journées |
+| Matchs | Nombre de matchs | Lien vers Matchs |
+| Actions | RC + Suppression | Profil ≤2 pour suppression |
 
 ---
 
 ## 4. Modal Création/Édition
 
-### 4.1 Champs du formulaire
+### 4.1 Mode création : import depuis saison précédente
 
-| Champ | Type | Requis | Validation | Profil édition |
-|-------|------|--------|------------|----------------|
-| code | text(12) | Oui | Unique par saison | ≤2 (création only) |
-| code_niveau | select | Oui | INT/NAT/REG | ≤3 |
-| libelle | text(50) | Oui | - | ≤2 |
+Un autocomplete permet de rechercher une compétition des saisons précédentes et de pré-remplir tous les champs. Le code importé est verrouillé par défaut ; les profils ≤ 2 peuvent le déverrouiller via un bouton dédié.
+
+### 4.2 Champs du formulaire
+
+| Champ | Type | Requis | Validation | Profil |
+|-------|------|--------|------------|--------|
+| code | text(12) | Oui | Unique par saison, majuscules | ≤3 (≤2 si import) |
+| code_niveau | select | Oui | INT / NAT / REG | ≤3 |
+| code_typeclt | select | Oui | CHPT / CP / MULTI | ≤3 |
+| libelle | text(80) | Oui | Max 80 car. | ≤3 |
 | soustitre | text(80) | Non | Titre public | ≤3 |
-| soustitre2 | text(80) | Non | Catégorie | ≤3 |
-| code_ref | select | Oui | Groupe existant | ≤3 |
-| group_order | number(1) | Non | Ordre dans groupe | ≤3 |
-| code_typeclt | select | Oui | CHPT/CP/MULTI | ≤3 |
-| points_grid | json | Si MULTI | Grille JSON | ≤2 |
-| multi_competitions | json[] | Si MULTI | Codes compétitions | ≤2 |
-| ranking_structure_type | select | Si MULTI | team/club/cd/cr/nation | ≤2 |
-| code_tour | select | Oui | 1-6 ou 10 (Finale) | ≤3 |
-| qualifies | number(2) | Non | Défaut: 3 | ≤3 |
-| elimines | number(2) | Non | Défaut: 0 | ≤3 |
-| points | radio | Oui | 4-2-1-0 ou 3-1-0-0 | ≤3 |
-| goalaverage | radio | Oui | gen/part | ≤3 |
-| web | text(80) | Non | URL site web | ≤3 |
-| bandeau_link | url | Non | Image 2480x250 | ≤3 |
-| logo_link | url | Non | Image logo | ≤3 |
-| sponsor_link | url | Non | Image 2480x250 | ≤2 |
-| en_actif | checkbox | Non | Compétition en anglais | ≤2 |
-| titre_actif | checkbox | Non | Utiliser Label 1 | ≤2 |
-| bandeau_actif | checkbox | Non | Afficher bandeau | ≤2 |
-| logo_actif | checkbox | Non | Afficher logo | ≤2 |
-| sponsor_actif | checkbox | Non | Afficher sponsor | ≤2 |
-| kpi_ffck_actif | checkbox | Non | Afficher logo KPI/FFCK | ≤2 |
-| statut | select | Oui | ATT/ON/END | ≤3 |
-| publication | checkbox | Non | Publier | ≤2 |
+| soustitre2 | text(80) | Non | Catégorie / libellé court | ≤3 |
+| code_ref | select | Non | Groupe existant | ≤3 |
+| group_order | number | Non | Ordre dans le groupe | ≤3 |
+| code_tour | select | Oui | 1–6 ou 10 (Finale) | ≤3 |
+| statut | select | Oui | ATT / ON / END | ≤3 |
+| qualifies | number | Non | Hors MULTI | ≤3 |
+| elimines | number | Non | Hors MULTI | ≤3 |
+| points | select | Oui | 4-2-1-0 ou 3-1-0-0, hors MULTI | ≤3 |
+| goalaverage | select | Oui | gen / part, hors MULTI | ≤3 |
+| ranking_structure_type | select | Si MULTI | team/club/cd/cr/nation | ≤3 |
+| points_grid | json | Si MULTI | Grille de points JSON | ≤3 |
+| multi_competitions | json[] | Si MULTI | Codes des compétitions sources | ≤3 |
+| web | url | Non | URL du site web | ≤3 |
+| en_actif | checkbox | Non | Libellé anglais actif | ≤3 |
+| titre_actif | checkbox | Non | Titre actif | ≤3 |
+| bandeau_actif | checkbox | Non | Afficher le bandeau | ≤3 |
+| logo_actif | checkbox | Non | Afficher le logo | ≤3 |
+| sponsor_actif | checkbox | Non | Afficher le sponsor | ≤3 |
+| kpi_ffck_actif | checkbox | Non | Afficher logo KPI/FFCK | ≤3 |
+| bandeau_link | picker | Non | Fichier dans `/img/logo/` | ≤3 |
+| logo_link | picker | Non | Fichier dans `/img/logo/` | ≤3 |
+| sponsor_link | picker | Non | Fichier dans `/img/logo/` | ≤3 |
 | commentaires_compet | textarea | Non | Notes privées | ≤3 |
 
-### 4.2 Section création journée (optionnel)
+> **Note** : `bandeau_link`, `logo_link`, `sponsor_link` ne sont pas inclus dans le payload PUT/POST — ils sont mis à jour directement via l'API d'images au moment de l'upload/import/sélection.
 
-Lors de la création d'une nouvelle compétition, option d'ajouter une journée initiale :
+### 4.3 Section Images (détail)
 
-| Champ | Type | Requis | Validation |
-|-------|------|--------|------------|
-| titre_journee | text | Non | Nom de la journée |
-| date_debut | date | Non | Format FR/EN |
-| date_fin | date | Non | ≥ date_debut |
-| lieu | text | Non | - |
-| departement | text(3) | Non | Code département |
-| publier_journee | checkbox | Non | - |
+```
+┌─────────────────────────────────────────────────────┐
+│ Images                                               │
+│                                                      │
+│ Bandeau                                              │
+│ ┌──────────────────────────────────────────────────┐│
+│ │ [aperçu image pleine largeur, max-h 64px]        ││
+│ │ B-N1H-2024-2025.jpg                   [Retirer]  ││
+│ │ ┌─────────────┬──────────┬────────────┐          ││
+│ │ │  Existante  │  Upload  │ URL externe│          ││
+│ │ └─────────────┴──────────┴────────────┘          ││
+│ │ [🔍 Rechercher un fichier... ]                   ││
+│ │  → affichage après 2 car., max 5 résultats       ││
+│ └──────────────────────────────────────────────────┘│
+│                                                      │
+│ Logo    [idem]                                       │
+│ Sponsor [idem]                                       │
+└─────────────────────────────────────────────────────┘
+```
 
 ---
 
-## 5. Type MULTI - Configuration spécifique
+## 5. Type MULTI — Configuration spécifique
 
 ### 5.1 Grille de points
 
-Format JSON définissant les points par classement :
+Format JSON définissant les points par position :
 ```json
-{"1":10, "2":6, "3":4, "4":3, "5":2, "6":1, "default":0}
+{"1": 10, "2": 6, "3": 4, "default": 0}
 ```
 
-**Composant** : `AdminPointsGridEditor` (v-model sur `formData.pointsGrid: Record<string, number> | null`)
+**Composant** : `AdminPointsGridEditor` (v-model sur `formData.pointsGrid`)
 
-**Profil** : ≤ 2
-
-#### État inactif (pointsGrid = null)
-
-Affiche un bouton "Configurer la grille de points" qui active l'éditeur avec des valeurs par défaut (10 positions vides, default=0).
-
-#### État actif (éditeur ouvert)
-
-```
-┌─────────────────────────────────────────────────┐
-│ Grille de points                                │
-│ Points attribués par position                   │
-│                                                 │
-│ Nombre de positions : [10 ▲▼]  (1-50)          │
-│                                                 │
-│ ┌─────────────────────────────────────────────┐ │
-│ │ 1re place    [___]                          │ │
-│ │ 2e place     [___]                          │ │
-│ │ 3e place     [___]                          │ │
-│ │ ...          [___]                          │ │
-│ │ 10e place    [___]                          │ │
-│ └─────────────────────────────── (scroll) ────┘ │
-│                                                 │
-│ Points par défaut : [0 ▲▼]                      │
-│ (Appliqué aux positions non listées)            │
-│                                                 │
-│ ▸ Aperçu JSON                                   │
-│   {"1":10,"2":6,"3":4,"default":0}              │
-│                                                 │
-│ [Effacer la grille]                             │
-└─────────────────────────────────────────────────┘
-```
-
-**Comportement** :
-- Grille de positions dans un conteneur scrollable (`max-h-64`)
-- Layout 2 colonnes : label ordinal + input number (min=0)
-- Positions vides/null sont exclues du JSON émis
-- Modification du nombre de positions : étend ou tronque le tableau (les valeurs existantes sont conservées)
-- Aperçu JSON en temps réel (toggle collapsible, police monospace)
-- Bouton "Effacer" remet `pointsGrid` à `null` (retour à l'état inactif)
-- Chargement automatique d'une grille existante en mode édition/import
+- Nombre de positions : 1–50
+- Positions vides exclues du JSON émis
+- Bouton "Effacer" remet à `null`
+- Aperçu JSON en temps réel (collapsible)
 
 ### 5.2 Compétitions sources
 
-Select multiple groupé par section permettant de sélectionner les compétitions dont les classements seront agrégés.
+Select multiple groupé par section (compétitions de la saison courante).
 
-### 5.3 Type de classement
+### 5.3 Types de classement MULTI
 
 | Type | Description |
 |------|-------------|
 | team | Par équipe (défaut) |
-| club | Par club (agrège les équipes du même club) |
+| club | Par club |
 | cd | Par Comité Départemental |
 | cr | Par Comité Régional |
-| nation | Par nation (international) |
+| nation | Par nation |
 
 ---
 
 ## 6. Endpoints API2
 
-### 6.1 Lecture
+### 6.1 Compétitions
 
 | Méthode | Endpoint | Description | Profil |
 |---------|----------|-------------|--------|
-| GET | `/admin/seasons` | Liste des saisons | ≤10 |
-| GET | `/admin/competitions` | Liste des compétitions | ≤10 |
-| GET | `/admin/competitions/{code}` | Détail d'une compétition | ≤10 |
-| GET | `/admin/groups` | Liste des groupes | ≤10 |
-
-### 6.2 Écriture
-
-| Méthode | Endpoint | Description | Profil |
-|---------|----------|-------------|--------|
-| POST | `/admin/competitions` | Créer compétition | ≤3 |
-| PUT | `/admin/competitions/{code}` | Modifier compétition | ≤3 |
-| DELETE | `/admin/competitions/{code}` | Supprimer compétition | ≤2 |
+| GET | `/admin/competitions` | Liste (filtrée par saison/contexte) | ≤10 |
+| GET | `/admin/competitions/{code}` | Détail | ≤10 |
+| POST | `/admin/competitions` | Créer | ≤3 |
+| PUT | `/admin/competitions/{code}` | Modifier | ≤3 |
+| DELETE | `/admin/competitions/{code}` | Supprimer | ≤2 |
+| POST | `/admin/competitions/bulk-delete` | Suppression en masse | ≤2 |
 | PATCH | `/admin/competitions/{code}/publish` | Toggle publication | ≤4 |
 | PATCH | `/admin/competitions/{code}/lock` | Toggle verrou FDM | ≤3 |
 | PATCH | `/admin/competitions/{code}/status` | Changer statut | ≤3 |
 
-### 6.3 Paramètres de requête
+### 6.2 Images (réutilisation de l'API Operations)
 
-**GET /admin/competitions**
+| Méthode | Endpoint | Description |
+|---------|----------|-------------|
+| GET | `/admin/operations/images/list?imageType=&q=` | Lister les images existantes (min 2 car., max 5 rés.) |
+| POST | `/admin/operations/images/upload` | Upload fichier local (FormData) |
+| POST | `/admin/operations/images/import-url` | Import depuis URL externe |
 
-| Param | Type | Description |
-|-------|------|-------------|
-| season | string | Code saison (requis) |
-| level | string | Filtre niveau (INT/NAT/REG) |
-| section | int | Filtre section |
-| type | string | Filtre type (N/CF/M) |
-| codes | string | Codes compétitions séparés par virgule (filtrage contexte de travail) |
+**Paramètres communs pour les images de compétition** :
+- `imageType` : `logo_competition`, `bandeau_competition`, `sponsor_competition`
+- `codeCompetition` : code de la compétition (ex: `N1H`)
+- `saison` : code saison (ex: `2024-2025`)
+
+### 6.3 Autres endpoints utilisés
+
+| Méthode | Endpoint | Description |
+|---------|----------|-------------|
+| GET | `/admin/competitions-groups` | Liste des groupes |
+| GET | `/admin/competitions-for-multi` | Compétitions disponibles pour MULTI |
+| GET | `/admin/competitions/search` | Autocomplete saisons précédentes |
+| GET | `/admin/competitions/{code}/from-season/{season}` | Données complètes pour import |
 
 ---
 
 ## 7. Schéma de données
 
-### 7.1 Table kp_competition
+### 7.1 Table kp_competition (colonnes pertinentes)
 
 | Colonne | Type | Description |
 |---------|------|-------------|
 | Code | varchar(12) | PK, Code unique |
 | Code_saison | varchar(10) | PK, Saison |
-| Code_niveau | varchar(3) | INT/NAT/REG |
-| Libelle | varchar(50) | Nom principal |
+| Code_niveau | varchar(3) | INT / NAT / REG |
+| Libelle | varchar(80) | Nom principal |
 | Soustitre | varchar(80) | Titre public |
 | Soustitre2 | varchar(80) | Catégorie |
 | Web | varchar(80) | URL site web |
-| BandeauLink | varchar(255) | URL/chemin bandeau |
-| LogoLink | varchar(255) | URL/chemin logo |
-| SponsorLink | varchar(255) | URL/chemin sponsor |
-| ToutGroup | char(1) | Obsolète |
-| TouteSaisons | char(1) | Obsolète |
-| En_actif | char(1) | Anglais actif |
-| Titre_actif | char(1) | Label 1 actif |
-| Bandeau_actif | char(1) | Bandeau actif |
-| Logo_actif | char(1) | Logo actif |
-| Sponsor_actif | char(1) | Sponsor actif |
-| Kpi_ffck_actif | char(1) | Logo KPI/FFCK actif |
+| BandeauLink | varchar(255) | Nom de fichier bandeau (ex: `B-N1H-2024-2025.jpg`) |
+| LogoLink | varchar(255) | Nom de fichier logo |
+| SponsorLink | varchar(255) | Nom de fichier sponsor |
+| Bandeau_actif | char(1) | O/N |
+| Logo_actif | char(1) | O/N |
+| Sponsor_actif | char(1) | O/N |
+| En_actif | char(1) | O/N |
+| Titre_actif | char(1) | O/N |
+| Kpi_ffck_actif | char(1) | O/N |
 | Code_ref | varchar(20) | FK vers kp_groupe |
 | GroupOrder | int | Ordre dans le groupe |
-| Code_typeclt | varchar(5) | CHPT/CP/MULTI |
+| Code_typeclt | varchar(5) | CHPT / CP / MULTI |
 | points_grid | text | JSON grille points MULTI |
-| multi_competitions | text | JSON compétitions MULTI |
+| multi_competitions | text | JSON codes compétitions MULTI |
 | ranking_structure_type | varchar(10) | Type classement MULTI |
-| Code_tour | int | Tour/Phase (1-10) |
+| Code_tour | int | Tour/Phase (1–10) |
 | Qualifies | int | Nb équipes qualifiées |
 | Elimines | int | Nb équipes éliminées |
-| Points | varchar(10) | Barème points |
-| goalaverage | varchar(10) | Type goal average |
-| Statut | varchar(3) | ATT/ON/END |
+| Points | varchar(10) | Barème (4-2-1-0 ou 3-1-0-0) |
+| goalaverage | varchar(10) | gen / part |
+| Statut | varchar(3) | ATT / ON / END |
 | Publication | char(1) | O/N |
-| Verrou | char(1) | Verrou FDM |
-| Nb_equipes | int | Calculé |
+| Verrou | char(1) | O/N — Verrou FDM |
 | commentairesCompet | text | Notes privées |
+
+> **Note** : `BandeauLink`, `LogoLink`, `SponsorLink` stockent le nom de fichier seul. L'API retourne le chemin complet `/img/logo/{filename}` via `buildImageLink()`. Le composant picker travaille avec le nom de fichier seul et construit l'URL de prévisualisation via `legacyBaseUrl + /img/logo/`.
 
 ### 7.2 Table kp_groupe
 
 | Colonne | Type | Description |
 |---------|------|-------------|
 | id | int | PK |
-| Groupe | varchar(20) | Code groupe (unique) |
+| Groupe | varchar(20) | Code groupe |
 | Libelle | varchar(50) | Nom français |
 | Libelle_en | varchar(50) | Nom anglais |
-| section | int | Section (1=Inter, 2=Nat...) |
+| section | int | Section (1=Inter, 2=Nat, ...) |
 | ordre | int | Ordre dans section |
 | Code_niveau | varchar(3) | Niveau par défaut |
 
 ---
 
-## 8. Composants Vue
+## 8. Composants Vue (implémentation réelle)
 
-### 8.1 Structure des fichiers
+### 8.1 Fichiers
 
 ```
 sources/app4/pages/competitions/
-├── index.vue                 # Page principale
+└── index.vue                          # Page principale (liste + modals)
 
-sources/app4/components/competitions/
-├── CompetitionList.vue       # Tableau des compétitions
-├── CompetitionModal.vue      # Modal création/édition
-├── CompetitionFilters.vue    # Filtres (saison, niveau, type)
-├── CompetitionRow.vue        # Ligne du tableau
-├── MultiConfigPanel.vue      # Configuration MULTI
-├── PointsGridEditor.vue      # Éditeur grille points
-└── InitialGamedayForm.vue    # Formulaire journée initiale
+sources/app4/components/admin/
+├── CompetitionAutocomplete.vue        # Autocomplete import saison précédente
+├── CompetitionImagePicker.vue         # Picker 3 modes (existante/upload/URL)
+├── CompetitionGroupedSelect.vue       # Select groupé pour MULTI
+├── CompetitionMultiSelect.vue         # Sélection multiple compétitions
+├── CompetitionSingleSelect.vue        # Sélection simple
+└── PointsGridEditor.vue               # Éditeur grille de points MULTI
+
+sources/app4/types/
+└── competitions.ts                    # Types TypeScript
 ```
 
-### 8.2 État (composables)
+### 8.2 Type `CompetitionFormData`
 
 ```typescript
-// composables/useCompetitions.ts
-interface Competition {
+interface CompetitionFormData {
   code: string
-  codeSaison: string
   codeNiveau: 'INT' | 'NAT' | 'REG'
   libelle: string
-  soustitre?: string
-  soustitre2?: string
+  soustitre: string
+  soustitre2: string
   codeRef: string
-  groupOrder?: number
+  groupOrder: number | null
   codeTypeclt: 'CHPT' | 'CP' | 'MULTI'
-  pointsGrid?: Record<string, number>
-  multiCompetitions?: string[]
-  rankingStructureType?: 'team' | 'club' | 'cd' | 'cr' | 'nation'
   codeTour: number
   qualifies: number
   elimines: number
-  points: '4-2-1-0' | '3-1-0-0'
-  goalaverage: 'gen' | 'part'
+  points: string
+  goalaverage: string
   statut: 'ATT' | 'ON' | 'END'
-  publication: boolean
-  verrou: boolean
-  nbEquipes: number
-  nbMatchs: number
-  hasRc: boolean
-  section: number
-  sectionLabel: string
+  web: string
+  enActif: boolean
+  titreActif: boolean
+  bandeauActif: boolean
+  logoActif: boolean
+  sponsorActif: boolean
+  kpiFfckActif: boolean
+  bandeauLink: string   // nom de fichier seul, ex: "B-N1H-2024-2025.jpg"
+  logoLink: string
+  sponsorLink: string
+  pointsGrid: Record<string, number> | null
+  multiCompetitions: string[]
+  rankingStructureType: 'team' | 'club' | 'cd' | 'cr' | 'nation' | null
+  commentairesCompet: string
 }
 ```
 
----
+### 8.3 Composant `AdminCompetitionImagePicker`
 
-## 9. Améliorations prévues
-
-| # | Amélioration | Description |
-|---|--------------|-------------|
-| 1 | Tri colonnes | Clic sur en-tête pour trier |
-| 2 | Recherche | Filtrer par libellé/code |
-| 3 | Pagination | Si > 50 compétitions |
-| 4 | Drag & drop | Réordonner dans le groupe |
-| 5 | Actions bulk | Publier/Verrouiller plusieurs |
-| 6 | Duplication | Copier une compétition |
-| 7 | Historique | Voir modifications |
-| 8 | Validation | Formulaire temps réel |
-| 9 | Preview images | Aperçu bandeau/logo/sponsor |
+Props :
+- `modelValue: string` — nom de fichier courant (v-model)
+- `imageKind: 'bandeau_competition' | 'logo_competition' | 'sponsor_competition'`
+- `competitionCode: string` — requis pour nommage normalisé
+- `saison: string` — requis pour nommage normalisé
+- `disabled?: boolean`
 
 ---
 
-## 10. Sécurité
+## 9. Sécurité
 
-### 10.1 Validation côté serveur
+- Validation serveur : code unique par saison, libellé requis, JSON valide pour grille/MULTI
+- Suppression bloquée si équipes/journées/matchs existants
+- Upload/import images : validation MIME par magic bytes, limite 10 Mo, redimensionnement automatique
+- Import URL : `filter_var(FILTER_VALIDATE_URL)` + validation contenu image côté serveur
 
-- Code unique par saison
-- Code_ref doit exister dans kp_groupe
-- JSON valide pour points_grid et multi_competitions
-- Suppression impossible si journées existent
+## 10. Audit
 
-### 10.2 Audit
-
-Toutes les actions sont journalisées dans kp_journal :
-- Ajout Compet
-- Modif Competition
-- Suppression Compet
-- Publication competition
-- Verrou Compet
-
----
-
-## 11. Notes de migration
-
-### 11.1 Dépendances
-
-- GestionRc.php : À migrer en même temps ou après
-- GestionCopieCompetition.php : Peut rester legacy avec lien
-- GestionGroupe.php : À migrer pour édition des groupes
-
-### 11.2 Images
-
-Les images (bandeau, logo, sponsor) sont stockées en :
-- `/img/logo/B-{CODE}-{SAISON}.jpg` (bandeau)
-- `/img/logo/L-{CODE}-{SAISON}.jpg` (logo)
-- `/img/logo/S-{CODE}-{SAISON}.jpg` (sponsor)
-
-Utiliser l'API d'upload d'images existante de la page Operations.
+Actions journalisées dans `kp_journal` :
+- `Ajout Compet`
+- `Modif Competition`
+- `Upload Image` / `Import URL Image`
+- `Publication competition`
+- `Verrou Compet`
 
 ---
 
 **Document créé le** : 2026-02-01
-**Dernière mise à jour** : 2026-02-04
-**Statut** : 🚧 Spécifications en cours
+**Dernière mise à jour** : 2026-05-04
+**Statut** : ✅ Implémenté

@@ -69,7 +69,9 @@ const countTeamsFromMatches = (phase: SchemaPhase): number => {
 }
 
 // Computed: image visibility
-const hasLogo = computed(() => competition.value?.logoActif && competition.value?.logoLink && showLogo.value)
+const hasKpiFfck = computed(() => competition.value?.kpiFfckActif)
+const kpiFfckUrl = computed(() => `${legacyBase}/img/CNAKPI_small.jpg`)
+const hasLogo = computed(() => !hasKpiFfck.value && competition.value?.logoActif && competition.value?.logoLink && showLogo.value)
 const hasBandeau = computed(() => competition.value?.bandeauActif && competition.value?.bandeauLink && showBandeau.value)
 const hasSponsor = computed(() => competition.value?.sponsorActif && competition.value?.sponsorLink && showSponsor.value)
 
@@ -177,12 +179,19 @@ onMounted(() => {
       <!-- Title -->
       <div class="mr-auto">
         <div class="flex items-center gap-3">
-          <!-- Logo -->
+          <!-- KPI/FFCK logo (takes priority over competition logo) -->
           <img
-            v-if="hasLogo"
+            v-if="hasKpiFfck"
+            :src="kpiFfckUrl"
+            alt="KPI/FFCK"
+            class="max-h-16 object-contain"
+          >
+          <!-- Competition logo (only when kpiFfckActif is false) -->
+          <img
+            v-else-if="hasLogo"
             :src="imageUrl(competition.logoLink)"
             :alt="competition.libelle"
-            class="max-h-16 object-contain inline mr-3"
+            class="max-h-16 object-contain"
             @error="showLogo = false"
           >
           <div>

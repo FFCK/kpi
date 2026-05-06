@@ -207,6 +207,66 @@ class AdminOperationsController extends AbstractController
     }
 
     /**
+     * List images for a given type
+     */
+    #[Route('/images/list', name: 'admin_operations_images_list', methods: ['GET'])]
+    public function listImages(Request $request): JsonResponse
+    {
+        $imageType = $request->query->get('imageType', '');
+        $search = $request->query->get('q', '');
+
+        if (empty($imageType)) {
+            return $this->json(['message' => 'imageType is required'], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            $images = $this->imageService->listImagesForType($imageType, $search);
+            return $this->json($images);
+        } catch (\Exception $e) {
+            return $this->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Import image from external URL
+     */
+    #[Route('/images/import-url', name: 'admin_operations_images_import_url', methods: ['POST'])]
+    public function importImageFromUrl(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $imageType = $data['imageType'] ?? '';
+        $url = trim($data['url'] ?? '');
+
+        if (empty($imageType) || empty($url)) {
+            return $this->json(['message' => 'imageType and url are required'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Basic URL validation
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            return $this->json(['message' => 'Invalid URL'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $params = [];
+        if (in_array($imageType, ['logo_competition', 'bandeau_competition', 'sponsor_competition'])) {
+            $params['codeCompetition'] = $data['codeCompetition'] ?? '';
+            $params['saison'] = $data['saison'] ?? '';
+        } elseif ($imageType === 'logo_club') {
+            $params['numeroClub'] = $data['numeroClub'] ?? '';
+        } elseif ($imageType === 'logo_nation') {
+            $params['codeNation'] = $data['codeNation'] ?? '';
+        }
+
+        try {
+            $result = $this->imageService->importImageFromUrl($imageType, $url, $params);
+            $this->logActionForEvent('Import URL Image', null, $result['filename'] . ' from ' . $url);
+            return $this->json($result);
+        } catch (\Exception $e) {
+            return $this->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
      * Rename an image
      */
     #[Route('/images/rename', name: 'admin_operations_images_rename', methods: ['POST'])]

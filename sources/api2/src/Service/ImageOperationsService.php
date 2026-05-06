@@ -304,6 +304,220 @@ class ImageOperationsService
     }
 
     /**
+     * List images for a given type, with optional prefix filter
+     */
+    public function listImagesForType(string $imageType, string $search = ''): array
+    {
+        if (!isset($this->imageConfig[$imageType])) {
+            throw new \Exception('Invalid image type');
+        }
+
+        $config = $this->imageConfig[$imageType];
+        $directory = $this->documentRoot . $config['destination'];
+
+        if (!is_dir($directory)) {
+            return [];
+        }
+
+        $prefix = $config['prefix'];
+        // Determine allowed extensions for this type
+        $allowedExts = [];
+        if (isset($config['extensionByMime'])) {
+            foreach ($config['extensionByMime'] as $ext) {
+                $allowedExts[] = strtolower(ltrim($ext, '.'));
+            }
+        } else {
+            $allowedExts[] = strtolower(ltrim(pathinfo($config['extension'], PATHINFO_EXTENSION), '.'));
+        }
+        $allowedExts = array_unique($allowedExts);
+
+        $images = [];
+        $files = scandir($directory);
+
+        foreach ($files as $file) {
+            if ($file === '.' || $file === '..') {
+                continue;
+            }
+
+            $filePath = $directory . $file;
+            if (!is_file($filePath)) {
+                continue;
+            }
+
+            $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+            if (!in_array($ext, $allowedExts)) {
+                continue;
+            }
+
+            if (!empty($prefix) && !str_starts_with($file, $prefix)) {
+                continue;
+            }
+
+            if ($search !== '' && stripos($file, $search) === false) {
+                continue;
+            }
+
+            $images[] = [
+                'filename' => $file,
+                'size' => filesize($filePath),
+                'modified' => filemtime($filePath),
+            ];
+        }
+
+        usort($images, fn($a, $b) => strcmp($a['filename'], $b['filename']));
+
+        return $images;
+    }
+
+    /**
+     * Import image from a remote URL: download, validate, resize if needed, save with normalized name
+     */
+    public function importImageFromUrl(string $imageType, string $url, array $params): array
+    {
+        if (!isset($this->imageConfig[$imageType])) {
+            throw new \Exception('Invalid image type');
+        }
+
+        $config = $this->imageConfig[$imageType];
+
+        // Build filename (same logic as uploadImage)
+        $filenameParts = [];
+        foreach ($config['nameFields'] as $field) {
+            $value = $params[$field] ?? '';
+            if (empty($value)) {
+                throw new \Exception("Field $field is required for filename");
+            }
+            $filenameParts[] = $value;
+        }
+
+        // Download into temp file
+        $tmpPath = tempnam(sys_get_temp_dir(), 'kpi_img_');
+        if ($tmpPath === false) {
+            throw new \Exception('Cannot create temp file');
+        }
+
+        try {
+            $context = stream_context_create([
+                'http' => [
+                    'timeout' => 15,
+                    'follow_location' => 1,
+                    'max_redirects' => 5,
+                    'user_agent' => 'KPI-ImageImport/1.0',
+                ],
+                'ssl' => [
+                    'verify_peer' => true,
+                    'verify_peer_name' => true,
+                ],
+            ]);
+
+            $rawData = @file_get_contents($url, false, $context);
+            if ($rawData === false) {
+                throw new \Exception('Cannot download image from URL');
+            }
+
+            // Size limit: 10 MB
+            if (strlen($rawData) > 10 * 1024 * 1024) {
+                throw new \Exception('Image too large (max 10 MB)');
+            }
+
+            file_put_contents($tmpPath, $rawData);
+
+            // Validate via magic bytes (getimagesize reads actual content)
+            $imageInfo = @getimagesize($tmpPath);
+            if ($imageInfo === false) {
+                throw new \Exception('URL does not point to a valid image');
+            }
+
+            $mimeType = $imageInfo['mime'];
+            // Normalize image/jpg -> image/jpeg
+            if ($mimeType === 'image/jpg') {
+                $mimeType = 'image/jpeg';
+            }
+
+            if (!in_array($mimeType, $config['mimeTypes'])) {
+                throw new \Exception('Invalid image type. Expected: ' . implode(', ', $config['mimeTypes']));
+            }
+
+            // Determine extension
+            $extension = $config['extension'];
+            if (isset($config['extensionByMime'][$mimeType])) {
+                $extension = $config['extensionByMime'][$mimeType];
+            }
+
+            $filename = $config['prefix'] . implode('-', $filenameParts) . $extension;
+            $destinationDir = $this->documentRoot . $config['destination'];
+            $destinationPath = $destinationDir . $filename;
+
+            if (!is_dir($destinationDir)) {
+                if (!mkdir($destinationDir, 0755, true)) {
+                    throw new \Exception('Cannot create destination directory');
+                }
+            }
+
+            if (file_exists($destinationPath)) {
+                throw new \Exception("File '$filename' already exists. Use rename to change the existing file first.");
+            }
+
+            [$width, $height] = $imageInfo;
+            $needsResize = ($width > $config['maxWidth'] || $height > $config['maxHeight']);
+            $isPng = ($mimeType === 'image/png');
+
+            if ($needsResize) {
+                $ratio = min($config['maxWidth'] / $width, $config['maxHeight'] / $height);
+                $newWidth = (int)($width * $ratio);
+                $newHeight = (int)($height * $ratio);
+
+                $sourceImage = $isPng ? imagecreatefrompng($tmpPath) : imagecreatefromjpeg($tmpPath);
+                if ($sourceImage === false) {
+                    throw new \Exception('Cannot process downloaded image');
+                }
+
+                $resizedImage = imagecreatetruecolor($newWidth, $newHeight);
+                if ($isPng) {
+                    imagealphablending($resizedImage, false);
+                    imagesavealpha($resizedImage, true);
+                    $transparent = imagecolorallocatealpha($resizedImage, 0, 0, 0, 127);
+                    imagefill($resizedImage, 0, 0, $transparent);
+                }
+
+                imagecopyresampled($resizedImage, $sourceImage, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+                $result = $isPng
+                    ? imagepng($resizedImage, $destinationPath, 9)
+                    : imagejpeg($resizedImage, $destinationPath, 90);
+
+                if (!$result) {
+                    throw new \Exception('Cannot save resized image');
+                }
+
+                imagedestroy($sourceImage);
+                imagedestroy($resizedImage);
+
+                return [
+                    'message' => 'Image imported and resized successfully',
+                    'filename' => $filename,
+                    'originalSize' => "{$width}x{$height}",
+                    'newSize' => "{$newWidth}x{$newHeight}",
+                    'resized' => true,
+                ];
+            } else {
+                copy($tmpPath, $destinationPath);
+
+                return [
+                    'message' => 'Image imported successfully',
+                    'filename' => $filename,
+                    'size' => "{$width}x{$height}",
+                    'resized' => false,
+                ];
+            }
+        } finally {
+            if (file_exists($tmpPath)) {
+                unlink($tmpPath);
+            }
+        }
+    }
+
+    /**
      * Get image types configuration for frontend display
      */
     public function getImageTypesConfig(): array

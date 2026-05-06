@@ -76,6 +76,9 @@ export interface CompetitionFormData {
   logoActif: boolean
   sponsorActif: boolean
   kpiFfckActif: boolean
+  bandeauLink: string
+  logoLink: string
+  sponsorLink: string
   pointsGrid: Record<string, number> | null
   multiCompetitions: string[]
   rankingStructureType: RankingStructureType | null

@@ -51,8 +51,8 @@ accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mai
 - ✅ Schémas de compétitions : erreur 404 sur les liens vers les schémas — **RÉSOLU, à tester** (les liens `window.open()` et `NuxtLink target="_blank"` ne préfixaient pas `/admin2` ; corrigé via `router.resolve()` dans `gamedays/index.vue` et `competitions/copy.vue`)
 
 - Feuilles de match PDF : qq détails de mise en page à régler : 
-	* la typo a changé, du coup certains champs dépassent des cadres. => réduire globalement la taille de police d'1 ou 2 pts ?
-	* le QR code dépasse sur les bordures adjacentes, qui disparaissent à l'édition
+	* ⚠️ la typo a changé, du coup certains champs dépassent des cadres. => réduire globalement la taille de police d'1 ou 2 pts ? — **PROBLEME NON CONSTATE**
+	* ⚠️ le QR code dépasse sur les bordures adjacentes, qui disparaissent à l'édition — **PROBLEME NON CONSTATE**
 
 - Page Documents :
 	* ✅ export des listes de match en format tableur ODS : le numéro du match n'est pas exporté dans le fichier (idem depuis la liste des matchs), c'est pourtant utile → **RÉSOLU**

@@ -66,6 +66,14 @@ const bulkDeleteModalOpen = ref(false)
 // Toast notifications
 const toast = useToast()
 
+// Extract filename from a path like "/img/logo/B-N1H-2024-2025.jpg" or a full URL
+function extractFilename(link: string | null | undefined): string {
+  if (!link) return ''
+  // Full URL or path: take the last segment
+  const parts = link.split('/')
+  return parts[parts.length - 1] || ''
+}
+
 // Default form data
 function getDefaultFormData(): CompetitionFormData {
   return {
@@ -90,6 +98,9 @@ function getDefaultFormData(): CompetitionFormData {
     logoActif: true,
     sponsorActif: true,
     kpiFfckActif: true,
+    bandeauLink: '',
+    logoLink: '',
+    sponsorLink: '',
     pointsGrid: null,
     multiCompetitions: [],
     rankingStructureType: 'team',
@@ -316,6 +327,9 @@ const onCompetitionSelected = async (competition: CompetitionSearchResult) => {
       logoActif: fullCompetition.logoActif,
       sponsorActif: fullCompetition.sponsorActif,
       kpiFfckActif: fullCompetition.kpiFfckActif,
+      bandeauLink: '',
+      logoLink: '',
+      sponsorLink: '',
       pointsGrid: fullCompetition.pointsGrid,
       multiCompetitions: fullCompetition.multiCompetitions || [],
       rankingStructureType: fullCompetition.rankingStructureType || 'team',
@@ -383,6 +397,9 @@ const openEditModal = (competition: AdminCompetition) => {
     logoActif: competition.logoActif,
     sponsorActif: competition.sponsorActif,
     kpiFfckActif: competition.kpiFfckActif,
+    bandeauLink: extractFilename(competition.bandeauLink),
+    logoLink: extractFilename(competition.logoLink),
+    sponsorLink: extractFilename(competition.sponsorLink),
     pointsGrid: competition.pointsGrid,
     multiCompetitions: competition.multiCompetitions || [],
     rankingStructureType: competition.rankingStructureType || 'team',
@@ -1443,29 +1460,35 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
           <div>
             <label class="block text-sm font-medium text-header-700 mb-2">{{ t('competitions.form.options') }}</label>
             <div class="grid grid-cols-2 gap-2">
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input v-model="formData.enActif" type="checkbox" class="w-4 h-4 rounded border-header-300 text-primary-600" >
-                <span class="text-sm">{{ t('competitions.form.en_actif') }}</span>
-              </label>
+              <!-- Column 1 -->
               <label class="flex items-center gap-2 cursor-pointer">
                 <input v-model="formData.titreActif" type="checkbox" class="w-4 h-4 rounded border-header-300 text-primary-600" >
                 <span class="text-sm">{{ t('competitions.form.titre_actif') }}</span>
               </label>
+              <!-- Column 2 -->
               <label class="flex items-center gap-2 cursor-pointer">
                 <input v-model="formData.bandeauActif" type="checkbox" class="w-4 h-4 rounded border-header-300 text-primary-600" >
                 <span class="text-sm">{{ t('competitions.form.bandeau_actif') }}</span>
               </label>
+              <!-- Column 1 -->
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input v-model="formData.enActif" type="checkbox" class="w-4 h-4 rounded border-header-300 text-primary-600" >
+                <span class="text-sm">{{ t('competitions.form.en_actif') }}</span>
+              </label>
+              <!-- Column 2 -->
               <label class="flex items-center gap-2 cursor-pointer">
                 <input v-model="formData.logoActif" type="checkbox" class="w-4 h-4 rounded border-header-300 text-primary-600" >
                 <span class="text-sm">{{ t('competitions.form.logo_actif') }}</span>
               </label>
-              <label class="flex items-center gap-2 cursor-pointer">
-                <input v-model="formData.sponsorActif" type="checkbox" class="w-4 h-4 rounded border-header-300 text-primary-600" >
-                <span class="text-sm">{{ t('competitions.form.sponsor_actif') }}</span>
-              </label>
+              <!-- Column 1 -->
               <label class="flex items-center gap-2 cursor-pointer">
                 <input v-model="formData.kpiFfckActif" type="checkbox" class="w-4 h-4 rounded border-header-300 text-primary-600" >
                 <span class="text-sm">{{ t('competitions.form.kpi_ffck_actif') }}</span>
+              </label>
+              <!-- Column 2 -->
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input v-model="formData.sponsorActif" type="checkbox" class="w-4 h-4 rounded border-header-300 text-primary-600" >
+                <span class="text-sm">{{ t('competitions.form.sponsor_actif') }}</span>
               </label>
             </div>
           </div>
@@ -1479,6 +1502,45 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
               :placeholder="t('competitions.form.commentaires_placeholder')"
               class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
+          </div>
+
+          <!-- Images (profile <= 3 only) -->
+          <div v-if="canEdit" class="border-t border-header-200 pt-4">
+            <label class="block text-sm font-medium text-header-700 mb-3">
+              {{ t('competitions.form.images_section') }}
+            </label>
+            <div class="space-y-4">
+              <!-- Bandeau -->
+              <div>
+                <p class="text-xs font-medium text-header-600 mb-1">{{ t('competitions.images.bandeau') }}</p>
+                <AdminCompetitionImagePicker
+                  v-model="formData.bandeauLink"
+                  image-kind="bandeau_competition"
+                  :competition-code="formData.code"
+                  :saison="workContext.season || ''"
+                />
+              </div>
+              <!-- Logo -->
+              <div>
+                <p class="text-xs font-medium text-header-600 mb-1">{{ t('competitions.images.logo') }}</p>
+                <AdminCompetitionImagePicker
+                  v-model="formData.logoLink"
+                  image-kind="logo_competition"
+                  :competition-code="formData.code"
+                  :saison="workContext.season || ''"
+                />
+              </div>
+              <!-- Sponsor -->
+              <div>
+                <p class="text-xs font-medium text-header-600 mb-1">{{ t('competitions.images.sponsor') }}</p>
+                <AdminCompetitionImagePicker
+                  v-model="formData.sponsorLink"
+                  image-kind="sponsor_competition"
+                  :competition-code="formData.code"
+                  :saison="workContext.season || ''"
+                />
+              </div>
+            </div>
           </div>
         </div>
 

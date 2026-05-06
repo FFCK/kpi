@@ -472,12 +472,12 @@ class AdminCompetitionsController extends AbstractController
         $goalaverage = $data['goalaverage'] ?? 'gen';
         $statut = $data['statut'] ?? 'ATT';
         $web = trim($data['web'] ?? '');
-        $enActif = ($data['enActif'] ?? true) ? 'O' : 'N';
-        $titreActif = ($data['titreActif'] ?? true) ? 'O' : 'N';
-        $bandeauActif = ($data['bandeauActif'] ?? true) ? 'O' : 'N';
-        $logoActif = ($data['logoActif'] ?? true) ? 'O' : 'N';
-        $sponsorActif = ($data['sponsorActif'] ?? true) ? 'O' : 'N';
-        $kpiFfckActif = ($data['kpiFfckActif'] ?? true) ? 'O' : 'N';
+        $enActif = ($data['enActif'] ?? true) ? 'O' : '';
+        $titreActif = ($data['titreActif'] ?? true) ? 'O' : '';
+        $bandeauActif = ($data['bandeauActif'] ?? true) ? 'O' : '';
+        $logoActif = ($data['logoActif'] ?? true) ? 'O' : '';
+        $sponsorActif = ($data['sponsorActif'] ?? true) ? 'O' : '';
+        $kpiFfckActif = ($data['kpiFfckActif'] ?? true) ? 'O' : '';
         $pointsGrid = isset($data['pointsGrid']) ? json_encode($data['pointsGrid']) : null;
         $multiCompetitions = isset($data['multiCompetitions']) && is_array($data['multiCompetitions']) ? json_encode($data['multiCompetitions']) : null;
         $rankingStructureType = $data['rankingStructureType'] ?? 'team';
@@ -559,34 +559,58 @@ class AdminCompetitionsController extends AbstractController
         $goalaverage = $data['goalaverage'] ?? 'gen';
         $statut = $data['statut'] ?? 'ATT';
         $web = trim($data['web'] ?? '');
-        $enActif = ($data['enActif'] ?? true) ? 'O' : 'N';
-        $titreActif = ($data['titreActif'] ?? true) ? 'O' : 'N';
-        $bandeauActif = ($data['bandeauActif'] ?? true) ? 'O' : 'N';
-        $logoActif = ($data['logoActif'] ?? true) ? 'O' : 'N';
-        $sponsorActif = ($data['sponsorActif'] ?? true) ? 'O' : 'N';
-        $kpiFfckActif = ($data['kpiFfckActif'] ?? true) ? 'O' : 'N';
+        $enActif = ($data['enActif'] ?? true) ? 'O' : '';
+        $titreActif = ($data['titreActif'] ?? true) ? 'O' : '';
+        $bandeauActif = ($data['bandeauActif'] ?? true) ? 'O' : '';
+        $logoActif = ($data['logoActif'] ?? true) ? 'O' : '';
+        $sponsorActif = ($data['sponsorActif'] ?? true) ? 'O' : '';
+        $kpiFfckActif = ($data['kpiFfckActif'] ?? true) ? 'O' : '';
         $pointsGrid = isset($data['pointsGrid']) ? json_encode($data['pointsGrid']) : null;
         $multiCompetitions = isset($data['multiCompetitions']) && is_array($data['multiCompetitions']) ? json_encode($data['multiCompetitions']) : null;
         $rankingStructureType = $data['rankingStructureType'] ?? 'team';
         $commentairesCompet = trim($data['commentairesCompet'] ?? '');
-        $publication = ($data['publication'] ?? false) ? 'O' : 'N';
+        // Note: Publication is intentionally excluded — managed exclusively via the /publish endpoint
 
-        // Update competition
-        $sql = "UPDATE kp_competition SET
-                Code_niveau = ?, Libelle = ?, Soustitre = ?, Soustitre2 = ?, Web = ?,
-                En_actif = ?, Titre_actif = ?, Bandeau_actif = ?, Logo_actif = ?, Sponsor_actif = ?, Kpi_ffck_actif = ?,
-                Code_ref = ?, GroupOrder = ?, Code_typeclt = ?, points_grid = ?, multi_competitions = ?, ranking_structure_type = ?,
-                Code_tour = ?, Qualifies = ?, Elimines = ?, Points = ?, goalaverage = ?, Statut = ?, Publication = ?, commentairesCompet = ?
-                WHERE Code = ? AND Code_saison = ?";
+        // Handle image links: empty string clears the field, null means "keep existing value"
+        $bandeauLink = isset($data['bandeauLink']) ? trim($data['bandeauLink']) : null;
+        $logoLink = isset($data['logoLink']) ? trim($data['logoLink']) : null;
+        $sponsorLink = isset($data['sponsorLink']) ? trim($data['sponsorLink']) : null;
 
-        $stmt = $this->connection->prepare($sql);
-        $stmt->executeStatement([
+        // Build SET clause dynamically to only update image fields when provided
+        $setClauses = [
+            'Code_niveau = ?', 'Libelle = ?', 'Soustitre = ?', 'Soustitre2 = ?', 'Web = ?',
+            'En_actif = ?', 'Titre_actif = ?', 'Bandeau_actif = ?', 'Logo_actif = ?', 'Sponsor_actif = ?', 'Kpi_ffck_actif = ?',
+            'Code_ref = ?', 'GroupOrder = ?', 'Code_typeclt = ?', 'points_grid = ?', 'multi_competitions = ?', 'ranking_structure_type = ?',
+            'Code_tour = ?', 'Qualifies = ?', 'Elimines = ?', 'Points = ?', 'goalaverage = ?', 'Statut = ?', 'commentairesCompet = ?',
+        ];
+        $params = [
             $codeNiveau, $libelle, $soustitre, $soustitre2, $web,
             $enActif, $titreActif, $bandeauActif, $logoActif, $sponsorActif, $kpiFfckActif,
             $codeRef, $groupOrder, $codeTypeclt, $pointsGrid, $multiCompetitions, $rankingStructureType,
-            $codeTour, $qualifies, $elimines, $points, $goalaverage, $statut, $publication, $commentairesCompet,
-            $code, $season
-        ]);
+            $codeTour, $qualifies, $elimines, $points, $goalaverage, $statut, $commentairesCompet,
+        ];
+
+        if ($bandeauLink !== null) {
+            $setClauses[] = 'BandeauLink = ?';
+            $params[] = $bandeauLink;
+        }
+        if ($logoLink !== null) {
+            $setClauses[] = 'LogoLink = ?';
+            $params[] = $logoLink;
+        }
+        if ($sponsorLink !== null) {
+            $setClauses[] = 'SponsorLink = ?';
+            $params[] = $sponsorLink;
+        }
+
+        $params[] = $code;
+        $params[] = $season;
+
+        // Update competition
+        $sql = "UPDATE kp_competition SET " . implode(', ', $setClauses) . " WHERE Code = ? AND Code_saison = ?";
+
+        $stmt = $this->connection->prepare($sql);
+        $stmt->executeStatement($params);
 
         // Log action
         $this->logActionForSeason('Modif Competition', $season, $code);
