@@ -69,7 +69,7 @@ accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mai
 		- ✅ Evenements / match événement FR : heure 00h00 → heure locale correcte
 		- ✅ Evenements / match événement EN : date 01/01/1970 → heure locale correcte
 		- ✅ Contrôle / Carton cumulés : horodatage avec heure locale correcte
-		- ✅ Problème identique sur les Classements publiés (PDF publics `PdfClt*.php`) : horodatage 01/01/1970 → heure locale correcte — **RÉSOLU** : pagination et horodatage ajoutés sur tous les fichiers PDF publics `PdfClt*.php`
+		- ✅ Problème identique sur les Classements publiés (PDF publics `PdfClt*.php`) : horodatage 01/01/1970 → heure locale correcte — **RÉSOLU** : pagination et horodatage ajoutés et uniformisés sur tous les fichiers PDF
 		
 	* ✅ Classements / détail par équipes  : ordre des équipes OK si compétition type championnat
 	* ✅ Classements / détail par équipes  : ordre des équipes erroné si compétition type coupe, a priori classées par ordre alphabétique et non de résultats → **RÉSOLU**
@@ -93,7 +93,7 @@ accès à élargir ? a priori prévu pour accès ±profil 4 d'après la doc, mai
 
 - Page Equipes ( Feuilles de présence)
 	* ✅ intitulé du bandeau des éditions PDF à revoir ? "Copier depuis" à modifier => "Editer la feuille de présence" ? **RÉSOLU** Il ne s'agissait pas d'un intitulé mais d'un bouton qui a été déplacé à droite de la barre d'outils.
-	* sur le bandeau des éditions PDF : mêmes remarques qu'à la rubrique "page documents" concernant l'horodatage des feuilles de présence pour les 4 versions proposées
+	* ✅ sur le bandeau des éditions PDF : mêmes remarques qu'à la rubrique "page documents" concernant l'horodatage des feuilles de présence pour les 4 versions proposées — **RÉSOLU** : pagination et horodatage ajoutés et uniformisés sur tous les fichiers PDF
 	* ✅ Statut des inscrits : changer l'intitulé de colonne "CAP" par "Statut" ? et avoir un libellé plus explicite dans le menu déroulant sur chaque ligne (Joueur / Capitaine / Arbitre non joueur / Entraîneur / Inactif) (1 seule lettre n'est pas le plus clair, surtout confusion "Coach" et "Capitaine". — **RÉSOLU** (colonne renommée "Statut", libellés complets dans les menus déroulants et les entêtes de section ; "Entraîneur" renommé "Staff" FR+EN ; lettre A remplacée par "Arb."/"Ref." dans les PDF legacy ; PDF Contrôle ajouté dans le dropdown)
 	* ✅ Ergonomie/visuel : pour les joueurs inactifs, griser légèrement la ligne en plus du texte? — **RÉSOLU** (opacité réduite + italique sur les lignes inactifs)
 	* ✅ Pour les novices : garder une "notice" en bas de page précisant que seuls les joueurs, capitaine et entraîneurs sont inscrits sur les feuilles de matchs de la prochaine journée. — **RÉSOLU** (notice ajoutée sous le tableau, reprenant le texte du legacy : statut Inactif, règles staff/arbitres/statistiques/feuilles de match)
