@@ -543,11 +543,15 @@
       "rename_button": "Renommer",
       "confirm_rename": "Confirmer le renommage ?",
       "confirm_rename_message": "Cette action va renommer le fichier image.",
+      "club_search_placeholder": "Rechercher par nom ou numéro de club...",
       "success_upload": "Image '{filename}' uploadée avec succès",
       "success_upload_resized": "Image '{filename}' uploadée et redimensionnée avec succès",
       "success_rename": "Image renommée avec succès",
       "error_upload": "Erreur lors de l'upload",
-      "error_rename": "Erreur lors du renommage"
+      "error_rename": "Erreur lors du renommage",
+      "confirm_overwrite": "Fichier existant — remplacer ?",
+      "confirm_overwrite_message": "Le fichier '{filename}' existe déjà. L'ancien fichier sera archivé sous le nom '{archiveName}' avant d'être remplacé.",
+      "overwrite_button": "Remplacer"
     },
     "players": {
       "title": "Fusion de licenciés",

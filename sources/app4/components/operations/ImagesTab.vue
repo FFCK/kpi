@@ -24,8 +24,22 @@ const imageTypesConfig = ref<Record<string, ImageTypeConfig>>({})
 // Form fields based on image type
 const codeCompetition = ref('')
 const saison = ref('')
-const numeroClub = ref('')
 const codeNation = ref('')
+
+// Club autocomplete state
+interface ClubResult { numero: string; nom: string; label: string }
+const clubSearch = ref('')
+const clubSearchResults = ref<ClubResult[]>([])
+const clubSearchLoading = ref(false)
+const clubSearchOpen = ref(false)
+const selectedClubNumero = ref('')
+const clubSearchRef = ref<HTMLElement | null>(null)
+let clubSearchTimer: ReturnType<typeof setTimeout> | null = null
+
+// Overwrite confirmation state
+const confirmOverwriteModal = ref(false)
+const overwriteFilename = ref('')
+const overwriteArchiveName = ref('')
 
 // Rename state
 const currentName = ref('')
@@ -47,7 +61,6 @@ onMounted(async () => {
     const config = await api.get<Record<string, ImageTypeConfig>>('/admin/operations/images/types')
     imageTypesConfig.value = config
   } catch {
-    // Use fallback if API fails
     console.warn('Failed to load image types config, using fallback')
   }
 })
@@ -87,7 +100,7 @@ const needsNationField = computed(() => selectedImageType.value === 'logo_nation
 const canUpload = computed(() => {
   if (!selectedFile.value) return false
   if (needsCompetitionFields.value && (!codeCompetition.value.trim() || !saison.value.trim())) return false
-  if (needsClubField.value && !numeroClub.value.trim()) return false
+  if (needsClubField.value && !selectedClubNumero.value) return false
   if (needsNationField.value && !codeNation.value.trim()) return false
   return true
 })
@@ -114,45 +127,119 @@ const clearFile = () => {
   }
 }
 
+const clearClubSearch = () => {
+  clubSearch.value = ''
+  clubSearchResults.value = []
+  clubSearchOpen.value = false
+  selectedClubNumero.value = ''
+}
+
 const resetForm = () => {
   clearFile()
   codeCompetition.value = ''
   saison.value = ''
-  numeroClub.value = ''
+  clearClubSearch()
   codeNation.value = ''
 }
 
-const uploadImage = async () => {
-  if (!canUpload.value || !selectedFile.value) return
+const onClubSearchInput = () => {
+  selectedClubNumero.value = ''
+  if (clubSearchTimer) clearTimeout(clubSearchTimer)
+  const q = clubSearch.value.trim()
+  if (q.length < 2) {
+    clubSearchResults.value = []
+    clubSearchOpen.value = false
+    return
+  }
+  clubSearchTimer = setTimeout(async () => {
+    clubSearchLoading.value = true
+    try {
+      const results = await api.get<ClubResult[]>('/admin/operations/autocomplete/clubs', { q, limit: 20 })
+      clubSearchResults.value = results
+      clubSearchOpen.value = results.length > 0
+    } catch {
+      clubSearchResults.value = []
+    } finally {
+      clubSearchLoading.value = false
+    }
+  }, 300)
+}
 
+const selectClub = (club: ClubResult) => {
+  selectedClubNumero.value = club.numero
+  clubSearch.value = club.label
+  clubSearchOpen.value = false
+}
+
+const handleGlobalClick = (e: MouseEvent) => {
+  const target = e.target as HTMLElement
+  if (clubSearchRef.value && !clubSearchRef.value.contains(target)) {
+    clubSearchOpen.value = false
+  }
+}
+
+onMounted(() => document.addEventListener('click', handleGlobalClick))
+onBeforeUnmount(() => document.removeEventListener('click', handleGlobalClick))
+
+const buildFormData = (overwrite = false) => {
+  const formData = new FormData()
+  formData.append('imageType', selectedImageType.value)
+  formData.append('imageFile', selectedFile.value!)
+  if (overwrite) formData.append('overwrite', 'true')
+
+  if (needsCompetitionFields.value) {
+    formData.append('codeCompetition', codeCompetition.value.trim().toUpperCase())
+    formData.append('saison', saison.value.trim())
+  } else if (needsClubField.value) {
+    formData.append('numeroClub', selectedClubNumero.value)
+  } else if (needsNationField.value) {
+    formData.append('codeNation', codeNation.value.trim().toUpperCase())
+  }
+  return formData
+}
+
+const doUpload = async (overwrite = false) => {
   loading.value = true
   try {
-    const formData = new FormData()
-    formData.append('imageType', selectedImageType.value)
-    formData.append('imageFile', selectedFile.value)
-
-    if (needsCompetitionFields.value) {
-      formData.append('codeCompetition', codeCompetition.value.trim().toUpperCase())
-      formData.append('saison', saison.value.trim())
-    } else if (needsClubField.value) {
-      formData.append('numeroClub', numeroClub.value.trim())
-    } else if (needsNationField.value) {
-      formData.append('codeNation', codeNation.value.trim().toUpperCase())
-    }
-
-    const result = await api.upload<{ message: string; filename: string; resized?: boolean }>('/admin/operations/images/upload', formData)
+    const result = await api.upload<{ message: string; filename: string; resized?: boolean }>('/admin/operations/images/upload', buildFormData(overwrite), [409])
 
     const description = result.resized
       ? t('operations.images.success_upload_resized', { filename: result.filename })
       : t('operations.images.success_upload', { filename: result.filename })
 
-    toast.add({
-      title: t('common.success'),
-      description,
-      color: 'success',
-      duration: 5000
-    })
+    toast.add({ title: t('common.success'), description, color: 'success', duration: 5000 })
     resetForm()
+  } finally {
+    loading.value = false
+  }
+}
+
+const uploadImage = async () => {
+  if (!canUpload.value || !selectedFile.value) return
+
+  try {
+    await doUpload(false)
+  } catch (err: unknown) {
+    const e = err as { status?: number; data?: { code?: string; filename?: string; archiveName?: string } }
+    if (e?.status === 409 && e?.data?.code === 'FILE_EXISTS') {
+      overwriteFilename.value = e.data!.filename!
+      overwriteArchiveName.value = e.data!.archiveName!
+      confirmOverwriteModal.value = true
+    } else {
+      toast.add({
+        title: t('common.error'),
+        description: t('operations.images.error_upload'),
+        color: 'error',
+        duration: 3000
+      })
+    }
+  }
+}
+
+const confirmOverwrite = async () => {
+  confirmOverwriteModal.value = false
+  try {
+    await doUpload(true)
   } catch {
     toast.add({
       title: t('common.error'),
@@ -160,8 +247,6 @@ const uploadImage = async () => {
       color: 'error',
       duration: 3000
     })
-  } finally {
-    loading.value = false
   }
 }
 
@@ -271,12 +356,41 @@ const confirmRename = async () => {
             <label class="block text-sm font-medium text-header-700 mb-1">
               {{ t('operations.images.club_number') }}
             </label>
-            <input
-              v-model="numeroClub"
-              type="text"
-              placeholder="ex: 0750001"
-              class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-            >
+            <div ref="clubSearchRef" class="relative">
+              <div class="relative">
+                <input
+                  v-model="clubSearch"
+                  type="text"
+                  :placeholder="t('operations.images.club_search_placeholder')"
+                  class="w-full px-3 py-2 pl-9 pr-8 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 text-sm"
+                  @input="onClubSearchInput"
+                  @focus="onClubSearchInput"
+                >
+                <UIcon name="i-heroicons-magnifying-glass" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-header-400" />
+                <button
+                  v-if="clubSearch && !clubSearchLoading"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-header-400 hover:text-header-600"
+                  @click="clearClubSearch"
+                >
+                  <UIcon name="i-heroicons-x-mark" class="w-4 h-4" />
+                </button>
+                <UIcon v-if="clubSearchLoading" name="i-heroicons-arrow-path" class="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-header-400 animate-spin" />
+              </div>
+              <div
+                v-if="clubSearchOpen && clubSearchResults.length > 0"
+                class="absolute z-20 mt-1 w-full max-h-60 overflow-y-auto bg-white border border-header-200 rounded-lg shadow-lg"
+              >
+                <button
+                  v-for="club in clubSearchResults"
+                  :key="club.numero"
+                  class="w-full px-3 py-2 text-left text-sm text-header-900 hover:bg-primary-50 focus:bg-primary-100 focus:outline-none flex items-center gap-2"
+                  @click="selectClub(club)"
+                >
+                  <span class="font-mono text-xs text-header-500 bg-header-100 px-1.5 py-0.5 rounded">{{ club.numero }}</span>
+                  <span>{{ club.nom }}</span>
+                </button>
+              </div>
+            </div>
           </div>
         </template>
 
@@ -375,6 +489,20 @@ const confirmRename = async () => {
         </button>
       </div>
     </section>
+
+    <!-- Confirm overwrite modal -->
+    <AdminConfirmModal
+      :open="confirmOverwriteModal"
+      :title="t('operations.images.confirm_overwrite')"
+      :message="t('operations.images.confirm_overwrite_message', { filename: overwriteFilename, archiveName: overwriteArchiveName })"
+      :item-name="overwriteFilename"
+      :confirm-text="t('operations.images.overwrite_button')"
+      :cancel-text="t('common.cancel')"
+      :loading="loading"
+      variant="warning"
+      @close="confirmOverwriteModal = false"
+      @confirm="confirmOverwrite"
+    />
 
     <!-- Confirm rename modal -->
     <AdminConfirmModal

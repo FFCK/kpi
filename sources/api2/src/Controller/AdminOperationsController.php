@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Exception\FileExistsException;
 use App\Service\CompetitionLockService;
 use App\Service\EventExportImportService;
 use App\Service\ImageOperationsService;
@@ -187,6 +188,8 @@ class AdminOperationsController extends AbstractController
             return $this->json(['message' => 'No file uploaded'], Response::HTTP_BAD_REQUEST);
         }
 
+        $overwrite = filter_var($request->request->get('overwrite', 'false'), FILTER_VALIDATE_BOOLEAN);
+
         $params = [];
         if ($imageType === 'logo_competition' || $imageType === 'bandeau_competition' || $imageType === 'sponsor_competition') {
             $params['codeCompetition'] = $request->request->get('codeCompetition', '');
@@ -198,9 +201,15 @@ class AdminOperationsController extends AbstractController
         }
 
         try {
-            $result = $this->imageService->uploadImage($imageType, $file, $params);
+            $result = $this->imageService->uploadImage($imageType, $file, $params, $overwrite);
             $this->logActionForEvent('Upload Image', null, $result['filename']);
             return $this->json($result);
+        } catch (FileExistsException $e) {
+            return $this->json([
+                'code' => 'FILE_EXISTS',
+                'filename' => $e->getFilename(),
+                'archiveName' => $e->getArchiveName(),
+            ], Response::HTTP_CONFLICT);
         } catch (\Exception $e) {
             return $this->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }

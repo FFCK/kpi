@@ -267,7 +267,9 @@ export const useApi = () => {
   }
 
   // POST request with FormData (for file uploads)
-  const upload = async <T>(endpoint: string, formData: FormData): Promise<T> => {
+  // statuses listed in silentStatuses will not trigger an automatic error toast,
+  // letting the caller handle them directly (e.g. 409 FILE_EXISTS).
+  const upload = async <T>(endpoint: string, formData: FormData, silentStatuses: number[] = []): Promise<T> => {
     const url = `${baseUrl}${endpoint}`
     let response: Response | null = null
     let fetchError: Error | null = null
@@ -314,18 +316,20 @@ export const useApi = () => {
           throw new Error('Access denied')
         }
 
-        if (errorType) {
+        // Show toast only if the status is not silenced by the caller
+        if (errorType && !silentStatuses.includes(response.status)) {
           showErrorToast(errorType, response.status)
         }
 
-        let error: ApiError
+        let errorData: ApiError & { status?: number; data?: unknown }
         try {
-          error = await response.json()
+          const body = await response.json()
+          errorData = { ...body, status: response.status, data: body }
         } catch {
-          error = { message: `HTTP ${response.status}: ${response.statusText}` }
+          errorData = { message: `HTTP ${response.status}: ${response.statusText}`, status: response.status }
         }
 
-        throw error
+        throw errorData
       }
 
       if (response.status === 204) {

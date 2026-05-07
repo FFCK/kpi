@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Exception\FileExistsException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -81,9 +82,11 @@ class ImageOperationsService
     }
 
     /**
-     * Upload an image with automatic resizing
+     * Upload an image with automatic resizing.
+     * If the file already exists and $overwrite is false, throws FileExistsException with the proposed archive name.
+     * If $overwrite is true, renames the existing file to <basename>_YYYY-MM-DD.<ext> before saving.
      */
-    public function uploadImage(string $imageType, UploadedFile $file, array $params): array
+    public function uploadImage(string $imageType, UploadedFile $file, array $params, bool $overwrite = false): array
     {
         if (!isset($this->imageConfig[$imageType])) {
             throw new \Exception('Invalid image type');
@@ -126,7 +129,19 @@ class ImageOperationsService
 
         // Check if file already exists
         if (file_exists($destinationPath)) {
-            throw new \Exception("File '$filename' already exists. Use rename to change the existing file first.");
+            $ext = pathinfo($filename, PATHINFO_EXTENSION);
+            $basename = pathinfo($filename, PATHINFO_FILENAME);
+            $archiveName = $basename . '_' . date('Y-m-d') . '.' . $ext;
+
+            if (!$overwrite) {
+                throw new FileExistsException($filename, $archiveName);
+            }
+
+            // Archive the existing file before overwriting
+            $archivePath = $destinationDir . $archiveName;
+            if (!rename($destinationPath, $archivePath)) {
+                throw new \Exception("Cannot archive existing file '$filename'");
+            }
         }
 
         // Get image dimensions
@@ -146,24 +161,18 @@ class ImageOperationsService
             $newWidth = (int)($width * $ratio);
             $newHeight = (int)($height * $ratio);
 
-            // Determine if this is a PNG based on actual mime type
             $isPng = ($mimeType === 'image/png');
 
-            // Create source image
-            if ($isPng) {
-                $sourceImage = imagecreatefrompng($file->getPathname());
-            } else {
-                $sourceImage = imagecreatefromjpeg($file->getPathname());
-            }
+            $sourceImage = $isPng
+                ? imagecreatefrompng($file->getPathname())
+                : imagecreatefromjpeg($file->getPathname());
 
             if ($sourceImage === false) {
                 throw new \Exception('Cannot process source image');
             }
 
-            // Create resized image
             $resizedImage = imagecreatetruecolor($newWidth, $newHeight);
 
-            // Preserve transparency for PNG
             if ($isPng) {
                 imagealphablending($resizedImage, false);
                 imagesavealpha($resizedImage, true);
@@ -171,15 +180,11 @@ class ImageOperationsService
                 imagefill($resizedImage, 0, 0, $transparent);
             }
 
-            // Resize
             imagecopyresampled($resizedImage, $sourceImage, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
 
-            // Save resized image
-            if ($isPng) {
-                $result = imagepng($resizedImage, $destinationPath, 9);
-            } else {
-                $result = imagejpeg($resizedImage, $destinationPath, 90);
-            }
+            $result = $isPng
+                ? imagepng($resizedImage, $destinationPath, 9)
+                : imagejpeg($resizedImage, $destinationPath, 90);
 
             if (!$result) {
                 throw new \Exception('Cannot save resized image');

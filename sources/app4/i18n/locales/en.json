@@ -542,11 +542,15 @@
       "rename_button": "Rename",
       "confirm_rename": "Confirm rename?",
       "confirm_rename_message": "This will rename the image file.",
+      "club_search_placeholder": "Search by club name or number...",
       "success_upload": "Image '{filename}' uploaded successfully",
       "success_upload_resized": "Image '{filename}' uploaded and resized successfully",
       "success_rename": "Image renamed successfully",
       "error_upload": "Error uploading image",
-      "error_rename": "Error renaming image"
+      "error_rename": "Error renaming image",
+      "confirm_overwrite": "File already exists — replace?",
+      "confirm_overwrite_message": "The file '{filename}' already exists. The existing file will be archived as '{archiveName}' before being replaced.",
+      "overwrite_button": "Replace"
     },
     "players": {
       "title": "Player Merge",
