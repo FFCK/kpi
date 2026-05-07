@@ -110,6 +110,30 @@ class AdminUsersController extends AbstractController
 
         $rows = $this->connection->fetchAllAssociative($sql, $params);
 
+        // Load mandates for all users in this page in one query
+        $pageCodes = array_column($rows, 'Code');
+        $mandatesByCode = [];
+        if (!empty($pageCodes)) {
+            $placeholders = implode(',', array_fill(0, count($pageCodes), '?'));
+            $mandateRows = $this->connection->fetchAllAssociative(
+                "SELECT user_code, id, libelle, niveau, filtre_saison, filtre_competition, limitation_equipe_club, filtre_journee, id_evenement
+                 FROM kp_user_mandat WHERE user_code IN ($placeholders) ORDER BY user_code, id",
+                $pageCodes
+            );
+            foreach ($mandateRows as $m) {
+                $mandatesByCode[$m['user_code']][] = [
+                    'id' => (int) $m['id'],
+                    'libelle' => $m['libelle'],
+                    'niveau' => (int) $m['niveau'],
+                    'filtreSaison' => $m['filtre_saison'] ?? '',
+                    'filtreCompetition' => $m['filtre_competition'] ?? '',
+                    'limitClubs' => $m['limitation_equipe_club'] ?? '',
+                    'filtreJournee' => $m['filtre_journee'] ?? '',
+                    'idEvenement' => $m['id_evenement'] ?? '',
+                ];
+            }
+        }
+
         $items = array_map(fn(array $row) => [
             'code' => $row['Code'],
             'identite' => $row['Identite'] ?? '',
@@ -123,6 +147,7 @@ class AdminUsersController extends AbstractController
             'filtreJournee' => $row['Filtre_journee'] ?? '',
             'limitClubs' => $row['Limitation_equipe_club'] ?? '',
             'mandateCount' => (int) $row['mandateCount'],
+            'mandates' => $mandatesByCode[$row['Code']] ?? [],
         ], $rows);
 
         $totalPages = $limit > 0 ? (int) ceil($total / $limit) : 1;

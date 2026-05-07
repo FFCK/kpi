@@ -11,6 +11,7 @@ export interface UserListItem {
   filtreJournee: string
   limitClubs: string
   mandateCount: number
+  mandates: Mandate[]
 }
 
 export interface UserDetail extends UserListItem {

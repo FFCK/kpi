@@ -1698,7 +1698,12 @@
       "mandate_confirm_delete": "Delete this mandate?"
     },
     "mandates": {
-      "table_mandates": "+{count} mdt",
+      "table_mandates": "+{count} mandate|+{count} mandates",
+      "tooltip_profile": "Profile",
+      "tooltip_seasons": "Seasons",
+      "tooltip_competitions": "Competitions",
+      "tooltip_clubs": "Clubs",
+      "tooltip_all": "All",
       "success_created": "Mandate added",
       "success_updated": "Mandate updated",
       "success_deleted": "Mandate deleted"

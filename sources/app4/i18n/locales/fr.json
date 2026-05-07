@@ -1710,7 +1710,12 @@
       "mandate_confirm_delete": "Supprimer ce mandat ?"
     },
     "mandates": {
-      "table_mandates": "+{count} mdt",
+      "table_mandates": "+{count} mandat|+{count} mandats",
+      "tooltip_profile": "Profil",
+      "tooltip_seasons": "Saisons",
+      "tooltip_competitions": "Compétitions",
+      "tooltip_clubs": "Clubs",
+      "tooltip_all": "Toutes",
       "success_created": "Mandat ajouté",
       "success_updated": "Mandat mis à jour",
       "success_deleted": "Mandat supprimé"

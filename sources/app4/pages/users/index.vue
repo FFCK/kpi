@@ -196,6 +196,54 @@ onMounted(() => {
   loadUsers()
 })
 
+// Mandate tooltip
+const tooltipUser = ref<string | null>(null)
+const tooltipRef = ref<HTMLElement | null>(null)
+const tooltipStyle = ref({ top: '0px', left: '0px' })
+
+function showTooltip(code: string, event: MouseEvent) {
+  tooltipUser.value = code
+  positionTooltip(event)
+}
+
+function positionTooltip(event: MouseEvent) {
+  const target = event.currentTarget as HTMLElement
+  const rect = target.getBoundingClientRect()
+  tooltipStyle.value = {
+    top: `${rect.bottom + window.scrollY + 6}px`,
+    left: `${rect.left + window.scrollX}px`,
+  }
+}
+
+function hideTooltip() {
+  tooltipUser.value = null
+}
+
+// Mobile mandate expand
+const expandedMandates = ref<Set<string>>(new Set())
+
+function toggleMandates(code: string) {
+  if (expandedMandates.value.has(code)) {
+    expandedMandates.value.delete(code)
+  } else {
+    expandedMandates.value.add(code)
+  }
+  expandedMandates.value = new Set(expandedMandates.value)
+}
+
+function formatMandateFilters(mandate: import('~/types/users').Mandate): string {
+  const parts: string[] = []
+  if (mandate.filtreSaison) {
+    parts.push(mandate.filtreSaison.split('|').filter(v => v).join(', '))
+  }
+  if (mandate.filtreCompetition) {
+    const comps = mandate.filtreCompetition.split('|').filter(v => v)
+    parts.push(comps.join(', '))
+  }
+  if (mandate.limitClubs) parts.push(`clubs: ${mandate.limitClubs}`)
+  return parts.join(' · ') || t('users.mandates.tooltip_all')
+}
+
 // Profile options for the filter dropdown
 const profileOptions = computed(() => {
   const options = []
@@ -301,8 +349,17 @@ const profileOptions = computed(() => {
             <td class="px-3 py-2 text-sm text-header-600">{{ user.fonction }}</td>
             <td class="px-3 py-2">
               <span class="text-sm font-medium">{{ user.niveau }}</span>
-              <div v-if="user.mandateCount > 0" class="text-xs text-primary-600">
-                {{ t('users.mandates.table_mandates', { count: user.mandateCount }) }}
+              <div v-if="user.mandateCount > 0" class="relative inline-block ml-1">
+                <button
+                  class="inline-flex items-center gap-0.5 px-1.5 py-0.5 bg-primary-100 text-primary-700 text-xs font-semibold rounded-full border border-primary-300 hover:bg-primary-200 transition-colors"
+                  @mouseenter="showTooltip(user.code, $event)"
+                  @mouseleave="hideTooltip"
+                  @focus="showTooltip(user.code, $event)"
+                  @blur="hideTooltip"
+                >
+                  <UIcon name="i-heroicons-identification" class="w-3 h-3" />
+                  {{ t('users.mandates.table_mandates', user.mandateCount) }}
+                </button>
               </div>
             </td>
             <td class="px-3 py-2 text-sm text-header-600">
@@ -367,15 +424,39 @@ const profileOptions = computed(() => {
         </template>
         <template #header-right>
           <span class="text-sm font-medium">{{ t('users.table.profile') }} {{ user.niveau }}</span>
-          <span v-if="user.mandateCount > 0" class="text-xs text-primary-600 ml-1">
-            {{ t('users.mandates.table_mandates', { count: user.mandateCount }) }}
-          </span>
+          <button
+            v-if="user.mandateCount > 0"
+            class="inline-flex items-center gap-0.5 ml-1 px-1.5 py-0.5 bg-primary-100 text-primary-700 text-xs font-semibold rounded-full border border-primary-300 active:bg-primary-200"
+            @click.stop="toggleMandates(user.code)"
+          >
+            <UIcon name="i-heroicons-identification" class="w-3 h-3" />
+            {{ t('users.mandates.table_mandates', user.mandateCount) }}
+            <UIcon
+              :name="expandedMandates.has(user.code) ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'"
+              class="w-3 h-3"
+            />
+          </button>
         </template>
         <div class="space-y-1 text-sm text-header-600">
           <div v-if="user.fonction">{{ user.fonction }}</div>
           <div>{{ t('users.table.seasons') }}: {{ formatFilter(user.filtreSaison, t('users.table.seasons_all')) }}</div>
           <div>{{ t('users.table.competitions') }}: {{ formatFilter(user.filtreCompetition, t('users.table.competitions_all')) }}</div>
           <div v-if="user.limitClubs">{{ t('users.table.clubs') }}: {{ user.limitClubs }}</div>
+        </div>
+        <!-- Mandates expand (mobile) -->
+        <div v-if="expandedMandates.has(user.code) && user.mandates.length > 0" class="mt-2 border-t border-primary-100 pt-2 space-y-2">
+          <div
+            v-for="mandate in user.mandates"
+            :key="mandate.id"
+            class="text-xs bg-primary-50 rounded-lg px-2 py-1.5"
+          >
+            <div class="font-semibold text-primary-800">{{ mandate.libelle }}</div>
+            <div class="text-primary-600 mt-0.5">
+              <span class="font-medium">P{{ mandate.niveau }}</span>
+              <span class="mx-1">·</span>
+              <span>{{ formatMandateFilters(mandate) }}</span>
+            </div>
+          </div>
         </div>
         <template #footer-right>
           <div class="flex items-center gap-2">
@@ -435,5 +516,26 @@ const profileOptions = computed(() => {
     />
 
     <AdminScrollToTop />
+
+    <!-- Mandate tooltip (desktop) -->
+    <Teleport to="body">
+      <div
+        v-if="tooltipUser"
+        ref="tooltipRef"
+        class="fixed z-50 max-w-xs bg-white border border-header-200 rounded-lg shadow-lg p-3 text-xs pointer-events-none"
+        :style="tooltipStyle"
+      >
+        <template v-for="mandate in users.find(u => u.code === tooltipUser)?.mandates ?? []" :key="mandate.id">
+          <div class="mb-2 last:mb-0">
+            <div class="font-semibold text-header-800">{{ mandate.libelle }}</div>
+            <div class="text-header-500 mt-0.5">
+              <span class="font-medium text-header-600">P{{ mandate.niveau }}</span>
+              <span class="mx-1">·</span>
+              <span>{{ formatMandateFilters(mandate) }}</span>
+            </div>
+          </div>
+        </template>
+      </div>
+    </Teleport>
   </div>
 </template>
