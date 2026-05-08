@@ -22,6 +22,7 @@ const authStore = useAuthStore()
 const workContext = useWorkContextStore()
 const config = useRuntimeConfig()
 const toast = useToast()
+const imageVersionStore = useImageVersionStore()
 
 // State
 const loading = ref(false)
@@ -138,16 +139,23 @@ const getLevelColor = (level: string) => {
 
 // Logo URL - club logos and international flags
 const getLogoUrl = (team: RankingTeam) => {
+  const isNation = team.codeClub && team.codeClub.length !== 4
+  const vClub = imageVersionStore.get('logo_club')
+  const vNation = imageVersionStore.get('logo_nation')
+
   if (team.logo) {
-    if (team.logo.includes('/')) return `${legacyBase.value}/img/${team.logo}`
-    if (team.codeClub && team.codeClub.length !== 4) {
-      return `${legacyBase.value}/img/Nations/${team.codeClub.substring(0, 3)}.png`
+    if (team.logo.includes('/')) {
+      const v = isNation ? vNation : vClub
+      return `${legacyBase.value}/img/${team.logo}?v=${v}`
     }
-    return `${legacyBase.value}/img/KIP/logo/${team.logo}`
+    if (isNation) {
+      return `${legacyBase.value}/img/Nations/${team.codeClub!.substring(0, 3)}.png?v=${vNation}`
+    }
+    return `${legacyBase.value}/img/KIP/logo/${team.logo}?v=${vClub}`
   }
   if (team.codeClub) {
-    if (team.codeClub.length === 4) return `${legacyBase.value}/img/KIP/logo/${team.codeClub}-logo.png`
-    return `${legacyBase.value}/img/Nations/${team.codeClub.substring(0, 3)}.png`
+    if (!isNation) return `${legacyBase.value}/img/KIP/logo/${team.codeClub}-logo.png?v=${vClub}`
+    return `${legacyBase.value}/img/Nations/${team.codeClub.substring(0, 3)}.png?v=${vNation}`
   }
   return null
 }
@@ -814,7 +822,7 @@ const editValueForField = (field: string, value: number): string => {
                           v-if="getLogoUrl(team)"
                           :src="getLogoUrl(team)!"
                           :alt="team.codeClub"
-                          class="w-6 h-6 object-contain"
+                          class="w-8 h-8 object-contain"
                           @error="($event.target as HTMLImageElement).style.display = 'none'"
                         >
                       </td>
@@ -966,7 +974,7 @@ const editValueForField = (field: string, value: number): string => {
                       v-if="getLogoUrl(team)"
                       :src="getLogoUrl(team)!"
                       :alt="team.codeClub"
-                      class="w-6 h-6 object-contain mt-0.5"
+                      class="w-8 h-8 object-contain mt-0.5"
                       @error="($event.target as HTMLImageElement).style.display = 'none'"
                     >
                     <span
@@ -1388,7 +1396,7 @@ const editValueForField = (field: string, value: number): string => {
                           v-if="getLogoUrl(team)"
                           :src="getLogoUrl(team)!"
                           :alt="team.codeClub"
-                          class="w-6 h-6 object-contain"
+                          class="w-8 h-8 object-contain"
                           @error="($event.target as HTMLImageElement).style.display = 'none'"
                         >
                       </td>
@@ -1453,7 +1461,7 @@ const editValueForField = (field: string, value: number): string => {
                       v-if="getLogoUrl(team)"
                       :src="getLogoUrl(team)!"
                       :alt="team.codeClub"
-                      class="w-6 h-6 object-contain mt-0.5"
+                      class="w-8 h-8 object-contain mt-0.5"
                       @error="($event.target as HTMLImageElement).style.display = 'none'"
                     >
                     <span

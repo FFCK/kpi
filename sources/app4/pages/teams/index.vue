@@ -24,6 +24,7 @@ const authStore = useAuthStore()
 const workContext = useWorkContextStore()
 const config = useRuntimeConfig()
 const toast = useToast()
+const imageVersionStore = useImageVersionStore()
 
 // State
 const loading = ref(false)
@@ -135,6 +136,24 @@ const editModalOpen = ref(false)
 const editingTeam = ref<CompetitionTeam | null>(null)
 const colorsFormData = ref<TeamColorsFormData>(getDefaultColorsFormData())
 const colorsFormSaving = ref(false)
+
+// Debounced logo preview in edit modal
+const logoPreviewPath = ref('')
+let logoPreviewTimer: ReturnType<typeof setTimeout> | null = null
+watch(() => colorsFormData.value.logo, (val) => {
+  if (logoPreviewTimer) clearTimeout(logoPreviewTimer)
+  logoPreviewTimer = setTimeout(() => { logoPreviewPath.value = val || '' }, 400)
+})
+
+const logoPreviewUrl = computed(() => {
+  const path = logoPreviewPath.value.trim()
+  if (!path) return null
+  const isNation = editingTeam.value?.codeClub && editingTeam.value.codeClub.length !== 4
+  const v = isNation ? imageVersionStore.get('logo_nation') : imageVersionStore.get('logo_club')
+  if (path.includes('/')) return `${legacyBase.value}/img/${path}?v=${v}`
+  if (isNation) return `${legacyBase.value}/img/Nations/${path}?v=${v}`
+  return `${legacyBase.value}/img/KIP/logo/${path}?v=${v}`
+})
 
 // Duplicate modal state
 const duplicateModalOpen = ref(false)
@@ -553,6 +572,7 @@ const openEditModal = (team: CompetitionTeam) => {
     propagatePrevious: false,
     propagateClub: false
   }
+  logoPreviewPath.value = team.logo || ''
   editModalOpen.value = true
 }
 
@@ -766,22 +786,24 @@ const getVisaUrl = (team: CompetitionTeam) =>
 const getControlUrl = (team: CompetitionTeam) =>
   `${legacyBase.value}/admin/FeuilleControle.php?equipe=${team.id}&${globalPdfParams.value}`
 
-// Logo image URL - fallback to club code convention like legacy PHP
-// Logo column should contain relative path within img/ (e.g. "KIP/logo/3512-logo.png" or "Nations/GER.png")
-// French clubs: code length === 4, path = KIP/logo/{code}-logo.png
-// International teams: code length !== 4, path = Nations/{code 3 chars}.png
 const getLogoUrl = (team: CompetitionTeam) => {
+  const isNation = team.codeClub && team.codeClub.length !== 4
+  const vClub = imageVersionStore.get('logo_club')
+  const vNation = imageVersionStore.get('logo_nation')
+
   if (team.logo) {
-    if (team.logo.includes('/')) return `${legacyBase.value}/img/${team.logo}`
-    // Malformed entry without path — reconstruct based on club code length
-    if (team.codeClub && team.codeClub.length !== 4) {
-      return `${legacyBase.value}/img/Nations/${team.codeClub.substring(0, 3)}.png`
+    if (team.logo.includes('/')) {
+      const v = isNation ? vNation : vClub
+      return `${legacyBase.value}/img/${team.logo}?v=${v}`
     }
-    return `${legacyBase.value}/img/KIP/logo/${team.logo}`
+    if (isNation) {
+      return `${legacyBase.value}/img/Nations/${team.codeClub!.substring(0, 3)}.png?v=${vNation}`
+    }
+    return `${legacyBase.value}/img/KIP/logo/${team.logo}?v=${vClub}`
   }
   if (team.codeClub) {
-    if (team.codeClub.length === 4) return `${legacyBase.value}/img/KIP/logo/${team.codeClub}-logo.png`
-    return `${legacyBase.value}/img/Nations/${team.codeClub.substring(0, 3)}.png`
+    if (!isNation) return `${legacyBase.value}/img/KIP/logo/${team.codeClub}-logo.png?v=${vClub}`
+    return `${legacyBase.value}/img/Nations/${team.codeClub.substring(0, 3)}.png?v=${vNation}`
   }
   return null
 }
@@ -1060,10 +1082,10 @@ const getLogoUrl = (team: CompetitionTeam) => {
                         v-if="getLogoUrl(team)"
                         :src="getLogoUrl(team)!"
                         :alt="team.libelle"
-                        class="w-20 h-10 object-contain shrink-0"
+                        class="w-20 h-12 object-contain shrink-0"
                         @error="($event.target as HTMLImageElement).style.display = 'none'"
                       >
-                      <span v-else class="w-20 h-10 shrink-0" />
+                      <span v-else class="w-20 h-12 shrink-0" />
                       <span
                         v-if="team.color1 || team.color2"
                         class="inline-flex items-center justify-center w-8 h-8 rounded-sm aspect-square font-bold shrink-0"
@@ -1684,6 +1706,16 @@ const getLogoUrl = (team: CompetitionTeam) => {
               maxlength="50"
               class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             >
+            <div v-if="logoPreviewUrl" class="mt-2 flex flex-col items-center gap-1">
+              <img
+                :key="logoPreviewUrl"
+                :src="logoPreviewUrl"
+                :alt="colorsFormData.logo"
+                class="h-30 max-w-30 object-contain border border-header-100 rounded"
+                @error="($event.target as HTMLImageElement).style.opacity = '0.3'"
+              >
+              <div class="text-xs text-header-400">{{ colorsFormData.logo }}</div>
+            </div>
           </div>
 
           <!-- Colors -->

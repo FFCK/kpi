@@ -12,6 +12,7 @@ const router = useRouter()
 const api = useApi()
 const authStore = useAuthStore()
 const toast = useToast()
+const imageVersionStore = useImageVersionStore()
 
 const canEdit = computed(() => authStore.hasProfile(2))
 
@@ -579,8 +580,8 @@ onBeforeUnmount(() => {
             <!-- Club logo -->
             <div v-if="selectedClub.logo" class="mb-3 flex items-center justify-center">
               <img
-                :key="selectedClub.code"
-                :src="`${$config.public.legacyBaseUrl}/${selectedClub.logo}`"
+                :key="`${selectedClub.code}-${imageVersionStore.get('logo_club')}`"
+                :src="`${$config.public.legacyBaseUrl}/${selectedClub.logo}?v=${imageVersionStore.get('logo_club')}`"
                 :alt="selectedClub.libelle"
                 class="h-20 max-w-full object-contain"
                 @error="($event.target as HTMLImageElement).style.display = 'none'"

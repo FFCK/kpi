@@ -920,3 +920,24 @@ wordpress_restore: ## Restaure WordPress depuis /tmp/wordpress_backup (usage int
 		echo "Erreur: /tmp/wordpress_backup n'existe pas"; \
 		exit 1; \
 	fi
+
+
+## GIT - IMAGES LOCALES
+# Protège les images uploadées via l'applicatif (logos, photos) contre les conflits git pull.
+# Utile en préprod/prod où git pull écraserait des images locales non versionnées.
+git_images_protect: ## Protège les images locales contre git pull (skip-worktree)
+	@echo "Protection des images locales (skip-worktree)..."
+	@git ls-files 'sources/img/**/*.png' 'sources/img/**/*.jpg' | \
+		xargs --no-run-if-empty git update-index --skip-worktree
+	@echo "Images protégées. Git ignorera leurs modifications locales."
+
+git_images_unprotect: ## Annule la protection des images (no-skip-worktree)
+	@echo "Annulation de la protection des images..."
+	@git ls-files 'sources/img/**/*.png' 'sources/img/**/*.jpg' | \
+		xargs --no-run-if-empty git update-index --no-skip-worktree
+	@echo "Protection annulée. Les images sont à nouveau suivies normalement."
+
+git_images_list_protected: ## Liste les images actuellement protégées (skip-worktree)
+	@echo "Images protégées (skip-worktree) :"
+	@git ls-files -v -- 'sources/img/**/*.png' 'sources/img/**/*.jpg' | \
+		grep '^S' || echo "(aucune image protégée)"

@@ -9,6 +9,7 @@ const props = defineProps<{
 }>()
 
 const { public: { legacyBaseUrl } } = useRuntimeConfig()
+const imageVersionStore = useImageVersionStore()
 
 const emit = defineEmits<{
   'select-club': [code: string]
@@ -83,8 +84,9 @@ function buildMarkers() {
     const coords = parseCoord(club.coord)
     if (!coords) continue
 
+    const v = imageVersionStore.get('logo_club')
     const logoHtml = club.logo
-      ? `<img src="${legacyBaseUrl}/${club.logo}" alt="${club.libelle}" style="height:60px;max-width:120px;object-fit:contain;display:block;margin:0 auto 4px" onerror="this.style.display='none'">`
+      ? `<img src="${legacyBaseUrl}/${club.logo}?v=${v}" alt="${club.libelle}" style="height:60px;max-width:120px;object-fit:contain;display:block;margin:0 auto 4px" onerror="this.style.display='none'">`
       : ''
     const marker = L.marker([coords.lat, coords.lng], { icon: clubIcon })
       .bindPopup(`<div style="text-align:center">${logoHtml}<strong>${club.libelle}</strong></div>`)
