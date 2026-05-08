@@ -19,6 +19,43 @@ const showTargetDropdown = ref(false)
 // Modal state
 const confirmMergeModal = ref(false)
 const confirmAutoMergeModal = ref(false)
+const confirmPceModal = ref(false)
+
+// PCE import
+const pceLoading = ref(false)
+
+const confirmPceImport = async () => {
+  pceLoading.value = true
+  try {
+    const result = await api.post<{
+      nbLicencies: number
+      nbArbitres: number
+      nbSurclassements: number
+      totalTime: number
+    }>('/admin/operations/licenses/import-pce')
+    toast.add({
+      title: t('common.success'),
+      description: t('operations.import_export.pce_success', {
+        licencies: result.nbLicencies,
+        arbitres: result.nbArbitres,
+        surclassements: result.nbSurclassements,
+        time: result.totalTime
+      }),
+      color: 'success',
+      duration: 8000
+    })
+    confirmPceModal.value = false
+  } catch {
+    toast.add({
+      title: t('common.error'),
+      description: t('operations.import_export.pce_error'),
+      color: 'error',
+      duration: 5000
+    })
+  } finally {
+    pceLoading.value = false
+  }
+}
 
 // Debounce timeout
 let sourceTimeout: ReturnType<typeof setTimeout> | null = null
@@ -294,6 +331,25 @@ const onClickOutside = () => {
       </div>
     </section>
 
+    <!-- PCE import -->
+    <section>
+      <h2 class="text-lg font-semibold text-header-900 mb-2">
+        {{ t('operations.import_export.pce_title') }}
+      </h2>
+      <p class="text-sm text-header-600 mb-4">
+        {{ t('operations.import_export.pce_description') }}
+      </p>
+      <button
+        :disabled="pceLoading"
+        class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+        @click="confirmPceModal = true"
+      >
+        <UIcon v-if="pceLoading" name="i-heroicons-arrow-path" class="w-4 h-4 animate-spin" />
+        <UIcon v-else name="i-heroicons-arrow-down-tray" class="w-4 h-4" />
+        {{ t('operations.import_export.pce_button') }}
+      </button>
+    </section>
+
     <!-- Confirm merge modal -->
     <AdminConfirmModal
       :open="confirmMergeModal"
@@ -317,6 +373,18 @@ const onClickOutside = () => {
       :loading="loading"
       @close="confirmAutoMergeModal = false"
       @confirm="confirmAutoMerge"
+    />
+
+    <!-- Confirm PCE import modal -->
+    <AdminConfirmModal
+      :open="confirmPceModal"
+      :title="t('operations.import_export.pce_confirm')"
+      :message="t('operations.import_export.pce_confirm_message')"
+      :confirm-text="t('operations.import_export.pce_button')"
+      :cancel-text="t('common.cancel')"
+      :loading="pceLoading"
+      @close="confirmPceModal = false"
+      @confirm="confirmPceImport"
     />
   </div>
 </template>

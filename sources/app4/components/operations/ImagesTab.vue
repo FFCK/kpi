@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import type { ImageType } from '~/types/operations'
+import type { useImageVersionStore } from '~/stores/imageVersionStore'
+
+type BumpableImageType = Parameters<ReturnType<typeof useImageVersionStore>['bump']>[0]
 
 interface ImageTypeConfig {
   label: string
@@ -13,6 +16,7 @@ interface ImageTypeConfig {
 const { t } = useI18n()
 const api = useApi()
 const toast = useToast()
+const imageVersionStore = useImageVersionStore()
 
 // State
 const loading = ref(false)
@@ -208,6 +212,7 @@ const doUpload = async (overwrite = false) => {
       : t('operations.images.success_upload', { filename: result.filename })
 
     toast.add({ title: t('common.success'), description, color: 'success', duration: 5000 })
+    imageVersionStore.bump(selectedImageType.value as BumpableImageType)
     resetForm()
   } finally {
     loading.value = false

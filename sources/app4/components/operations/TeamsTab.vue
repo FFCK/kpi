@@ -39,6 +39,47 @@ const showMoveClubDropdown = ref(false)
 const confirmRenameModal = ref(false)
 const confirmMergeModal = ref(false)
 const confirmMoveModal = ref(false)
+const confirmLocksModal = ref(false)
+
+// Locks
+const locksLoading = ref(false)
+
+const confirmLocksUpdate = async () => {
+  locksLoading.value = true
+  try {
+    const result = await api.post<{
+      locked: string[]
+      unlocked: string[]
+    }>('/admin/operations/competitions/update-locks')
+
+    const messages: string[] = []
+    if (result.locked.length > 0) {
+      messages.push(t('operations.import_export.locks_locked', { list: result.locked.join(', ') }))
+    }
+    if (result.unlocked.length > 0) {
+      messages.push(t('operations.import_export.locks_unlocked', { list: result.unlocked.join(', ') }))
+    }
+    if (messages.length === 0) {
+      messages.push(t('operations.import_export.locks_no_change'))
+    }
+    toast.add({
+      title: t('operations.import_export.locks_success'),
+      description: messages.join(' | '),
+      color: 'success',
+      duration: 5000
+    })
+    confirmLocksModal.value = false
+  } catch {
+    toast.add({
+      title: t('common.error'),
+      description: t('operations.import_export.locks_error'),
+      color: 'error',
+      duration: 5000
+    })
+  } finally {
+    locksLoading.value = false
+  }
+}
 
 // Debounce timeouts
 let renameTimeout: ReturnType<typeof setTimeout> | null = null
@@ -493,6 +534,25 @@ const confirmMove = async () => {
       </button>
     </section>
 
+    <!-- Competition locks -->
+    <section>
+      <h2 class="text-lg font-semibold text-header-900 mb-2">
+        {{ t('operations.import_export.locks_title') }}
+      </h2>
+      <p class="text-sm text-header-600 mb-4">
+        {{ t('operations.import_export.locks_description') }}
+      </p>
+      <button
+        :disabled="locksLoading"
+        class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+        @click="confirmLocksModal = true"
+      >
+        <UIcon v-if="locksLoading" name="i-heroicons-arrow-path" class="w-4 h-4 animate-spin" />
+        <UIcon v-else name="i-heroicons-lock-closed" class="w-4 h-4" />
+        {{ t('operations.import_export.locks_button') }}
+      </button>
+    </section>
+
     <!-- Confirm modals -->
     <AdminConfirmModal
       :open="confirmRenameModal"
@@ -525,6 +585,17 @@ const confirmMove = async () => {
       :loading="loading"
       @close="confirmMoveModal = false"
       @confirm="confirmMove"
+    />
+
+    <AdminConfirmModal
+      :open="confirmLocksModal"
+      :title="t('operations.import_export.locks_confirm')"
+      :message="t('operations.import_export.locks_confirm_message')"
+      :confirm-text="t('operations.import_export.locks_button')"
+      :cancel-text="t('common.cancel')"
+      :loading="locksLoading"
+      @close="confirmLocksModal = false"
+      @confirm="confirmLocksUpdate"
     />
   </div>
 </template>
