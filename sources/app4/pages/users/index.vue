@@ -23,6 +23,17 @@ if (authStore.profile > 4) {
 const canEdit = computed(() => authStore.hasProfile(3))
 const canDelete = computed(() => authStore.hasProfile(2))
 
+// Per-row permission: an admin can only edit/delete users with a strictly higher profile number (lower privilege)
+// Exception: profile 1 can edit/delete anyone
+function canEditUser(userNiveau: number): boolean {
+  if (!canEdit.value) return false
+  return authStore.profile === 1 || userNiveau > authStore.profile
+}
+function canDeleteUser(userNiveau: number): boolean {
+  if (!canDelete.value) return false
+  return authStore.profile === 1 || userNiveau > authStore.profile
+}
+
 // State
 const loading = ref(false)
 const users = ref<UserListItem[]>([])
@@ -679,7 +690,7 @@ const profileOptions = computed(() => {
             <td class="px-3 py-2">
               <div class="flex items-center gap-1">
                 <button
-                  v-if="canEdit"
+                  v-if="canEditUser(user.niveau)"
                   class="p-1.5 text-header-500 hover:text-primary-600 rounded"
                   :title="t('common.edit')"
                   @click="openEditModal(user)"
@@ -687,7 +698,7 @@ const profileOptions = computed(() => {
                   <UIcon name="i-heroicons-pencil-square" class="w-5 h-5" />
                 </button>
                 <button
-                  v-if="canDelete"
+                  v-if="canDeleteUser(user.niveau)"
                   class="p-1.5 text-header-500 hover:text-danger-600 rounded"
                   :title="t('common.delete')"
                   @click="confirmDeleteUser(user)"
@@ -764,14 +775,14 @@ const profileOptions = computed(() => {
         <template #footer-right>
           <div class="flex items-center gap-2">
             <button
-              v-if="canEdit"
+              v-if="canEditUser(user.niveau)"
               class="px-3 py-1 text-xs text-primary-600 border border-primary-300 rounded hover:bg-primary-50"
               @click="openEditModal(user)"
             >
               {{ t('common.edit') }}
             </button>
             <button
-              v-if="canDelete"
+              v-if="canDeleteUser(user.niveau)"
               class="px-3 py-1 text-xs text-danger-600 border border-danger-300 rounded hover:bg-danger-50"
               @click="confirmDeleteUser(user)"
             >

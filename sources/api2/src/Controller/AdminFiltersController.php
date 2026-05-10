@@ -84,6 +84,7 @@ class AdminFiltersController extends AbstractController
 
         $allSeasons = $request->query->getBoolean('allSeasons');
         $season = $request->query->get('season');
+        $seasonsParam = $request->query->get('seasons'); // pipe-separated list: "2024|2025"
         $allowedSeasons = $user->getAllowedSeasons();
 
         if ($allSeasons) {
@@ -97,6 +98,23 @@ class AdminFiltersController extends AbstractController
                 $whereClause = "c.Code_saison > '1900'";
                 $params = [];
             }
+        } elseif ($seasonsParam) {
+            // Multiple specific seasons requested
+            $requestedSeasons = array_filter(explode('|', $seasonsParam), fn($s) => trim($s) !== '');
+            if (empty($requestedSeasons)) {
+                return $this->json(['groups' => []]);
+            }
+            // Enforce user season restrictions
+            if ($allowedSeasons !== null) {
+                $requestedSeasons = array_values(array_intersect($requestedSeasons, $allowedSeasons));
+                if (empty($requestedSeasons)) {
+                    return $this->json(['groups' => []]);
+                }
+            }
+            $placeholders = implode(',', array_fill(0, count($requestedSeasons), '?'));
+            $whereClause = "c.Code_saison IN ($placeholders)";
+            $params = $requestedSeasons;
+            $allSeasons = true; // reuse the deduplication SQL branch
         } else {
             if (!$season) {
                 $season = $this->getActiveSeason();

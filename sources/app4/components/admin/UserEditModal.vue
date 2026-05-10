@@ -111,17 +111,15 @@ watch(() => props.open, async (isOpen) => {
   selectedClubs.value = []
   mandates.value = []
 
-  // Load competitions for the active season
-  await loadCompetitions()
   if (adminNiveau.value <= 2) {
     await loadEvents()
   }
 
   if (props.user) {
-    // Edit mode: load user detail
+    // Edit mode: load user detail (sets selectedSeasons, which triggers competition reload via watch)
     await loadUserDetail(props.user.code)
   } else {
-    // Create mode: defaults
+    // Create mode: defaults (resetForm sets selectedSeasons, which triggers competition reload)
     resetForm()
   }
 })
@@ -225,10 +223,17 @@ async function loadUserDetail(code: string) {
   } catch { /* useApi handles toast */ }
 }
 
-async function loadCompetitions() {
+async function loadCompetitions(seasons?: string[], all?: boolean) {
   try {
-    const data = await api.get<{ groups: { section: number; sectionLabel: string; competitions: { code: string; libelle: string; season?: string }[] }[] }>('/admin/filters/competitions', { allSeasons: '1' })
-    // Flatten grouped response into flat array with section info
+    let params: Record<string, string>
+    if (all) {
+      params = { allSeasons: '1' }
+    } else if (seasons && seasons.length > 0) {
+      params = { seasons: seasons.join('|') }
+    } else {
+      params = { allSeasons: '1' }
+    }
+    const data = await api.get<{ groups: { section: number; sectionLabel: string; competitions: { code: string; libelle: string; season?: string }[] }[] }>('/admin/filters/competitions', params)
     const flat: Competition[] = []
     for (const group of data.groups || []) {
       for (const c of group.competitions) {
@@ -236,6 +241,9 @@ async function loadCompetitions() {
       }
     }
     competitions.value = flat
+    // Remove selected competitions that are no longer in the list
+    const validCodes = new Set(flat.map(c => c.code))
+    selectedCompetitions.value = selectedCompetitions.value.filter(code => validCodes.has(code))
   } catch { /* ignore */ }
 }
 
@@ -375,6 +383,11 @@ function toggleAllCompetitions() {
     selectedCompetitions.value = []
   }
 }
+
+// Reload competitions when season selection changes
+watch([selectedSeasons, allSeasons], ([seasons, all]) => {
+  loadCompetitions(seasons as string[], all as boolean)
+}, { deep: true })
 
 // Event toggle
 function toggleEvent(id: number) {
@@ -830,7 +843,6 @@ onBeforeUnmount(() => {
         <!-- Add mandate form -->
         <AdminUserMandateForm
           :seasons="seasons"
-          :competitions="competitions"
           :events="events"
           :profile-options="profileOptions"
           :admin-niveau="adminNiveau"
