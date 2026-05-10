@@ -125,6 +125,7 @@ class AdminJournalController extends AbstractController
                 'journal' => $entry['Journal'],
                 'saison' => $entry['Saisons'],
                 'competition' => $entry['Competitions'],
+                'evenement' => $entry['Evenements'] ? (int) $entry['Evenements'] : null,
                 'journee' => $entry['Journees'] ? (int) $entry['Journees'] : null,
                 'match' => $entry['Matchs'],
             ];

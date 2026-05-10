@@ -494,10 +494,12 @@ class AdminCompetitionCopyController extends AbstractController
                     $matchsCreated++;
                 }
 
-                $this->logActionForSeason(
+                $this->logActionForGameday(
                     'Ajout journee',
                     $destSeason,
-                    "{$destCompetition}: copie depuis {$originCompetition}/{$originSeason}, Id {$nextJourneeId}"
+                    $destCompetition,
+                    $nextJourneeId,
+                    "copie depuis {$originCompetition}/{$originSeason}"
                 );
             }
 

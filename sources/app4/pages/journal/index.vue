@@ -9,6 +9,7 @@ interface JournalEntry {
   journal: string | null
   saison: string | null
   competition: string | null
+  evenement: number | null
   journee: number | null
   match: string | null
 }

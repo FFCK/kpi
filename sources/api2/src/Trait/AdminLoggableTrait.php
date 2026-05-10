@@ -43,8 +43,8 @@ trait AdminLoggableTrait
             $user = $this->getUser();
             $userId = $user?->getUserIdentifier() ?? 'system';
 
-            $sql = "INSERT INTO kp_journal (Date, Heure, User, Action, Code_evenement, Details)
-                    VALUES (CURDATE(), CURTIME(), ?, ?, ?, ?)";
+            $sql = "INSERT INTO kp_journal (Dates, Users, Actions, Evenements, Journal)
+                    VALUES (NOW(), ?, ?, ?, ?)";
 
             $stmt = $this->connection->prepare($sql);
             $stmt->executeStatement([$userId, $action, $eventId, $details]);

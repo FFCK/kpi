@@ -179,7 +179,7 @@ class AdminEventController extends AbstractController
         $id = (int) $this->connection->lastInsertId();
 
         // Log action
-        $this->logActionForEvent('Ajout Evenement', $id, $libelle);
+        $this->logActionForEvent('Ajout Evenement', null, "Id $id: $libelle");
 
         return $this->json([
             'id' => $id,
@@ -243,7 +243,7 @@ class AdminEventController extends AbstractController
         $stmt->executeStatement([$libelle, $lieu ?: null, $dateDebut, $dateFin, $id]);
 
         // Log action
-        $this->logActionForEvent('Modif Evenement', $id);
+        $this->logActionForEvent('Modif Evenement', null, "Id $id: $libelle");
 
         return $this->json([
             'id' => $id,
@@ -275,7 +275,7 @@ class AdminEventController extends AbstractController
             $stmt->executeStatement([$id]);
 
             // Log action
-            $this->logActionForEvent('Suppression Evenement', $id);
+            $this->logActionForEvent('Suppression Evenement', null, "Id $id");
 
             return $this->json(null, Response::HTTP_NO_CONTENT);
         } catch (\Exception $e) {
@@ -313,7 +313,7 @@ class AdminEventController extends AbstractController
             $stmt->executeStatement($ids);
 
             // Log action
-            $this->logActionForEvent('Suppression Evenements', null, implode(',', $ids));
+            $this->logActionForEvent('Suppression Evenements', null, "Ids: " . implode(',', $ids));
 
             return $this->json(['deleted' => count($ids)]);
         } catch (\Exception $e) {

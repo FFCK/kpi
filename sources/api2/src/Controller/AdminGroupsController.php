@@ -155,7 +155,7 @@ class AdminGroupsController extends AbstractController
             $this->connection->commit();
 
             // Log action
-            $this->logAction('Ajout Groupe', "$groupe - $libelle");
+            $this->logActionForSeason('Ajout Groupe', null, "$groupe - $libelle");
 
             return $this->json([
                 'id' => $id,
@@ -248,7 +248,7 @@ class AdminGroupsController extends AbstractController
 
             // Log action
             $details = $groupe !== $oldGroupe ? "Code: $oldGroupe -> $groupe" : $groupe;
-            $this->logAction('Modif Groupe', $details);
+            $this->logActionForSeason('Modif Groupe', null, $details);
 
             return $this->json([
                 'id' => $id,
@@ -324,7 +324,7 @@ class AdminGroupsController extends AbstractController
             $this->connection->commit();
 
             // Log action
-            $this->logAction('Suppression Groupe', "{$group['Groupe']} - {$group['Libelle']}");
+            $this->logActionForSeason('Suppression Groupe', null, "{$group['Groupe']} - {$group['Libelle']}");
 
             return $this->json(null, Response::HTTP_NO_CONTENT);
         } catch (\Exception $e) {
@@ -388,7 +388,7 @@ class AdminGroupsController extends AbstractController
             $this->connection->commit();
 
             // Log action
-            $this->logAction('Reorder Groupe', "{$current['Groupe']} $direction");
+            $this->logActionForSeason('Reorder Groupe', null, "{$current['Groupe']} $direction");
 
             return $this->json(['success' => true]);
         } catch (\Exception $e) {
@@ -447,22 +447,5 @@ class AdminGroupsController extends AbstractController
         return $errors;
     }
 
-    /**
-     * Log a group action
-     */
-    private function logAction(string $action, ?string $details = null): void
-    {
-        try {
-            $user = $this->getUser();
-            $userId = $user?->getUserIdentifier() ?? 'system';
 
-            $sql = "INSERT INTO kp_journal (Date, Heure, User, Action, Details)
-                    VALUES (CURDATE(), CURTIME(), ?, ?, ?)";
-
-            $stmt = $this->connection->prepare($sql);
-            $stmt->executeStatement([$userId, $action, $details]);
-        } catch (\Exception) {
-            // Log silently fails
-        }
-    }
 }
