@@ -32,7 +32,7 @@ const { t } = useI18n()
 const expanded = ref(false)
 const form = reactive({
   libelle: '',
-  niveau: 7,
+  niveau: 7 as number,
   filtreSaison: [] as string[],
   filtreCompetition: [] as string[],
   limitClubs: '',
@@ -42,9 +42,19 @@ const form = reactive({
 const allSeasons = ref(false)
 const allCompetitions = ref(false)
 
+function profileLabelWithoutNumber(label: string): string {
+  return label.replace(/^\d+\s*-\s*/, '')
+}
+
+watch(() => form.niveau, (newVal) => {
+  const opt = props.profileOptions.find(o => o.value === newVal)
+  if (opt) form.libelle = profileLabelWithoutNumber(opt.label)
+})
+
 function resetForm() {
-  form.libelle = ''
   form.niveau = 7
+  const opt = props.profileOptions.find(o => o.value === 7)
+  form.libelle = opt ? profileLabelWithoutNumber(opt.label) : ''
   form.filtreSaison = []
   form.filtreCompetition = []
   form.limitClubs = ''
@@ -56,9 +66,7 @@ function resetForm() {
 
 function toggleExpanded() {
   expanded.value = !expanded.value
-  if (expanded.value) {
-    resetForm()
-  }
+  if (expanded.value) resetForm()
 }
 
 function toggleSeason(code: string) {
@@ -123,7 +131,7 @@ function handleSave() {
 <template>
   <div>
     <button
-      class="text-sm text-primary-600 hover:text-primary-800 flex items-center gap-1"
+      class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-primary-700 bg-primary-50 border border-primary-300 rounded-lg hover:bg-primary-100 transition-colors"
       @click="toggleExpanded"
     >
       <UIcon :name="expanded ? 'i-heroicons-minus' : 'i-heroicons-plus'" class="w-4 h-4" />
@@ -131,19 +139,8 @@ function handleSave() {
     </button>
 
     <div v-if="expanded" class="mt-3 p-3 border border-primary-200 bg-primary-50/50 rounded-lg space-y-3">
-      <!-- Label + Profile -->
+      <!-- Profile + Label -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div>
-          <label class="block text-xs font-medium text-header-700 mb-1">
-            {{ t('users.modal.mandate_label') }} <span class="text-danger-500">*</span>
-          </label>
-          <input
-            v-model="form.libelle"
-            type="text"
-            maxlength="100"
-            class="w-full px-2 py-1.5 border border-header-300 rounded text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-          >
-        </div>
         <div>
           <label class="block text-xs font-medium text-header-700 mb-1">
             {{ t('users.modal.mandate_profile') }} <span class="text-danger-500">*</span>
@@ -156,6 +153,17 @@ function handleSave() {
               {{ opt.label }}
             </option>
           </select>
+        </div>
+        <div>
+          <label class="block text-xs font-medium text-header-700 mb-1">
+            {{ t('users.modal.mandate_label') }} <span class="text-danger-500">*</span>
+          </label>
+          <input
+            v-model="form.libelle"
+            type="text"
+            maxlength="100"
+            class="w-full px-2 py-1.5 border border-header-300 rounded text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+          >
         </div>
       </div>
 
@@ -252,15 +260,15 @@ function handleSave() {
       </div>
 
       <!-- Actions -->
-      <div class="flex justify-end gap-2 pt-1">
+      <div class="flex justify-end gap-3 pt-2">
         <button
-          class="px-3 py-1.5 text-xs text-header-700 bg-header-100 rounded hover:bg-header-200"
+          class="px-4 py-2 text-sm font-medium text-header-700 bg-header-100 border border-header-300 rounded-lg hover:bg-header-200 transition-colors"
           @click="expanded = false"
         >
           {{ t('users.modal.mandate_cancel') }}
         </button>
         <button
-          class="px-3 py-1.5 text-xs text-white bg-primary-600 rounded hover:bg-primary-700 disabled:opacity-50"
+          class="px-4 py-2 text-sm font-medium text-white bg-primary-600 border border-primary-700 rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           :disabled="!form.libelle.trim()"
           @click="handleSave"
         >
