@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { UserListItem, UsersResponse } from '~/types/users'
+import type { UserListItem, UsersResponse, MandateScope, MandateScopesResponse } from '~/types/users'
 
 definePageMeta({
   layout: 'admin',
@@ -10,6 +10,8 @@ const { t } = useI18n()
 const api = useApi()
 const authStore = useAuthStore()
 const toast = useToast()
+const config = useRuntimeConfig()
+const competitionsSearchUrl = computed(() => `${config.public.api2BaseUrl}/admin/filters/competitions-search`)
 
 
 // Profile guard: only profiles <= 4 can access
@@ -31,6 +33,7 @@ const totalPages = ref(0)
 const searchQuery = ref('')
 const filterProfile = ref<string>('')
 const filterSeason = ref<string>('')
+const filterCompetitions = ref<string[]>([])
 
 // Seasons for the filter dropdown
 const seasons = ref<{ code: string; active: boolean }[]>([])
@@ -68,6 +71,7 @@ async function loadUsers() {
     if (searchQuery.value) params.search = searchQuery.value
     if (filterProfile.value) params.profile = filterProfile.value
     if (filterSeason.value) params.season = filterSeason.value
+    if (filterCompetitions.value.length > 0) params.competition = filterCompetitions.value.join(',')
 
     const data = await api.get<UsersResponse>('/admin/users', params)
     users.value = data.items
@@ -85,17 +89,21 @@ watch(searchQuery, () => {
   if (searchTimeout) clearTimeout(searchTimeout)
   searchTimeout = setTimeout(() => {
     page.value = 1
-    loadUsers()
+    scopesPage.value = 1
+    if (viewMode.value === 'mandates') loadScopes()
+    else loadUsers()
   }, 300)
 })
 
-watch([filterProfile, filterSeason], () => {
+watch([filterProfile, filterSeason, filterCompetitions], () => {
   page.value = 1
-  loadUsers()
+  scopesPage.value = 1
+  if (viewMode.value === 'mandates') loadScopes()
+  else loadUsers()
 })
 
 watch([page, limit], () => {
-  loadUsers()
+  if (viewMode.value === 'users') loadUsers()
 })
 
 // Selection
@@ -244,10 +252,163 @@ function formatMandateFilters(mandate: import('~/types/users').Mandate): string 
   return parts.join(' · ') || t('users.mandates.tooltip_all')
 }
 
-// Profile options for the filter dropdown
+// View mode: 'users' | 'mandates'
+const viewMode = ref<'users' | 'mandates'>('users')
+
+// Mandate scopes (mode mandats)
+const scopes = ref<MandateScope[]>([])
+const scopesPage = ref(1)
+const scopesTotal = ref(0)
+const scopesTotalPages = ref(0)
+const selectedScopes = ref<{ scopeType: 'base' | 'mandate'; userCode: string; mandateId: number | null }[]>([])
+const scopesAllSelected = computed(() =>
+  scopes.value.length > 0 && selectedScopes.value.length === scopes.value.length
+)
+
+async function loadScopes() {
+  loading.value = true
+  try {
+    const params: Record<string, string | number> = {
+      page: scopesPage.value,
+      limit: limit.value,
+    }
+    if (searchQuery.value) params.search = searchQuery.value
+    if (filterProfile.value) params.profile = filterProfile.value
+    if (filterSeason.value) params.season = filterSeason.value
+    if (filterCompetitions.value.length > 0) params.competition = filterCompetitions.value.join(',')
+    const data = await api.get<MandateScopesResponse>('/admin/users/mandate-scopes', params)
+    scopes.value = data.items
+    scopesTotal.value = data.total
+    scopesTotalPages.value = data.totalPages
+    selectedScopes.value = []
+  } catch { /* useApi handles toast */ }
+  finally { loading.value = false }
+}
+
+function toggleScopeSelect(scope: MandateScope) {
+  const idx = selectedScopes.value.findIndex(
+    s => s.userCode === scope.userCode && s.scopeType === scope.scopeType && s.mandateId === scope.mandateId
+  )
+  if (idx >= 0) selectedScopes.value.splice(idx, 1)
+  else selectedScopes.value.push({ scopeType: scope.scopeType, userCode: scope.userCode, mandateId: scope.mandateId })
+}
+
+function isScopeSelected(scope: MandateScope): boolean {
+  return selectedScopes.value.some(
+    s => s.userCode === scope.userCode && s.scopeType === scope.scopeType && s.mandateId === scope.mandateId
+  )
+}
+
+function toggleSelectAllScopes() {
+  if (scopesAllSelected.value) {
+    selectedScopes.value = []
+  } else {
+    selectedScopes.value = scopes.value.map(s => ({
+      scopeType: s.scopeType,
+      userCode: s.userCode,
+      mandateId: s.mandateId,
+    }))
+  }
+}
+
+function switchViewMode(mode: 'users' | 'mandates') {
+  viewMode.value = mode
+  selectedScopes.value = []
+  selectedCodes.value = []
+  if (mode === 'mandates') {
+    scopesPage.value = 1
+    loadScopes()
+  } else {
+    page.value = 1
+    loadUsers()
+  }
+}
+
+watch([scopesPage], () => { if (viewMode.value === 'mandates') loadScopes() })
+
+// Open edit modal focused on a mandate
+function openEditModalOnMandate(scope: MandateScope) {
+  const user = { code: scope.userCode, identite: scope.identite } as UserListItem
+  editingUser.value = user
+  editModalOpen.value = true
+}
+
+// Bulk add season modal
+const bulkAddSeasonOpen = ref(false)
+const bulkAddSeasonValue = ref('')
+const bulkAddSeasonLoading = ref(false)
+const bulkAddSeasonResult = ref<{ updated: number; alreadyPresent: number; restricted: number; season: string } | null>(null)
+
+const restrictedCount = computed(() =>
+  selectedScopes.value.filter(s => {
+    const scope = scopes.value.find(sc => sc.userCode === s.userCode && sc.scopeType === s.scopeType && sc.mandateId === s.mandateId)
+    return scope && scope.filtreSaison === ''
+  }).length
+)
+
+const selectedBaseCount = computed(() => selectedScopes.value.filter(s => s.scopeType === 'base').length)
+const selectedMandateCount = computed(() => selectedScopes.value.filter(s => s.scopeType === 'mandate').length)
+
+function openBulkAddSeason() {
+  bulkAddSeasonValue.value = ''
+  bulkAddSeasonResult.value = null
+  bulkAddSeasonOpen.value = true
+}
+
+async function confirmBulkAddSeason() {
+  if (!bulkAddSeasonValue.value) return
+  bulkAddSeasonLoading.value = true
+  try {
+    const result = await api.post<{ season: string; updated: number; alreadyPresent: number; restricted: number }>(
+      '/admin/users/bulk-add-season',
+      {
+        season: bulkAddSeasonValue.value,
+        scopes: selectedScopes.value.map(s => ({
+          type: s.scopeType,
+          userCode: s.userCode,
+          ...(s.mandateId !== null ? { mandateId: s.mandateId } : {}),
+        })),
+      }
+    )
+    bulkAddSeasonResult.value = result
+    selectedScopes.value = []
+    loadScopes()
+  } catch { /* useApi handles toast */ }
+  finally { bulkAddSeasonLoading.value = false }
+}
+
+// CSV export
+const exporting = ref(false)
+const canExport = computed(() => authStore.hasProfile(2))
+const exportEnabled = computed(() => !!filterProfile.value || !!filterSeason.value || filterCompetitions.value.length > 0)
+
+async function exportCsv() {
+  if (!exportEnabled.value) return
+  exporting.value = true
+  try {
+    const qs = new URLSearchParams()
+    if (searchQuery.value) qs.set('search', searchQuery.value)
+    if (filterProfile.value) qs.set('profile', filterProfile.value)
+    if (filterSeason.value) qs.set('season', filterSeason.value)
+    if (filterCompetitions.value.length > 0) qs.set('competition', filterCompetitions.value.join(','))
+
+    const buffer = await api.getBlob(`/admin/users/export?${qs.toString()}`)
+    const blob = new Blob([buffer], { type: 'text/csv;charset=utf-8;' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `utilisateurs_${new Date().toISOString().slice(0, 10).replace(/-/g, '')}.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+  } catch { /* useApi handles toast */ }
+  finally { exporting.value = false }
+}
+
+// Profile options for the filter dropdown — only profiles the current admin can see
 const profileOptions = computed(() => {
+  const minProfile = authStore.profile > 1 ? authStore.profile : 1
   const options = []
-  for (let i = 1; i <= 10; i++) {
+  for (let i = minProfile; i <= 10; i++) {
     options.push({ value: String(i), label: t(`users.profiles.${i}`) })
   }
   return options
@@ -274,13 +435,55 @@ const profileOptions = computed(() => {
       v-model:search="searchQuery"
       :search-placeholder="t('users.search_placeholder')"
       :add-label="t('users.add')"
-      :show-add="canEdit"
-      :show-bulk-delete="canDelete"
+      :show-add="canEdit && viewMode === 'users'"
+      :show-bulk-delete="canDelete && viewMode === 'users'"
       :bulk-delete-label="t('common.delete_selected')"
-      :selected-count="selectedCodes.length"
+      :selected-count="viewMode === 'users' ? selectedCodes.length : selectedScopes.length"
       @add="openAddModal"
       @bulk-delete="confirmBulkDelete"
     >
+      <template #left>
+        <!-- Mode mandats: bulk-add-season -->
+        <button
+          v-if="viewMode === 'mandates' && canDelete && selectedScopes.length > 0"
+          class="inline-flex items-center gap-1.5 px-3 py-2 text-sm border border-primary-300 rounded-lg bg-primary-50 text-primary-700 hover:bg-primary-100 transition-colors"
+          @click="openBulkAddSeason"
+        >
+          <UIcon name="i-heroicons-calendar-days" class="w-4 h-4" />
+          {{ t('users.bulk_add_season') }}
+        </button>
+      </template>
+      <template #right>
+        <!-- CSV export -->
+        <button
+          v-if="canExport"
+          :disabled="!exportEnabled || exporting"
+          :title="exportEnabled ? t('users.export_csv') : t('users.export_csv_disabled_tooltip')"
+          class="inline-flex items-center gap-1.5 px-3 py-2 text-sm border border-header-300 rounded-lg bg-white hover:bg-header-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          @click="exportCsv"
+        >
+          <UIcon
+            :name="exporting ? 'i-heroicons-arrow-path' : 'i-heroicons-arrow-down-tray'"
+            :class="['w-4 h-4', exporting && 'animate-spin']"
+          />
+          {{ t('users.export_csv') }}
+        </button>
+        <!-- View mode toggle -->
+        <div class="inline-flex rounded-lg border border-header-300 overflow-hidden text-sm">
+          <button
+            :class="['px-3 py-2 transition-colors', viewMode === 'users' ? 'bg-primary-600 text-white' : 'bg-white text-header-600 hover:bg-header-50']"
+            @click="switchViewMode('users')"
+          >
+            {{ t('users.view_mode_users') }}
+          </button>
+          <button
+            :class="['px-3 py-2 transition-colors border-l border-header-300', viewMode === 'mandates' ? 'bg-primary-600 text-white' : 'bg-white text-header-600 hover:bg-header-50']"
+            @click="switchViewMode('mandates')"
+          >
+            {{ t('users.view_mode_mandates') }}
+          </button>
+        </div>
+      </template>
       <template #before-search>
         <!-- Profile filter -->
         <select
@@ -303,6 +506,16 @@ const profileOptions = computed(() => {
             {{ s.code }}{{ s.active ? ' ★' : '' }}
           </option>
         </select>
+
+        <!-- Competition filter -->
+        <AdminUsersCompetitionFilter
+          v-model="filterCompetitions"
+          :season="filterSeason || undefined"
+          :placeholder="t('users.filter_competition_placeholder')"
+          :fetch-url="competitionsSearchUrl"
+          :auth-token="authStore.token ?? undefined"
+          :mandate-id="authStore.activeMandate?.id"
+        />
       </template>
     </AdminToolbar>
 
@@ -311,8 +524,97 @@ const profileOptions = computed(() => {
       <UIcon name="i-heroicons-arrow-path" class="w-8 h-8 animate-spin text-header-400" />
     </div>
 
-    <!-- Desktop Table -->
-    <div v-else class="hidden lg:block overflow-x-auto">
+    <!-- Desktop Table — Mode Mandats -->
+    <div v-if="!loading && viewMode === 'mandates'" class="hidden lg:block overflow-x-auto">
+      <div v-if="!filterProfile && !filterSeason && filterCompetitions.length === 0" class="text-center py-12 text-header-500">
+        <UIcon name="i-heroicons-funnel" class="w-8 h-8 mx-auto mb-2 opacity-40" />
+        {{ t('users.mandate_scopes_no_filter') }}
+      </div>
+      <table v-else-if="scopes.length > 0" class="min-w-full divide-y divide-header-200 bg-white rounded-lg shadow-sm">
+        <thead class="bg-header-50">
+          <tr>
+            <th v-if="canDelete" class="w-10 px-3 py-3">
+              <input type="checkbox" :checked="scopesAllSelected" @change="toggleSelectAllScopes">
+            </th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">{{ t('users.table.identity') }}</th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">{{ t('users.table.profile') }}</th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">{{ t('users.table.seasons') }}</th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">{{ t('users.table.competitions') }}</th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">{{ t('users.table.clubs') }}</th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">{{ t('users.view_mode_mandates') }}</th>
+            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">{{ t('users.table.actions') }}</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-header-200">
+          <tr
+            v-for="(scope, idx) in scopes"
+            :key="`${scope.userCode}-${scope.scopeType}-${scope.mandateId ?? 'base'}-${idx}`"
+            :class="['hover:bg-header-50', scope.scopeType === 'mandate' ? 'bg-primary-50/30' : '']"
+          >
+            <td v-if="canDelete" class="w-10 px-3 py-2" @click.stop>
+              <input type="checkbox" :checked="isScopeSelected(scope)" @change="toggleScopeSelect(scope)">
+            </td>
+            <td class="px-3 py-2">
+              <div class="text-sm font-medium text-header-900">{{ scope.identite }}</div>
+              <div class="text-xs text-header-500">({{ scope.userCode }})</div>
+            </td>
+            <td class="px-3 py-2 text-sm font-medium text-header-800">{{ scope.niveau }}</td>
+            <td class="px-3 py-2 text-sm text-header-600">{{ formatFilter(scope.filtreSaison, t('users.table.seasons_all')) }}</td>
+            <td class="px-3 py-2 text-sm text-header-600 max-w-50 truncate" :title="formatFilter(scope.filtreCompetition, t('users.table.competitions_all'))">
+              {{ formatFilter(scope.filtreCompetition, t('users.table.competitions_all')) }}
+            </td>
+            <td class="px-3 py-2 text-sm text-header-600">{{ scope.limitClubs || '—' }}</td>
+            <td class="px-3 py-2">
+              <span
+                v-if="scope.scopeType === 'base'"
+                class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-header-100 text-header-600 text-xs font-medium"
+                :title="t('users.mandate_scope_base_aria')"
+              >
+                <UIcon name="i-heroicons-user" class="w-3 h-3" />
+                {{ t('users.mandate_scope_base_badge') }}
+              </span>
+              <span v-else class="text-sm text-primary-700">{{ scope.mandateLabel }}</span>
+            </td>
+            <td class="px-3 py-2">
+              <button
+                v-if="scope.scopeType === 'base' && canEdit"
+                class="p-1.5 text-header-500 hover:text-primary-600 rounded"
+                :title="t('common.edit')"
+                @click="openEditModalOnMandate(scope)"
+              >
+                <UIcon name="i-heroicons-pencil-square" class="w-5 h-5" />
+              </button>
+              <button
+                v-else-if="scope.scopeType === 'mandate' && canEdit"
+                class="p-1.5 text-primary-500 hover:text-primary-700 rounded"
+                :title="t('users.mandate_edit')"
+                @click="openEditModalOnMandate(scope)"
+              >
+                <UIcon name="i-heroicons-identification" class="w-5 h-5" />
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div v-else class="text-center py-12 text-header-500">{{ t('users.mandate_scopes_empty') }}</div>
+    </div>
+
+    <!-- Pagination mode mandats -->
+    <AdminPagination
+      v-if="viewMode === 'mandates' && scopesTotal > 0"
+      :page="scopesPage"
+      :total-pages="scopesTotalPages"
+      :total="scopesTotal"
+      :limit="limit"
+      :showing-text="t('users.pagination.showing', { from: '{from}', to: '{to}', total: '{total}' })"
+      :items-per-page-text="t('users.pagination.items_per_page')"
+      :show-all="true"
+      @update:page="scopesPage = $event"
+      @update:limit="limit = $event; scopesPage = 1; loadScopes()"
+    />
+
+    <!-- Desktop Table — Mode Utilisateurs -->
+    <div v-if="!loading && viewMode === 'users'" class="hidden lg:block overflow-x-auto">
       <table v-if="users.length > 0" class="min-w-full divide-y divide-header-200 bg-white rounded-lg shadow-sm">
         <thead class="bg-header-50">
           <tr>
@@ -402,8 +704,9 @@ const profileOptions = computed(() => {
       </div>
     </div>
 
-    <!-- Mobile Cards -->
+    <!-- Mobile Cards (mode utilisateurs uniquement) -->
     <AdminCardList
+      v-if="viewMode === 'users'"
       :loading="loading"
       :empty="users.length === 0"
       :loading-text="t('common.loading')"
@@ -479,14 +782,14 @@ const profileOptions = computed(() => {
       </AdminCard>
     </AdminCardList>
 
-    <!-- Pagination -->
+    <!-- Pagination mode utilisateurs -->
     <AdminPagination
-      v-if="total > 0"
+      v-if="viewMode === 'users' && total > 0"
       :page="page"
       :total-pages="totalPages"
       :total="total"
       :limit="limit"
-      :showing-text="t('users.pagination.showing')"
+      :showing-text="t('users.pagination.showing', { from: '{from}', to: '{to}', total: '{total}' })"
       :items-per-page-text="t('users.pagination.items_per_page')"
       :show-all="true"
       @update:page="page = $event"
@@ -514,6 +817,87 @@ const profileOptions = computed(() => {
       @close="confirmOpen = false"
       @confirm="confirmAction?.()"
     />
+
+    <!-- Bulk add season modal -->
+    <Teleport to="body">
+      <div
+        v-if="bulkAddSeasonOpen"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+        @click.self="bulkAddSeasonOpen = false"
+      >
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
+          <h3 class="text-lg font-semibold text-header-900 mb-4">{{ t('users.bulk_add_season_modal_title') }}</h3>
+
+          <template v-if="!bulkAddSeasonResult">
+            <!-- Summary -->
+            <p class="text-sm text-header-600 mb-4">
+              {{ t('users.bulk_add_season_summary', { base: selectedBaseCount, mandates: selectedMandateCount }) }}
+            </p>
+
+            <!-- Season select -->
+            <label class="block text-sm font-medium text-header-700 mb-1">{{ t('users.bulk_add_season_select_label') }}</label>
+            <select
+              v-model="bulkAddSeasonValue"
+              class="w-full px-3 py-2 text-sm border border-header-300 rounded-lg bg-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500 mb-4"
+            >
+              <option value="">—</option>
+              <option v-for="s in seasons" :key="s.code" :value="s.code">
+                {{ s.code }}{{ s.active ? ' ★' : '' }}
+              </option>
+            </select>
+
+            <!-- Warning for empty filtre_saison scopes -->
+            <div v-if="restrictedCount > 0 && bulkAddSeasonValue" class="flex gap-2 p-3 mb-4 bg-amber-50 border border-amber-200 rounded-lg text-sm text-amber-800">
+              <UIcon name="i-heroicons-exclamation-triangle" class="w-4 h-4 shrink-0 mt-0.5" />
+              <span>{{ t('users.bulk_add_season_warning_restricted', { count: restrictedCount, season: bulkAddSeasonValue }) }}</span>
+            </div>
+
+            <div class="flex justify-end gap-2">
+              <button
+                class="px-4 py-2 text-sm text-header-600 hover:text-header-800"
+                @click="bulkAddSeasonOpen = false"
+              >
+                {{ t('common.cancel') }}
+              </button>
+              <button
+                :disabled="!bulkAddSeasonValue || bulkAddSeasonLoading"
+                class="inline-flex items-center gap-2 px-4 py-2 text-sm bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-40 disabled:cursor-not-allowed"
+                @click="confirmBulkAddSeason"
+              >
+                <UIcon v-if="bulkAddSeasonLoading" name="i-heroicons-arrow-path" class="w-4 h-4 animate-spin" />
+                {{ t('users.bulk_add_season_confirm') }}
+              </button>
+            </div>
+          </template>
+
+          <!-- Result -->
+          <template v-else>
+            <div class="space-y-2 text-sm mb-6">
+              <div class="flex items-center gap-2 text-green-700">
+                <UIcon name="i-heroicons-check-circle" class="w-4 h-4 shrink-0" />
+                {{ t('users.bulk_add_season_result_updated', { count: bulkAddSeasonResult.updated, season: bulkAddSeasonResult.season }) }}
+              </div>
+              <div v-if="bulkAddSeasonResult.alreadyPresent > 0" class="flex items-center gap-2 text-header-500">
+                <UIcon name="i-heroicons-minus-circle" class="w-4 h-4 shrink-0" />
+                {{ t('users.bulk_add_season_result_already_present', { count: bulkAddSeasonResult.alreadyPresent }) }}
+              </div>
+              <div v-if="bulkAddSeasonResult.restricted > 0" class="flex items-center gap-2 text-amber-700">
+                <UIcon name="i-heroicons-exclamation-triangle" class="w-4 h-4 shrink-0" />
+                {{ t('users.bulk_add_season_result_restricted', { count: bulkAddSeasonResult.restricted, season: bulkAddSeasonResult.season }) }}
+              </div>
+            </div>
+            <div class="flex justify-end">
+              <button
+                class="px-4 py-2 text-sm bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+                @click="bulkAddSeasonOpen = false; bulkAddSeasonResult = null"
+              >
+                {{ t('common.close') }}
+              </button>
+            </div>
+          </template>
+        </div>
+      </div>
+    </Teleport>
 
     <AdminScrollToTop />
 

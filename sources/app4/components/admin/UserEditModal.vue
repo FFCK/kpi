@@ -429,8 +429,26 @@ async function handleSubmit() {
     return
   }
 
-  // Club validation for profiles 7-8
-  if ((form.niveau === 7 || form.niveau === 8) && selectedClubs.value.length === 0) {
+  // Profile >= 3: at least one season required
+  if (form.niveau >= 3 && (allSeasons.value || selectedSeasons.value.length === 0)) {
+    formError.value = t('users.validation_season_required_profile')
+    return
+  }
+
+  // Profile >= 3: at least one competition required
+  if (form.niveau >= 3 && (allCompetitions.value || selectedCompetitions.value.length === 0)) {
+    formError.value = t('users.validation_competition_required')
+    return
+  }
+
+  // Profile 5 or 6: at least one gameday required
+  if ((form.niveau === 5 || form.niveau === 6) && !form.filtreJournee.trim()) {
+    formError.value = t('users.validation_gameday_required')
+    return
+  }
+
+  // Profile 7: at least one club required
+  if (form.niveau === 7 && selectedClubs.value.length === 0) {
     formError.value = t('users.validation_club_required')
     return
   }

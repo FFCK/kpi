@@ -109,8 +109,36 @@ const groupedCompetitions = computed(() => {
   return groups
 })
 
+const saveError = ref('')
+
 function handleSave() {
+  saveError.value = ''
+
   if (!form.libelle.trim()) return
+
+  // Mandates always require at least one season (covers profile >= 3 rule too)
+  if (!allSeasons.value && form.filtreSaison.length === 0) {
+    saveError.value = t('users.validation_season_required')
+    return
+  }
+
+  // Profile >= 3: at least one competition required
+  if (form.niveau >= 3 && (allCompetitions.value || form.filtreCompetition.length === 0)) {
+    saveError.value = t('users.validation_competition_required')
+    return
+  }
+
+  // Profile 5 or 6: at least one gameday required
+  if ((form.niveau === 5 || form.niveau === 6) && !form.filtreJournee.trim()) {
+    saveError.value = t('users.validation_gameday_required')
+    return
+  }
+
+  // Profile 7: at least one club required
+  if (form.niveau === 7 && !form.limitClubs.trim()) {
+    saveError.value = t('users.validation_club_required')
+    return
+  }
 
   const data: MandateForm = {
     libelle: form.libelle.trim(),
@@ -139,6 +167,11 @@ function handleSave() {
     </button>
 
     <div v-if="expanded" class="mt-3 p-3 border border-primary-200 bg-primary-50/50 rounded-lg space-y-3">
+      <!-- Error message -->
+      <div v-if="saveError" class="p-2 bg-danger-50 border border-danger-200 rounded text-xs text-danger-700">
+        {{ saveError }}
+      </div>
+
       <!-- Profile + Label -->
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
@@ -170,12 +203,10 @@ function handleSave() {
       <!-- Seasons + Competitions -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div>
-          <label class="block text-xs font-medium text-header-700 mb-1">{{ t('users.modal.filter_seasons') }}</label>
+          <label class="block text-xs font-medium text-header-700 mb-1">
+            {{ t('users.modal.filter_seasons') }} <span class="text-danger-500">*</span>
+          </label>
           <div class="border border-header-300 rounded max-h-28 overflow-y-auto p-1.5 bg-white">
-            <label class="flex items-center gap-1.5 text-xs mb-0.5 cursor-pointer">
-              <input type="checkbox" :checked="allSeasons" @change="toggleAllSeasons">
-              <span class="font-medium">{{ t('users.modal.filter_seasons_all') }}</span>
-            </label>
             <label
               v-for="s in seasons"
               :key="s.code"
@@ -184,7 +215,6 @@ function handleSave() {
               <input
                 type="checkbox"
                 :checked="form.filtreSaison.includes(s.code)"
-                :disabled="allSeasons"
                 @change="toggleSeason(s.code)"
               >
               {{ s.code }}

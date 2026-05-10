@@ -347,6 +347,66 @@ class AdminFiltersController extends AbstractController
         ]);
     }
 
+    /**
+     * Search competitions for autocomplete (used in users filter)
+     * Returns competitions matching a text query, optionally filtered by season.
+     * Respects the authenticated user's competition restrictions.
+     */
+    #[Route('/competitions-search', name: 'admin_filters_competitions_search', methods: ['GET'])]
+    public function searchCompetitions(Request $request): JsonResponse
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+
+        $query = trim($request->query->get('query', ''));
+        $season = trim($request->query->get('season', ''));
+
+        if (strlen($query) < 2) {
+            return $this->json([]);
+        }
+
+        $params = [];
+        $where = ['(c.Code LIKE ? OR c.Libelle LIKE ?)'];
+        $params[] = "%$query%";
+        $params[] = "%$query%";
+
+        if (!empty($season)) {
+            $allowedSeasons = $user->getAllowedSeasons();
+            if ($allowedSeasons !== null && !in_array($season, $allowedSeasons)) {
+                return $this->json([]);
+            }
+            $where[] = 'c.Code_saison = ?';
+            $params[] = $season;
+        } else {
+            // No season specified: search across all seasons but deduplicate by competition code
+            $where[] = "c.Code_saison = (SELECT MAX(c2.Code_saison) FROM kp_competition c2 WHERE c2.Code = c.Code)";
+        }
+
+        $allowedCompetitions = $user->getAllowedCompetitions();
+        if ($allowedCompetitions !== null) {
+            if (empty($allowedCompetitions)) {
+                return $this->json([]);
+            }
+            $placeholders = implode(',', array_fill(0, count($allowedCompetitions), '?'));
+            $where[] = "c.Code IN ($placeholders)";
+            $params = array_merge($params, $allowedCompetitions);
+        }
+
+        $sql = "SELECT c.Code, c.Libelle, c.Code_saison
+                FROM kp_competition c
+                WHERE " . implode(' AND ', $where) . "
+                ORDER BY c.Libelle, c.Code
+                LIMIT 20";
+
+        $rows = $this->connection->fetchAllAssociative($sql, $params);
+
+        return $this->json(array_map(fn(array $row) => [
+            'code' => $row['Code'],
+            'libelle' => $row['Libelle'],
+            'season' => $row['Code_saison'],
+        ], $rows));
+    }
+
     private function getActiveSeason(): string
     {
         $sql = "SELECT Code FROM kp_saison WHERE Etat = 'A' LIMIT 1";

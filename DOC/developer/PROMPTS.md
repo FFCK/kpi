@@ -65,6 +65,7 @@ TODO :
   
 * ✅ Uniformisation header des pages de gestion de compétition
 * ✅ Synthèse d'une compétition (mise en page des logos, décomptes...)
+* Numéro de version dans app2 et app4
 * Matchs : saisie arbitres ? (inline + formulaire)
 * gamesday et games : manque toast de confirmation lors d'une modification en ligne.
 * Journées/Phases : autocomplete sur les officiels, etc...

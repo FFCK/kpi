@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -45,13 +46,14 @@ class AdminUsersController extends AbstractController
     #[OA\Parameter(name: 'search', in: 'query', required: false, schema: new OA\Schema(type: 'string'))]
     #[OA\Parameter(name: 'profile', in: 'query', required: false, schema: new OA\Schema(type: 'integer'))]
     #[OA\Parameter(name: 'season', in: 'query', required: false, schema: new OA\Schema(type: 'string'))]
+    #[OA\Parameter(name: 'competition', in: 'query', required: false, schema: new OA\Schema(type: 'string', description: 'Comma-separated competition codes'))]
     #[OA\Response(response: 200, description: 'Paginated list of users')]
     #[OA\Response(response: 403, description: 'Profile insufficient')]
     public function list(Request $request): JsonResponse
     {
         /** @var User|null $currentUser */
         $currentUser = $this->getUser();
-        if (!$currentUser || $currentUser->getNiveau() > 4) {
+        if (!$currentUser || $currentUser->getEffectiveNiveau() > 4) {
             return $this->json(['error' => true, 'message' => 'Access denied', 'code' => 'ACCESS_DENIED'], Response::HTTP_FORBIDDEN);
         }
 
@@ -61,8 +63,9 @@ class AdminUsersController extends AbstractController
         $search = trim($request->query->get('search', ''));
         $profileFilter = $request->query->get('profile');
         $seasonFilter = trim($request->query->get('season', ''));
+        $competitionFilter = trim($request->query->get('competition', ''));
 
-        $adminNiveau = $currentUser->getNiveau();
+        $adminNiveau = $currentUser->getEffectiveNiveau();
 
         $whereConditions = [];
         $params = [];
@@ -80,15 +83,32 @@ class AdminUsersController extends AbstractController
             $params[] = "%$search%";
         }
 
-        if ($profileFilter !== null && $profileFilter !== '') {
-            $whereConditions[] = 'u.Niveau = ?';
-            $params[] = (int) $profileFilter;
-        }
+        // Profile/season/competition filters: base profile OR a single mandate must satisfy ALL active filters simultaneously
+        $hasProfileFilter = $profileFilter !== null && $profileFilter !== '';
+        $hasSeasonFilter = !empty($seasonFilter);
+        $hasCompFilter = !empty($competitionFilter);
+        $compCodes = $hasCompFilter ? array_filter(array_map('trim', explode(',', $competitionFilter))) : [];
 
-        if (!empty($seasonFilter)) {
-            // Users who have access to this season: empty filter (all seasons) OR filter contains the season
-            $whereConditions[] = "(u.Filtre_saison = '' OR u.Filtre_saison LIKE ?)";
-            $params[] = "%|$seasonFilter|%";
+        if ($hasProfileFilter || $hasSeasonFilter || $hasCompFilter) {
+            $baseParts = [];
+            if ($hasProfileFilter) { $baseParts[] = 'u.Niveau = ?'; $params[] = (int) $profileFilter; }
+            if ($hasSeasonFilter) { $baseParts[] = "(u.Filtre_saison = '' OR u.Filtre_saison LIKE ?)"; $params[] = "%|$seasonFilter|%"; }
+            if (!empty($compCodes)) {
+                $orParts = [];
+                foreach ($compCodes as $c) { $orParts[] = "u.Filtre_competition = '' OR u.Filtre_competition LIKE ?"; $params[] = "%|$c|%"; }
+                $baseParts[] = '(' . implode(' OR ', $orParts) . ')';
+            }
+            $mandateParts = [];
+            if ($hasProfileFilter) { $mandateParts[] = 'm.niveau = ?'; $params[] = (int) $profileFilter; }
+            if ($hasSeasonFilter) { $mandateParts[] = "(m.filtre_saison = '' OR m.filtre_saison LIKE ?)"; $params[] = "%|$seasonFilter|%"; }
+            if (!empty($compCodes)) {
+                $orParts = [];
+                foreach ($compCodes as $c) { $orParts[] = "m.filtre_competition = '' OR m.filtre_competition LIKE ?"; $params[] = "%|$c|%"; }
+                $mandateParts[] = '(' . implode(' OR ', $orParts) . ')';
+            }
+            $whereConditions[] = '(' . implode(' AND ', $baseParts)
+                . ' OR EXISTS (SELECT 1 FROM kp_user_mandat m WHERE m.user_code = u.Code AND '
+                . implode(' AND ', $mandateParts) . '))';
         }
 
         $whereClause = count($whereConditions) > 0 ? 'WHERE ' . implode(' AND ', $whereConditions) : '';
@@ -178,7 +198,7 @@ class AdminUsersController extends AbstractController
     {
         /** @var User|null $currentUser */
         $currentUser = $this->getUser();
-        if (!$currentUser || $currentUser->getNiveau() > 4) {
+        if (!$currentUser || $currentUser->getEffectiveNiveau() > 4) {
             return $this->json(['error' => true, 'message' => 'Access denied', 'code' => 'ACCESS_DENIED'], Response::HTTP_FORBIDDEN);
         }
 
@@ -199,7 +219,7 @@ class AdminUsersController extends AbstractController
         }
 
         // Check that admin can see this user
-        if ($currentUser->getNiveau() > 1 && (int) $row['Niveau'] < $currentUser->getNiveau()) {
+        if ($currentUser->getEffectiveNiveau() > 1 && (int) $row['Niveau'] < $currentUser->getEffectiveNiveau()) {
             return $this->json(['error' => true, 'message' => 'Access denied', 'code' => 'ACCESS_DENIED'], Response::HTTP_FORBIDDEN);
         }
 
@@ -240,7 +260,7 @@ class AdminUsersController extends AbstractController
     {
         /** @var User|null $currentUser */
         $currentUser = $this->getUser();
-        if (!$currentUser || $currentUser->getNiveau() > 3) {
+        if (!$currentUser || $currentUser->getEffectiveNiveau() > 3) {
             return $this->json(['error' => true, 'message' => 'Access denied', 'code' => 'ACCESS_DENIED'], Response::HTTP_FORBIDDEN);
         }
 
@@ -273,9 +293,15 @@ class AdminUsersController extends AbstractController
         }
 
         // Profile restrictions
-        $profileError = $this->validateProfileAssignment($currentUser->getNiveau(), $niveau);
+        $profileError = $this->validateProfileAssignment($currentUser->getEffectiveNiveau(), $niveau);
         if ($profileError) {
             return $this->json(['error' => true, 'message' => $profileError, 'code' => 'PROFILE_RESTRICTED'], Response::HTTP_FORBIDDEN);
+        }
+
+        // Filter requirements per profile
+        $filterError = $this->validateProfileFilters($niveau, $filtreCompetition, $filtreSaison, $filtreJournee, $limitClubs);
+        if ($filterError) {
+            return $this->json(['error' => true, 'message' => $filterError, 'code' => 'FILTER_REQUIRED'], Response::HTTP_BAD_REQUEST);
         }
 
         // Check uniqueness
@@ -329,7 +355,7 @@ class AdminUsersController extends AbstractController
     {
         /** @var User|null $currentUser */
         $currentUser = $this->getUser();
-        if (!$currentUser || $currentUser->getNiveau() > 3) {
+        if (!$currentUser || $currentUser->getEffectiveNiveau() > 3) {
             return $this->json(['error' => true, 'message' => 'Access denied', 'code' => 'ACCESS_DENIED'], Response::HTTP_FORBIDDEN);
         }
 
@@ -340,7 +366,7 @@ class AdminUsersController extends AbstractController
         }
 
         $targetNiveau = (int) $existing['Niveau'];
-        $adminNiveau = $currentUser->getNiveau();
+        $adminNiveau = $currentUser->getEffectiveNiveau();
 
         // Cannot modify user with higher or equal privilege (except super admin)
         if ($adminNiveau > 1 && $targetNiveau < $adminNiveau) {
@@ -363,6 +389,18 @@ class AdminUsersController extends AbstractController
         $profileError = $this->validateProfileAssignment($adminNiveau, $niveau);
         if ($profileError) {
             return $this->json(['error' => true, 'message' => $profileError, 'code' => 'PROFILE_RESTRICTED'], Response::HTTP_FORBIDDEN);
+        }
+
+        // Filter requirements per profile
+        $filterError = $this->validateProfileFilters(
+            $niveau,
+            $data['filtreCompetition'] ?? '',
+            $data['filtreSaison'] ?? '',
+            $data['filtreJournee'] ?? '',
+            $data['limitClubs'] ?? ''
+        );
+        if ($filterError) {
+            return $this->json(['error' => true, 'message' => $filterError, 'code' => 'FILTER_REQUIRED'], Response::HTTP_BAD_REQUEST);
         }
 
         $setClauses = [
@@ -425,7 +463,7 @@ class AdminUsersController extends AbstractController
     {
         /** @var User|null $currentUser */
         $currentUser = $this->getUser();
-        if (!$currentUser || $currentUser->getNiveau() > 2) {
+        if (!$currentUser || $currentUser->getEffectiveNiveau() > 2) {
             return $this->json(['error' => true, 'message' => 'Access denied', 'code' => 'ACCESS_DENIED'], Response::HTTP_FORBIDDEN);
         }
 
@@ -435,7 +473,7 @@ class AdminUsersController extends AbstractController
         }
 
         // Cannot delete user with profile <= own (except self-evidently)
-        if ((int) $existing['Niveau'] <= $currentUser->getNiveau()) {
+        if ((int) $existing['Niveau'] <= $currentUser->getEffectiveNiveau()) {
             return $this->json(['error' => true, 'message' => 'Cannot delete user with equal or higher privilege', 'code' => 'ACCESS_DENIED'], Response::HTTP_FORBIDDEN);
         }
 
@@ -449,6 +487,369 @@ class AdminUsersController extends AbstractController
         );
 
         return $this->json(null, Response::HTTP_NO_CONTENT);
+    }
+
+    // ──────────────────────────────────────────────────────────────────────
+    // GET /admin/users/export  — CSV export
+    // ──────────────────────────────────────────────────────────────────────
+
+    #[Route('/admin/users/export', name: 'admin_users_export', methods: ['GET'])]
+    #[OA\Get(
+        path: '/admin/users/export',
+        summary: 'Export filtered users as CSV',
+        tags: ['30. App4 - Users']
+    )]
+    #[OA\Parameter(name: 'search', in: 'query', required: false, schema: new OA\Schema(type: 'string'))]
+    #[OA\Parameter(name: 'profile', in: 'query', required: false, schema: new OA\Schema(type: 'integer'))]
+    #[OA\Parameter(name: 'season', in: 'query', required: false, schema: new OA\Schema(type: 'string'))]
+    #[OA\Parameter(name: 'competition', in: 'query', required: false, schema: new OA\Schema(type: 'string'))]
+    #[OA\Response(response: 200, description: 'CSV file')]
+    #[OA\Response(response: 403, description: 'Profile insufficient')]
+    public function export(Request $request): StreamedResponse|JsonResponse
+    {
+        /** @var User|null $currentUser */
+        $currentUser = $this->getUser();
+        if (!$currentUser || $currentUser->getEffectiveNiveau() > 2) {
+            return $this->json(['error' => true, 'message' => 'Access denied', 'code' => 'ACCESS_DENIED'], Response::HTTP_FORBIDDEN);
+        }
+
+        $search = trim($request->query->get('search', ''));
+        $profileFilter = $request->query->get('profile');
+        $seasonFilter = trim($request->query->get('season', ''));
+        $competitionFilter = trim($request->query->get('competition', ''));
+
+        $adminNiveau = $currentUser->getEffectiveNiveau();
+
+        [$whereClause, $params] = $this->buildUserWhereClause($adminNiveau, $search, $profileFilter, $seasonFilter, $competitionFilter);
+
+        // Fetch matching users (identity + base profile)
+        $users = $this->connection->fetchAllAssociative(
+            "SELECT u.Code, u.Identite, u.Mail, u.Tel, u.Fonction, u.Niveau,
+                    u.Filtre_saison, u.Filtre_competition, u.Limitation_equipe_club, u.Filtre_journee
+             FROM kp_user u $whereClause ORDER BY u.Niveau ASC, u.Identite ASC LIMIT 1000",
+            $params
+        );
+
+        [$mandateConditions, $mandateParams] = $this->buildMandateFilterConditions($profileFilter, $seasonFilter, $competitionFilter);
+        $userCodes = array_column($users, 'Code');
+        $mandatesByCode = $this->fetchMandatesForUsers($userCodes, $mandateConditions, $mandateParams);
+
+        $baseMatchesProfile = $profileFilter === null || $profileFilter === '';
+        $baseMatchesSeason = empty($seasonFilter);
+        $baseMatchesCompetition = empty($competitionFilter);
+
+        // Build export rows: one line per matching scope (base profile and/or each matching mandate)
+        $exportRows = [];
+        foreach ($users as $u) {
+            $baseNiveauMatches = $baseMatchesProfile || (int) $u['Niveau'] === (int) $profileFilter;
+            $baseSaisonMatches = $baseMatchesSeason
+                || $u['Filtre_saison'] === ''
+                || str_contains($u['Filtre_saison'], "|$seasonFilter|");
+            $baseCompMatches = $this->baseCompetitionMatches($u['Filtre_competition'] ?? '', $baseMatchesCompetition, $competitionFilter);
+
+            if ($baseNiveauMatches && $baseSaisonMatches && $baseCompMatches) {
+                $exportRows[] = [
+                    'code'        => $u['Code'],
+                    'identite'    => $u['Identite'] ?? '',
+                    'mail'        => $u['Mail'] ?? '',
+                    'tel'         => $u['Tel'] ?? '',
+                    'fonction'    => $u['Fonction'] ?? '',
+                    'niveau'      => $u['Niveau'],
+                    'saison'      => str_replace('|', ', ', trim($u['Filtre_saison'] ?? '', '|')),
+                    'competition' => str_replace('|', ', ', trim($u['Filtre_competition'] ?? '', '|')),
+                    'clubs'       => $u['Limitation_equipe_club'] ?? '',
+                    'journee'     => $u['Filtre_journee'] ?? '',
+                    'mandat'      => '',
+                ];
+            }
+
+            foreach ($mandatesByCode[$u['Code']] ?? [] as $m) {
+                $exportRows[] = [
+                    'code'        => $u['Code'],
+                    'identite'    => $u['Identite'] ?? '',
+                    'mail'        => $u['Mail'] ?? '',
+                    'tel'         => $u['Tel'] ?? '',
+                    'fonction'    => $u['Fonction'] ?? '',
+                    'niveau'      => $m['niveau'],
+                    'saison'      => str_replace('|', ', ', trim($m['filtre_saison'] ?? '', '|')),
+                    'competition' => str_replace('|', ', ', trim($m['filtre_competition'] ?? '', '|')),
+                    'clubs'       => $m['limitation_equipe_club'] ?? '',
+                    'journee'     => $m['filtre_journee'] ?? '',
+                    'mandat'      => $m['libelle'],
+                ];
+            }
+        }
+
+        $filename = 'utilisateurs_' . date('Ymd') . '.csv';
+
+        $response = new StreamedResponse(function () use ($exportRows) {
+            $handle = fopen('php://output', 'w');
+
+            // UTF-8 BOM for Excel compatibility
+            fwrite($handle, "\xEF\xBB\xBF");
+
+            // Header row
+            fputcsv($handle, [
+                'Licence', 'Identité', 'Email', 'Téléphone', 'Fonction',
+                'Profil', 'Saisons', 'Compétitions', 'Clubs', 'Journées', 'Mandat',
+            ], ';');
+
+            foreach ($exportRows as $row) {
+                fputcsv($handle, [
+                    $row['code'],
+                    $row['identite'],
+                    $row['mail'],
+                    $row['tel'],
+                    $row['fonction'],
+                    $row['niveau'],
+                    $row['saison'],
+                    $row['competition'],
+                    $row['clubs'],
+                    $row['journee'],
+                    $row['mandat'],
+                ], ';');
+            }
+
+            fclose($handle);
+        });
+
+        $response->headers->set('Content-Type', 'text/csv; charset=utf-8');
+        $response->headers->set('Content-Disposition', "attachment; filename=\"$filename\"");
+        $response->headers->set('Cache-Control', 'no-cache, no-store, must-revalidate');
+
+        return $response;
+    }
+
+    // ──────────────────────────────────────────────────────────────────────
+    // GET /admin/users/mandate-scopes  — Paginated scopes (mode Mandats)
+    // ──────────────────────────────────────────────────────────────────────
+
+    #[Route('/admin/users/mandate-scopes', name: 'admin_users_mandate_scopes', methods: ['GET'])]
+    #[OA\Get(
+        path: '/admin/users/mandate-scopes',
+        summary: 'List access scopes (base profiles + mandates) with pagination',
+        tags: ['30. App4 - Users']
+    )]
+    #[OA\Parameter(name: 'page', in: 'query', required: false, schema: new OA\Schema(type: 'integer', default: 1))]
+    #[OA\Parameter(name: 'limit', in: 'query', required: false, schema: new OA\Schema(type: 'integer', default: 20))]
+    #[OA\Parameter(name: 'search', in: 'query', required: false, schema: new OA\Schema(type: 'string'))]
+    #[OA\Parameter(name: 'profile', in: 'query', required: false, schema: new OA\Schema(type: 'integer'))]
+    #[OA\Parameter(name: 'season', in: 'query', required: false, schema: new OA\Schema(type: 'string'))]
+    #[OA\Parameter(name: 'competition', in: 'query', required: false, schema: new OA\Schema(type: 'string'))]
+    #[OA\Response(response: 200, description: 'Paginated list of access scopes')]
+    #[OA\Response(response: 403, description: 'Profile insufficient')]
+    public function mandateScopes(Request $request): JsonResponse
+    {
+        /** @var User|null $currentUser */
+        $currentUser = $this->getUser();
+        if (!$currentUser || $currentUser->getEffectiveNiveau() > 4) {
+            return $this->json(['error' => true, 'message' => 'Access denied', 'code' => 'ACCESS_DENIED'], Response::HTTP_FORBIDDEN);
+        }
+
+        $page = max(1, (int) $request->query->get('page', 1));
+        $limitParam = (int) $request->query->get('limit', 20);
+        $limit = $limitParam > 0 ? min(100, $limitParam) : 20;
+        $search = trim($request->query->get('search', ''));
+        $profileFilter = $request->query->get('profile');
+        $seasonFilter = trim($request->query->get('season', ''));
+        $competitionFilter = trim($request->query->get('competition', ''));
+
+        $adminNiveau = $currentUser->getEffectiveNiveau();
+
+        [$whereClause, $params] = $this->buildUserWhereClause($adminNiveau, $search, $profileFilter, $seasonFilter, $competitionFilter);
+
+        $users = $this->connection->fetchAllAssociative(
+            "SELECT u.Code, u.Identite, u.Niveau, u.Filtre_saison, u.Filtre_competition,
+                    u.Limitation_equipe_club, u.Filtre_journee
+             FROM kp_user u $whereClause ORDER BY u.Niveau ASC, u.Identite ASC LIMIT 1000",
+            $params
+        );
+
+        [$mandateConditions, $mandateParams] = $this->buildMandateFilterConditions($profileFilter, $seasonFilter, $competitionFilter);
+
+        $userCodes = array_column($users, 'Code');
+        $mandatesByCode = $this->fetchMandatesForUsers($userCodes, $mandateConditions, $mandateParams, true);
+
+        $baseMatchesProfile = $profileFilter === null || $profileFilter === '';
+        $baseMatchesSeason = empty($seasonFilter);
+        $baseMatchesCompetition = empty($competitionFilter);
+
+        // Build all scopes
+        $allScopes = [];
+        foreach ($users as $u) {
+            $baseNiveauMatches = $baseMatchesProfile || (int) $u['Niveau'] === (int) $profileFilter;
+            $baseSaisonMatches = $baseMatchesSeason || $u['Filtre_saison'] === '' || str_contains($u['Filtre_saison'], "|$seasonFilter|");
+            $baseCompMatches = $this->baseCompetitionMatches($u['Filtre_competition'] ?? '', $baseMatchesCompetition, $competitionFilter);
+
+            if ($baseNiveauMatches && $baseSaisonMatches && $baseCompMatches) {
+                $allScopes[] = [
+                    'userCode' => $u['Code'],
+                    'identite' => $u['Identite'] ?? '',
+                    'scopeType' => 'base',
+                    'mandateId' => null,
+                    'mandateLabel' => null,
+                    'niveau' => (int) $u['Niveau'],
+                    'filtreSaison' => $u['Filtre_saison'] ?? '',
+                    'filtreCompetition' => $u['Filtre_competition'] ?? '',
+                    'limitClubs' => $u['Limitation_equipe_club'] ?? '',
+                    'filtreJournee' => $u['Filtre_journee'] ?? '',
+                ];
+            }
+
+            foreach ($mandatesByCode[$u['Code']] ?? [] as $m) {
+                $allScopes[] = [
+                    'userCode' => $u['Code'],
+                    'identite' => $u['Identite'] ?? '',
+                    'scopeType' => 'mandate',
+                    'mandateId' => (int) $m['id'],
+                    'mandateLabel' => $m['libelle'],
+                    'niveau' => (int) $m['niveau'],
+                    'filtreSaison' => $m['filtre_saison'] ?? '',
+                    'filtreCompetition' => $m['filtre_competition'] ?? '',
+                    'limitClubs' => $m['limitation_equipe_club'] ?? '',
+                    'filtreJournee' => $m['filtre_journee'] ?? '',
+                ];
+            }
+        }
+
+        $total = count($allScopes);
+        $offset = ($page - 1) * $limit;
+        $items = array_slice($allScopes, $offset, $limit);
+        $totalPages = (int) ceil($total / $limit);
+
+        return $this->json([
+            'items' => $items,
+            'total' => $total,
+            'page' => $page,
+            'limit' => $limit,
+            'totalPages' => $totalPages,
+        ]);
+    }
+
+    // ──────────────────────────────────────────────────────────────────────
+    // POST /admin/users/bulk-add-season  — Add season to selected scopes
+    // ──────────────────────────────────────────────────────────────────────
+
+    #[Route('/admin/users/bulk-add-season', name: 'admin_users_bulk_add_season', methods: ['POST'])]
+    #[OA\Post(
+        path: '/admin/users/bulk-add-season',
+        summary: 'Add a season to selected scopes (base profiles and/or mandates)',
+        tags: ['30. App4 - Users']
+    )]
+    #[OA\Response(response: 200, description: 'Report of processed scopes')]
+    #[OA\Response(response: 400, description: 'Missing season or empty scope list')]
+    #[OA\Response(response: 403, description: 'Profile insufficient')]
+    public function bulkAddSeason(Request $request): JsonResponse
+    {
+        /** @var User|null $currentUser */
+        $currentUser = $this->getUser();
+        if (!$currentUser || $currentUser->getEffectiveNiveau() > 2) {
+            return $this->json(['error' => true, 'message' => 'Access denied', 'code' => 'ACCESS_DENIED'], Response::HTTP_FORBIDDEN);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        if (!is_array($data)) {
+            return $this->json(['error' => true, 'message' => 'Invalid JSON', 'code' => 'INVALID_DATA'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $season = trim($data['season'] ?? '');
+        $scopes = $data['scopes'] ?? [];
+
+        if (empty($season)) {
+            return $this->json(['error' => true, 'message' => 'Season is required', 'code' => 'INVALID_DATA'], Response::HTTP_BAD_REQUEST);
+        }
+        if (!is_array($scopes) || count($scopes) === 0) {
+            return $this->json(['error' => true, 'message' => 'No scopes provided', 'code' => 'INVALID_DATA'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $updated = 0;
+        $alreadyPresent = 0;
+        $restricted = 0;
+        $restrictedDetails = [];
+
+        foreach ($scopes as $scope) {
+            $type = $scope['type'] ?? '';
+            $userCode = trim($scope['userCode'] ?? '');
+            if (empty($userCode) || !in_array($type, ['base', 'mandate'], true)) {
+                continue;
+            }
+
+            if ($type === 'base') {
+                $row = $this->connection->fetchAssociative(
+                    'SELECT Filtre_saison, Identite FROM kp_user WHERE Code = ?',
+                    [$userCode]
+                );
+                if (!$row) continue;
+
+                $current = $row['Filtre_saison'] ?? '';
+                if (str_contains($current, "|$season|")) {
+                    $alreadyPresent++;
+                    continue;
+                }
+
+                $wasEmpty = ($current === '');
+                $newValue = $wasEmpty ? "|$season|" : rtrim($current, '|') . "|$season|";
+                $this->connection->executeStatement(
+                    'UPDATE kp_user SET Filtre_saison = ? WHERE Code = ?',
+                    [$newValue, $userCode]
+                );
+                $updated++;
+                if ($wasEmpty) {
+                    $restricted++;
+                    $restrictedDetails[] = [
+                        'type' => 'base',
+                        'userCode' => $userCode,
+                        'identite' => $row['Identite'] ?? '',
+                    ];
+                }
+            } else {
+                $mandateId = (int) ($scope['mandateId'] ?? 0);
+                if ($mandateId <= 0) continue;
+
+                $row = $this->connection->fetchAssociative(
+                    'SELECT filtre_saison, libelle FROM kp_user_mandat WHERE id = ? AND user_code = ?',
+                    [$mandateId, $userCode]
+                );
+                if (!$row) continue;
+
+                $current = $row['filtre_saison'] ?? '';
+                if (str_contains($current, "|$season|")) {
+                    $alreadyPresent++;
+                    continue;
+                }
+
+                $wasEmpty = ($current === '');
+                $newValue = $wasEmpty ? "|$season|" : rtrim($current, '|') . "|$season|";
+                $this->connection->executeStatement(
+                    'UPDATE kp_user_mandat SET filtre_saison = ? WHERE id = ? AND user_code = ?',
+                    [$newValue, $mandateId, $userCode]
+                );
+                $updated++;
+                if ($wasEmpty) {
+                    $restricted++;
+                    $restrictedDetails[] = [
+                        'type' => 'mandate',
+                        'userCode' => $userCode,
+                        'mandateId' => $mandateId,
+                        'mandateLabel' => $row['libelle'],
+                    ];
+                }
+            }
+        }
+
+        $this->logActionForSeason(
+            'Ajout saison en masse',
+            null,
+            "Saison $season ajoutée sur $updated périmètre(s) par " . $currentUser->getUserIdentifier()
+        );
+
+        return $this->json([
+            'season' => $season,
+            'updated' => $updated,
+            'alreadyPresent' => $alreadyPresent,
+            'restricted' => $restricted,
+            'details' => ['restricted' => $restrictedDetails],
+        ]);
     }
 
     // ──────────────────────────────────────────────────────────────────────
@@ -467,7 +868,7 @@ class AdminUsersController extends AbstractController
     {
         /** @var User|null $currentUser */
         $currentUser = $this->getUser();
-        if (!$currentUser || $currentUser->getNiveau() > 2) {
+        if (!$currentUser || $currentUser->getEffectiveNiveau() > 2) {
             return $this->json(['error' => true, 'message' => 'Access denied', 'code' => 'ACCESS_DENIED'], Response::HTTP_FORBIDDEN);
         }
 
@@ -477,7 +878,7 @@ class AdminUsersController extends AbstractController
             return $this->json(['error' => true, 'message' => 'No codes provided', 'code' => 'INVALID_DATA'], Response::HTTP_BAD_REQUEST);
         }
 
-        $adminNiveau = $currentUser->getNiveau();
+        $adminNiveau = $currentUser->getEffectiveNiveau();
         $deleted = 0;
 
         foreach ($codes as $code) {
@@ -527,7 +928,7 @@ class AdminUsersController extends AbstractController
     {
         /** @var User|null $currentUser */
         $currentUser = $this->getUser();
-        if (!$currentUser || $currentUser->getNiveau() > 3) {
+        if (!$currentUser || $currentUser->getEffectiveNiveau() > 3) {
             return $this->json(['error' => true, 'message' => 'Access denied', 'code' => 'ACCESS_DENIED'], Response::HTTP_FORBIDDEN);
         }
 
@@ -577,7 +978,7 @@ class AdminUsersController extends AbstractController
     {
         /** @var User|null $currentUser */
         $currentUser = $this->getUser();
-        if (!$currentUser || $currentUser->getNiveau() > 3) {
+        if (!$currentUser || $currentUser->getEffectiveNiveau() > 3) {
             return $this->json(['error' => true, 'message' => 'Access denied', 'code' => 'ACCESS_DENIED'], Response::HTTP_FORBIDDEN);
         }
 
@@ -617,7 +1018,7 @@ class AdminUsersController extends AbstractController
     {
         /** @var User|null $currentUser */
         $currentUser = $this->getUser();
-        if (!$currentUser || $currentUser->getNiveau() > 3) {
+        if (!$currentUser || $currentUser->getEffectiveNiveau() > 3) {
             return $this->json(['error' => true, 'message' => 'Access denied', 'code' => 'ACCESS_DENIED'], Response::HTTP_FORBIDDEN);
         }
 
@@ -638,9 +1039,22 @@ class AdminUsersController extends AbstractController
             return $this->json(['error' => true, 'message' => 'Mandate label is required', 'code' => 'INVALID_DATA'], Response::HTTP_BAD_REQUEST);
         }
 
-        $profileError = $this->validateProfileAssignment($currentUser->getNiveau(), $niveau);
+        $profileError = $this->validateProfileAssignment($currentUser->getEffectiveNiveau(), $niveau);
         if ($profileError) {
             return $this->json(['error' => true, 'message' => $profileError, 'code' => 'PROFILE_RESTRICTED'], Response::HTTP_FORBIDDEN);
+        }
+
+        // Filter requirements per profile (mandate: season is mandatory)
+        $filterError = $this->validateProfileFilters(
+            $niveau,
+            $data['filtreCompetition'] ?? '',
+            $data['filtreSaison'] ?? '',
+            $data['filtreJournee'] ?? '',
+            $data['limitClubs'] ?? '',
+            true
+        );
+        if ($filterError) {
+            return $this->json(['error' => true, 'message' => $filterError, 'code' => 'FILTER_REQUIRED'], Response::HTTP_BAD_REQUEST);
         }
 
         $sql = "INSERT INTO kp_user_mandat (user_code, libelle, niveau, filtre_saison, filtre_competition, limitation_equipe_club, filtre_journee, id_evenement)
@@ -679,7 +1093,7 @@ class AdminUsersController extends AbstractController
     {
         /** @var User|null $currentUser */
         $currentUser = $this->getUser();
-        if (!$currentUser || $currentUser->getNiveau() > 3) {
+        if (!$currentUser || $currentUser->getEffectiveNiveau() > 3) {
             return $this->json(['error' => true, 'message' => 'Access denied', 'code' => 'ACCESS_DENIED'], Response::HTTP_FORBIDDEN);
         }
 
@@ -703,9 +1117,22 @@ class AdminUsersController extends AbstractController
             return $this->json(['error' => true, 'message' => 'Mandate label is required', 'code' => 'INVALID_DATA'], Response::HTTP_BAD_REQUEST);
         }
 
-        $profileError = $this->validateProfileAssignment($currentUser->getNiveau(), $niveau);
+        $profileError = $this->validateProfileAssignment($currentUser->getEffectiveNiveau(), $niveau);
         if ($profileError) {
             return $this->json(['error' => true, 'message' => $profileError, 'code' => 'PROFILE_RESTRICTED'], Response::HTTP_FORBIDDEN);
+        }
+
+        // Filter requirements per profile (mandate: season is mandatory)
+        $filterError = $this->validateProfileFilters(
+            $niveau,
+            $data['filtreCompetition'] ?? '',
+            $data['filtreSaison'] ?? '',
+            $data['filtreJournee'] ?? '',
+            $data['limitClubs'] ?? '',
+            true
+        );
+        if ($filterError) {
+            return $this->json(['error' => true, 'message' => $filterError, 'code' => 'FILTER_REQUIRED'], Response::HTTP_BAD_REQUEST);
         }
 
         $sql = "UPDATE kp_user_mandat SET libelle = ?, niveau = ?, filtre_saison = ?, filtre_competition = ?,
@@ -744,7 +1171,7 @@ class AdminUsersController extends AbstractController
     {
         /** @var User|null $currentUser */
         $currentUser = $this->getUser();
-        if (!$currentUser || $currentUser->getNiveau() > 3) {
+        if (!$currentUser || $currentUser->getEffectiveNiveau() > 3) {
             return $this->json(['error' => true, 'message' => 'Access denied', 'code' => 'ACCESS_DENIED'], Response::HTTP_FORBIDDEN);
         }
 
@@ -765,6 +1192,167 @@ class AdminUsersController extends AbstractController
         );
 
         return $this->json(null, Response::HTTP_NO_CONTENT);
+    }
+
+    // ──────────────────────────────────────────────────────────────────────
+    // Shared helpers for scope-based queries (export + mandate-scopes)
+    // ──────────────────────────────────────────────────────────────────────
+
+    /** @return array{string, array<int, mixed>} [$whereClause, $params] */
+    private function buildUserWhereClause(
+        int $adminNiveau,
+        string $search,
+        ?string $profileFilter,
+        string $seasonFilter,
+        string $competitionFilter
+    ): array {
+        $conditions = [];
+        $params = [];
+
+        if ($adminNiveau > 1) {
+            $conditions[] = 'u.Niveau >= ?';
+            $params[] = $adminNiveau;
+        }
+        if (!empty($search)) {
+            $conditions[] = '(u.Code LIKE ? OR u.Identite LIKE ? OR u.Mail LIKE ?)';
+            $params[] = "%$search%";
+            $params[] = "%$search%";
+            $params[] = "%$search%";
+        }
+
+        // For profile/season/competition filters: an user matches if its BASE PROFILE satisfies
+        // ALL active filters simultaneously, OR a SINGLE MANDATE satisfies ALL active filters simultaneously.
+        $hasProfileFilter = $profileFilter !== null && $profileFilter !== '';
+        $hasSeasonFilter = !empty($seasonFilter);
+        $hasCompFilter = !empty($competitionFilter);
+        $compCodes = $hasCompFilter
+            ? array_filter(array_map('trim', explode(',', $competitionFilter)))
+            : [];
+
+        if ($hasProfileFilter || $hasSeasonFilter || $hasCompFilter) {
+            // Build base-profile match: all active filters must hold on u.*
+            $baseParts = [];
+            if ($hasProfileFilter) {
+                $baseParts[] = 'u.Niveau = ?';
+                $params[] = (int) $profileFilter;
+            }
+            if ($hasSeasonFilter) {
+                $baseParts[] = "(u.Filtre_saison = '' OR u.Filtre_saison LIKE ?)";
+                $params[] = "%|$seasonFilter|%";
+            }
+            if (!empty($compCodes)) {
+                $compOrParts = [];
+                foreach ($compCodes as $code) {
+                    $compOrParts[] = "u.Filtre_competition = '' OR u.Filtre_competition LIKE ?";
+                    $params[] = "%|$code|%";
+                }
+                $baseParts[] = '(' . implode(' OR ', $compOrParts) . ')';
+            }
+            $baseMatch = implode(' AND ', $baseParts);
+
+            // Build mandate match: a single mandate must satisfy ALL active filters
+            $mandateParts = [];
+            if ($hasProfileFilter) {
+                $mandateParts[] = 'm.niveau = ?';
+                $params[] = (int) $profileFilter;
+            }
+            if ($hasSeasonFilter) {
+                $mandateParts[] = "(m.filtre_saison = '' OR m.filtre_saison LIKE ?)";
+                $params[] = "%|$seasonFilter|%";
+            }
+            if (!empty($compCodes)) {
+                $compOrParts = [];
+                foreach ($compCodes as $code) {
+                    $compOrParts[] = "m.filtre_competition = '' OR m.filtre_competition LIKE ?";
+                    $params[] = "%|$code|%";
+                }
+                $mandateParts[] = '(' . implode(' OR ', $compOrParts) . ')';
+            }
+            $mandateMatch = 'EXISTS (SELECT 1 FROM kp_user_mandat m WHERE m.user_code = u.Code AND ' . implode(' AND ', $mandateParts) . ')';
+
+            $conditions[] = "($baseMatch OR $mandateMatch)";
+        }
+
+        $whereClause = count($conditions) > 0 ? 'WHERE ' . implode(' AND ', $conditions) : '';
+        return [$whereClause, $params];
+    }
+
+    /** @return array{array<string>, array<mixed>} [$conditions, $params] */
+    private function buildMandateFilterConditions(?string $profileFilter, string $seasonFilter, string $competitionFilter): array
+    {
+        $conditions = [];
+        $params = [];
+
+        if ($profileFilter !== null && $profileFilter !== '') {
+            $conditions[] = 'm.niveau = ?';
+            $params[] = (int) $profileFilter;
+        }
+        if (!empty($seasonFilter)) {
+            $conditions[] = "(m.filtre_saison = '' OR m.filtre_saison LIKE ?)";
+            $params[] = "%|$seasonFilter|%";
+        }
+        if (!empty($competitionFilter)) {
+            $codes = array_filter(array_map('trim', explode(',', $competitionFilter)));
+            if (!empty($codes)) {
+                $orParts = [];
+                foreach ($codes as $code) {
+                    $orParts[] = "m.filtre_competition = '' OR m.filtre_competition LIKE ?";
+                    $params[] = "%|$code|%";
+                }
+                $conditions[] = '(' . implode(' OR ', $orParts) . ')';
+            }
+        }
+
+        return [$conditions, $params];
+    }
+
+    /**
+     * @param string[] $userCodes
+     * @param string[] $mandateConditions
+     * @param mixed[]  $mandateParams
+     * @return array<string, array<int, array<string, mixed>>>
+     */
+    private function fetchMandatesForUsers(array $userCodes, array $mandateConditions, array $mandateParams, bool $includeId = false): array
+    {
+        if (empty($userCodes)) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($userCodes), '?'));
+        $mandateWhere = "WHERE m.user_code IN ($placeholders)";
+        $sqlParams = $userCodes;
+
+        if (!empty($mandateConditions)) {
+            $mandateWhere .= ' AND ' . implode(' AND ', $mandateConditions);
+            $sqlParams = array_merge($sqlParams, $mandateParams);
+        }
+
+        $idCol = $includeId ? 'm.id,' : '';
+        $rows = $this->connection->fetchAllAssociative(
+            "SELECT m.user_code, {$idCol} m.libelle, m.niveau, m.filtre_saison, m.filtre_competition,
+                    m.limitation_equipe_club, m.filtre_journee
+             FROM kp_user_mandat m $mandateWhere ORDER BY m.user_code, m.id",
+            $sqlParams
+        );
+
+        $byCode = [];
+        foreach ($rows as $m) {
+            $byCode[$m['user_code']][] = $m;
+        }
+        return $byCode;
+    }
+
+    private function baseCompetitionMatches(string $filtreCompetition, bool $baseMatchesCompetition, string $competitionFilter): bool
+    {
+        if ($baseMatchesCompetition) {
+            return true;
+        }
+        foreach (array_filter(array_map('trim', explode(',', $competitionFilter))) as $code) {
+            if ($filtreCompetition === '' || str_contains($filtreCompetition, "|$code|")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // ──────────────────────────────────────────────────────────────────────
@@ -793,5 +1381,48 @@ class AdminUsersController extends AbstractController
         }
 
         return 'You cannot assign this profile level';
+    }
+
+    /**
+     * Validate that mandatory filters are set for a given profile level.
+     *
+     * Rules:
+     *  - niveau >= 3 : at least one season required (not "all")
+     *  - niveau >= 3 : at least one competition required (not "all")
+     *  - niveau 5 or 6 : at least one journée required
+     *  - niveau 7 : at least one club required
+     *  - isMandat = true : at least one season required (not "all") — already covered by first rule
+     *
+     * @return string|null Error message key, or null if valid
+     */
+    private function validateProfileFilters(
+        int $niveau,
+        string $filtreCompetition,
+        string $filtreSaison,
+        string $filtreJournee,
+        string $limitClubs,
+        bool $isMandat = false
+    ): ?string {
+        if ($niveau >= 3 && trim($filtreSaison) === '') {
+            return 'At least one season must be selected for profiles 3 and above';
+        }
+
+        if ($niveau >= 3 && trim($filtreCompetition) === '') {
+            return 'At least one competition must be selected for profiles 3 and above';
+        }
+
+        if (in_array($niveau, [5, 6]) && trim($filtreJournee) === '') {
+            return 'At least one gameday must be selected for profiles 5 and 6';
+        }
+
+        if ($niveau === 7 && trim($limitClubs) === '') {
+            return 'At least one club must be selected for profile 7';
+        }
+
+        if ($isMandat && trim($filtreSaison) === '') {
+            return 'At least one season must be selected for a mandate';
+        }
+
+        return null;
     }
 }

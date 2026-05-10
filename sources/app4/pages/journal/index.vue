@@ -380,7 +380,7 @@ onMounted(() => {
       :total="total"
       :limit="limit"
       :limit-options="[25, 50, 100, 200]"
-      :showing-text="t('journal.pagination.showing')"
+      :showing-text="t('journal.pagination.showing', { from: '{from}', to: '{to}', total: '{total}' })"
       :items-per-page-text="t('journal.pagination.items_per_page')"
       @update:page="page = $event"
       @update:limit="limit = $event; page = 1"

@@ -39,6 +39,9 @@ Page d'administration des utilisateurs accredites du systeme KPI. Permet de list
 | 10 | Lien mailto vers tous les utilisateurs affiches | <= 4 | `mailto:` avec tous les emails | ❌ Supprimer |
 | 11 | Lien vers journal des activites | <= 2 | Lien GestionJournal.php | ✅ Conserver — lien vers page `/activity-log` (voir `PAGE_JOURNAL_ACTIVITE.md`) |
 | 12 | Surlignage texte dans le tableau | <= 4 | Plugin jQuery highlight | ❌ Supprimer (remplace par recherche API) |
+| 13 | Export CSV de la liste filtrée | <= 2 | Aucun | ✅ Nouveau — exporte les utilisateurs visibles selon les filtres actifs (voir section 2.4) |
+| 14 | Mode "Vue mandats" — affichage une ligne par perimetre d'acces | <= 4 | Aucun | ✅ Nouveau — toggle "Utilisateurs / Mandats" dans la toolbar ; en mode Mandats, une ligne = un scope (profil de base ou mandat), les actions varient selon le type de ligne (voir section 2.6) |
+| 15 | Ajout de saison en masse sur une selection de scopes | <= 2 | Aucun | ✅ Nouveau — action groupee en mode Mandats : ajoute une saison au filtre saison de chaque scope selectionne (voir section 2.7) |
 
 ### 2.2 Creation / Modification d'un utilisateur
 
@@ -78,6 +81,190 @@ Page d'administration des utilisateurs accredites du systeme KPI. Permet de list
 | 6 | Email de reinitialisation | Lien de reinitialisation securise au lieu d'envoyer le mot de passe en clair. Complexite minimale imposee (10 car., majuscules, minuscules, chiffres, speciaux) |
 | 7 | Profil par defaut 7 | Un nouvel utilisateur est cree avec profil 7, saison en cours, propre club |
 | 8 | Systeme de mandats | Possibilite d'attribuer des profils supplementaires par perimetre (saisons, competitions, clubs, journees). Selection du mandat actif apres connexion et changement sans deconnexion |
+| 9 | Export CSV | Export de la liste filtrée en CSV pour extraction des responsables par saison/competition/section |
+| 10 | Mode Vue Mandats | Toggle "Utilisateurs / Mandats" : en mode Mandats, affichage une ligne par perimetre d'acces (profil de base ou mandat), meme logique que l'export CSV |
+| 11 | Ajout de saison en masse | Action groupee en mode Mandats : ajoute une saison aux scopes selectionnes sans ecraser les competitions/clubs existants. Gere les cas "deja present" et "filtre vide" |
+
+### 2.4 Export CSV de la liste filtree
+
+**Objectif** : permettre l'extraction des responsables de competition ou d'equipes en fin/debut de saison pour mise a jour ou archivage.
+
+**Declenchement** : bouton "Exporter CSV" dans la toolbar, actif uniquement si au moins un filtre est applique (profil, saison ou competition). Les filtres actifs definissent le contenu de l'export.
+
+**Contenu du CSV** :
+
+| Colonne | Source | Notes |
+|---------|--------|-------|
+| Licence | `Code` | |
+| Identite | `Identite` | |
+| Email | `Mail` | Inclus dans l'export (contrairement au tableau, non masque) |
+| Telephone | `Tel` | |
+| Fonction | `Fonction` | |
+| Profil | `Niveau` | Valeur numerique |
+| Saisons | `Filtre_saison` | Format pipe converti en liste separee par virgule |
+| Competitions | `Filtre_competition` | Format pipe converti en liste separee par virgule |
+| Clubs | `Limitation_equipe_club` | |
+| Journees | `Filtre_journee` | |
+| Mandat | `kp_user_mandat.libelle` | Vide pour le profil de base ; libelle du mandat pour les lignes de mandats |
+
+**Profil requis** : <= 2 (meme niveau que la suppression — l'email est expose).
+
+**Endpoint** : `GET /admin/users/export?profile=...&season=...&competition=...` — memes parametres que la liste, sans pagination, limite a 1000 lignes par utilisateur selectionne.
+
+**Comportement** :
+- Une ligne par perimetre correspondant aux filtres : profil de base si il matche + une ligne par mandat correspondant. Un meme utilisateur peut donc apparaitre sur plusieurs lignes.
+- Nom du fichier : `utilisateurs_YYYYMMDD.csv` avec la date du jour
+- Encodage UTF-8 avec BOM (pour compatibilite Excel)
+- Separateur point-virgule (standard France)
+- En-tete de colonnes en francais
+- Le bouton est desactive (grise) si aucun filtre saison, profil ou competition n'est selectionne, pour eviter un export massif non cible
+
+### 2.5 Fonctionnalites inter-saisonnieres (a confirmer)
+
+Ces fonctionnalites adressent la gestion des profils d'une saison a l'autre. Elles sont proposees mais non confirmees — a valider selon le besoin operationnel reel constate apres une premiere saison d'utilisation.
+
+#### 2.5.1 Date d'expiration sur les mandats ⏸ A confirmer
+
+Ajouter une colonne `date_fin` (date, nullable) dans `kp_user_mandat`. Un mandat dont la `date_fin` est depassee est automatiquement masque dans l'interface (ni visible pour l'utilisateur, ni selectionnable au login). Il reste en base pour l'historique et peut etre reactives.
+
+**Avantage** : les mandats saisonniers expirent naturellement en fin de saison sans nettoyage manuel. Le profil de base de l'utilisateur n'est pas touche.
+
+**Impact** : modification schema `kp_user_mandat` + logique de filtre dans les endpoints mandats + affichage "expire le..." dans la section Mandats de la modale.
+
+#### 2.5.2 Duplication de mandats vers une nouvelle saison ⏸ A confirmer
+
+Action groupee depuis la liste filtree : selectionner N utilisateurs → "Dupliquer vers saison X". Cree un mandat pour chaque utilisateur selectionne avec les memes competitions/clubs, la saison cible a la place de la saison source.
+
+**Cas d'usage** : les responsables de division N1H restent les memes d'une annee sur l'autre — on duplique leurs droits vers la saison 2027 en un clic plutot que de les modifier un par un.
+
+**Impact** : nouveau endpoint `POST /admin/users/bulk-duplicate-mandate` + modale de confirmation avec selection de la saison cible + affichage du nombre de mandats crees.
+
+#### 2.5.3 Import CSV de mandats ⏸ A confirmer
+
+Import d'un fichier CSV pour creer ou mettre a jour des mandats en masse. Format attendu : `code_utilisateur, libelle, niveau, saison, competition, clubs, journees`. Chaque ligne cree un nouveau mandat pour l'utilisateur indique (ou met a jour si un mandat avec le meme libelle existe deja).
+
+**Cas d'usage** : en debut de saison, le responsable prepare un tableur avec tous les nouveaux responsables de poule, l'importe, et tous les mandats sont crees en une operation.
+
+**Impact** : endpoint `POST /admin/users/import-mandates` (multipart/form-data) + page ou modale d'import avec validation et rapport d'erreurs ligne par ligne + gabarit CSV telechargeable.
+
+### 2.6 Mode "Vue Mandats"
+
+**Objectif** : permettre de visualiser et naviguer dans les perimetres d'acces (profils de base + mandats) exactement comme l'export CSV — une ligne par scope correspondant aux filtres actifs.
+
+#### 2.6.1 Toggle Utilisateurs / Mandats
+
+Un toggle dans la toolbar bascule entre deux modes d'affichage :
+- **Mode "Utilisateurs"** (defaut) : comportement actuel, une ligne par utilisateur
+- **Mode "Mandats"** : une ligne par perimetre d'acces (profil de base OU mandat)
+
+Le toggle est visible pour tous les profils ayant acces a la page (<= 4). Les filtres actifs (profil, saison, competition, recherche) s'appliquent dans les deux modes.
+
+#### 2.6.2 Tableau en mode Mandats
+
+**Colonnes** : Identite (licence) | Profil | Saisons | Competitions | Clubs | Journees | Mandat | Actions
+
+**Ligne "profil de base"** :
+- Colonne Profil : niveau de base de l'utilisateur
+- Colonnes Saisons/Competitions/Clubs/Journees : valeurs du profil de base (`kp_user`)
+- Colonne Mandat : **badge visuel distinctif** (ex. badge "Base" grise ou icone utilisateur) — pas de texte
+- Actions : bouton "Modifier l'utilisateur" (comportement identique au mode Utilisateurs)
+
+**Ligne "mandat"** :
+- Colonne Profil : niveau du mandat (`kp_user_mandat.niveau`)
+- Colonnes Saisons/Competitions/Clubs/Journees : valeurs du mandat
+- Colonne Mandat : libelle du mandat (`kp_user_mandat.libelle`)
+- Actions : bouton "Modifier le mandat" (ouvre le formulaire mandat dans la modale UserEditModal, pre-rempli sur ce mandat)
+
+**Logique d'affichage** :
+- Une ligne "profil de base" est affichee si le profil de base de l'utilisateur correspond aux filtres actifs
+- Une ligne par mandat est affichee si ce mandat correspond aux filtres actifs
+- Un meme utilisateur peut donc apparaitre sur plusieurs lignes
+- Sans filtre actif, tous les perimetres sont affiches — la pagination est obligatoire (meme regle que l'export : actif uniquement si au moins un filtre est applique, sinon afficher un message d'invite)
+- Pas de checkboxes en mode Mandats (pas de suppression en masse par scope)
+
+#### 2.6.3 Endpoint
+
+Reutilise le meme endpoint que l'export CSV mais en JSON : `GET /admin/users/mandate-scopes` (voir section 6.2.7).
+
+#### 2.6.4 Comportement du bouton "Modifier le mandat"
+
+Cliquer sur "Modifier le mandat" sur une ligne de mandat ouvre la modale `AdminUserEditModal` pour l'utilisateur concerne, avec le panneau "Mandats" directement ouvert et le formulaire d'edition pre-rempli sur le mandat de cette ligne.
+
+Profil requis : <= 3 (meme que la creation/modification d'un mandat). Les profils 4 en mode Mandats voient les lignes mais n'ont pas le bouton "Modifier le mandat".
+
+#### 2.6.5 Wireframe mode Mandats (desktop)
+
+```
++------------------------------------------------------------------+
+| Utilisateurs                           [Journal des activites >]  |
++------------------------------------------------------------------+
+| AdminToolbar                                                      |
+| [Profil: v] [Saison: v]  [____Recherche____] [Utilisateurs|Mandats] |
++------------------------------------------------------------------+
+|                                                                    |
+| +----------------------------------------------------------------+|
+| | Identite       | Profil | Saisons | Compet.| Clubs | Mandat    ||
+| |----------------|--------|---------|--------|-------|-----------|  |
+| | Dupont Jean    | 7      | 2026    | N1H    | 7603  | [• Base]  ||
+| | (2001234)      |        |         | N2H    |       |           ||
+| |                |        |         |        |       | [Modifier]||
+| |----------------|--------|---------|--------|-------|-----------|  |
+| | Dupont Jean    | 5      | 2026    | CF     | —     | Delegue   ||
+| | (2001234)      |        |         |        |       | CdF 2026  ||
+| |                |        |         |        |       | [Mod. mdt]||
+| |----------------|--------|---------|--------|-------|-----------|  |
+| | Dupont Jean    | 3      | 2026    | R1H    | —     | Resp.     ||
+| | (2001234)      |        | 2025    | R2H    |       | Regional  ||
+| |                |        |         | R1F    |       | [Mod. mdt]||
+| +----------------------------------------------------------------+|
+|                                                                    |
+| AdminPagination                                                    |
+| [< 1 2 3 >]                                    [20|50|100 par p] |
++------------------------------------------------------------------+
+```
+
+### 2.7 Ajout de saison en masse sur une selection de scopes
+
+**Objectif** : en debut de saison, ajouter rapidement une nouvelle saison (ex. `2027`) a un ensemble de perimetres d'acces selectionnes — profils de base ou mandats — sans modifier les competitions, clubs ou journees deja configures.
+
+#### 2.7.1 Declenchement
+
+Disponible **uniquement en mode "Vue Mandats"** (section 2.6). En mode Mandats, chaque ligne dispose d'une checkbox de selection (colonne la plus a gauche, comme en mode Utilisateurs). Quand au moins une ligne est cochee, la toolbar d'actions groupees affiche le bouton **"Ajouter une saison"** (profil <= 2 uniquement).
+
+#### 2.7.2 Flux utilisateur
+
+1. L'admin selectionne un ou plusieurs scopes (lignes) en mode Mandats via les checkboxes
+2. Il clique sur "Ajouter une saison"
+3. Une modale s'ouvre avec :
+   - Un select de la saison a ajouter (liste des saisons disponibles via `/admin/filters/seasons`)
+   - Un recapitulatif : N scopes selectionnes (X profils de base, Y mandats)
+   - Un avertissement si certains scopes ont `Filtre_saison` vide : "Z scope(s) ont actuellement acces a toutes les saisons. Ajouter la saison `XXXX` les restreindra a cette saison uniquement."
+   - Boutons [Annuler] [Confirmer]
+4. Apres confirmation, l'API traite chaque scope et retourne un rapport
+5. La modale affiche le rapport (N modifies, M deja a jour, Z restreints depuis "toutes saisons"), puis se ferme
+6. Le tableau se rafraichit
+
+#### 2.7.3 Regles de traitement par scope
+
+| Etat du `Filtre_saison` du scope | Comportement |
+|----------------------------------|--------------|
+| Contient deja la saison cible | **Ignore** silencieusement (compte dans "deja a jour") |
+| Non vide, ne contient pas la saison | **Ajoute** `|XXXX|` au format pipe existant |
+| Vide (= toutes saisons) | **Remplace** par `|XXXX|` (restreint l'acces) — compte dans "restreints depuis toutes saisons" ; un avertissement est affiche avant confirmation |
+
+#### 2.7.4 Rapport de resultat
+
+Apres traitement, la modale affiche :
+```
+Traitement termine :
+  • N scope(s) mis a jour (saison XXXX ajoutee)
+  • M scope(s) ignorés (saison deja presente)
+  • Z scope(s) restreints (etaient "toutes saisons", desormais limites a XXXX)
+```
+
+#### 2.7.5 Endpoint
+
+`POST /admin/users/bulk-add-season` (voir section 6.2.18).
 
 ---
 
@@ -346,7 +533,12 @@ Voir [DROITS_PAR_PROFIL.md](DROITS_PAR_PROFIL.md) section "Bypass perimetre pour
 - **Autocomplete licence** : Recherche dans `/admin/athletes/search?q=...` (min 2 car.). A la selection, remplit automatiquement licence, identite, et club (si disponible)
 - **Autocomplete clubs** : Recherche dans `/admin/clubs/search?q=...` (min 2 car.). Affiche les resultats en dropdown. Chaque club selectionne s'ajoute comme un tag. Clic sur le tag pour retirer
 - **Profil par defaut** : 7 pour un nouvel utilisateur
-- **Validation avant soumission** : Licence non vide, email non vide et valide, profil selectionne. Pour profils 7-8, filtre club obligatoire
+- **Validation avant soumission** : Licence non vide, email non vide et valide, profil selectionne. Regles supplementaires selon le profil :
+  - Profil >= 3 : au moins une saison obligatoire (impossible de laisser "Toutes les saisons")
+  - Profil >= 3 : au moins une competition obligatoire (impossible de laisser "Toutes les competitions")
+  - Profil 5 ou 6 : au moins une journee obligatoire
+  - Profil 7 : au moins un club obligatoire
+  - Mandat uniquement : au moins une saison obligatoire (la case "Toutes les saisons" n'est pas proposee dans le formulaire mandat)
 - **Email de reinitialisation** : Si coche, l'API genere un token de reinitialisation et envoie un email a l'utilisateur avec un lien securise. L'email peut inclure un lien vers la documentation et un message complementaire. Le bouton "Message standard" pre-remplit la textarea avec un texte type (regles de gestion des feuilles de presence, etc.)
 - **Email admin** : A chaque creation/modification, un email de notification est envoye a contact@kayak-polo.info avec le resume des actions effectuees
 - **Lien journal** : Un lien en haut de page renvoie vers la page Journal des activites (`/activity-log`)
@@ -569,7 +761,84 @@ Voir [DROITS_PAR_PROFIL.md](DROITS_PAR_PROFIL.md) section "Bypass perimetre pour
 | 403 | Profil insuffisant |
 | 404 | Utilisateur non trouve |
 
-#### 6.2.6 Suppression en masse
+#### 6.2.6 Export CSV
+
+**Methode** : GET
+**Endpoint** : `/admin/users/export`
+**Profil** : <= 2
+**Description** : Exporte la liste filtree des utilisateurs au format CSV.
+
+**Query Parameters** : memes que `/admin/users` (search, profile, season, competition), sans pagination. Limite a 1000 lignes.
+
+**Response** : fichier CSV (Content-Type: text/csv; charset=utf-8) avec BOM UTF-8, separateur point-virgule, colonnes : Licence, Identite, Email, Telephone, Fonction, Profil, Saisons, Competitions, Clubs, Journees, Nb mandats.
+
+**Logique backend** :
+1. Verifier profil <= 2
+2. Appliquer les memes filtres que la liste (search, profile, season, competition)
+3. Joindre `kp_user_mandat` pour compter les mandats par utilisateur
+4. Generer le CSV avec BOM UTF-8 et separateur `;`
+5. Nom de fichier : `utilisateurs_YYYYMMDD.csv`
+
+**Codes retour** :
+| Code | Signification |
+|------|---------------|
+| 200 | Fichier CSV retourne |
+| 403 | Profil insuffisant |
+
+#### 6.2.7 Liste des perimetres d'acces (mode Mandats)
+
+**Methode** : GET
+**Endpoint** : `/admin/users/mandate-scopes`
+**Profil** : <= 4
+**Description** : Retourne la liste des perimetres d'acces (profils de base + mandats) correspondant aux filtres actifs. Meme logique que l'export CSV mais en JSON, avec pagination.
+
+**Query Parameters** : memes que `/admin/users` (search, profile, season, competition, page, limit).
+
+**Response** :
+```json
+{
+  "items": [
+    {
+      "userCode": "2001234",
+      "identite": "DUPONT Jean",
+      "scopeType": "base",
+      "mandateId": null,
+      "mandateLabel": null,
+      "niveau": 7,
+      "filtreSaison": "|2026|",
+      "filtreCompetition": "|N1H|N2H|",
+      "limitClubs": "7603",
+      "filtreJournee": ""
+    },
+    {
+      "userCode": "2001234",
+      "identite": "DUPONT Jean",
+      "scopeType": "mandate",
+      "mandateId": 1,
+      "mandateLabel": "Delegue CdF 2026",
+      "niveau": 5,
+      "filtreSaison": "|2026|",
+      "filtreCompetition": "|CF|",
+      "limitClubs": "",
+      "filtreJournee": "5775,5777"
+    }
+  ],
+  "total": 47,
+  "page": 1,
+  "limit": 20,
+  "totalPages": 3
+}
+```
+
+**Logique backend** : identique a l'export CSV (section 2.4 et 6.2.6), sans la generation du fichier. Meme construction des `exportRows` (un scope par ligne), avec pagination.
+
+**Codes retour** :
+| Code | Signification |
+|------|---------------|
+| 200 | Succes |
+| 403 | Profil insuffisant |
+
+#### 6.2.8 Suppression en masse
 
 **Methode** : POST
 **Endpoint** : `/admin/users/bulk-delete`
@@ -603,7 +872,7 @@ Voir [DROITS_PAR_PROFIL.md](DROITS_PAR_PROFIL.md) section "Bypass perimetre pour
 | 200 | Suppression effectuee |
 | 403 | Profil insuffisant |
 
-#### 6.2.7 Envoyer email de reinitialisation
+#### 6.2.9 Envoyer email de reinitialisation
 
 **Methode** : POST
 **Endpoint** : `/admin/users/{code}/reset-password`
@@ -626,7 +895,7 @@ Voir [DROITS_PAR_PROFIL.md](DROITS_PAR_PROFIL.md) section "Bypass perimetre pour
 | 403 | Profil insuffisant |
 | 404 | Utilisateur non trouve |
 
-#### 6.2.8 Email de notification admin
+#### 6.2.10 Email de notification admin
 
 A chaque creation ou modification d'un utilisateur, un email est envoye automatiquement a `contact@kayak-polo.info` contenant :
 - Action effectuee (creation/modification)
@@ -636,7 +905,7 @@ A chaque creation ou modification d'un utilisateur, un email est envoye automati
 - Message complementaire si renseigne
 - Nom de l'administrateur ayant effectue l'action
 
-#### 6.2.9 Page de reinitialisation du mot de passe
+#### 6.2.11 Page de reinitialisation du mot de passe
 
 **Route app4** : `/reset-password?token=...`
 **Acces** : Public (pas d'authentification requise)
@@ -671,7 +940,7 @@ A chaque creation ou modification d'un utilisateur, un email est envoye automati
 | 400 | Mot de passe ne respecte pas les regles de complexite |
 | 401 | Token invalide ou expire |
 
-#### 6.2.10 Liste des mandats d'un utilisateur
+#### 6.2.12 Liste des mandats d'un utilisateur
 
 **Methode** : GET
 **Endpoint** : `/admin/users/{code}/mandats`
@@ -706,7 +975,7 @@ A chaque creation ou modification d'un utilisateur, un email est envoye automati
 }
 ```
 
-#### 6.2.11 Creer un mandat
+#### 6.2.13 Creer un mandat
 
 **Methode** : POST
 **Endpoint** : `/admin/users/{code}/mandats`
@@ -741,14 +1010,14 @@ A chaque creation ou modification d'un utilisateur, un email est envoye automati
 | 403 | Profil insuffisant ou tentative d'attribuer un profil non autorise |
 | 404 | Utilisateur non trouve |
 
-#### 6.2.12 Modifier un mandat
+#### 6.2.14 Modifier un mandat
 
 **Methode** : PUT
 **Endpoint** : `/admin/users/{code}/mandats/{id}`
 **Profil** : <= 3
 **Description** : Modifie un mandat existant.
 
-**Request Body** : Meme format que la creation (6.2.11).
+**Request Body** : Meme format que la creation (6.2.13).
 
 **Codes retour** :
 | Code | Signification |
@@ -758,7 +1027,7 @@ A chaque creation ou modification d'un utilisateur, un email est envoye automati
 | 403 | Profil insuffisant |
 | 404 | Utilisateur ou mandat non trouve |
 
-#### 6.2.13 Supprimer un mandat
+#### 6.2.15 Supprimer un mandat
 
 **Methode** : DELETE
 **Endpoint** : `/admin/users/{code}/mandats/{id}`
@@ -772,7 +1041,7 @@ A chaque creation ou modification d'un utilisateur, un email est envoye automati
 | 403 | Profil insuffisant |
 | 404 | Utilisateur ou mandat non trouve |
 
-#### 6.2.14 Liste des mandats de l'utilisateur connecte
+#### 6.2.16 Liste des mandats de l'utilisateur connecte
 
 **Methode** : GET
 **Endpoint** : `/auth/mandates`
@@ -809,7 +1078,7 @@ A chaque creation ou modification d'un utilisateur, un email est envoye automati
 }
 ```
 
-#### 6.2.15 Changer de mandat actif
+#### 6.2.17 Changer de mandat actif
 
 **Methode** : POST
 **Endpoint** : `/auth/switch-mandate`
@@ -863,6 +1132,61 @@ A chaque creation ou modification d'un utilisateur, un email est envoye automati
 | 200 | Mandat change, nouveau token retourne |
 | 400 | mandateId invalide |
 | 404 | Mandat non trouve pour cet utilisateur |
+
+#### 6.2.18 Ajout de saison en masse sur une selection de scopes
+
+**Methode** : POST
+**Endpoint** : `/admin/users/bulk-add-season`
+**Profil** : <= 2
+**Description** : Ajoute une saison au filtre saison de chaque scope selectionne (profil de base ou mandat). N'ecrase pas les competitions, clubs ou journees existants.
+
+**Request Body** :
+```json
+{
+  "season": "2027",
+  "scopes": [
+    { "type": "base", "userCode": "2001234" },
+    { "type": "mandate", "userCode": "2001234", "mandateId": 1 },
+    { "type": "base", "userCode": "63155" }
+  ]
+}
+```
+
+**Logique backend** :
+1. Verifier profil <= 2
+2. Pour chaque scope :
+   - Recuperer `Filtre_saison` (depuis `kp_user` ou `kp_user_mandat` selon le type)
+   - Si `Filtre_saison` contient deja `|season|` : marquer comme "deja a jour", ne rien modifier
+   - Si `Filtre_saison` est vide : remplacer par `|season|` (restreint depuis "toutes saisons"), marquer comme "restreint"
+   - Sinon : concatener `|season|` au format pipe existant, marquer comme "mis a jour"
+3. Executer les UPDATE en base pour les scopes modifies
+4. Journaliser l'action (liste des scopes modifies + saison ajoutee)
+5. Retourner le rapport
+
+**Response** :
+```json
+{
+  "season": "2027",
+  "updated": 12,
+  "alreadyPresent": 3,
+  "restricted": 2,
+  "details": {
+    "restricted": [
+      { "type": "base", "userCode": "63155", "identite": "VIGNET Eric" },
+      { "type": "mandate", "userCode": "2001234", "mandateId": 1, "mandateLabel": "Delegue CdF 2026" }
+    ]
+  }
+}
+```
+
+**Note** : `restricted` = scopes dont `Filtre_saison` etait vide avant l'operation. Ces scopes sont desormais limites a la saison choisie. L'admin a ete averti avant confirmation (voir section 2.7.2).
+
+**Codes retour** :
+| Code | Signification |
+|------|---------------|
+| 200 | Traitement effectue, rapport retourne |
+| 400 | Saison manquante ou liste de scopes vide |
+| 403 | Profil insuffisant |
 
 ---
 
@@ -962,7 +1286,7 @@ sources/app4/
 
 ### 8.2 Composants reutilises
 
-- `AdminToolbar` — Barre d'outils (recherche, ajout, suppression en masse)
+- `AdminToolbar` — Barre d'outils (recherche, ajout, suppression en masse, export CSV)
 - `AdminModal` — Modale generique
 - `AdminConfirmModal` — Modale de confirmation de suppression
 - `AdminPagination` — Pagination
@@ -1095,6 +1419,24 @@ export interface AuthUser {
     "title": "Utilisateurs",
     "search_placeholder": "Rechercher par nom, licence ou email...",
     "add": "Ajouter un utilisateur",
+    "export_csv": "Exporter CSV",
+    "export_csv_disabled_tooltip": "Selectionnez au moins un filtre (profil ou saison) avant d'exporter",
+    "view_mode_users": "Utilisateurs",
+    "view_mode_mandates": "Mandats",
+    "mandate_scope_base": "Base",
+    "mandate_scope_base_aria": "Profil de base",
+    "mandate_edit": "Modifier le mandat",
+    "mandate_scopes_empty": "Aucun perimetre ne correspond aux filtres selectionnes",
+    "mandate_scopes_no_filter": "Selectionnez au moins un filtre pour afficher les perimetres d'acces",
+    "bulk_add_season": "Ajouter une saison",
+    "bulk_add_season_modal_title": "Ajouter une saison aux perimetres selectionnes",
+    "bulk_add_season_select_label": "Saison a ajouter",
+    "bulk_add_season_summary": "{count} perimetre(s) selectionne(s) ({base} profils de base, {mandates} mandats)",
+    "bulk_add_season_warning_restricted": "{count} perimetre(s) ont actuellement acces a toutes les saisons. Ajouter la saison {season} les restreindra a cette saison uniquement.",
+    "bulk_add_season_confirm": "Confirmer",
+    "bulk_add_season_result_updated": "{count} perimetre(s) mis a jour (saison {season} ajoutee)",
+    "bulk_add_season_result_already_present": "{count} perimetre(s) ignores (saison deja presente)",
+    "bulk_add_season_result_restricted": "{count} perimetre(s) restreints (etaient \"toutes saisons\", desormais limites a {season})",
     "filter_profile": "Profil",
     "filter_profile_all": "Tous les profils",
     "filter_season": "Saison",
@@ -1216,6 +1558,24 @@ export interface AuthUser {
     "title": "Users",
     "search_placeholder": "Search by name, licence or email...",
     "add": "Add user",
+    "export_csv": "Export CSV",
+    "export_csv_disabled_tooltip": "Select at least one filter (profile or season) before exporting",
+    "view_mode_users": "Users",
+    "view_mode_mandates": "Mandates",
+    "mandate_scope_base": "Base",
+    "mandate_scope_base_aria": "Base profile",
+    "mandate_edit": "Edit mandate",
+    "mandate_scopes_empty": "No scope matches the selected filters",
+    "mandate_scopes_no_filter": "Select at least one filter to display access scopes",
+    "bulk_add_season": "Add a season",
+    "bulk_add_season_modal_title": "Add a season to selected scopes",
+    "bulk_add_season_select_label": "Season to add",
+    "bulk_add_season_summary": "{count} scope(s) selected ({base} base profiles, {mandates} mandates)",
+    "bulk_add_season_warning_restricted": "{count} scope(s) currently have access to all seasons. Adding season {season} will restrict them to that season only.",
+    "bulk_add_season_confirm": "Confirm",
+    "bulk_add_season_result_updated": "{count} scope(s) updated (season {season} added)",
+    "bulk_add_season_result_already_present": "{count} scope(s) skipped (season already present)",
+    "bulk_add_season_result_restricted": "{count} scope(s) restricted (were \"all seasons\", now limited to {season})",
     "filter_profile": "Profile",
     "filter_profile_all": "All profiles",
     "filter_season": "Season",
@@ -1342,6 +1702,10 @@ export interface AuthUser {
 | Modifier un utilisateur | <= 3 | ROLE_DIVISION | Profils 3-4 ne peuvent modifier que des profils >= 5. Seul profil 1 modifie l'identite. Seul profil <= 2 modifie les evenements |
 | Supprimer un utilisateur | <= 2 | ROLE_ADMIN | Ne peut pas supprimer un utilisateur de profil <= son propre profil |
 | Supprimer en masse | <= 2 | ROLE_ADMIN | Idem |
+| Exporter CSV | <= 2 | ROLE_ADMIN | L'email est inclus dans l'export — meme restriction que la suppression |
+| Afficher la vue Mandats | <= 4 | ROLE_COMPETITION | Meme acces que la liste utilisateurs |
+| Modifier un mandat depuis la vue Mandats | <= 3 | ROLE_DIVISION | Ouvre la modale sur le mandat concerne |
+| Ajouter une saison en masse (bulk-add-season) | <= 2 | ROLE_ADMIN | Peut modifier le `Filtre_saison` des profils de base et des mandats ; restriction explicite si filtre vide |
 | Envoyer email reinitialisation | <= 3 | ROLE_DIVISION | |
 | Voir les mandats d'un utilisateur | <= 3 | ROLE_DIVISION | |
 | Creer/modifier un mandat | <= 3 | ROLE_DIVISION | Le profil du mandat respecte les memes restrictions que le profil principal (Q4) |
@@ -1460,6 +1824,9 @@ Apres implementation, ajouter les endpoints dans `DOC/developer/reference/API2_E
 ```
 ### Admin Users
 GET    /admin/users                        List users (paginated)
+GET    /admin/users/export                 Export users as CSV (profile <=2)
+GET    /admin/users/mandate-scopes         List access scopes paginated JSON (profile <=4)
+POST   /admin/users/bulk-add-season        Add a season to selected scopes (profile <=2)
 GET    /admin/users/{code}                 Get single user
 POST   /admin/users                        Create user (profile <=3)
 PUT    /admin/users/{code}                 Update user (profile <=3)

@@ -84,6 +84,27 @@ export interface MandateSummary {
   filters: MandateFilters
 }
 
+export interface MandateScope {
+  userCode: string
+  identite: string
+  scopeType: 'base' | 'mandate'
+  mandateId: number | null
+  mandateLabel: string | null
+  niveau: number
+  filtreSaison: string
+  filtreCompetition: string
+  limitClubs: string
+  filtreJournee: string
+}
+
+export interface MandateScopesResponse {
+  items: MandateScope[]
+  total: number
+  page: number
+  limit: number
+  totalPages: number
+}
+
 export interface AuthUser {
   id: string
   name: string
