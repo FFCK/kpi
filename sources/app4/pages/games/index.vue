@@ -394,6 +394,7 @@ const togglePublication = async (game: Game) => {
   try {
     const response = await api.patch<{ publication: string }>(`/admin/games/${game.id}/publication`)
     game.publication = response.publication
+    toast.add({ title: t('common.saved'), color: 'success' })
   } catch {
     game.publication = oldValue
   }
@@ -406,6 +407,7 @@ const toggleValidation = async (game: Game) => {
   try {
     const response = await api.patch<{ validation: string }>(`/admin/games/${game.id}/validation`)
     game.validation = response.validation
+    toast.add({ title: t('common.saved'), color: 'success' })
   } catch {
     game.validation = oldValue
   }
@@ -418,6 +420,7 @@ const toggleType = async (game: Game) => {
   try {
     const response = await api.patch<{ type: string }>(`/admin/games/${game.id}/type`)
     game.type = response.type
+    toast.add({ title: t('common.saved'), color: 'success' })
   } catch {
     game.type = oldValue
   }
@@ -436,6 +439,7 @@ const confirmToggleStatut = async () => {
   try {
     const response = await api.patch<{ statut: string }>(`/admin/games/${game.id}/statut`)
     game.statut = response.statut
+    toast.add({ title: t('common.saved'), color: 'success' })
   } catch {
     // Error already shown
   }
@@ -448,6 +452,7 @@ const togglePrinted = async (game: Game) => {
   try {
     const response = await api.patch<{ imprime: string }>(`/admin/games/${game.id}/printed`)
     game.imprime = response.imprime
+    toast.add({ title: t('common.saved'), color: 'success' })
   } catch {
     game.imprime = oldValue
   }

@@ -1718,7 +1718,8 @@
       "mandate_profile": "Mandate profile",
       "mandate_validate": "Validate mandate",
       "mandate_cancel": "Cancel",
-      "mandate_confirm_delete": "Delete this mandate?"
+      "mandate_confirm_delete": "Delete this mandate?",
+      "no_competitions_for_seasons": "No competitions for the selected seasons"
     },
     "mandates": {
       "table_mandates": "+{count} mandate|+{count} mandates",

@@ -206,6 +206,7 @@
     "team_b": "Équipe B",
     "back": "Retour",
     "cancel": "Annuler",
+    "close": "Fermer",
     "save": "Enregistrer",
     "delete": "Supprimer",
     "delete_selected": "Supprimer la sélection",
@@ -1730,7 +1731,8 @@
       "mandate_profile": "Profil du mandat",
       "mandate_validate": "Valider le mandat",
       "mandate_cancel": "Annuler",
-      "mandate_confirm_delete": "Supprimer ce mandat ?"
+      "mandate_confirm_delete": "Supprimer ce mandat ?",
+      "no_competitions_for_seasons": "Aucune compétition pour les saisons sélectionnées"
     },
     "mandates": {
       "table_mandates": "+{count} mandat|+{count} mandats",

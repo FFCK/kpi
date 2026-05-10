@@ -207,6 +207,7 @@ const togglePublication = async (event: Event) => {
   try {
     const response = await api.patch<{ publication: boolean }>(`/admin/events/${event.id}/publish`)
     event.publication = response.publication
+    toast.add({ title: t('common.saved'), color: 'success' })
   } catch (error: unknown) {
     toast.add({
       title: t('common.error'),
@@ -222,6 +223,7 @@ const toggleApp = async (event: Event) => {
   try {
     const response = await api.patch<{ app: boolean }>(`/admin/events/${event.id}/app`)
     event.app = response.app
+    toast.add({ title: t('common.saved'), color: 'success' })
   } catch (error: unknown) {
     toast.add({
       title: t('common.error'),

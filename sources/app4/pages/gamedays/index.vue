@@ -273,6 +273,7 @@ const togglePublication = async (gameday: Gameday) => {
   try {
     const response = await api.patch<{ publication: boolean }>(`/admin/gamedays/${gameday.id}/publication`)
     gameday.publication = response.publication
+    toast.add({ title: t('common.saved'), color: 'success' })
   } catch {
     // Error already shown by useApi
   }
