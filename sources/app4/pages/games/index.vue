@@ -369,6 +369,14 @@ const isGameEditable = (game: Game) => canEdit.value && !isLocked(game) && game.
 const isScoreEditable = (game: Game) => canEditScores.value && !isLocked(game) && game.authorized
 const isDeletable = (game: Game) => isGameEditable(game) && !hasScore(game)
 
+// IDs sélectionnés mais non verrouillés — utilisés par les bulk actions de modification
+const unlockedSelectedIds = computed(() =>
+  selectedIds.value.filter(id => {
+    const game = games.value.find(g => g.id === id)
+    return game && !isLocked(game)
+  })
+)
+
 // ─── Selection ───
 const toggleSelectAll = () => {
   if (selectedIds.value.length === filteredGames.value.length) {
@@ -931,7 +939,7 @@ const confirmBulkChangeJournee = async () => {
   formSaving.value = true
   try {
     const response = await api.patch<{ updated: number }>('/admin/games/bulk/journee', {
-      ids: selectedIds.value,
+      ids: unlockedSelectedIds.value,
       journeeId: bulkJourneeId.value,
     })
     toast.add({ title: t('common.success'), description: t('games.bulk_journee_changed', { count: response.updated }), color: 'success' })
@@ -955,7 +963,7 @@ const confirmBulkRenumber = async () => {
   formSaving.value = true
   try {
     const response = await api.patch<{ updated: number }>('/admin/games/bulk/renumber', {
-      ids: selectedIds.value,
+      ids: unlockedSelectedIds.value,
       startNumber: bulkRenumberFrom.value,
     })
     toast.add({ title: t('common.success'), description: t('games.bulk_renumbered', { count: response.updated }), color: 'success' })
@@ -982,7 +990,7 @@ const confirmBulkChangeDate = async () => {
   formSaving.value = true
   try {
     const response = await api.patch<{ updated: number }>('/admin/games/bulk/date', {
-      ids: selectedIds.value,
+      ids: unlockedSelectedIds.value,
       date: bulkNewDate.value,
     })
     toast.add({ title: t('common.success'), description: t('games.bulk_date_changed', { count: response.updated }), color: 'success' })
@@ -1007,7 +1015,7 @@ const confirmBulkIncrementTime = async () => {
   formSaving.value = true
   try {
     const response = await api.patch<{ updated: number }>('/admin/games/bulk/time', {
-      ids: selectedIds.value,
+      ids: unlockedSelectedIds.value,
       startTime: bulkStartTime.value,
       interval: bulkInterval.value,
     })
@@ -1042,7 +1050,7 @@ const confirmBulkChangeGroup = async () => {
   formSaving.value = true
   try {
     const response = await api.patch<{ updated: number }>('/admin/games/bulk/group', {
-      ids: selectedIds.value,
+      ids: unlockedSelectedIds.value,
       oldGroup: bulkOldGroup.value,
       newGroup: bulkNewGroup.value,
     })

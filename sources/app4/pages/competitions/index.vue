@@ -265,6 +265,7 @@ const toggleSelect = (code: string) => {
 }
 
 // Permission checks
+const canCreate = computed(() => authStore.profile <= 2)
 const canEdit = computed(() => authStore.profile <= 3)
 const canDelete = computed(() => authStore.profile <= 2)
 const canTogglePublish = computed(() => authStore.profile <= 4)
@@ -678,7 +679,7 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
       v-model:search="search"
       :search-placeholder="t('common.search')"
       :add-label="t('competitions.add')"
-      :show-add="canEdit"
+      :show-add="canCreate"
       :show-bulk-delete="canDelete"
       :bulk-delete-label="t('competitions.delete_selected')"
       :selected-count="selectedCodes.length"
@@ -703,7 +704,7 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
           {{ t('common.expand_all') }}
         </button>
       </template>
-      <template v-if="canEdit" #right>
+      <template v-if="canCreate" #right>
         <NuxtLink
           to="/competitions/copy"
           class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium text-header-600 hover:text-header-900 bg-white border border-header-300 rounded-md hover:bg-header-50 transition-colors"

@@ -1089,7 +1089,7 @@ class AdminGamesController extends AbstractController
         // Fetch matches in current order
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
         $rows = $this->connection->prepare(
-            "SELECT Id FROM kp_match WHERE Id IN ($placeholders) ORDER BY Numero_ordre ASC, Id ASC"
+            "SELECT Id FROM kp_match WHERE Id IN ($placeholders) AND Validation != 'O' ORDER BY Numero_ordre ASC, Id ASC"
         )->executeQuery($ids)->fetchAllAssociative();
 
         $num = $startNumber;
@@ -1168,19 +1168,14 @@ class AdminGamesController extends AbstractController
         $parts = explode(':', $startTime);
         $currentMinutes = ((int) ($parts[0] ?? 10)) * 60 + ((int) ($parts[1] ?? 0));
 
-        // Fetch matches in order
+        // Fetch matches in order (unlocked only)
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
         $rows = $this->connection->prepare(
-            "SELECT Id, Validation FROM kp_match WHERE Id IN ($placeholders) ORDER BY Numero_ordre ASC, Id ASC"
+            "SELECT Id FROM kp_match WHERE Id IN ($placeholders) AND Validation != 'O' ORDER BY Numero_ordre ASC, Id ASC"
         )->executeQuery($ids)->fetchAllAssociative();
 
         $updated = 0;
         foreach ($rows as $row) {
-            if ($row['Validation'] === 'O') {
-                // Skip locked but still increment time
-                $currentMinutes += $interval;
-                continue;
-            }
             $hours = intdiv($currentMinutes, 60);
             $mins = $currentMinutes % 60;
             $timeStr = sprintf('%02d:%02d', $hours, $mins);
@@ -1224,10 +1219,10 @@ class AdminGamesController extends AbstractController
             return $this->json(['message' => 'Groups must be 1-5 uppercase letters'], Response::HTTP_BAD_REQUEST);
         }
 
-        // Fetch matches
+        // Fetch unlocked matches only
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
         $rows = $this->connection->prepare(
-            "SELECT Id, Libelle FROM kp_match WHERE Id IN ($placeholders)"
+            "SELECT Id, Libelle FROM kp_match WHERE Id IN ($placeholders) AND Validation != 'O'"
         )->executeQuery($ids)->fetchAllAssociative();
 
         $updated = 0;

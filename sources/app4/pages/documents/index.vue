@@ -29,15 +29,20 @@ const profile = computed(() => authStore.user?.profile ?? 99)
 // Computed: competition type for ranking documents
 const competitionType = computed(() => workContext.pageCompetition?.codeTypeclt ?? null)
 
-// Load events
+// Load events filtered by the current work context competitions
 const loadEvents = async () => {
   try {
-    const response = await api.get<{ events: FilterEvent[] }>('/admin/filters/events')
+    const params: Record<string, string> = {}
+    if (workContext.season) params.season = workContext.season
+    if (workContext.competitionCodes.length > 0) {
+      params.competitions = workContext.competitionCodes.join('|')
+    }
+    const response = await api.get<{ events: FilterEvent[] }>('/admin/filters/events', params)
     events.value = response.events
-    // Auto-select first event
+    // Auto-select first event; clear selection if no longer in list
     const firstEvent = events.value[0] as FilterEvent | undefined
-    if (firstEvent && !selectedEventId.value) {
-      selectedEventId.value = firstEvent.id
+    if (!events.value.some(e => e.id === selectedEventId.value)) {
+      selectedEventId.value = firstEvent?.id ?? null
     }
   } catch {
     // Silently fail - events are only needed for profile <= 2

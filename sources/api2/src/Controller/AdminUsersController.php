@@ -355,8 +355,11 @@ class AdminUsersController extends AbstractController
     {
         /** @var User|null $currentUser */
         $currentUser = $this->getUser();
-        if (!$currentUser || $currentUser->getEffectiveNiveau() > 3) {
-            return $this->json(['error' => true, 'message' => 'Access denied', 'code' => 'ACCESS_DENIED'], Response::HTTP_FORBIDDEN);
+        $adminNiveau = $currentUser?->getEffectiveNiveau() ?? 99;
+
+        // Profiles 3-4 cannot use this endpoint — they can only manage mandates
+        if (!$currentUser || $adminNiveau > 2) {
+            return $this->json(['error' => true, 'message' => 'Access denied — profiles 3 and 4 can only manage mandates', 'code' => 'ACCESS_DENIED'], Response::HTTP_FORBIDDEN);
         }
 
         // Check target user exists and admin can modify them
@@ -366,7 +369,6 @@ class AdminUsersController extends AbstractController
         }
 
         $targetNiveau = (int) $existing['Niveau'];
-        $adminNiveau = $currentUser->getEffectiveNiveau();
 
         // Cannot modify user with higher or equal privilege (except super admin)
         if ($adminNiveau > 1 && $targetNiveau < $adminNiveau) {
@@ -1375,7 +1377,12 @@ class AdminUsersController extends AbstractController
             return null;
         }
 
-        // Profile 3-4 can only assign profiles 5-10
+        // Profile 3 can assign profiles 4-10
+        if ($adminNiveau <= 3 && $targetNiveau >= 4) {
+            return null;
+        }
+
+        // Profile 4 can assign profiles 5-10
         if ($adminNiveau <= 4 && $targetNiveau >= 5) {
             return null;
         }

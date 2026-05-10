@@ -4,6 +4,35 @@ Ce document liste les dernières fonctionnalités et améliorations ajoutées au
 
 ---
 
+## 📅 Mai 2026
+
+### 👥 Gestion des utilisateurs — nouvelles règles de droits (App4)
+
+**Sécurisation et clarification des permissions sur la page Utilisateurs**
+
+#### Création d'utilisateurs
+
+Les responsables de division (profil 3) peuvent désormais créer des utilisateurs de profil 4 (Resp. Poule/Compétition), en plus des profils 5 à 10 déjà accessibles.
+
+#### Modification des utilisateurs — mode "mandats uniquement" pour les profils 3 et 4
+
+Les profils 3 (Resp. Division) et 4 (Resp. Poule/Compétition) ne peuvent plus modifier les champs de base d'un utilisateur (profil, saisons autorisées, compétitions, clubs). Lorsqu'ils ouvrent la fiche d'un utilisateur, seule la section **Mandats** est disponible :
+
+- **Ajouter un mandat** à un utilisateur existant
+- **Supprimer un mandat** existant
+
+Un bandeau d'information dans le formulaire indique clairement cette restriction.
+
+Cette évolution élimine le risque qu'un administrateur attribue à un utilisateur des droits plus larges que les siens (ex. accès à toutes les saisons ou à des compétitions hors de son périmètre).
+
+#### Ajout d'une saison en masse sur les mandats existants
+
+Dans la vue **Mandats** (mode "Vue mandats"), après avoir sélectionné des périmètres d'accès, le bouton **"Ajouter une saison"** permet d'ajouter une saison à plusieurs mandats ou profils de base en une seule opération.
+
+> Cette action est limitée aux saisons faisant partie du périmètre de l'administrateur connecté.
+
+---
+
 ## 📅 Avril 2026
 
 ### 🗺️ Guide de navigation illustré sur la page d'accueil (App2) (01/04/2026)

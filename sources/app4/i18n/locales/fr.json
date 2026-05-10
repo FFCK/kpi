@@ -1695,11 +1695,13 @@
       "competitions_all": "TOUTES",
       "events_gamedays": "Evt/J",
       "clubs": "Clubs",
-      "actions": "Actions"
+      "actions": "Actions",
+      "edit_not_allowed": "Votre profil ne vous permet pas de modifier cet utilisateur"
     },
     "modal": {
       "title_create": "Créer un utilisateur",
       "title_edit": "Modifier l'utilisateur",
+      "mandates_only_notice": "Votre profil vous permet uniquement de gérer les mandats de cet utilisateur. Les autres informations sont en lecture seule.",
       "search_licence": "Recherche (nom, prénom ou licence)",
       "licence": "Licence",
       "identity": "Identité",

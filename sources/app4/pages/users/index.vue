@@ -697,6 +697,13 @@ const profileOptions = computed(() => {
                 >
                   <UIcon name="i-heroicons-pencil-square" class="w-5 h-5" />
                 </button>
+                <span
+                  v-else-if="canEdit"
+                  class="p-1.5 text-header-300 cursor-help"
+                  :title="t('users.table.edit_not_allowed')"
+                >
+                  <UIcon name="i-heroicons-information-circle" class="w-5 h-5" />
+                </span>
                 <button
                   v-if="canDeleteUser(user.niveau)"
                   class="p-1.5 text-header-500 hover:text-danger-600 rounded"

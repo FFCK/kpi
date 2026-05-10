@@ -1305,15 +1305,6 @@ const getLogoUrl = (team: CompetitionTeam) => {
         class="presence-dropdown-menu fixed w-48 bg-white rounded-lg shadow-lg border border-header-200 z-50"
         :style="dropdownStyle"
       >
-        <NuxtLink
-          :to="`/presence/team/${openDropdownId}`"
-          class="block px-3 py-2 text-sm font-medium text-primary-700 hover:bg-primary-50 rounded-t-lg"
-          @click="closePresenceDropdown"
-        >
-          <UIcon name="i-heroicons-clipboard-document-list" class="w-6 h-6 inline mr-1" />
-          {{ t('teams_page.manage_composition') }}
-        </NuxtLink>
-        <div class="border-t border-header-100"/>
         <a :href="getPresenceUrl({ id: openDropdownId } as CompetitionTeam)" target="_blank" class="block px-3 py-2 text-sm text-header-700 hover:bg-header-50" @click="closePresenceDropdown">
           {{ t('teams_page.presence_sheet') }} (FR)
         </a>

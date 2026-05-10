@@ -48,7 +48,7 @@ class AdminCompetitionCopyController extends AbstractController
     {
         /** @var User|null $user */
         $user = $this->getUser();
-        if ($user && $user->getNiveau() > 3) {
+        if ($user && $user->getNiveau() > 2) {
             return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
         }
 
@@ -157,7 +157,7 @@ class AdminCompetitionCopyController extends AbstractController
     {
         /** @var User|null $user */
         $user = $this->getUser();
-        if ($user && $user->getNiveau() > 3) {
+        if ($user && $user->getNiveau() > 2) {
             return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
         }
 
@@ -260,7 +260,7 @@ class AdminCompetitionCopyController extends AbstractController
     {
         /** @var User|null $user */
         $user = $this->getUser();
-        if ($user && $user->getNiveau() > 3) {
+        if ($user && $user->getNiveau() > 2) {
             return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
         }
 
@@ -326,7 +326,7 @@ class AdminCompetitionCopyController extends AbstractController
     {
         /** @var User|null $user */
         $user = $this->getUser();
-        if ($user && $user->getNiveau() > 3) {
+        if ($user && $user->getNiveau() > 2) {
             return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
         }
 

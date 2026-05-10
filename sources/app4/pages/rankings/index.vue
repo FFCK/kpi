@@ -92,7 +92,7 @@ const canPublish = computed(() => authStore.profile <= 4 && competitionInfo.valu
 const canUnpublish = computed(() => authStore.profile <= 3 && competitionInfo.value?.statut === 'ON')
 const canConsolidate = computed(() => authStore.profile <= 4 && competitionInfo.value?.statut === 'ON')
 const canTransfer = computed(() => authStore.profile <= 4)
-const canChangeType = computed(() => authStore.profile <= 3)
+const canChangeType = computed(() => authStore.profile <= 2)
 const canChangeStatus = computed(() => authStore.profile <= 3)
 const canAccessInitial = computed(() => authStore.profile <= 3)
 const isStatusOn = computed(() => competitionInfo.value?.statut === 'ON')

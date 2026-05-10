@@ -1682,11 +1682,13 @@
       "competitions_all": "ALL",
       "events_gamedays": "Evt/GD",
       "clubs": "Clubs",
-      "actions": "Actions"
+      "actions": "Actions",
+      "edit_not_allowed": "Your profile does not allow you to edit this user"
     },
     "modal": {
       "title_create": "Create user",
       "title_edit": "Edit user",
+      "mandates_only_notice": "Your profile only allows you to manage mandates for this user. Other information is read-only.",
       "search_licence": "Search (name, firstname or licence)",
       "licence": "Licence",
       "identity": "Identity",

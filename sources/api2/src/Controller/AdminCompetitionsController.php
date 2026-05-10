@@ -412,14 +412,14 @@ class AdminCompetitionsController extends AbstractController
     }
 
     /**
-     * Create a new competition (profile <= 3)
+     * Create a new competition (profile <= 2)
      */
     #[Route('', name: 'admin_competitions_create', methods: ['POST'])]
     public function create(Request $request): JsonResponse
     {
         /** @var User|null $user */
         $user = $this->getUser();
-        if ($user && $user->getNiveau() > 3) {
+        if ($user && $user->getNiveau() > 2) {
             return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
         }
 
@@ -924,19 +924,33 @@ class AdminCompetitionsController extends AbstractController
     }
 
     /**
-     * List competitions for MULTI select (non-MULTI competitions)
+     * List competitions for MULTI select (non-MULTI competitions, filtered by user perimeter)
      */
     #[Route('-for-multi', name: 'admin_competitions_for_multi', methods: ['GET'])]
     public function listForMulti(Request $request): JsonResponse
     {
         $season = $this->getSeasonOrActive($request);
 
+        /** @var User|null $user */
+        $user = $this->getUser();
+        $allowedCompetitions = $user?->getAllowedCompetitions();
+
+        $whereConditions = ['c.Code_saison = ?', "c.Code_typeclt != 'MULTI'"];
+        $params = [$season];
+
+        if ($allowedCompetitions !== null && count($allowedCompetitions) > 0) {
+            $placeholders = implode(',', array_fill(0, count($allowedCompetitions), '?'));
+            $whereConditions[] = "c.Code IN ($placeholders)";
+            $params = array_merge($params, $allowedCompetitions);
+        }
+
+        $whereClause = implode(' AND ', $whereConditions);
+
         $sql = "SELECT c.Code, c.Libelle, c.Code_typeclt, c.Code_tour, c.GroupOrder,
                        g.section, g.ordre, g.Groupe as GroupeLibelle
                 FROM kp_competition c
                 LEFT JOIN kp_groupe g ON c.Code_ref = g.Groupe
-                WHERE c.Code_saison = ?
-                AND c.Code_typeclt != 'MULTI'
+                WHERE $whereClause
                 ORDER BY
                     COALESCE(g.section, 999),
                     COALESCE(g.ordre, 999),
@@ -945,7 +959,7 @@ class AdminCompetitionsController extends AbstractController
                     c.Libelle";
 
         $stmt = $this->connection->prepare($sql);
-        $result = $stmt->executeQuery([$season]);
+        $result = $stmt->executeQuery($params);
         $competitions = $result->fetchAllAssociative();
 
         // Group by section

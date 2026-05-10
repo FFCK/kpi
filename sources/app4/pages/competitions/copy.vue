@@ -62,7 +62,7 @@ const switchTarget = ref<SchemaSearchResult | null>(null)
 const confirmCopyOpen = ref(false)
 
 // --- Computed ---
-const canAccess = computed(() => authStore.hasProfile(3))
+const canAccess = computed(() => authStore.hasProfile(2))
 
 const selectedDestCompetition = computed<CompetitionOption | null>(() => {
   if (!copyDestCompetition.value) return null

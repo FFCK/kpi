@@ -9,8 +9,8 @@ La page Compétitions permet de gérer les compétitions d'une saison : créatio
 **Accès** :
 - Profil ≤ 10 : Lecture seule
 - Profil ≤ 4 : Toggle publication
-- Profil ≤ 3 : Ajout / Modification / Verrouillage / Images
-- Profil ≤ 2 : Suppression / Code de compétition modifiable à l'import
+- Profil ≤ 3 : Modification / Verrouillage / Images
+- Profil ≤ 2 : Création / Suppression / Copie / Code de compétition modifiable à l'import
 
 **Page PHP Legacy** : `GestionCompetition.php`
 
@@ -30,13 +30,13 @@ La page Compétitions permet de gérer les compétitions d'une saison : créatio
 | 6 | Toggle publication | ≤ 4 | ✅ Implémenté |
 | 7 | Toggle verrou FDM | ≤ 3 | ✅ Implémenté |
 | 8 | Changement de statut (ATT→ON→END, cycle) | ≤ 3 | ✅ Implémenté |
-| 9 | Import depuis saison précédente (autocomplete) | ≤ 3 | ✅ Implémenté |
+| 9 | Import depuis saison précédente (autocomplete) | ≤ 2 | ✅ Implémenté |
 
 ### 2.2 Formulaire création/modification
 
 | # | Fonctionnalité | Profil | Statut |
 |---|----------------|--------|--------|
-| 1 | Code unique par saison (max 12 car.) | ≤ 3 (≤2 modifiable à l'import) | ✅ Implémenté |
+| 1 | Code unique par saison (max 12 car.) | ≤ 2 (création) / ≤ 3 (modification) | ✅ Implémenté |
 | 2 | Niveau (INT/NAT/REG) | ≤ 3 | ✅ Implémenté |
 | 3 | Type de classement (CHPT/CP/MULTI) | ≤ 3 | ✅ Implémenté |
 | 4 | Libellé, sous-titre, catégorie | ≤ 3 | ✅ Implémenté |
@@ -91,7 +91,7 @@ Formats acceptés : JPG ou PNG. Stockage dans `/img/logo/` (backend PHP legacy).
 | Nb équipes | Page Équipes (filtrée) | ≤ 10 |
 | Nb journées | Page Journées | ≤ 10 |
 | Nb matchs | Page Matchs | ≤ 10 |
-| Bouton "Copier" | Page Copie de compétition | ≤ 3 |
+| Bouton "Copier" | Page Copie de compétition | ≤ 2 |
 
 ---
 
@@ -140,7 +140,7 @@ Formats acceptés : JPG ou PNG. Stockage dans `/img/logo/` (backend PHP legacy).
 
 ### 4.1 Mode création : import depuis saison précédente
 
-Un autocomplete permet de rechercher une compétition des saisons précédentes et de pré-remplir tous les champs. Le code importé est verrouillé par défaut ; les profils ≤ 2 peuvent le déverrouiller via un bouton dédié.
+Accessible aux profils ≤ 2 uniquement. Un autocomplete permet de rechercher une compétition des saisons précédentes et de pré-remplir tous les champs. Le code importé est verrouillé par défaut ; les profils ≤ 2 peuvent le déverrouiller via un bouton dédié.
 
 ### 4.2 Champs du formulaire
 
@@ -241,7 +241,7 @@ Select multiple groupé par section (compétitions de la saison courante).
 |---------|----------|-------------|--------|
 | GET | `/admin/competitions` | Liste (filtrée par saison/contexte) | ≤10 |
 | GET | `/admin/competitions/{code}` | Détail | ≤10 |
-| POST | `/admin/competitions` | Créer | ≤3 |
+| POST | `/admin/competitions` | Créer | ≤2 |
 | PUT | `/admin/competitions/{code}` | Modifier | ≤3 |
 | DELETE | `/admin/competitions/{code}` | Supprimer | ≤2 |
 | POST | `/admin/competitions/bulk-delete` | Suppression en masse | ≤2 |

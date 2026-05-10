@@ -499,6 +499,12 @@ class AdminRankingsController extends AbstractController
             return $this->json(['message' => 'teamIds, targetSeason and targetCompetition are required'], Response::HTTP_BAD_REQUEST);
         }
 
+        // Verify target competition is accessible to the user
+        $allowedCompetitions = $user->getAllowedCompetitions();
+        if ($allowedCompetitions !== null && !in_array($targetCompetition, $allowedCompetitions, true)) {
+            return $this->json(['message' => 'Insufficient permissions for target competition'], Response::HTTP_FORBIDDEN);
+        }
+
         // Verify target competition exists
         $targetRow = $this->getCompetitionRow($targetCompetition, $targetSeason);
         if (!$targetRow) {
@@ -614,8 +620,19 @@ class AdminRankingsController extends AbstractController
             return $this->json(['message' => 'Season is required'], Response::HTTP_BAD_REQUEST);
         }
 
-        $sql = "SELECT Code, Libelle FROM kp_competition WHERE Code_saison = ? ORDER BY Code ASC";
-        $rows = $this->connection->prepare($sql)->executeQuery([$season])->fetchAllAssociative();
+        $allowedCompetitions = $user->getAllowedCompetitions();
+
+        if ($allowedCompetitions !== null) {
+            if (empty($allowedCompetitions)) {
+                return $this->json([]);
+            }
+            $placeholders = implode(',', array_fill(0, count($allowedCompetitions), '?'));
+            $sql = "SELECT Code, Libelle FROM kp_competition WHERE Code_saison = ? AND Code IN ($placeholders) ORDER BY Code ASC";
+            $rows = $this->connection->prepare($sql)->executeQuery(array_merge([$season], $allowedCompetitions))->fetchAllAssociative();
+        } else {
+            $sql = "SELECT Code, Libelle FROM kp_competition WHERE Code_saison = ? ORDER BY Code ASC";
+            $rows = $this->connection->prepare($sql)->executeQuery([$season])->fetchAllAssociative();
+        }
 
         $result = array_map(fn($r) => ['code' => $r['Code'], 'libelle' => $r['Libelle']], $rows);
 

@@ -207,7 +207,8 @@ class AdminFiltersController extends AbstractController
 
     /**
      * Get events for a season (filtered by user restrictions)
-     * Only returns events that have competitions the user has access to in the given season
+     * Only returns events that have competitions the user has access to in the given season.
+     * Optional ?competitions=A|B|C restricts further to a specific set of competition codes.
      */
     #[Route('/events', name: 'admin_filters_events', methods: ['GET'])]
     public function getEvents(Request $request): JsonResponse
@@ -216,9 +217,24 @@ class AdminFiltersController extends AbstractController
         $user = $this->getUser();
 
         $season = $request->query->get('season');
+        $competitionsParam = $request->query->get('competitions'); // pipe-separated: "A|B|C"
 
         $allowedEvents = $user->getAllowedEvents();
         $allowedCompetitions = $user->getAllowedCompetitions();
+
+        // Resolve the effective competition filter: intersection of user rights and requested codes
+        $contextCompetitions = null;
+        if ($competitionsParam !== null) {
+            $requested = array_values(array_filter(explode('|', $competitionsParam), fn($c) => trim($c) !== ''));
+            if ($allowedCompetitions !== null) {
+                $contextCompetitions = array_values(array_intersect($requested, $allowedCompetitions));
+            } else {
+                $contextCompetitions = $requested;
+            }
+            if (empty($contextCompetitions)) {
+                return $this->json(['events' => []]);
+            }
+        }
 
         // Build query: only events that have competitions in the given season
         // linked through journée-événement relationships
@@ -234,8 +250,12 @@ class AdminFiltersController extends AbstractController
             $params[] = $season;
         }
 
-        // Filter by user competition restrictions
-        if ($allowedCompetitions !== null) {
+        // Filter by effective competition list (context filter takes priority over raw user rights)
+        if ($contextCompetitions !== null) {
+            $placeholders = implode(',', array_fill(0, count($contextCompetitions), '?'));
+            $where[] = "j.Code_competition IN ($placeholders)";
+            $params = array_merge($params, $contextCompetitions);
+        } elseif ($allowedCompetitions !== null) {
             $placeholders = implode(',', array_fill(0, count($allowedCompetitions), '?'));
             $where[] = "j.Code_competition IN ($placeholders)";
             $params = array_merge($params, $allowedCompetitions);
