@@ -572,7 +572,6 @@ const structureLabel = computed(() => {
 
 // Map field name to team property
 const fieldToTeamProp = (field: string, team: RankingTeam, published: boolean): number => {
-  const suffix = published ? 'Publi' : ''
   const map: Record<string, string> = {
     'Clt': published ? 'cltPubli' : 'clt',
     'Pts': published ? 'ptsPubli' : 'pts',
@@ -781,8 +780,8 @@ const editValueForField = (field: string, value: number): string => {
                 <table class="min-w-full divide-y divide-header-200 bg-primary-100">
                   <thead>
                     <tr class="bg-primary-200">
-                      <th class="px-2 py-2"></th>
-                      <th></th>
+                      <th class="px-2 py-2"/>
+                      <th/>
                       <th class="px-2 py-2 text-center text-xs font-medium text-header-500 uppercase">{{ t('rankings.table.rank') }}</th>
                       <th class="px-2 py-2 text-left text-xs font-medium text-header-500 uppercase">
                         {{ effectiveType === 'MULTI' ? structureLabel : t('rankings.table.team') }}
@@ -1047,7 +1046,7 @@ const editValueForField = (field: string, value: number): string => {
                     <table class="min-w-full divide-y divide-header-200 bg-primary-100">
                       <thead class="bg-header-50">
                         <tr class="bg-primary-200">
-                          <th v-if="canEditInline && !phase.consolidation" class="px-2 py-2"></th>
+                          <th v-if="canEditInline && !phase.consolidation" class="px-2 py-2"/>
                           <th class="px-2 py-2 text-center text-xs font-medium text-header-500 uppercase">{{ t('rankings.table.rank') }}</th>
                           <th class="px-2 py-2 text-left text-xs font-medium text-header-500 uppercase">{{ t('rankings.table.team') }}</th>
                           <th class="px-2 py-2 text-center text-xs font-medium text-header-500 uppercase">{{ t('rankings.table.pts') }}</th>
@@ -1350,8 +1349,8 @@ const editValueForField = (field: string, value: number): string => {
                           @change="toggleSelectAll()"
                         >
                       </th>
-                      <th class="px-2 py-2"></th>
-                      <th></th>
+                      <th class="px-2 py-2"/>
+                      <th/>
                       <th class="px-2 py-2 text-center text-xs font-medium text-header-500 uppercase">{{ t('rankings.table.rank') }}</th>
                       <th class="px-2 py-2 text-left text-xs font-medium text-header-500 uppercase">
                         {{ effectiveType === 'MULTI' ? structureLabel : t('rankings.table.team') }}

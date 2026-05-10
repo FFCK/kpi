@@ -251,14 +251,6 @@ onMounted(async () => {
   await loadCompetitionsForMulti()
 })
 
-// Selection handlers
-const toggleSelectAll = () => {
-  if (selectAll.value) {
-    selectedCodes.value = competitions.value.map(c => c.code)
-  } else {
-    selectedCodes.value = []
-  }
-}
 
 const isSelected = (code: string) => selectedCodes.value.includes(code)
 

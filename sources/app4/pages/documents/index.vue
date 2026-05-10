@@ -11,7 +11,7 @@ const config = useRuntimeConfig()
 const api = useApi()
 const authStore = useAuthStore()
 const workContext = useWorkContextStore()
-const toast = useToast()
+
 
 // Legacy backend base URL (e.g. https://kpi.localhost)
 const legacyBase = config.public.legacyBaseUrl as string

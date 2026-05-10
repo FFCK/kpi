@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { TvLabel } from '~/types/tv'
-import { CHANNEL_MAX, SCENARIO_COUNT, SCENARIO_SCENES } from '~/types/tv'
+import { SCENARIO_COUNT, SCENARIO_SCENES } from '~/types/tv'
 
 const props = defineProps<{
   labels: TvLabel[]

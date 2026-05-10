@@ -345,9 +345,9 @@ const saveInlineEdit = async () => {
       if (prop) {
         const numericFields = ['niveau', 'etape', 'nbEquipes']
         if (numericFields.includes(prop)) {
-          ;(gameday as any)[prop] = value ? parseInt(value) : null
+          ;(gameday as Record<string, unknown>)[prop] = value ? parseInt(value) : null
         } else {
-          ;(gameday as any)[prop] = value || null
+          ;(gameday as Record<string, unknown>)[prop] = value || null
         }
       }
     }
@@ -435,8 +435,8 @@ const submitForm = async () => {
     }
     formModalOpen.value = false
     await loadGamedays()
-  } catch (error: any) {
-    formError.value = error.message || t('common.error')
+  } catch (error: unknown) {
+    formError.value = (error as { message?: string })?.message || t('common.error')
   } finally {
     formSaving.value = false
   }
@@ -482,8 +482,8 @@ const confirmDelete = async () => {
     toast.add({ title: t('common.success'), description: t('gamedays.deleted'), color: 'success' })
     deleteConfirmOpen.value = false
     await loadGamedays()
-  } catch (error: any) {
-    const code = error?.code
+  } catch (error: unknown) {
+    const code = (error as { code?: string })?.code
     if (code === 'HAS_MATCHES') {
       toast.add({ title: t('common.error'), description: t('gamedays.delete_error_matches'), color: 'error' })
     } else if (code === 'HAS_EVENTS') {

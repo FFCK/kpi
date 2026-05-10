@@ -36,8 +36,8 @@ interface Props {
 
 const props = defineProps<Props>()
 const emit = defineEmits<{
-  (e: 'close'): void
-  (e: 'saved'): void
+  close: []
+  saved: []
 }>()
 
 const { t } = useI18n()

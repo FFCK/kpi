@@ -432,7 +432,7 @@ const exportXlsx = async () => {
     link.download = `stats_${selectedStatType.value}_${new Date().toISOString().slice(0, 10)}.xlsx`
     link.click()
     URL.revokeObjectURL(link.href)
-  } catch (error) {
+  } catch {
     toast.add({
       title: t('common.error'),
       description: t('stats.error_export'),
@@ -455,7 +455,7 @@ const exportPdf = async () => {
     link.download = `stats_${selectedStatType.value}_${new Date().toISOString().slice(0, 10)}.pdf`
     link.click()
     URL.revokeObjectURL(link.href)
-  } catch (error) {
+  } catch {
     toast.add({
       title: t('common.error'),
       description: t('stats.error_export'),

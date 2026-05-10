@@ -518,9 +518,9 @@ const saveInlineEdit = async () => {
       if (prop) {
         const numericFields = ['numeroOrdre']
         if (numericFields.includes(prop)) {
-          ;(game as any)[prop] = value ? parseInt(value) : null
+          ;(game as Record<string, unknown>)[prop] = value ? parseInt(value) : null
         } else {
-          ;(game as any)[prop] = value || null
+          ;(game as Record<string, unknown>)[prop] = value || null
         }
       }
     }
@@ -762,8 +762,8 @@ const saveGame = async (): Promise<boolean> => {
       toast.add({ title: t('common.success'), description: t('games.added'), color: 'success' })
     }
     return true
-  } catch (error: any) {
-    formError.value = error.message || t('common.error')
+  } catch (error: unknown) {
+    formError.value = (error as { message?: string })?.message || t('common.error')
     return false
   } finally {
     formSaving.value = false
@@ -829,8 +829,8 @@ const confirmDelete = async () => {
     toast.add({ title: t('common.success'), description: t('games.deleted'), color: 'success' })
     deleteConfirmOpen.value = false
     await loadGames()
-  } catch (error: any) {
-    const code = error?.code
+  } catch (error: unknown) {
+    const code = (error as { code?: string })?.code
     if (code === 'HAS_EVENTS') {
       toast.add({ title: t('common.error'), description: t('games.delete_error_events'), color: 'error' })
     } else if (code === 'LOCKED') {
@@ -848,7 +848,7 @@ const confirmDelete = async () => {
 const confirmBulkDelete = async () => {
   formSaving.value = true
   try {
-    const response = await api.del<{ deleted: number; skipped: any[] }>('/admin/games/bulk', { ids: selectedIds.value })
+    const response = await api.del<{ deleted: number; skipped: unknown[] }>('/admin/games/bulk', { ids: selectedIds.value })
     const msg = response.skipped?.length > 0
       ? t('games.bulk_deleted_partial', { deleted: response.deleted, skipped: response.skipped.length })
       : t('games.bulk_deleted', { deleted: response.deleted })
@@ -1101,13 +1101,6 @@ const statusLabel = (game: Game) => {
   }
 }
 
-const statusColor = (game: Game) => {
-  switch (game.statut) {
-    case 'ON': return 'text-success-500'
-    case 'END': return 'text-danger-600'
-    default: return 'text-header-400'
-  }
-}
 
 const statusBtnClass = (game: Game) => {
   switch (game.statut) {

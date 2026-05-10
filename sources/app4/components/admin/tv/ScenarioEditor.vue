@@ -28,7 +28,7 @@ async function loadScenario() {
     )
     scenes.value = data.scenes
   }
-  catch {}
+  catch { /* handled by useApi */ }
   finally { loading.value = false }
 }
 
@@ -42,7 +42,7 @@ async function updateScenario() {
       duration: 3000,
     })
   }
-  catch {}
+  catch { /* handled by useApi */ }
   finally { saving.value = false }
 }
 
@@ -62,7 +62,7 @@ async function testScenario() {
       duration: 3000,
     })
   }
-  catch {}
+  catch { /* handled by useApi */ }
 }
 
 watch(selectedScenario, () => loadScenario())

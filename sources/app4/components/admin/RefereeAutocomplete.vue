@@ -20,10 +20,10 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: string): void
-  (e: 'update:matric', value: number): void
-  (e: 'confirm'): void
-  (e: 'cancel'): void
+  'update:modelValue': [value: string]
+  'update:matric': [value: number]
+  confirm: []
+  cancel: []
 }>()
 
 const { t, locale } = useI18n()

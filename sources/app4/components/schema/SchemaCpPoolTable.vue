@@ -42,7 +42,7 @@ const isHighlighted = (team: string) => {
         </thead>
         <tbody>
           <tr
-            v-for="(team, idx) in phase.ranking"
+            v-for="team in phase.ranking"
             :key="team.id"
             class="border-t transition-colors duration-100"
             :class="{

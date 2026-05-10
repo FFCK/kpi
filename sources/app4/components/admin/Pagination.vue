@@ -20,8 +20,8 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits<{
-  (e: 'update:page', value: number): void
-  (e: 'update:limit', value: number): void
+  'update:page': [value: number]
+  'update:limit': [value: number]
 }>()
 
 const isShowAll = computed(() => props.limit === 0)

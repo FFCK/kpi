@@ -179,8 +179,8 @@ const submitForm = async () => {
     editModalOpen.value = false
     await loadRc()
   }
-  catch (error: any) {
-    formError.value = error.message || t('common.error')
+  catch (error: unknown) {
+    formError.value = (error as { message?: string })?.message || t('common.error')
   }
   finally {
     formSaving.value = false

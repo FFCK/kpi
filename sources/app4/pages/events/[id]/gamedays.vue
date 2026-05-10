@@ -9,7 +9,7 @@ definePageMeta({
 
 const { t } = useI18n()
 const api = useApi()
-const authStore = useAuthStore()
+
 const workContext = useWorkContextStore()
 const toast = useToast()
 const route = useRoute()

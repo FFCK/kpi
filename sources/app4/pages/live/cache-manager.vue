@@ -44,15 +44,15 @@ function eventLabel(idEvent: number): string {
 
 // ─── API calls ───
 async function loadEvents() {
-  try { events.value = await api.get<WorkerEvent[]>('/admin/tv/events') } catch {}
+  try { events.value = await api.get<WorkerEvent[]>('/admin/tv/events') } catch { /* handled by useApi */ }
 }
 
 async function loadDates(idEvent: number) {
-  try { dates.value = await api.get<WorkerDate[]>(`/admin/events/worker/${idEvent}/dates`) } catch {}
+  try { dates.value = await api.get<WorkerDate[]>(`/admin/events/worker/${idEvent}/dates`) } catch { /* handled by useApi */ }
 }
 
 async function loadStatus() {
-  try { configs.value = await api.get<WorkerConfig[]>('/admin/events/worker/status') } catch {}
+  try { configs.value = await api.get<WorkerConfig[]>('/admin/events/worker/status') } catch { /* handled by useApi */ }
 }
 
 async function startWorker() {
@@ -123,7 +123,7 @@ async function refreshMonitor() {
       }
     )
     monitorLastUpdate.value = new Date().toLocaleTimeString()
-  } catch {}
+  } catch { /* handled by useApi */ }
 }
 
 function closeMonitor() {
@@ -279,24 +279,24 @@ onBeforeUnmount(() => {
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <div>
             <label class="block text-xs font-medium text-header-500 mb-1">{{ t('eventCacheManager.form.date') }}</label>
-            <input v-model="form.dateEvent" type="date" class="w-full px-3 py-2 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" />
+            <input v-model="form.dateEvent" type="date" class="w-full px-3 py-2 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" >
           </div>
           <div>
             <label class="block text-xs font-medium text-header-500 mb-1">{{ t('eventCacheManager.form.hour') }}</label>
-            <input v-model="form.hourEvent" type="time" class="w-full px-3 py-2 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" />
+            <input v-model="form.hourEvent" type="time" class="w-full px-3 py-2 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" >
             <span class="text-xs text-header-400 mt-0.5 block">{{ t('eventCacheManager.form.hour_help') }}</span>
           </div>
           <div>
             <label class="block text-xs font-medium text-header-500 mb-1">{{ t('eventCacheManager.form.offset') }}</label>
-            <input v-model.number="form.offsetEvent" type="number" min="0" max="120" class="w-full px-3 py-2 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" />
+            <input v-model.number="form.offsetEvent" type="number" min="0" max="120" class="w-full px-3 py-2 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" >
           </div>
           <div>
             <label class="block text-xs font-medium text-header-500 mb-1">{{ t('eventCacheManager.form.pitch') }}</label>
-            <input v-model.number="form.pitchEvent" type="number" min="1" max="20" class="w-full px-3 py-2 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" />
+            <input v-model.number="form.pitchEvent" type="number" min="1" max="20" class="w-full px-3 py-2 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" >
           </div>
           <div>
             <label class="block text-xs font-medium text-header-500 mb-1">{{ t('eventCacheManager.form.delay') }}</label>
-            <input v-model.number="form.delayEvent" type="number" min="5" max="60" class="w-full px-3 py-2 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" />
+            <input v-model.number="form.delayEvent" type="number" min="5" max="60" class="w-full px-3 py-2 text-sm border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500" >
           </div>
         </div>
 

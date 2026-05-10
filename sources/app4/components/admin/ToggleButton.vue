@@ -1,6 +1,6 @@
 <script setup lang="ts">
 interface Props {
-  active: boolean
+  active?: boolean
   activeIcon?: string
   inactiveIcon?: string
   activeColor?: 'success' | 'primary' | 'danger' | 'warning'

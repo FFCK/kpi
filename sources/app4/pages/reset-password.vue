@@ -20,7 +20,7 @@ const rules = computed(() => [
   { key: 'uppercase', label: t('users.reset_password.rule_uppercase'), valid: /[A-Z]/.test(password.value) },
   { key: 'lowercase', label: t('users.reset_password.rule_lowercase'), valid: /[a-z]/.test(password.value) },
   { key: 'digit', label: t('users.reset_password.rule_digit'), valid: /\d/.test(password.value) },
-  { key: 'special', label: t('users.reset_password.rule_special'), valid: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password.value) }
+  { key: 'special', label: t('users.reset_password.rule_special'), valid: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password.value) }
 ])
 
 const allRulesValid = computed(() => rules.value.every(r => r.valid))

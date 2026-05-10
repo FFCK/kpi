@@ -17,7 +17,7 @@ const imageVersionStore = useImageVersionStore()
 const canEdit = computed(() => authStore.hasProfile(2))
 
 // ── Map state ──
-const mapRef = ref<InstanceType<any> | null>(null)
+const mapRef = ref<{ geocode: (addr: string) => Promise<{ lat: number; lng: number } | null>; centerOnClub: (code: string) => void; updateMarkerPosition: (code: string, coord: string) => void } | null>(null)
 const mapClubs = ref<ClubMapItem[]>([])
 const mapLoading = ref(false)
 const geocodeAddress = ref('')

@@ -49,7 +49,7 @@ async function loadEvents() {
   try {
     events.value = await api.get<TvEvent[]>('/admin/tv/events')
   }
-  catch {}
+  catch { /* handled by useApi */ }
 }
 
 async function loadMatches() {
@@ -67,7 +67,7 @@ async function loadMatches() {
     }
     matchData.value = await api.get<TvMatchesResponse>('/admin/tv/matches', params)
   }
-  catch {}
+  catch { /* handled by useApi */ }
 }
 
 async function loadLabels() {
@@ -76,7 +76,7 @@ async function loadLabels() {
     channelLabels.value = data.channels
     scenarioLabels.value = data.scenarios
   }
-  catch {}
+  catch { /* handled by useApi */ }
 }
 
 async function saveLabels(payload: { channels: TvLabel[]; scenarios: TvLabel[] }) {
@@ -86,7 +86,7 @@ async function saveLabels(payload: { channels: TvLabel[]; scenarios: TvLabel[] }
     labelsModalOpen.value = false
     await loadLabels()
   }
-  catch {}
+  catch { /* handled by useApi */ }
 }
 
 // ─── Panel persistence ───
@@ -100,7 +100,7 @@ function restorePanelState() {
         panels.value = parsed
       }
     }
-    catch {}
+    catch { /* handled by useApi */ }
   }
 }
 

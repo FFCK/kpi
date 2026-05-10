@@ -10,7 +10,7 @@ const { t } = useI18n()
 const api = useApi()
 const authStore = useAuthStore()
 const toast = useToast()
-const router = useRouter()
+
 
 // Profile guard: only profiles <= 4 can access
 if (authStore.profile > 4) {

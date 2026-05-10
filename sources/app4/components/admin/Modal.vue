@@ -1,6 +1,6 @@
 <script setup lang="ts">
 interface Props {
-  open: boolean
+  open?: boolean
   title?: string
   maxWidth?: 'sm' | 'md' | 'lg' | 'xl'
 }
@@ -12,7 +12,7 @@ withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits<{
-  (e: 'close'): void
+  close: []
 }>()
 
 const maxWidthClasses = {
@@ -27,7 +27,7 @@ const maxWidthClasses = {
   <Teleport to="body">
     <div
       v-if="open"
-      class="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+      class="fixed inset-0 z-9999 flex items-center justify-center p-4"
       @click.self="emit('close')"
     >
       <!-- Backdrop -->

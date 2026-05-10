@@ -1,6 +1,6 @@
 <script setup lang="ts">
 interface Props {
-  open: boolean
+  open?: boolean
   title: string
   message?: string
   itemName?: string
@@ -38,8 +38,8 @@ const buttonClass = computed(() => {
 })
 
 const emit = defineEmits<{
-  (e: 'close'): void
-  (e: 'confirm'): void
+  close: []
+  confirm: []
 }>()
 </script>
 

@@ -20,8 +20,8 @@ withDefaults(defineProps<Props>(), {
 const search = defineModel<string>('search', { default: '' })
 
 const emit = defineEmits<{
-  (e: 'add'): void
-  (e: 'bulk-delete'): void
+  add: []
+  'bulk-delete': []
 }>()
 </script>
 

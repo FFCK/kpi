@@ -12,7 +12,7 @@ export function useTvUrl() {
     season: string
   ): string {
     const { presentation, match, pitch, competition, team, number: playerNum,
-      speaker, count, pitchs, medal, zone, mode, round, start, animate,
+      speaker, count, pitchs, zone, mode, round, start, animate,
       lnStart, lnLen, competList, format, option, navGroup, teamSelect } = panel
     const { eventId: evt, css, lang, date } = filters
     const anime = animate ? '1' : '0'

@@ -77,6 +77,15 @@ export function usePresencePermissions(mode: PresenceMode, isLocked: Ref<boolean
   }
 }
 
+interface ValidatedPlayer {
+  origine: string
+  certifCK: string
+  pagaieValide: number
+  pagaieECA: string
+  dateSurclassement: string | null
+  categ: string
+}
+
 /**
  * Validate player for national competitions (N* or CF*)
  * Returns true if valid, false otherwise
@@ -86,7 +95,7 @@ export function usePlayerValidation() {
    * Check if player is valid for national competition
    */
   const isPlayerValid = (
-    player: any,
+    player: ValidatedPlayer,
     competition: { code: string; codeSaison?: string },
     needsSurclassement: boolean = false
   ): boolean => {
@@ -141,7 +150,7 @@ export function usePlayerValidation() {
    * Get validation errors for a player
    */
   const getValidationErrors = (
-    player: any,
+    player: ValidatedPlayer,
     competition: { code: string; codeSaison?: string }
   ): string[] => {
     const errors: string[] = []

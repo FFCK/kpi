@@ -172,7 +172,7 @@ const updateLogosModalOpen = ref(false)
 const specialOpLoading = ref(false)
 
 // Permission checks
-const canView = computed(() => authStore.profile <= 10)
+
 const canEditInline = computed(() => authStore.profile <= 6)
 const canManageSpecialOps = computed(() => authStore.profile <= 4)
 const canAddDelete = computed(() => authStore.profile <= 3 && !competitionInfo.value?.verrou)

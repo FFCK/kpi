@@ -13,7 +13,7 @@ const { t } = useI18n()
 const api = useApi()
 const toast = useToast()
 const config = useRuntimeConfig()
-const authStore = useAuthStore()
+
 const workContext = useWorkContextStore()
 const presenceStore = usePresenceStore()
 
@@ -21,13 +21,11 @@ const presenceStore = usePresenceStore()
 const teamId = computed(() => parseInt(route.params.teamId as string))
 
 // Permissions
-const { canEdit, canDelete, canCopy, canCreatePlayer, canSearchLicense } = usePresencePermissions(
+const { canEdit, canCopy } = usePresencePermissions(
   'team',
   computed(() => presenceStore.isLocked)
 )
 
-// Player validation
-const { isPlayerValid, requiresSurclassement, getValidationErrors } = usePlayerValidation()
 
 // Selection state
 const selectedPlayerIds = ref<number[]>([])
@@ -195,15 +193,6 @@ const toggleSelectAll = () => {
   }
 }
 
-const toggleSelect = (matric: number) => {
-  const index = selectedPlayerIds.value.indexOf(matric)
-  if (index > -1) {
-    selectedPlayerIds.value.splice(index, 1)
-  } else {
-    selectedPlayerIds.value.push(matric)
-  }
-}
-
 // Inline editing
 const startEdit = (player: Player, field: 'numero' | 'capitaine') => {
   if (!canEdit.value) return
@@ -240,8 +229,8 @@ const saveInlineEdit = async () => {
   try {
     await presenceStore.updatePlayerInline(matric, field, value, api)
     toast.add({ title: t('common.saved'), color: 'success' })
-  } catch (error: any) {
-    toast.add({ title: t('common.error'), description: error.message, color: 'error' })
+  } catch (error: unknown) {
+    toast.add({ title: t('common.error'), description: (error as { message?: string })?.message, color: 'error' })
   }
 }
 
@@ -279,8 +268,8 @@ const addExistingPlayer = async () => {
     toast.add({ title: t('presence.player_added'), color: 'success' })
     addModalOpen.value = false
     resetAddForm()
-  } catch (error: any) {
-    addFormError.value = error.message || t('presence.add_player_failed')
+  } catch (error: unknown) {
+    addFormError.value = (error as { message?: string })?.message || t('presence.add_player_failed')
   } finally {
     addFormSaving.value = false
   }
@@ -303,8 +292,8 @@ const createNewPlayer = async () => {
     toast.add({ title: t('presence.player_created'), color: 'success' })
     addModalOpen.value = false
     resetAddForm()
-  } catch (error: any) {
-    addFormError.value = error.message || t('presence.create_player_failed')
+  } catch (error: unknown) {
+    addFormError.value = (error as { message?: string })?.message || t('presence.create_player_failed')
   } finally {
     addFormSaving.value = false
   }
@@ -352,8 +341,8 @@ const copyComposition = async () => {
     await presenceStore.copyComposition(copyFormData.value, api)
     toast.add({ title: t('presence.composition_copied'), color: 'success' })
     copyModalOpen.value = false
-  } catch (error: any) {
-    toast.add({ title: t('common.error'), description: error.message, color: 'error' })
+  } catch (error: unknown) {
+    toast.add({ title: t('common.error'), description: (error as { message?: string })?.message, color: 'error' })
   }
 }
 
@@ -374,8 +363,8 @@ const bulkDelete = async () => {
     selectedPlayerIds.value = []
     selectAll.value = false
     bulkDeleteModalOpen.value = false
-  } catch (error: any) {
-    toast.add({ title: t('common.error'), description: error.message, color: 'error' })
+  } catch (error: unknown) {
+    toast.add({ title: t('common.error'), description: (error as { message?: string })?.message, color: 'error' })
   } finally {
     isDeleting.value = false
   }
@@ -385,8 +374,8 @@ const deletePlayer = async (matric: number) => {
   try {
     await presenceStore.deletePlayers([matric], api)
     toast.add({ title: t('presence.player_deleted'), color: 'success' })
-  } catch (error: any) {
-    toast.add({ title: t('common.error'), description: error.message, color: 'error' })
+  } catch (error: unknown) {
+    toast.add({ title: t('common.error'), description: (error as { message?: string })?.message, color: 'error' })
   }
 }
 
@@ -598,7 +587,7 @@ const pdfLinks = computed(() => {
                 type="checkbox"
                 class="rounded border-header-300"
                 @change="toggleSelectAll"
-              />
+              >
             </th>
             <th class="w-16 px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">#</th>
             <th class="w-24 px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('presence.status') }}</th>
@@ -609,7 +598,7 @@ const pdfLinks = computed(() => {
             <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.category') }}</th>
             <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.paddle') }}</th>
             <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.certificate') }}</th>
-            <th v-if="canEdit" class="w-16 px-3 py-1"></th>
+            <th v-if="canEdit" class="w-16 px-3 py-1"/>
           </tr>
         </thead>
 
@@ -627,7 +616,7 @@ const pdfLinks = computed(() => {
                 type="checkbox"
                 :value="player.matric"
                 class="rounded border-header-300"
-              />
+              >
             </td>
 
             <!-- Numero (inline edit) -->
@@ -649,7 +638,7 @@ const pdfLinks = computed(() => {
                 class="w-16 px-2 py-1 border border-primary-400 rounded text-sm focus:ring-2 focus:ring-primary-500"
                 @keydown="handleInlineKeydown"
                 @blur="saveInlineEdit"
-              />
+              >
             </td>
 
             <!-- Capitaine (inline edit) -->
@@ -748,7 +737,7 @@ const pdfLinks = computed(() => {
               class="hover:bg-header-50 bg-orange-100/50"
             >
               <td v-if="canEdit" class="px-3 py-1">
-                <input v-model="selectedPlayerIds" type="checkbox" :value="player.matric" class="rounded border-header-300" />
+                <input v-model="selectedPlayerIds" type="checkbox" :value="player.matric" class="rounded border-header-300" >
               </td>
               <!-- Numero (inline edit) -->
               <td class="px-3 py-1 text-sm text-header-900">
@@ -767,7 +756,7 @@ const pdfLinks = computed(() => {
                   class="w-16 px-2 py-1 border border-primary-400 rounded text-sm focus:ring-2 focus:ring-primary-500"
                   @keydown="handleInlineKeydown"
                   @blur="saveInlineEdit"
-                />
+                >
               </td>
               <!-- Capitaine (inline edit) -->
               <td class="px-3 py-1 text-sm">
@@ -839,7 +828,7 @@ const pdfLinks = computed(() => {
               class="hover:bg-header-50 bg-primary-100"
             >
               <td v-if="canEdit" class="px-3 py-1">
-                <input v-model="selectedPlayerIds" type="checkbox" :value="player.matric" class="rounded border-header-300" />
+                <input v-model="selectedPlayerIds" type="checkbox" :value="player.matric" class="rounded border-header-300" >
               </td>
               <!-- Numero (inline edit) -->
               <td class="px-3 py-1 text-sm text-header-900">
@@ -858,7 +847,7 @@ const pdfLinks = computed(() => {
                   class="w-16 px-2 py-1 border border-primary-400 rounded text-sm focus:ring-2 focus:ring-primary-500"
                   @keydown="handleInlineKeydown"
                   @blur="saveInlineEdit"
-                />
+                >
               </td>
               <!-- Capitaine (inline edit) -->
               <td class="px-3 py-1 text-sm">
@@ -930,7 +919,7 @@ const pdfLinks = computed(() => {
               class="bg-dark-200 opacity-80 italic"
             >
               <td v-if="canEdit" class="px-3 py-1">
-                <input v-model="selectedPlayerIds" type="checkbox" :value="player.matric" class="rounded border-header-300" />
+                <input v-model="selectedPlayerIds" type="checkbox" :value="player.matric" class="rounded border-header-300" >
               </td>
               <!-- Numero (inline edit) -->
               <td class="px-3 py-1 text-sm text-header-900">
@@ -949,7 +938,7 @@ const pdfLinks = computed(() => {
                   class="w-16 px-2 py-1 border border-primary-400 rounded text-sm focus:ring-2 focus:ring-primary-500"
                   @keydown="handleInlineKeydown"
                   @blur="saveInlineEdit"
-                />
+                >
               </td>
               <!-- Capitaine (inline edit) -->
               <td class="px-3 py-1 text-sm">
@@ -1047,7 +1036,7 @@ const pdfLinks = computed(() => {
               type="checkbox"
               :value="player.matric"
               class="rounded border-header-300"
-            />
+            >
             <div>
               <div class="font-bold text-header-900">{{ player.nom }} {{ player.prenom }}</div>
               <NuxtLink
@@ -1079,7 +1068,7 @@ const pdfLinks = computed(() => {
               class="w-14 px-2 py-1 border border-primary-400 rounded text-xs focus:ring-2 focus:ring-primary-500"
               @keydown="handleInlineKeydown"
               @blur="saveInlineEdit"
-            />
+            >
             <!-- Capitaine (inline edit on mobile) -->
             <span
               v-if="!canEdit || editingCell?.matric !== player.matric || editingCell?.field !== 'capitaine'"
@@ -1214,7 +1203,7 @@ const pdfLinks = computed(() => {
                   required
                   class="w-full px-3 py-1 border border-header-300 rounded-lg text-sm uppercase focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   @input="addFormData.nom = ($event.target as HTMLInputElement).value.toUpperCase(); ($event.target as HTMLInputElement).value = addFormData.nom!"
-                />
+                >
               </div>
               <div>
                 <label class="block text-sm font-medium text-header-700 mb-1">{{ t('common.first_name') }} *</label>
@@ -1224,7 +1213,7 @@ const pdfLinks = computed(() => {
                   required
                   class="w-full px-3 py-1 border border-header-300 rounded-lg text-sm uppercase focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   @input="addFormData.prenom = ($event.target as HTMLInputElement).value.toUpperCase(); ($event.target as HTMLInputElement).value = addFormData.prenom!"
-                />
+                >
               </div>
               <!-- Duplicate warning -->
               <div v-if="duplicateMatches.length > 0" class="col-span-2">
@@ -1265,7 +1254,7 @@ const pdfLinks = computed(() => {
                   v-model="addFormData.naissance"
                   type="date"
                   class="w-full px-3 py-1 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                />
+                >
               </div>
               <div>
                 <label class="block text-sm font-medium text-header-700 mb-1">{{ t('presence.referee_qualification') }}</label>
@@ -1287,11 +1276,11 @@ const pdfLinks = computed(() => {
                   v-model="addFormData.niveau"
                   class="w-full px-3 py-1 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 >
-                  <option value="" v-if="addFormData.arbitre">-</option>
-                  <option value="A" v-if="addFormData.arbitre">A</option>
-                  <option value="B" v-if="addFormData.arbitre">B</option>
-                  <option value="C" v-if="addFormData.arbitre">C</option>
-                  <option value="S" v-if="addFormData.arbitre">S - {{ t('presence.referee_level_trainee') }}</option>
+                  <option v-if="addFormData.arbitre" value="">-</option>
+                  <option v-if="addFormData.arbitre" value="A">A</option>
+                  <option v-if="addFormData.arbitre" value="B">B</option>
+                  <option v-if="addFormData.arbitre" value="C">C</option>
+                  <option v-if="addFormData.arbitre" value="S">S - {{ t('presence.referee_level_trainee') }}</option>
                 </select>
               </div>
               <div>
@@ -1304,7 +1293,7 @@ const pdfLinks = computed(() => {
                   :placeholder="t('presence.icf_number_placeholder')"
                   class="w-full px-3 py-1 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   @input="(e: Event) => { const el = e.target as HTMLInputElement; const digits = el.value.replace(/\D/g, ''); el.value = digits; addFormData.numicf = digits ? parseInt(digits) : undefined }"
-                />
+                >
               </div>
             </div>
           </template>
@@ -1319,7 +1308,7 @@ const pdfLinks = computed(() => {
                 min="0"
                 max="99"
                 class="w-full px-3 py-1 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-              />
+              >
             </div>
             <div>
               <label class="block text-sm font-medium text-header-700 mb-1">{{ t('presence.status') }}</label>

@@ -2,7 +2,7 @@
 import type { TvEvent, TvMatchesResponse, TvGlobalFilters } from '~/types/tv'
 import { TV_STYLES } from '~/types/tv'
 
-const props = defineProps<{
+defineProps<{
   events: TvEvent[]
   matchData: TvMatchesResponse | null
 }>()
@@ -24,7 +24,7 @@ onMounted(() => {
       if (parsed.css) filters.value.css = parsed.css
       if (parsed.lang) filters.value.lang = parsed.lang
     }
-    catch {}
+    catch { /* handled by useApi */ }
   }
 })
 

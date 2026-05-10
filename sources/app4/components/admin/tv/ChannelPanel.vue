@@ -42,7 +42,7 @@ async function activate() {
       await api.get(`/${url}`)
       toast.add({ title: `Cache forced`, color: 'success', duration: 3000 })
     }
-    catch {}
+    catch { /* handled by useApi */ }
     finally { activating.value = false }
     return
   }
@@ -56,7 +56,7 @@ async function activate() {
       duration: 3000,
     })
   }
-  catch {}
+  catch { /* handled by useApi */ }
   finally { activating.value = false }
 }
 
@@ -75,7 +75,7 @@ async function blank() {
       duration: 3000,
     })
   }
-  catch {}
+  catch { /* handled by useApi */ }
   finally { activating.value = false }
 }
 
