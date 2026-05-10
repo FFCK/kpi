@@ -394,11 +394,7 @@ class AdminGamesController extends AbstractController
 
         $this->connection->insert('kp_match', $insertData);
 
-        $this->logActionForSeason(
-            'Ajout match',
-            $journee['Code_saison'],
-            "{$journee['Code_competition']}: Id $nextId (Journée $idJournee)"
-        );
+        $this->logActionForMatch('Ajout match', $journee['Code_saison'], $journee['Code_competition'], $idJournee, $nextId);
 
         return $this->json(['id' => $nextId, 'message' => 'Game created'], Response::HTTP_CREATED);
     }
@@ -417,7 +413,7 @@ class AdminGamesController extends AbstractController
         }
 
         $existing = $this->connection->prepare(
-            "SELECT m.Id, j.Code_competition, j.Code_saison FROM kp_match m INNER JOIN kp_journee j ON m.Id_journee = j.Id WHERE m.Id = ?"
+            "SELECT m.Id, m.Id_journee, j.Code_competition, j.Code_saison FROM kp_match m INNER JOIN kp_journee j ON m.Id_journee = j.Id WHERE m.Id = ?"
         )->executeQuery([$id])->fetchAssociative();
 
         if (!$existing) {
@@ -484,11 +480,7 @@ class AdminGamesController extends AbstractController
         $updateData['Code_uti'] = $user?->getUserIdentifier();
         $this->connection->update('kp_match', $updateData, ['Id' => $id]);
 
-        $this->logActionForSeason(
-            'Modification match',
-            $existing['Code_saison'],
-            "{$existing['Code_competition']}: Id $id"
-        );
+        $this->logActionForMatch('Modification match', $existing['Code_saison'], $existing['Code_competition'], (int) $existing['Id_journee'], $id);
 
         return $this->json(['message' => 'Game updated']);
     }
@@ -507,7 +499,7 @@ class AdminGamesController extends AbstractController
         }
 
         $row = $this->connection->prepare(
-            "SELECT m.Id, m.Validation, m.ScoreA, m.ScoreB, j.Code_competition, j.Code_saison
+            "SELECT m.Id, m.Id_journee, m.Validation, m.ScoreA, m.ScoreB, j.Code_competition, j.Code_saison
              FROM kp_match m INNER JOIN kp_journee j ON m.Id_journee = j.Id
              WHERE m.Id = ?"
         )->executeQuery([$id])->fetchAssociative();
@@ -549,11 +541,7 @@ class AdminGamesController extends AbstractController
         $this->connection->executeStatement("DELETE FROM kp_chrono WHERE IdMatch = ?", [$id]);
         $this->connection->executeStatement("DELETE FROM kp_match WHERE Id = ? AND Validation != 'O'", [$id]);
 
-        $this->logActionForSeason(
-            'Suppression match',
-            $row['Code_saison'],
-            "{$row['Code_competition']}: Id $id"
-        );
+        $this->logActionForMatch('Suppression match', $row['Code_saison'], $row['Code_competition'], (int) $row['Id_journee'], $id);
 
         return $this->json([], Response::HTTP_NO_CONTENT);
     }
@@ -591,7 +579,7 @@ class AdminGamesController extends AbstractController
 
         // Verify game exists
         $row = $this->connection->prepare(
-            "SELECT m.Id, m.Validation FROM kp_match m WHERE m.Id = ?"
+            "SELECT m.Id, m.Id_journee, m.Validation, j.Code_saison, j.Code_competition FROM kp_match m INNER JOIN kp_journee j ON m.Id_journee = j.Id WHERE m.Id = ?"
         )->executeQuery([$id])->fetchAssociative();
 
         if (!$row) {
@@ -634,6 +622,8 @@ class AdminGamesController extends AbstractController
 
         $this->connection->update('kp_match', $updateData, ['Id' => $id]);
 
+        $this->logActionForMatch('Modification match inline', $row['Code_saison'], $row['Code_competition'], (int) $row['Id_journee'], $id, $field);
+
         return $this->json(['id' => $id, 'field' => $field, 'value' => $value]);
     }
 
@@ -651,7 +641,7 @@ class AdminGamesController extends AbstractController
         }
 
         $row = $this->connection->prepare(
-            "SELECT Id, Publication FROM kp_match WHERE Id = ?"
+            "SELECT m.Id, m.Id_journee, m.Publication, j.Code_saison, j.Code_competition FROM kp_match m INNER JOIN kp_journee j ON m.Id_journee = j.Id WHERE m.Id = ?"
         )->executeQuery([$id])->fetchAssociative();
 
         if (!$row) {
@@ -660,6 +650,8 @@ class AdminGamesController extends AbstractController
 
         $newValue = $row['Publication'] === 'O' ? 'N' : 'O';
         $this->connection->update('kp_match', ['Publication' => $newValue, 'Code_uti' => $user?->getUserIdentifier()], ['Id' => $id]);
+
+        $this->logActionForMatch('Publication match', $row['Code_saison'], $row['Code_competition'], (int) $row['Id_journee'], $id, $newValue);
 
         return $this->json(['id' => $id, 'publication' => $newValue]);
     }
@@ -678,7 +670,7 @@ class AdminGamesController extends AbstractController
         }
 
         $row = $this->connection->prepare(
-            "SELECT Id, Validation FROM kp_match WHERE Id = ?"
+            "SELECT m.Id, m.Id_journee, m.Validation, j.Code_saison, j.Code_competition FROM kp_match m INNER JOIN kp_journee j ON m.Id_journee = j.Id WHERE m.Id = ?"
         )->executeQuery([$id])->fetchAssociative();
 
         if (!$row) {
@@ -687,6 +679,8 @@ class AdminGamesController extends AbstractController
 
         $newValue = $row['Validation'] === 'O' ? 'N' : 'O';
         $this->connection->update('kp_match', ['Validation' => $newValue, 'Code_uti' => $user?->getUserIdentifier()], ['Id' => $id]);
+
+        $this->logActionForMatch('Validation match', $row['Code_saison'], $row['Code_competition'], (int) $row['Id_journee'], $id, $newValue);
 
         return $this->json(['id' => $id, 'validation' => $newValue]);
     }
@@ -705,7 +699,7 @@ class AdminGamesController extends AbstractController
         }
 
         $row = $this->connection->prepare(
-            "SELECT Id, Type FROM kp_match WHERE Id = ?"
+            "SELECT m.Id, m.Id_journee, m.Type, j.Code_saison, j.Code_competition FROM kp_match m INNER JOIN kp_journee j ON m.Id_journee = j.Id WHERE m.Id = ?"
         )->executeQuery([$id])->fetchAssociative();
 
         if (!$row) {
@@ -714,6 +708,8 @@ class AdminGamesController extends AbstractController
 
         $newValue = $row['Type'] === 'C' ? 'E' : 'C';
         $this->connection->update('kp_match', ['Type' => $newValue, 'Code_uti' => $user?->getUserIdentifier()], ['Id' => $id]);
+
+        $this->logActionForMatch('Type match', $row['Code_saison'], $row['Code_competition'], (int) $row['Id_journee'], $id, $newValue);
 
         return $this->json(['id' => $id, 'type' => $newValue]);
     }
@@ -732,7 +728,7 @@ class AdminGamesController extends AbstractController
         }
 
         $row = $this->connection->prepare(
-            "SELECT Id, Statut FROM kp_match WHERE Id = ?"
+            "SELECT m.Id, m.Id_journee, m.Statut, j.Code_saison, j.Code_competition FROM kp_match m INNER JOIN kp_journee j ON m.Id_journee = j.Id WHERE m.Id = ?"
         )->executeQuery([$id])->fetchAssociative();
 
         if (!$row) {
@@ -747,6 +743,8 @@ class AdminGamesController extends AbstractController
         };
 
         $this->connection->update('kp_match', ['Statut' => $newValue, 'Code_uti' => $user?->getUserIdentifier()], ['Id' => $id]);
+
+        $this->logActionForMatch('Statut match', $row['Code_saison'], $row['Code_competition'], (int) $row['Id_journee'], $id, $newValue);
 
         return $this->json(['id' => $id, 'statut' => $newValue]);
     }
@@ -765,7 +763,7 @@ class AdminGamesController extends AbstractController
         }
 
         $row = $this->connection->prepare(
-            "SELECT Id, Imprime FROM kp_match WHERE Id = ?"
+            "SELECT m.Id, m.Id_journee, m.Imprime, j.Code_saison, j.Code_competition FROM kp_match m INNER JOIN kp_journee j ON m.Id_journee = j.Id WHERE m.Id = ?"
         )->executeQuery([$id])->fetchAssociative();
 
         if (!$row) {
@@ -774,6 +772,8 @@ class AdminGamesController extends AbstractController
 
         $newValue = $row['Imprime'] === 'O' ? 'N' : 'O';
         $this->connection->update('kp_match', ['Imprime' => $newValue, 'Code_uti' => $user?->getUserIdentifier()], ['Id' => $id]);
+
+        $this->logActionForMatch('Impression match', $row['Code_saison'], $row['Code_competition'], (int) $row['Id_journee'], $id, $newValue);
 
         return $this->json(['id' => $id, 'imprime' => $newValue]);
     }
@@ -800,7 +800,9 @@ class AdminGamesController extends AbstractController
         }
 
         $column = $team === 'A' ? 'Id_equipeA' : 'Id_equipeB';
-        $row = $this->connection->prepare("SELECT Id, {$column} AS currentTeamId FROM kp_match WHERE Id = ?")->executeQuery([$id])->fetchAssociative();
+        $row = $this->connection->prepare(
+            "SELECT m.Id, m.Id_journee, m.{$column} AS currentTeamId, j.Code_saison, j.Code_competition FROM kp_match m INNER JOIN kp_journee j ON m.Id_journee = j.Id WHERE m.Id = ?"
+        )->executeQuery([$id])->fetchAssociative();
         if (!$row) {
             return $this->json(['message' => 'Game not found'], Response::HTTP_NOT_FOUND);
         }
@@ -820,11 +822,14 @@ class AdminGamesController extends AbstractController
 
         // Get team name
         $teamName = null;
+
         if ($updateVal) {
             $teamName = $this->connection->prepare(
                 "SELECT Libelle FROM kp_competition_equipe WHERE Id = ?"
             )->executeQuery([$updateVal])->fetchOne() ?: null;
         }
+
+        $this->logActionForMatch('Changement équipe match', $row['Code_saison'], $row['Code_competition'], (int) $row['Id_journee'], $id, "équipe $team -> " . ($teamName ?? 'vide'));
 
         return $this->json(['id' => $id, 'team' => $team, 'idEquipe' => $updateVal, 'equipe' => $teamName]);
     }
@@ -849,12 +854,16 @@ class AdminGamesController extends AbstractController
             return $this->json(['message' => 'Journée ID is required'], Response::HTTP_BAD_REQUEST);
         }
 
-        $row = $this->connection->prepare("SELECT Id FROM kp_match WHERE Id = ?")->executeQuery([$id])->fetchAssociative();
+        $row = $this->connection->prepare(
+            "SELECT m.Id, m.Id_journee, j.Code_saison, j.Code_competition FROM kp_match m INNER JOIN kp_journee j ON m.Id_journee = j.Id WHERE m.Id = ?"
+        )->executeQuery([$id])->fetchAssociative();
         if (!$row) {
             return $this->json(['message' => 'Game not found'], Response::HTTP_NOT_FOUND);
         }
 
         $this->connection->update('kp_match', ['Id_journee' => $newJourneeId, 'Code_uti' => $user?->getUserIdentifier()], ['Id' => $id]);
+
+        $this->logActionForMatch('Changement journée match', $row['Code_saison'], $row['Code_competition'], (int) $row['Id_journee'], $id, "-> journée $newJourneeId");
 
         return $this->json(['id' => $id, 'idJournee' => $newJourneeId]);
     }
@@ -951,6 +960,8 @@ class AdminGamesController extends AbstractController
             "UPDATE kp_match SET Publication = ?, Code_uti = ? WHERE Id IN ($placeholders)"
         )->executeStatement(array_merge([$newValue, $user?->getUserIdentifier()], $ids));
 
+        $this->logActionForSeason('Publication masse matchs', null, count($ids) . " match(s) -> $newValue");
+
         return $this->json(['updated' => count($ids), 'publication' => $newValue]);
     }
 
@@ -986,6 +997,8 @@ class AdminGamesController extends AbstractController
             "UPDATE kp_match SET Validation = ?, Code_uti = ? WHERE Id IN ($placeholders)"
         )->executeStatement(array_merge([$newValue, $user?->getUserIdentifier()], $ids));
 
+        $this->logActionForSeason('Validation masse matchs', null, count($ids) . " match(s) -> $newValue");
+
         return $this->json(['updated' => count($ids), 'validation' => $newValue]);
     }
 
@@ -1014,6 +1027,8 @@ class AdminGamesController extends AbstractController
         $this->connection->prepare(
             "UPDATE kp_match SET Validation = 'O', Publication = 'O', Code_uti = ? WHERE Id IN ($placeholders)"
         )->executeStatement(array_merge([$user?->getUserIdentifier()], $ids));
+
+        $this->logActionForSeason('Verrouillage+publication masse matchs', null, count($ids) . ' match(s)');
 
         return $this->json(['updated' => count($ids)]);
     }

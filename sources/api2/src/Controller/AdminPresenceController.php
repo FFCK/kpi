@@ -264,11 +264,7 @@ class AdminPresenceController extends AbstractController
         }
 
         // Log action
-        $this->logActionForSeason(
-            'Ajout titulaire',
-            $teamInfo['code_saison'],
-            "{$teamInfo['code_compet']}: Equipe {$teamId} - Joueur {$matric}"
-        );
+        $this->logActionForCompetition('Ajout titulaire', $teamInfo['code_saison'], $teamInfo['code_compet'], "Equipe {$teamId} - Joueur {$matric}");
 
         return $this->json([
             'success' => true,
@@ -326,11 +322,7 @@ class AdminPresenceController extends AbstractController
         // Log action
         $field = array_key_first($updateData);
         $value = $updateData[$field];
-        $this->logActionForSeason(
-            'Modification kp_competition_equipe_joueur',
-            $teamInfo['code_saison'],
-            "{$teamInfo['code_compet']}: Equipe {$teamId} - {$field}={$value}"
-        );
+        $this->logActionForCompetition('Modification kp_competition_equipe_joueur', $teamInfo['code_saison'], $teamInfo['code_compet'], "Equipe {$teamId} - {$field}={$value}");
 
         return $this->json(['success' => true]);
     }
@@ -378,11 +370,7 @@ class AdminPresenceController extends AbstractController
 
         // Log action
         $matricList = implode(',', $matricIds);
-        $this->logActionForSeason(
-            'Suppression titulaire',
-            $teamInfo['code_saison'],
-            "{$teamInfo['code_compet']}: Equipe {$teamId} - Joueurs {$matricList}"
-        );
+        $this->logActionForCompetition('Suppression titulaire', $teamInfo['code_saison'], $teamInfo['code_compet'], "Equipe {$teamId} - Joueurs {$matricList}");
 
         return $this->json([
             'success' => true,
@@ -582,11 +570,7 @@ class AdminPresenceController extends AbstractController
             $copied++;
         }
 
-        $this->logActionForSeason(
-            'Copie composition',
-            $teamInfo['code_saison'],
-            "{$teamInfo['code_compet']}: Equipe {$teamId} <- {$sourceCompetition}: {$copied} joueur(s) (remplacement complet)"
-        );
+        $this->logActionForCompetition('Copie composition', $teamInfo['code_saison'], $teamInfo['code_compet'], "Equipe {$teamId} <- {$sourceCompetition}: {$copied} joueur(s)");
 
         return $this->json([
             'success' => true,

@@ -117,6 +117,17 @@ class AdminAuthMandateController extends AbstractController
         // Generate new JWT
         $token = $this->jwtManager->create($user);
 
+        try {
+            if ($mandateId === null) {
+                $details = 'Profil principal (niveau ' . $user->getNiveau() . ')';
+            } else {
+                $details = 'Mandat: ' . ($mandate['libelle'] ?? $mandateId) . ' (niveau ' . ($mandate['niveau'] ?? '?') . ')';
+            }
+            $sql = "INSERT INTO kp_journal (Dates, Users, Actions, Journal) VALUES (NOW(), ?, 'Connexion', ?)";
+            $this->connection->prepare($sql)->executeStatement([$user->getUserIdentifier(), $details]);
+        } catch (\Exception) {
+        }
+
         return $this->json([
             'token' => $token,
             'user' => $userData,

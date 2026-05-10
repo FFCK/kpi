@@ -84,7 +84,7 @@ class AdminRcController extends AbstractController
             $codes = array_filter(array_map('trim', explode(',', $competitionsFilter)));
             if (!empty($codes)) {
                 $placeholders = implode(',', array_fill(0, count($codes), '?'));
-                $sql .= " AND rc.Code_competition IN ($placeholders)";
+                $sql .= " AND (rc.Code_competition IN ($placeholders) OR rc.Code_competition IS NULL)";
                 $params = array_merge($params, $codes);
             }
         }

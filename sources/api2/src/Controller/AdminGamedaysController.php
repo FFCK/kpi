@@ -331,7 +331,7 @@ class AdminGamedaysController extends AbstractController
 
         $this->connection->insert('kp_journee', $insertData);
 
-        $this->logActionForSeason('Ajout journee', $season, "$competition: $phase (Id: $nextId)");
+        $this->logActionForGameday('Ajout journee', $season, $competition, $nextId, $phase);
 
         return $this->json(['id' => $nextId, 'message' => 'Gameday created'], Response::HTTP_CREATED);
     }
@@ -424,11 +424,7 @@ class AdminGamedaysController extends AbstractController
 
         $this->connection->update('kp_journee', $updateData, ['Id' => $id]);
 
-        $this->logActionForSeason(
-            'Modification journee',
-            $existing['Code_saison'],
-            "{$existing['Code_competition']}: Id $id"
-        );
+        $this->logActionForGameday('Modification journee', $existing['Code_saison'], $existing['Code_competition'], $id);
 
         return $this->json(['message' => 'Gameday updated']);
     }
@@ -456,11 +452,7 @@ class AdminGamedaysController extends AbstractController
         $newValue = $row['Publication'] === 'O' ? 'N' : 'O';
         $this->connection->update('kp_journee', ['Publication' => $newValue], ['Id' => $id]);
 
-        $this->logActionForSeason(
-            'Publication journee',
-            $row['Code_saison'],
-            "{$row['Code_competition']}: Id $id -> $newValue"
-        );
+        $this->logActionForGameday('Publication journee', $row['Code_saison'], $row['Code_competition'], $id, $newValue);
 
         return $this->json(['id' => $id, 'publication' => $newValue === 'O']);
     }
@@ -487,6 +479,8 @@ class AdminGamedaysController extends AbstractController
 
         $newValue = $row['Type'] === 'C' ? 'E' : 'C';
         $this->connection->update('kp_journee', ['Type' => $newValue], ['Id' => $id]);
+
+        $this->logActionForGameday('Type journee', $row['Code_saison'], $row['Code_competition'], $id, $newValue);
 
         return $this->json(['id' => $id, 'type' => $newValue]);
     }
@@ -555,6 +549,8 @@ class AdminGamedaysController extends AbstractController
 
         $this->connection->update('kp_journee', [$field => $value, 'Code_uti' => $user?->getUserIdentifier()], ['Id' => $id]);
 
+        $this->logActionForGameday('Modification journee inline', $row['Code_saison'], $row['Code_competition'], $id, $field);
+
         return $this->json(['id' => $id, 'field' => $field, 'value' => $value]);
     }
 
@@ -618,10 +614,12 @@ class AdminGamedaysController extends AbstractController
 
             $this->connection->commit();
 
-            $this->logActionForSeason(
+            $this->logActionForGameday(
                 'Duplication journee',
                 $source['Code_saison'],
-                "{$source['Code_competition']}: Id $id -> $nextId" . ($matchCount > 0 ? " ($matchCount matchs)" : '')
+                $source['Code_competition'],
+                $nextId,
+                "source $id" . ($matchCount > 0 ? " ($matchCount matchs)" : '')
             );
 
             return $this->json([
@@ -682,11 +680,7 @@ class AdminGamedaysController extends AbstractController
 
         $this->connection->delete('kp_journee', ['Id' => $id]);
 
-        $this->logActionForSeason(
-            'Suppression journee',
-            $row['Code_saison'],
-            "{$row['Code_competition']}: {$row['Phase']} (Id: $id)"
-        );
+        $this->logActionForGameday('Suppression journee', $row['Code_saison'], $row['Code_competition'], $id, $row['Phase']);
 
         return $this->json([], Response::HTTP_NO_CONTENT);
     }
@@ -865,10 +859,11 @@ class AdminGamedaysController extends AbstractController
 
         $this->connection->prepare($sql)->executeStatement(array_merge($params, $ids));
 
-        $this->logActionForSeason(
+        $this->logActionForCompetition(
             'Copie officiels+calendrier',
             $source['Code_saison'],
-            "{$source['Code_competition']}: source $sourceId -> " . count($ids) . ' cibles'
+            $source['Code_competition'],
+            "source $sourceId -> " . count($ids) . ' cibles'
         );
 
         return $this->json(['updated' => count($ids)]);

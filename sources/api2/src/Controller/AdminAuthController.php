@@ -70,6 +70,17 @@ class AdminAuthController extends AbstractController
         // Load mandates for the user
         $mandates = $this->loadMandates($user->getCode());
 
+        // Log successful login
+        try {
+            $identite = trim($user->getPrenom() . ' ' . $user->getNom());
+            $sql = "INSERT INTO kp_journal (Dates, Users, Actions, Journal) VALUES (NOW(), ?, 'Connexion', ?)";
+            $this->connection->prepare($sql)->executeStatement([
+                $user->getUserIdentifier(),
+                $identite ?: $user->getUserIdentifier(),
+            ]);
+        } catch (\Exception) {
+        }
+
         // Generate JWT token
         $token = $this->jwtManager->create($user);
 

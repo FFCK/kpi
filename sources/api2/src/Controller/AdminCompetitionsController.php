@@ -501,7 +501,7 @@ class AdminCompetitionsController extends AbstractController
         ]);
 
         // Log action
-        $this->logActionForSeason('Ajout Compet', $season, $code);
+        $this->logActionForCompetition('Ajout Compet', $season, $code);
 
         return $this->json([
             'code' => $code,
@@ -613,7 +613,7 @@ class AdminCompetitionsController extends AbstractController
         $stmt->executeStatement($params);
 
         // Log action
-        $this->logActionForSeason('Modif Competition', $season, $code);
+        $this->logActionForCompetition('Modif Competition', $season, $code);
 
         return $this->json([
             'code' => $code,
@@ -678,7 +678,7 @@ class AdminCompetitionsController extends AbstractController
             $stmt->executeStatement([$code, $season]);
 
             // Log action
-            $this->logActionForSeason('Suppression Compet', $season, $code);
+            $this->logActionForCompetition('Suppression Compet', $season, $code);
 
             return $this->json(null, Response::HTTP_NO_CONTENT);
         } catch (\Exception) {
@@ -761,7 +761,7 @@ class AdminCompetitionsController extends AbstractController
             $stmt->executeStatement($params);
 
             // Log action
-            $this->logActionForSeason('Suppression Compets', $season, implode(',', $codes));
+            $this->logActionForCompetition('Suppression Compets', $season, null, implode(',', $codes));
 
             return $this->json(['deleted' => count($codes)]);
         } catch (\Exception) {
@@ -803,7 +803,7 @@ class AdminCompetitionsController extends AbstractController
         $stmt->executeStatement([$newValue, $code, $season]);
 
         // Log action
-        $this->logActionForSeason('Publication competition', $season, "$code: $newValue");
+        $this->logActionForCompetition('Publication competition', $season, $code, $newValue);
 
         return $this->json([
             'code' => $code,
@@ -843,7 +843,7 @@ class AdminCompetitionsController extends AbstractController
         $stmt->executeStatement([$newValue, $code, $season]);
 
         // Log action
-        $this->logActionForSeason('Verrou Compet', $season, "$code: $newValue");
+        $this->logActionForCompetition('Verrou Compet', $season, $code, $newValue);
 
         return $this->json([
             'code' => $code,
@@ -886,7 +886,7 @@ class AdminCompetitionsController extends AbstractController
         $stmt->executeStatement([$newStatus, $code, $season]);
 
         // Log action
-        $this->logActionForSeason('Statut Competition', $season, "$code: $newStatus");
+        $this->logActionForCompetition('Statut Competition', $season, $code, $newStatus);
 
         return $this->json([
             'code' => $code,

@@ -382,6 +382,8 @@ class AdminRankingsController extends AbstractController
             $this->connection->prepare($sql)->executeStatement([$value, $teamId]);
         }
 
+        $this->logActionForCompetition('Modif Classement inline', $row['Code_saison'], $row['Code_compet'], "$field: $value (équipe $teamId)");
+
         return $this->json(['success' => true]);
     }
 
@@ -705,6 +707,14 @@ class AdminRankingsController extends AbstractController
             return $this->json(['message' => 'Invalid field'], Response::HTTP_BAD_REQUEST);
         }
 
+        $row = $this->connection->prepare(
+            "SELECT Code_compet, Code_saison FROM kp_competition_equipe WHERE Id = ?"
+        )->executeQuery([$teamId])->fetchAssociative();
+
+        if (!$row) {
+            return $this->json(['message' => 'Team not found'], Response::HTTP_NOT_FOUND);
+        }
+
         // Ensure init row exists
         $sql = "INSERT IGNORE INTO kp_competition_equipe_init (Id, Pts, Clt, J, G, N, P, F, Plus, Moins, Diff)
                 VALUES (?, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)";
@@ -712,6 +722,8 @@ class AdminRankingsController extends AbstractController
 
         $sql = "UPDATE kp_competition_equipe_init SET `$field` = ? WHERE Id = ?";
         $this->connection->prepare($sql)->executeStatement([$value, $teamId]);
+
+        $this->logActionForCompetition('Modif Classement initial inline', $row['Code_saison'], $row['Code_compet'], "$field: $value (équipe $teamId)");
 
         return $this->json(['success' => true]);
     }

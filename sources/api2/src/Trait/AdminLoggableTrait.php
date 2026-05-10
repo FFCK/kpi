@@ -54,6 +54,55 @@ trait AdminLoggableTrait
     }
 
     /**
+     * Log an admin action with season, competition and gameday context.
+     * Used by AdminGamedaysController.
+     */
+    private function logActionForGameday(
+        string $action,
+        ?string $season = null,
+        ?string $competition = null,
+        ?int $gamedayId = null,
+        ?string $details = null
+    ): void {
+        try {
+            $user = $this->getUser();
+            $userId = $user?->getUserIdentifier() ?? 'system';
+
+            $sql = "INSERT INTO kp_journal (Dates, Users, Actions, Saisons, Competitions, Journees, Journal)
+                    VALUES (NOW(), ?, ?, ?, ?, ?, ?)";
+
+            $stmt = $this->connection->prepare($sql);
+            $stmt->executeStatement([$userId, $action, $season, $competition, $gamedayId, $details]);
+        } catch (\Exception) {
+        }
+    }
+
+    /**
+     * Log an admin action with full match context.
+     * Used by AdminGamesController.
+     */
+    private function logActionForMatch(
+        string $action,
+        ?string $season = null,
+        ?string $competition = null,
+        ?int $gamedayId = null,
+        ?int $matchId = null,
+        ?string $details = null
+    ): void {
+        try {
+            $user = $this->getUser();
+            $userId = $user?->getUserIdentifier() ?? 'system';
+
+            $sql = "INSERT INTO kp_journal (Dates, Users, Actions, Saisons, Competitions, Journees, Matchs, Journal)
+                    VALUES (NOW(), ?, ?, ?, ?, ?, ?, ?)";
+
+            $stmt = $this->connection->prepare($sql);
+            $stmt->executeStatement([$userId, $action, $season, $competition, $gamedayId, $matchId, $details]);
+        } catch (\Exception) {
+        }
+    }
+
+    /**
      * Log an admin action with season and competition context.
      * Used by AdminRcController and other controllers managing competition-level data.
      */

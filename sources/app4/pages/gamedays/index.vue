@@ -283,6 +283,7 @@ const toggleType = async (gameday: Gameday) => {
   try {
     const response = await api.patch<{ type: string }>(`/admin/gamedays/${gameday.id}/type`)
     gameday.type = response.type as 'C' | 'E'
+    toast.add({ title: t('common.saved'), color: 'success' })
   } catch {
     // Error already shown by useApi
   }

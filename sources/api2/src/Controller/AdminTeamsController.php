@@ -466,7 +466,7 @@ class AdminTeamsController extends AbstractController
             }
 
             $this->connection->commit();
-            $this->logActionForSeason('Ajout equipe', $season, "$competition: $addedCount équipe(s)");
+            $this->logActionForCompetition('Ajout equipe', $season, $competition, "$addedCount équipe(s)");
 
             return $this->json([
                 'message' => "$addedCount team(s) added successfully",
@@ -531,7 +531,7 @@ class AdminTeamsController extends AbstractController
             $stmt->executeStatement([$id]);
 
             $this->connection->commit();
-            $this->logActionForSeason('Suppression equipes', $team['Code_saison'], "{$team['Code_compet']}: {$team['Libelle']}");
+            $this->logActionForCompetition('Suppression equipes', $team['Code_saison'], $team['Code_compet'], $team['Libelle']);
 
             return $this->json(['message' => 'Team deleted successfully']);
         } catch (\Exception $e) {
@@ -617,7 +617,7 @@ class AdminTeamsController extends AbstractController
             }
 
             $this->connection->commit();
-            $this->logActionForSeason('Suppression equipes', $season, "$deletedCount équipe(s) supprimée(s)");
+            $this->logActionForCompetition('Suppression equipes', $season, $competition ?? null, "$deletedCount équipe(s) supprimée(s)");
 
             return $this->json([
                 'message' => "$deletedCount team(s) deleted" . ($skippedCount > 0 ? ", $skippedCount skipped (have matches)" : ''),
@@ -671,7 +671,7 @@ class AdminTeamsController extends AbstractController
         $stmt = $this->connection->prepare($sql);
         $stmt->executeStatement([$poule, $tirage, $id]);
 
-        $this->logActionForSeason('Tirage au sort', $team['Code_saison'], "{$team['Code_compet']}: id=$id poule=$poule tirage=$tirage");
+        $this->logActionForCompetition('Tirage au sort', $team['Code_saison'], $team['Code_compet'], "id=$id poule=$poule tirage=$tirage");
 
         return $this->json([
             'id' => $id,
@@ -761,7 +761,7 @@ class AdminTeamsController extends AbstractController
             }
 
             $this->connection->commit();
-            $this->logActionForSeason('Update couleurs equipe', $team['Code_saison'], "{$team['Code_compet']}: id=$id");
+            $this->logActionForCompetition('Update couleurs equipe', $team['Code_saison'], $team['Code_compet'], "id=$id");
 
             return $this->json([
                 'id' => $id,
@@ -866,7 +866,7 @@ class AdminTeamsController extends AbstractController
             }
 
             $this->connection->commit();
-            $this->logActionForSeason('Duplication equipes', $season, "$sourceCompetition -> $targetCompetition: $addedCount équipe(s)");
+            $this->logActionForCompetition('Duplication equipes', $season, $targetCompetition, "$sourceCompetition -> $targetCompetition: $addedCount équipe(s)");
 
             return $this->json([
                 'message' => "$addedCount team(s) duplicated successfully",
@@ -943,7 +943,7 @@ class AdminTeamsController extends AbstractController
             }
         }
 
-        $this->logActionForSeason('Update logo equipes', $season, "$competition: $updatedCount logo(s)");
+        $this->logActionForCompetition('Update logo equipes', $season, $competition, "$updatedCount logo(s)");
 
         return $this->json([
             'message' => "$updatedCount logo(s) updated",
@@ -973,12 +973,7 @@ class AdminTeamsController extends AbstractController
 
         $this->connection->beginTransaction();
         try {
-            // Lock the competition
-            $sql = "UPDATE kp_competition SET Verrou = 1 WHERE Code = ? AND Code_saison = ?";
-            $stmt = $this->connection->prepare($sql);
-            $stmt->executeStatement([$competition, $season]);
-
-            // Get all teams with their players
+            // Get all teams
             $sql = "SELECT ce.Id
                     FROM kp_competition_equipe ce
                     WHERE ce.Code_compet = ? AND ce.Code_saison = ?";
@@ -990,11 +985,12 @@ class AdminTeamsController extends AbstractController
             foreach ($teams as $team) {
                 $teamId = (int) $team['Id'];
 
-                // Get all matches for this team that don't have players yet
+                // Get all matches for this team
                 $sql = "SELECT m.Id, m.Id_equipeA, m.Id_equipeB
                         FROM kp_match m
+                        INNER JOIN kp_journee j ON m.Id_journee = j.Id
                         WHERE (m.Id_equipeA = ? OR m.Id_equipeB = ?)
-                        AND m.Code_compet = ? AND m.Code_saison = ?";
+                        AND j.Code_competition = ? AND j.Code_saison = ?";
                 $stmt = $this->connection->prepare($sql);
                 $result = $stmt->executeQuery([$teamId, $teamId, $competition, $season]);
                 $matches = $result->fetchAllAssociative();
@@ -1003,7 +999,7 @@ class AdminTeamsController extends AbstractController
                     $isTeamA = (int) $match['Id_equipeA'] === $teamId;
                     $prefix = $isTeamA ? 'A' : 'B';
 
-                    // Check if match already has players for this team
+                    // Skip if match already has players for this team
                     $sql = "SELECT COUNT(*) FROM kp_match_joueur
                             WHERE Id_match = ? AND Equipe = ?";
                     $stmt = $this->connection->prepare($sql);
@@ -1014,11 +1010,12 @@ class AdminTeamsController extends AbstractController
                         continue;
                     }
 
-                    // Copy team composition to match
-                    $sql = "INSERT INTO kp_match_joueur (Id_match, Equipe, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine)
-                            SELECT ?, ?, Matric, Nom, Prenom, Sexe, Categ, Numero, Capitaine
+                    // Copy active players only (exclude inactive X and referees A, matching legacy behaviour)
+                    $sql = "INSERT INTO kp_match_joueur (Id_match, Equipe, Matric, Numero, Capitaine)
+                            SELECT ?, ?, Matric, Numero, Capitaine
                             FROM kp_competition_equipe_joueur
-                            WHERE Id_equipe = ?";
+                            WHERE Id_equipe = ?
+                            AND Capitaine NOT IN ('X', 'A')";
                     $stmt = $this->connection->prepare($sql);
                     $stmt->executeStatement([$match['Id'], $prefix, $teamId]);
                 }
@@ -1027,10 +1024,10 @@ class AdminTeamsController extends AbstractController
             }
 
             $this->connection->commit();
-            $this->logActionForSeason('Init titulaires', $season, "$competition: $teamsInitialized équipe(s)");
+            $this->logActionForCompetition('Init titulaires', $season, $competition, "$teamsInitialized équipe(s)");
 
             return $this->json([
-                'message' => "Starters initialized for $teamsInitialized team(s). Competition locked.",
+                'message' => "Starters initialized for $teamsInitialized team(s).",
                 'count' => $teamsInitialized,
             ]);
         } catch (\Exception $e) {
@@ -1069,13 +1066,13 @@ class AdminTeamsController extends AbstractController
             return $this->json(['message' => 'Competition not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $newVerrou = $current ? 0 : 1;
+        $newVerrou = $current ? '' : 'O';
         $sql = "UPDATE kp_competition SET Verrou = ? WHERE Code = ? AND Code_saison = ?";
         $stmt = $this->connection->prepare($sql);
         $stmt->executeStatement([$newVerrou, $competition, $season]);
 
         return $this->json([
-            'verrou' => (bool) $newVerrou,
+            'verrou' => $newVerrou === 'O',
         ]);
     }
 
