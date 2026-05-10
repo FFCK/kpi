@@ -95,6 +95,16 @@ const getLicenseDisplay = (player: Player): string => {
   return player.icf ? `ICF-${player.icf}` : player.matric.toString()
 }
 
+// Status label mapping
+const statusLabel = (capitaine: string): string => {
+  const map: Record<string, string> = {
+    '-': '-',
+    'C': t('presence.status_captain'),
+    'E': t('presence.status_coach'),
+  }
+  return map[capitaine] ?? capitaine
+}
+
 // Actions
 const toggleSelectAll = () => {
   if (selectAll.value) {
@@ -487,7 +497,7 @@ const formatDate = (dateStr: string) => {
                 :class="canEdit ? 'editable-cell' : ''"
                 @click="canEdit && startEdit(player, 'capitaine')"
               >
-                {{ player.capitaine }}
+                {{ statusLabel(player.capitaine) }}
               </span>
               <select
                 v-else
@@ -497,9 +507,9 @@ const formatDate = (dateStr: string) => {
                 @change="saveInlineEdit"
                 @blur="cancelInlineEdit"
               >
-                <option value="-">-</option>
-                <option value="C">C</option>
-                <option value="E">E</option>
+                <option value="-">{{ t('presence.status_player') }}</option>
+                <option value="C">{{ t('presence.status_captain') }}</option>
+                <option value="E">{{ t('presence.status_coach') }}</option>
               </select>
             </td>
 
@@ -562,7 +572,7 @@ const formatDate = (dateStr: string) => {
                 <input v-model="selectedPlayerIds" type="checkbox" :value="player.matric" class="rounded border-header-300" >
               </td>
               <td class="px-3 py-1 text-sm text-header-900">{{ player.numero || '-' }}</td>
-              <td class="px-3 py-1 text-sm">{{ player.capitaine }}</td>
+              <td class="px-3 py-1 text-sm">{{ statusLabel(player.capitaine) }}</td>
               <td class="px-3 py-1 text-sm font-medium text-header-900">{{ player.nom }}</td>
               <td class="px-3 py-1 text-sm text-header-900">{{ player.prenom }}</td>
               <td class="px-3 py-1 text-sm text-header-500 font-mono">
@@ -632,7 +642,7 @@ const formatDate = (dateStr: string) => {
               class="px-2 py-1 text-xs font-medium rounded"
               :class="player.capitaine === 'C' ? 'bg-warning-200 text-warning-800' : 'bg-header-100 text-header-600'"
             >
-              {{ player.capitaine }}
+              {{ statusLabel(player.capitaine) }}
             </span>
           </div>
         </div>
