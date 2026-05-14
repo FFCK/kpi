@@ -96,6 +96,9 @@ const selectedCompetitions = ref<string[]>([])
 const allCompetitions = ref(false)
 const selectedEvents = ref<number[]>([])
 
+// Competition search filter
+const competitionSearch = ref('')
+
 // Mandates
 const mandates = ref<Mandate[]>([])
 const mandatesLoading = ref(false)
@@ -110,6 +113,7 @@ watch(() => props.open, async (isOpen) => {
   formError.value = ''
   selectedClubs.value = []
   mandates.value = []
+  competitionSearch.value = ''
 
   if (adminNiveau.value <= 2) {
     await loadEvents()
@@ -131,6 +135,7 @@ function resetForm() {
   form.tel = ''
   form.fonction = ''
   form.niveau = 7
+  competitionSearch.value = ''
   form.filtreSaison = ''
   form.filtreCompetition = ''
   form.idEvenement = ''
@@ -147,10 +152,12 @@ function resetForm() {
     allSeasons.value = false
   } else {
     selectedSeasons.value = []
-    allSeasons.value = true
+    // Profile >= 3 cannot use "all seasons"
+    allSeasons.value = form.niveau < 3
   }
   selectedCompetitions.value = []
-  allCompetitions.value = true
+  // Profile >= 3 cannot use "all competitions"
+  allCompetitions.value = form.niveau < 3
   selectedEvents.value = []
   selectedClubs.value = []
   mandates.value = []
@@ -294,6 +301,10 @@ function selectLicence(athlete: AthleteResult) {
     if (!existing) {
       selectedClubs.value.push({ code: athlete.codeClub, libelle: athlete.club || athlete.codeClub })
     }
+    // For profile 7 (default), auto-fill fonction with the club name
+    if (form.niveau === 7 && !form.fonction) {
+      form.fonction = athlete.club || athlete.codeClub
+    }
   }
 }
 
@@ -389,6 +400,19 @@ watch([selectedSeasons, allSeasons], ([seasons, all]) => {
   loadCompetitions(seasons as string[], all as boolean)
 }, { deep: true })
 
+// When profile switches to >= 3, enforce that "all" cannot be selected
+watch(() => form.niveau, (niveau) => {
+  if (niveau >= 3) {
+    if (allSeasons.value) {
+      allSeasons.value = false
+    }
+    if (allCompetitions.value) {
+      allCompetitions.value = false
+      selectedCompetitions.value = []
+    }
+  }
+})
+
 // Event toggle
 function toggleEvent(id: number) {
   const idx = selectedEvents.value.indexOf(id)
@@ -419,10 +443,17 @@ const profileOptions = computed(() => {
   return options
 })
 
-// Grouped competitions for display
+// Grouped competitions for display (optionally filtered by search)
 const groupedCompetitions = computed(() => {
+  const query = competitionSearch.value.trim().toLowerCase()
+  const filtered = query
+    ? competitions.value.filter(c =>
+        c.code.toLowerCase().includes(query) || c.libelle.toLowerCase().includes(query)
+      )
+    : competitions.value
+
   const groups: Record<string, { label: string; items: Competition[] }> = {}
-  for (const c of competitions.value) {
+  for (const c of filtered) {
     const key = String(c.section)
     if (!groups[key]) {
       groups[key] = { label: c.sectionLabel, items: [] }
@@ -431,6 +462,9 @@ const groupedCompetitions = computed(() => {
   }
   return groups
 })
+
+// Profile >= 3 cannot use "all seasons" or "all competitions"
+const profileRestrictsAll = computed(() => form.niveau >= 3)
 
 // Submit
 async function handleSubmit() {
@@ -691,8 +725,16 @@ onBeforeUnmount(() => {
             <div>
               <label class="block text-sm font-medium text-header-700 mb-1">{{ t('users.modal.filter_seasons') }}</label>
               <div class="border border-header-300 rounded-lg max-h-36 overflow-y-auto p-2">
-                <label class="flex items-center gap-2 text-sm mb-1 cursor-pointer">
-                  <input type="checkbox" :checked="allSeasons" @change="toggleAllSeasons">
+                <label
+                  class="flex items-center gap-2 text-sm mb-1"
+                  :class="profileRestrictsAll ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'"
+                >
+                  <input
+                    type="checkbox"
+                    :checked="allSeasons"
+                    :disabled="profileRestrictsAll"
+                    @change="toggleAllSeasons"
+                  >
                   <span class="font-medium">{{ t('users.modal.filter_seasons_all') }}</span>
                 </label>
                 <label
@@ -714,27 +756,56 @@ onBeforeUnmount(() => {
             <!-- Competitions -->
             <div>
               <label class="block text-sm font-medium text-header-700 mb-1">{{ t('users.modal.filter_competitions') }}</label>
-              <div class="border border-header-300 rounded-lg max-h-36 overflow-y-auto p-2">
-                <label class="flex items-center gap-2 text-sm mb-1 cursor-pointer">
-                  <input type="checkbox" :checked="allCompetitions" @change="toggleAllCompetitions">
+              <div class="border border-header-300 rounded-lg p-2">
+                <label
+                  class="flex items-center gap-2 text-sm mb-2"
+                  :class="profileRestrictsAll ? 'opacity-40 cursor-not-allowed' : 'cursor-pointer'"
+                >
+                  <input
+                    type="checkbox"
+                    :checked="allCompetitions"
+                    :disabled="profileRestrictsAll"
+                    @change="toggleAllCompetitions"
+                  >
                   <span class="font-medium">{{ t('users.modal.filter_competitions_all') }}</span>
                 </label>
-                <template v-for="(group, key) in groupedCompetitions" :key="key">
-                  <div class="text-xs font-semibold text-header-500 mt-2 mb-1">— {{ group.label }} —</div>
-                  <label
-                    v-for="c in group.items"
-                    :key="c.code"
-                    class="flex items-center gap-2 text-sm mb-0.5 cursor-pointer"
+                <div class="relative mb-2">
+                  <input
+                    v-model="competitionSearch"
+                    type="text"
+                    class="w-full px-2 py-1 text-xs border border-header-200 rounded focus:ring-1 focus:ring-primary-400 focus:border-primary-400"
+                    :class="competitionSearch ? 'pr-6' : ''"
+                    :placeholder="t('users.modal.filter_competitions_search')"
                   >
-                    <input
-                      type="checkbox"
-                      :checked="selectedCompetitions.includes(c.code)"
-                      :disabled="allCompetitions"
-                      @change="toggleCompetition(c.code)"
+                  <button
+                    v-if="competitionSearch"
+                    class="absolute right-1.5 top-1/2 -translate-y-1/2 text-header-400 hover:text-header-600"
+                    @click="competitionSearch = ''"
+                  >
+                    <UIcon name="i-heroicons-x-mark" class="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <div class="max-h-28 overflow-y-auto">
+                  <template v-for="(group, key) in groupedCompetitions" :key="key">
+                    <div class="text-xs font-semibold text-header-500 mt-1 mb-1">— {{ group.label }} —</div>
+                    <label
+                      v-for="c in group.items"
+                      :key="c.code"
+                      class="flex items-center gap-2 text-sm mb-0.5 cursor-pointer"
                     >
-                    {{ c.code }} - {{ c.libelle }}
-                  </label>
-                </template>
+                      <input
+                        type="checkbox"
+                        :checked="selectedCompetitions.includes(c.code)"
+                        :disabled="allCompetitions"
+                        @change="toggleCompetition(c.code)"
+                      >
+                      {{ c.code }} - {{ c.libelle }}
+                    </label>
+                  </template>
+                  <div v-if="Object.keys(groupedCompetitions).length === 0" class="text-xs text-header-400 py-1">
+                    {{ t('users.modal.filter_competitions_no_results') }}
+                  </div>
+                </div>
               </div>
             </div>
           </div>

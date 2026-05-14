@@ -530,12 +530,13 @@ Voir [DROITS_PAR_PROFIL.md](DROITS_PAR_PROFIL.md) section "Bypass perimetre pour
 
 - **Creation** : Le bouton "Ajouter" ouvre la modale vide avec les valeurs par defaut (profil 7, saison en cours)
 - **Modification** : Le bouton "Modifier" charge les donnees de l'utilisateur et ouvre la modale pre-remplie
-- **Autocomplete licence** : Recherche dans `/admin/athletes/search?q=...` (min 2 car.). A la selection, remplit automatiquement licence, identite, et club (si disponible)
+- **Autocomplete licence** : Recherche dans `/admin/athletes/search?q=...` (min 2 car.). A la selection, remplit automatiquement licence, identite, et club (si disponible). Pour un nouvel utilisateur au profil 7, le champ Fonctions est egalement pre-rempli avec le nom du club de la licence (modifiable)
 - **Autocomplete clubs** : Recherche dans `/admin/clubs/search?q=...` (min 2 car.). Affiche les resultats en dropdown. Chaque club selectionne s'ajoute comme un tag. Clic sur le tag pour retirer
 - **Profil par defaut** : 7 pour un nouvel utilisateur
+- **Recherche dans la liste des competitions** : Un champ de filtrage textuel est propose au-dessus de la liste des competitions dans les filtres d'acces. Il filtre en temps reel par code ou libelle de competition, sans appel API supplementaire
 - **Validation avant soumission** : Licence non vide, email non vide et valide, profil selectionne. Regles supplementaires selon le profil :
-  - Profil >= 3 : au moins une saison obligatoire (impossible de laisser "Toutes les saisons")
-  - Profil >= 3 : au moins une competition obligatoire (impossible de laisser "Toutes les competitions")
+  - Profil >= 3 : au moins une saison obligatoire (impossible de laisser "Toutes les saisons" — la case est desactivee dans l'UI)
+  - Profil >= 3 : au moins une competition obligatoire (impossible de laisser "Toutes les competitions" — la case est desactivee dans l'UI)
   - Profil 5 ou 6 : au moins une journee obligatoire
   - Profil 7 : au moins un club obligatoire
   - Mandat uniquement : au moins une saison obligatoire (la case "Toutes les saisons" n'est pas proposee dans le formulaire mandat)

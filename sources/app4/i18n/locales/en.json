@@ -1701,6 +1701,8 @@
       "filter_seasons_all": "All seasons",
       "filter_competitions": "Competitions",
       "filter_competitions_all": "All competitions",
+      "filter_competitions_search": "Search competition...",
+      "filter_competitions_no_results": "No competition found",
       "filter_events": "Events",
       "filter_clubs": "Clubs",
       "filter_clubs_placeholder": "Search for a club...",

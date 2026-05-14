@@ -1714,6 +1714,8 @@
       "filter_seasons_all": "Toutes les saisons",
       "filter_competitions": "Compétitions",
       "filter_competitions_all": "Toutes les compétitions",
+      "filter_competitions_search": "Rechercher une compétition...",
+      "filter_competitions_no_results": "Aucune compétition trouvée",
       "filter_events": "Événements",
       "filter_clubs": "Clubs",
       "filter_clubs_placeholder": "Rechercher un club...",
