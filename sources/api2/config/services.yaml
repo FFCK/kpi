@@ -28,6 +28,7 @@ services:
         arguments:
             $mailFrom: '%env(MAILER_FROM)%'
             $mailAdminTo: '%env(MAILER_ADMIN_TO)%'
+            $app4Url: '%env(APP4_URL)%'
 
     App\Service\PceImportService:
         arguments:

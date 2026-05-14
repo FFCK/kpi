@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Service\NotificationService;
 use App\Trait\AdminLoggableTrait;
 use Doctrine\DBAL\Connection;
 use OpenApi\Attributes as OA;
@@ -27,7 +28,8 @@ class AdminUsersController extends AbstractController
     use AdminLoggableTrait;
 
     public function __construct(
-        private readonly Connection $connection
+        private readonly Connection $connection,
+        private readonly NotificationService $notificationService
     ) {
     }
 
@@ -280,6 +282,9 @@ class AdminUsersController extends AbstractController
         $idEvenement = $data['idEvenement'] ?? '';
         $filtreJournee = $data['filtreJournee'] ?? '';
         $limitClubs = $data['limitClubs'] ?? '';
+        $sendResetEmail = (bool) ($data['sendResetEmail'] ?? false);
+        $includeDocLink = (bool) ($data['includeDocLink'] ?? false);
+        $complementaryMessage = trim($data['complementaryMessage'] ?? '');
 
         // Validation
         if (empty($code)) {
@@ -329,6 +334,16 @@ class AdminUsersController extends AbstractController
             null,
             "Création utilisateur $code ($identite), profil $niveau par " . $currentUser->getUserIdentifier()
         );
+
+        if ($sendResetEmail) {
+            $token = bin2hex(random_bytes(32));
+            $this->connection->executeStatement('DELETE FROM kp_user_token WHERE user = ?', [$code]);
+            $this->connection->executeStatement(
+                'INSERT INTO kp_user_token (user, token, generated_at) VALUES (?, ?, NOW())',
+                [$code, $token]
+            );
+            $this->notificationService->sendPasswordReset($mail, $token, $includeDocLink, $complementaryMessage);
+        }
 
         return $this->json([
             'code' => $code,
@@ -941,7 +956,6 @@ class AdminUsersController extends AbstractController
 
         // Generate a reset token (64 hex chars)
         $token = bin2hex(random_bytes(32));
-        $expiresAt = (new \DateTimeImmutable('+48 hours'))->format('Y-m-d H:i:s');
 
         // Store in kp_user_token (upsert: replace if exists)
         $this->connection->executeStatement('DELETE FROM kp_user_token WHERE user = ?', [$code]);
@@ -950,8 +964,12 @@ class AdminUsersController extends AbstractController
             [$code, $token]
         );
 
-        // TODO: Send actual email with reset link
-        // For now, return the token so the admin can share it
+        $data = json_decode($request->getContent(), true) ?? [];
+        $includeDocLink = (bool) ($data['includeDocLink'] ?? false);
+        $complementaryMessage = trim($data['complementaryMessage'] ?? '');
+
+        $this->notificationService->sendPasswordReset($existing['Mail'], $token, $includeDocLink, $complementaryMessage);
+
         $this->logActionForSeason(
             'Reset mot de passe',
             null,
@@ -960,7 +978,6 @@ class AdminUsersController extends AbstractController
 
         return $this->json([
             'message' => 'Reset token generated',
-            'token' => $token,
             'email' => $existing['Mail'],
         ]);
     }

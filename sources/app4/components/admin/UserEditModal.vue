@@ -75,6 +75,8 @@ const licenceResults = ref<AthleteResult[]>([])
 const licenceLoading = ref(false)
 const showLicenceDropdown = ref(false)
 const licenceDropdownRef = ref<HTMLElement>()
+const licenceInputRef = ref<HTMLInputElement>()
+const emailInputRef = ref<HTMLInputElement>()
 
 const clubQuery = ref('')
 const clubResults = ref<ClubResult[]>([])
@@ -125,6 +127,8 @@ watch(() => props.open, async (isOpen) => {
   } else {
     // Create mode: defaults (resetForm sets selectedSeasons, which triggers competition reload)
     resetForm()
+    await nextTick()
+    licenceInputRef.value?.focus()
   }
 })
 
@@ -294,6 +298,7 @@ function selectLicence(athlete: AthleteResult) {
   form.identite = `${athlete.nom} ${athlete.prenom}`
   licenceQuery.value = ''
   showLicenceDropdown.value = false
+  nextTick(() => emailInputRef.value?.focus())
 
   // Pre-fill club if available
   if (athlete.codeClub) {
@@ -614,6 +619,7 @@ onBeforeUnmount(() => {
         <label class="block text-sm font-medium text-header-700 mb-1">{{ t('users.modal.search_licence') }}</label>
         <div class="relative">
           <input
+            ref="licenceInputRef"
             v-model="licenceQuery"
             type="text"
             class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
@@ -643,9 +649,8 @@ onBeforeUnmount(() => {
             v-model="form.code"
             type="text"
             maxlength="8"
-            :readonly="isEditing"
-            class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-            :class="{ 'bg-header-100': isEditing }"
+            readonly
+            class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm bg-header-100"
           >
         </div>
         <div>
@@ -656,9 +661,8 @@ onBeforeUnmount(() => {
             v-model="form.identite"
             type="text"
             maxlength="80"
-            :readonly="isEditing"
-            class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm"
-            :class="{ 'bg-header-100': isEditing }"
+            readonly
+            class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm bg-header-100"
           >
         </div>
       </div>
@@ -671,6 +675,7 @@ onBeforeUnmount(() => {
             {{ t('users.modal.email') }} <span class="text-danger-500">*</span>
           </label>
           <input
+            ref="emailInputRef"
             v-model="form.mail"
             type="email"
             maxlength="100"
@@ -810,6 +815,55 @@ onBeforeUnmount(() => {
             </div>
           </div>
 
+          <!-- Clubs (left) + Journées (right) -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <!-- Clubs autocomplete -->
+            <div>
+              <label class="block text-sm font-medium text-header-700 mb-1">{{ t('users.modal.filter_clubs') }}</label>
+              <div ref="clubDropdownRef" class="relative">
+                <input
+                  v-model="clubQuery"
+                  type="text"
+                  class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  :placeholder="t('users.modal.filter_clubs_placeholder')"
+                >
+                <UIcon v-if="clubLoading" name="i-heroicons-arrow-path" class="absolute right-3 top-2.5 w-4 h-4 animate-spin text-header-400" />
+                <div v-if="showClubDropdown" class="absolute z-30 mt-1 w-full bg-white border border-header-200 rounded-lg shadow-lg max-h-36 overflow-y-auto">
+                  <button
+                    v-for="club in clubResults"
+                    :key="club.code"
+                    class="w-full px-3 py-2 text-left text-sm hover:bg-primary-50"
+                    @click="selectClub(club)"
+                  >
+                    {{ club.code }} - {{ club.libelle }}
+                  </button>
+                </div>
+              </div>
+              <!-- Selected club tags -->
+              <div v-if="selectedClubs.length > 0" class="flex flex-wrap gap-1.5 mt-2">
+                <span
+                  v-for="club in selectedClubs"
+                  :key="club.code"
+                  class="inline-flex items-center gap-1 px-2 py-0.5 bg-primary-100 text-primary-800 text-xs rounded-full"
+                >
+                  {{ club.code }} - {{ club.libelle }}
+                  <button class="text-primary-600 hover:text-primary-800" @click="removeClub(club.code)">×</button>
+                </span>
+              </div>
+            </div>
+
+            <!-- Journées -->
+            <div>
+              <label class="block text-sm font-medium text-header-700 mb-1">{{ t('users.modal.filter_gamedays') }}</label>
+              <input
+                v-model="form.filtreJournee"
+                type="text"
+                class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                :placeholder="t('users.modal.filter_gamedays_placeholder')"
+              >
+            </div>
+          </div>
+
           <!-- Events (profile <= 2 only) -->
           <div v-if="adminNiveau <= 2 && events.length > 0" class="mb-4">
             <label class="block text-sm font-medium text-header-700 mb-1">{{ t('users.modal.filter_events') }}</label>
@@ -827,52 +881,6 @@ onBeforeUnmount(() => {
                 {{ evt.id }} - {{ evt.libelle }}
               </label>
             </div>
-          </div>
-
-          <!-- Clubs autocomplete -->
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-header-700 mb-1">{{ t('users.modal.filter_clubs') }}</label>
-            <div ref="clubDropdownRef" class="relative">
-              <input
-                v-model="clubQuery"
-                type="text"
-                class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                :placeholder="t('users.modal.filter_clubs_placeholder')"
-              >
-              <UIcon v-if="clubLoading" name="i-heroicons-arrow-path" class="absolute right-3 top-2.5 w-4 h-4 animate-spin text-header-400" />
-              <div v-if="showClubDropdown" class="absolute z-30 mt-1 w-full bg-white border border-header-200 rounded-lg shadow-lg max-h-36 overflow-y-auto">
-                <button
-                  v-for="club in clubResults"
-                  :key="club.code"
-                  class="w-full px-3 py-2 text-left text-sm hover:bg-primary-50"
-                  @click="selectClub(club)"
-                >
-                  {{ club.code }} - {{ club.libelle }}
-                </button>
-              </div>
-            </div>
-            <!-- Selected club tags -->
-            <div v-if="selectedClubs.length > 0" class="flex flex-wrap gap-1.5 mt-2">
-              <span
-                v-for="club in selectedClubs"
-                :key="club.code"
-                class="inline-flex items-center gap-1 px-2 py-0.5 bg-primary-100 text-primary-800 text-xs rounded-full"
-              >
-                {{ club.code }} - {{ club.libelle }}
-                <button class="text-primary-600 hover:text-primary-800" @click="removeClub(club.code)">×</button>
-              </span>
-            </div>
-          </div>
-
-          <!-- Journées -->
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-header-700 mb-1">{{ t('users.modal.filter_gamedays') }}</label>
-            <input
-              v-model="form.filtreJournee"
-              type="text"
-              class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-              :placeholder="t('users.modal.filter_gamedays_placeholder')"
-            >
           </div>
         </div>
       </template>
