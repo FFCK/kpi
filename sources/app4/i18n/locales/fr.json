@@ -1201,7 +1201,21 @@
     "notice_inactive": "Utilisez le statut Inactif (X) pour rendre indisponible un joueur sans le supprimer de la liste (joueurs absents ou suspendus sur un ou plusieurs matchs, sur une ou plusieurs journées).",
     "notice_staff_referee": "Les membres du staff (E) et arbitres (A) ne sont pas comptabilisés dans les statistiques. Les joueurs inactifs (X) et les arbitres (A) ne sont pas transférés sur les feuilles de match.",
     "last_addition_or_deletion": "Dernière addition ou suppression",
-    "last_update_by": "par"
+    "last_update_by": "par",
+    "surclassement": "Surclassement",
+    "surclassement_ok": "Surclassement valide",
+    "surclassement_missing": "Surclassement manquant",
+    "surclassement_not_required": "",
+    "validation_errors_title": "Ce joueur ne satisfait pas les critères de la compétition nationale :",
+    "error_Saison_licence": "Saison de licence invalide (licence non à jour pour cette saison)",
+    "error_Certif": "Certificat médical manquant",
+    "error_Pagaie_couleur": "Pagaie couleur invalide (jaune, blanche ou absente)",
+    "error_Surclassement": "Surclassement manquant",
+    "override_allowed_title": "Ajout malgré la non-validation",
+    "override_allowed_notice": "En tant qu'administrateur, vous pouvez ajouter ce joueur uniquement en tant qu'arbitre non-joueur (A) ou staff (E).",
+    "override_status_label": "Statut imposé",
+    "override_confirm": "Ajouter malgré tout",
+    "override_cancel": "Annuler"
   },
   "gamedays": {
     "title": "Journées / Phases",

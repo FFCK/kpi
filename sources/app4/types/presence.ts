@@ -42,6 +42,8 @@ export interface Player {
 
   // Surclassement (age overclassing)
   dateSurclassement: string | null
+  surclassementNeeded: boolean  // true if competition requires surclassement for this category
+  surclassementOk: boolean      // true if not needed, or needed and present
 
   // ICF number (international)
   icf: number | null
@@ -143,6 +145,9 @@ export interface AddPlayerFormData {
 
   // Optional ICF
   numicf?: number
+
+  // Override national validation (profile <= 2 only, restricted to E/A status)
+  forceAdd?: boolean
 }
 
 /**

@@ -1188,7 +1188,21 @@
     "notice_inactive": "Use Unavailable (X) status to set a player unavailable without removing them from the roster (absent or suspended players on one or more games, on one or more days).",
     "notice_staff_referee": "Coaches (E) and referees (A) are not counted in statistics. Unavailable players (X) and referees (A) are not transferred to game reports.",
     "last_addition_or_deletion": "Last addition or deletion",
-    "last_update_by": "by"
+    "last_update_by": "by",
+    "surclassement": "Overclassing",
+    "surclassement_ok": "Overclassing valid",
+    "surclassement_missing": "Overclassing missing",
+    "surclassement_not_required": "",
+    "validation_errors_title": "This player does not meet the national competition requirements:",
+    "error_Saison_licence": "Invalid license season (license not current for this season)",
+    "error_Certif": "Medical certificate missing",
+    "error_Pagaie_couleur": "Invalid paddle color (yellow, white or missing)",
+    "error_Surclassement": "Age overclassing missing",
+    "override_allowed_title": "Add despite failed validation",
+    "override_allowed_notice": "As an administrator, you may add this player only as a non-playing referee (A) or staff (E).",
+    "override_status_label": "Forced status",
+    "override_confirm": "Add anyway",
+    "override_cancel": "Cancel"
   },
   "gamedays": {
     "title": "Gamedays / Phases",

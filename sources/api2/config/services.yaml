@@ -35,3 +35,8 @@ services:
             $ffckPceUrl: '%env(FFCK_PCE_URL)%'
             $ffckPceUser: '%env(FFCK_PCE_USER)%'
             $ffckPcePwd: '%env(FFCK_PCE_PWD)%'
+
+    App\Controller\AdminPresenceController:
+        arguments:
+            $surclassementCompetitions: '%env(csv:SURCLASSEMENT_COMPETITIONS)%'
+            $surclassementExemptCategories: '%env(csv:SURCLASSEMENT_EXEMPT_CATEGORIES)%'

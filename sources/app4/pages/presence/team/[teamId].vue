@@ -25,6 +25,8 @@ const { canEdit, canCopy } = usePresencePermissions(
   'team',
   computed(() => presenceStore.isLocked)
 )
+const authStore = useAuthStore()
+const canOverride = computed(() => authStore.profile <= 2)
 
 
 // Selection state
@@ -45,6 +47,10 @@ const addMode = ref<'existing' | 'create'>('existing')
 const addFormData = ref<AddPlayerFormData>({ mode: 'existing', capitaine: '-' })
 const addFormError = ref('')
 const addFormSaving = ref(false)
+
+// National validation failure state (for override flow)
+const addFormValidationErrors = ref<string[]>([])
+const overrideStatus = ref<'E' | 'A'>('A')
 
 // Player search (existing players)
 const selectedPlayer = ref<PlayerAutocomplete | null>(null)
@@ -245,6 +251,8 @@ const handleInlineKeydown = (e: KeyboardEvent) => {
 // Add player - handle selection from autocomplete
 const onPlayerSelected = (player: PlayerAutocomplete | null) => {
   selectedPlayer.value = player
+  addFormValidationErrors.value = []
+  addFormError.value = ''
   if (player) {
     addFormData.value.matric = player.matric
   }
@@ -256,6 +264,7 @@ const addExistingPlayer = async () => {
 
   addFormSaving.value = true
   addFormError.value = ''
+  addFormValidationErrors.value = []
 
   try {
     await presenceStore.addPlayer({
@@ -269,7 +278,40 @@ const addExistingPlayer = async () => {
     addModalOpen.value = false
     resetAddForm()
   } catch (error: unknown) {
-    addFormError.value = (error as { message?: string })?.message || t('presence.add_player_failed')
+    const err = error as { message?: string; errors?: string[] }
+    if (err.errors && err.errors.length > 0) {
+      addFormValidationErrors.value = err.errors
+    } else {
+      addFormError.value = err.message || t('presence.add_player_failed')
+    }
+  } finally {
+    addFormSaving.value = false
+  }
+}
+
+// Add player with override (profile <= 2 only, forced to E or A status)
+const addWithOverride = async () => {
+  if (!selectedPlayer.value) return
+
+  addFormSaving.value = true
+  addFormError.value = ''
+
+  try {
+    await presenceStore.addPlayer({
+      mode: 'existing',
+      matric: selectedPlayer.value.matric,
+      numero: addFormData.value.numero,
+      capitaine: overrideStatus.value,
+      forceAdd: true
+    }, api)
+
+    toast.add({ title: t('presence.player_added'), color: 'success' })
+    addModalOpen.value = false
+    resetAddForm()
+  } catch (error: unknown) {
+    const err = error as { message?: string; errors?: string[] }
+    addFormError.value = err.message || t('presence.add_player_failed')
+    addFormValidationErrors.value = []
   } finally {
     addFormSaving.value = false
   }
@@ -311,6 +353,8 @@ const resetAddForm = () => {
   addFormData.value = { mode: 'existing', capitaine: '-', sexe: undefined, arbitre: '', niveau: '' }
   selectedPlayer.value = null
   addFormError.value = ''
+  addFormValidationErrors.value = []
+  overrideStatus.value = 'A'
   duplicateMatches.value = []
 }
 
@@ -589,15 +633,16 @@ const pdfLinks = computed(() => {
                 @change="toggleSelectAll"
               >
             </th>
-            <th class="w-16 px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">#</th>
+            <th class="w-16 px-3 py-1 text-center text-xs font-medium text-header-500 uppercase">#</th>
             <th class="w-24 px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('presence.status') }}</th>
             <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.last_name') }}</th>
             <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.first_name') }}</th>
-            <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.license') }}</th>
-            <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.club') }}</th>
-            <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.category') }}</th>
-            <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.paddle') }}</th>
-            <th class="px-3 py-1 text-left text-xs font-medium text-header-500 uppercase">{{ t('common.certificate') }}</th>
+            <th class="px-3 py-1 text-center text-xs font-medium text-header-500 uppercase">{{ t('common.license') }}</th>
+            <th class="px-3 py-1 text-center text-xs font-medium text-header-500 uppercase">{{ t('common.club') }}</th>
+            <th class="px-3 py-1 text-center text-xs font-medium text-header-500 uppercase">{{ t('common.category') }}</th>
+            <th v-if="presenceStore.isNationalCompetition" class="px-3 py-1 text-center text-xs font-medium text-header-500 uppercase" :title="t('presence.surclassement')">{{ t('presence.surclassement') }}</th>
+            <th class="px-3 py-1 text-center text-xs font-medium text-header-500 uppercase">{{ t('common.paddle') }}</th>
+            <th class="px-3 py-1 text-center text-xs font-medium text-header-500 uppercase">{{ t('common.certificate') }}</th>
             <th v-if="canEdit" class="w-16 px-3 py-1"/>
           </tr>
         </thead>
@@ -620,7 +665,7 @@ const pdfLinks = computed(() => {
             </td>
 
             <!-- Numero (inline edit) -->
-            <td class="px-3 py-1 text-sm text-header-900">
+            <td class="px-3 py-1 text-sm text-header-900 text-center">
               <span
                 v-if="editingCell?.matric !== player.matric || editingCell?.field !== 'numero'"
                 :class="canEdit ? 'editable-cell' : ''"
@@ -667,7 +712,7 @@ const pdfLinks = computed(() => {
 
             <td class="px-3 py-1 text-sm font-medium text-header-900">{{ player.nom }}</td>
             <td class="px-3 py-1 text-sm text-header-900">{{ player.prenom }}</td>
-            <td class="px-3 py-1 text-sm text-header-500 font-mono">
+            <td class="px-3 py-1 text-sm text-header-500 font-mono text-center">
               <NuxtLink
                 :to="`/athletes?matric=${player.matric}`"
                 class="link-value"
@@ -675,19 +720,33 @@ const pdfLinks = computed(() => {
                 {{ getLicenseDisplay(player) }}
               </NuxtLink>
             </td>
-            <td class="px-3 py-1 text-sm text-header-500">
-                <NuxtLink
-                  :to="`/clubs?code=${player.numeroClub}`"
-                  class="link-value"
-                  :title="t('teams_page.columns.club')"
-                >
-                  {{ player.numeroClub }}
-                </NuxtLink>
-              </td>
-            <td class="px-3 py-1 text-sm text-header-500">{{ player.categ }}-{{ player.sexe }}</td>
+            <td class="px-3 py-1 text-sm text-header-500 text-center">
+              <NuxtLink
+                :to="`/clubs?code=${player.numeroClub}`"
+                class="link-value"
+                :title="t('teams_page.columns.club')"
+              >
+                {{ player.numeroClub }}
+              </NuxtLink>
+            </td>
+            <td class="px-3 py-1 text-sm text-header-500 text-center">{{ player.categ }}-{{ player.sexe }}</td>
+
+            <!-- Surclassement (national competitions only) -->
+            <td v-if="presenceStore.isNationalCompetition" class="px-3 py-1 text-sm text-center">
+              <span
+                v-if="player.surclassementNeeded && !player.surclassementOk"
+                class="text-danger-600 text-lg font-bold"
+                :title="t('presence.surclassement_missing')"
+              >✗</span>
+              <span
+                v-else-if="player.surclassementNeeded && player.surclassementOk"
+                class="text-success-500 text-lg font-bold"
+                :title="t('presence.surclassement_ok')"
+              >✓</span>
+            </td>
 
             <!-- Pagaie with validation -->
-            <td class="px-3 py-1 text-sm">
+            <td class="px-3 py-1 text-sm text-center">
               <span
                 v-if="player.pagaieValide === 0"
                 class="text-danger-600"
@@ -701,7 +760,7 @@ const pdfLinks = computed(() => {
             </td>
 
             <!-- Certificate -->
-            <td class="px-3 py-1 text-sm">
+            <td class="px-3 py-1 text-sm text-center">
               <span
                 v-if="player.certifCK === 'OUI'"
                 class="text-success-500"
@@ -727,7 +786,7 @@ const pdfLinks = computed(() => {
           <!-- Coaches (E) -->
           <template v-if="coaches.length > 0">
             <tr class="bg-header-800">
-              <td :colspan="canEdit ? 11 : 10" class="px-3 py-1 text-xs text-header-50 text-center">
+              <td :colspan="(canEdit ? 11 : 10) + (presenceStore.isNationalCompetition ? 1 : 0)" class="px-3 py-1 text-xs text-header-50 text-center">
                 {{ t('presence.section_coaches') }}
               </td>
             </tr>
@@ -740,7 +799,7 @@ const pdfLinks = computed(() => {
                 <input v-model="selectedPlayerIds" type="checkbox" :value="player.matric" class="rounded border-header-300" >
               </td>
               <!-- Numero (inline edit) -->
-              <td class="px-3 py-1 text-sm text-header-900">
+              <td class="px-3 py-1 text-sm text-header-900 text-center">
                 <span
                   v-if="editingCell?.matric !== player.matric || editingCell?.field !== 'numero'"
                   :class="canEdit ? 'editable-cell' : ''"
@@ -784,7 +843,7 @@ const pdfLinks = computed(() => {
               </td>
               <td class="px-3 py-1 text-sm font-medium text-header-900">{{ player.nom }}</td>
               <td class="px-3 py-1 text-sm text-header-900">{{ player.prenom }}</td>
-              <td class="px-3 py-1 text-sm text-header-500 font-mono">
+              <td class="px-3 py-1 text-sm text-header-500 font-mono text-center">
                 <NuxtLink
                   :to="`/athletes?matric=${player.matric}`"
                   class="link-value"
@@ -792,7 +851,7 @@ const pdfLinks = computed(() => {
                   {{ getLicenseDisplay(player) }}
                 </NuxtLink>
               </td>
-              <td class="px-3 py-1 text-sm text-header-500">
+              <td class="px-3 py-1 text-sm text-header-500 text-center">
                 <NuxtLink
                   :to="`/clubs?code=${player.numeroClub}`"
                   class="link-value"
@@ -801,9 +860,21 @@ const pdfLinks = computed(() => {
                   {{ player.numeroClub }}
                 </NuxtLink>
               </td>
-              <td class="px-3 py-1 text-sm text-header-500">{{ player.categ }}-{{ player.sexe }}</td>
-              <td class="px-3 py-1 text-sm text-header-700">{{ player.pagaieLabel }}</td>
-              <td class="px-3 py-1 text-sm">
+              <td class="px-3 py-1 text-sm text-header-500 text-center">{{ player.categ }}-{{ player.sexe }}</td>
+              <td v-if="presenceStore.isNationalCompetition" class="px-3 py-1 text-sm text-center">
+                <span
+                  v-if="player.surclassementNeeded && !player.surclassementOk"
+                  class="text-danger-600 text-lg font-bold"
+                  :title="t('presence.surclassement_missing')"
+                >✗</span>
+                <span
+                  v-else-if="player.surclassementNeeded && player.surclassementOk"
+                  class="text-success-500 text-lg font-bold"
+                  :title="t('presence.surclassement_ok')"
+                >✓</span>
+              </td>
+              <td class="px-3 py-1 text-sm text-header-700 text-center">{{ player.pagaieLabel }}</td>
+              <td class="px-3 py-1 text-sm text-center">
                 <span v-if="player.certifCK === 'OUI'" class="text-success-500">{{ t('common.yes') }}</span>
                 <span v-else class="text-danger-600">{{ t('common.no') }}</span>
               </td>
@@ -818,7 +889,7 @@ const pdfLinks = computed(() => {
           <!-- Referees (A) -->
           <template v-if="referees.length > 0">
             <tr class="bg-header-800">
-              <td :colspan="canEdit ? 11 : 10" class="px-3 py-1 text-xs text-header-50 text-center">
+              <td :colspan="(canEdit ? 11 : 10) + (presenceStore.isNationalCompetition ? 1 : 0)" class="px-3 py-1 text-xs text-header-50 text-center">
                 {{ t('presence.section_referees') }}
               </td>
             </tr>
@@ -831,7 +902,7 @@ const pdfLinks = computed(() => {
                 <input v-model="selectedPlayerIds" type="checkbox" :value="player.matric" class="rounded border-header-300" >
               </td>
               <!-- Numero (inline edit) -->
-              <td class="px-3 py-1 text-sm text-header-900">
+              <td class="px-3 py-1 text-sm text-header-900 text-center">
                 <span
                   v-if="editingCell?.matric !== player.matric || editingCell?.field !== 'numero'"
                   :class="canEdit ? 'editable-cell' : ''"
@@ -875,7 +946,7 @@ const pdfLinks = computed(() => {
               </td>
               <td class="px-3 py-1 text-sm font-medium text-header-900">{{ player.nom }}</td>
               <td class="px-3 py-1 text-sm text-header-900">{{ player.prenom }}</td>
-              <td class="px-3 py-1 text-sm text-header-500 font-mono">
+              <td class="px-3 py-1 text-sm text-header-500 font-mono text-center">
                 <NuxtLink
                   :to="`/athletes?matric=${player.matric}`"
                   class="link-value"
@@ -883,7 +954,7 @@ const pdfLinks = computed(() => {
                   {{ getLicenseDisplay(player) }}
                 </NuxtLink>
               </td>
-              <td class="px-3 py-1 text-sm text-header-500">
+              <td class="px-3 py-1 text-sm text-header-500 text-center">
                 <NuxtLink
                   :to="`/clubs?code=${player.numeroClub}`"
                   class="link-value"
@@ -892,9 +963,21 @@ const pdfLinks = computed(() => {
                   {{ player.numeroClub }}
                 </NuxtLink>
               </td>
-              <td class="px-3 py-1 text-sm text-header-500">{{ player.categ }}-{{ player.sexe }}</td>
-              <td class="px-3 py-1 text-sm text-header-700">{{ player.pagaieLabel }}</td>
-              <td class="px-3 py-1 text-sm">
+              <td class="px-3 py-1 text-sm text-header-500 text-center">{{ player.categ }}-{{ player.sexe }}</td>
+              <td v-if="presenceStore.isNationalCompetition" class="px-3 py-1 text-sm text-center">
+                <span
+                  v-if="player.surclassementNeeded && !player.surclassementOk"
+                  class="text-danger-600 text-lg font-bold"
+                  :title="t('presence.surclassement_missing')"
+                >✗</span>
+                <span
+                  v-else-if="player.surclassementNeeded && player.surclassementOk"
+                  class="text-success-500 text-lg font-bold"
+                  :title="t('presence.surclassement_ok')"
+                >✓</span>
+              </td>
+              <td class="px-3 py-1 text-sm text-header-700 text-center">{{ player.pagaieLabel }}</td>
+              <td class="px-3 py-1 text-sm text-center">
                 <span v-if="player.certifCK === 'OUI'" class="text-success-500">{{ t('common.yes') }}</span>
                 <span v-else class="text-danger-600">{{ t('common.no') }}</span>
               </td>
@@ -909,7 +992,7 @@ const pdfLinks = computed(() => {
           <!-- Inactive players (X) -->
           <template v-if="inactivePlayers.length > 0">
             <tr class="bg-header-800">
-              <td :colspan="canEdit ? 11 : 10" class="px-3 py-1 text-xs text-header-50 text-center">
+              <td :colspan="(canEdit ? 11 : 10) + (presenceStore.isNationalCompetition ? 1 : 0)" class="px-3 py-1 text-xs text-header-50 text-center">
                 {{ t('presence.section_inactive') }}
               </td>
             </tr>
@@ -922,7 +1005,7 @@ const pdfLinks = computed(() => {
                 <input v-model="selectedPlayerIds" type="checkbox" :value="player.matric" class="rounded border-header-300" >
               </td>
               <!-- Numero (inline edit) -->
-              <td class="px-3 py-1 text-sm text-header-900">
+              <td class="px-3 py-1 text-sm text-header-900 text-center">
                 <span
                   v-if="editingCell?.matric !== player.matric || editingCell?.field !== 'numero'"
                   :class="canEdit ? 'editable-cell' : ''"
@@ -966,7 +1049,7 @@ const pdfLinks = computed(() => {
               </td>
               <td class="px-3 py-1 text-sm font-medium text-header-900">{{ player.nom }}</td>
               <td class="px-3 py-1 text-sm text-header-900">{{ player.prenom }}</td>
-              <td class="px-3 py-1 text-sm text-header-500 font-mono">
+              <td class="px-3 py-1 text-sm text-header-500 font-mono text-center">
                 <NuxtLink
                   :to="`/athletes?matric=${player.matric}`"
                   class="link-value"
@@ -974,7 +1057,7 @@ const pdfLinks = computed(() => {
                   {{ getLicenseDisplay(player) }}
                 </NuxtLink>
               </td>
-              <td class="px-3 py-1 text-sm text-header-500">
+              <td class="px-3 py-1 text-sm text-header-500 text-center">
                 <NuxtLink
                   :to="`/clubs?code=${player.numeroClub}`"
                   class="link-value"
@@ -983,9 +1066,21 @@ const pdfLinks = computed(() => {
                   {{ player.numeroClub }}
                 </NuxtLink>
               </td>
-              <td class="px-3 py-1 text-sm text-header-500">{{ player.categ }}-{{ player.sexe }}</td>
-              <td class="px-3 py-1 text-sm text-header-700">{{ player.pagaieLabel }}</td>
-              <td class="px-3 py-1 text-sm">
+              <td class="px-3 py-1 text-sm text-header-500 text-center">{{ player.categ }}-{{ player.sexe }}</td>
+              <td v-if="presenceStore.isNationalCompetition" class="px-3 py-1 text-sm text-center">
+                <span
+                  v-if="player.surclassementNeeded && !player.surclassementOk"
+                  class="text-danger-600 text-lg font-bold"
+                  :title="t('presence.surclassement_missing')"
+                >✗</span>
+                <span
+                  v-else-if="player.surclassementNeeded && player.surclassementOk"
+                  class="text-success-500 text-lg font-bold"
+                  :title="t('presence.surclassement_ok')"
+                >✓</span>
+              </td>
+              <td class="px-3 py-1 text-sm text-header-700 text-center">{{ player.pagaieLabel }}</td>
+              <td class="px-3 py-1 text-sm text-center">
                 <span v-if="player.certifCK === 'OUI'" class="text-success-500">{{ t('common.yes') }}</span>
                 <span v-else class="text-danger-600">{{ t('common.no') }}</span>
               </td>
@@ -1107,6 +1202,12 @@ const pdfLinks = computed(() => {
             <span class="text-header-500">{{ t('common.category') }}:</span>
             <span>{{ player.categ }}-{{ player.sexe }}</span>
           </div>
+          <div v-if="presenceStore.isNationalCompetition && player.surclassementNeeded" class="flex items-center gap-2">
+            <span class="text-header-500">{{ t('presence.surclassement') }}:</span>
+            <span :class="player.surclassementOk ? 'text-success-500' : 'text-danger-600'">
+              {{ player.surclassementOk ? t('presence.surclassement_ok') : t('presence.surclassement_missing') }}
+            </span>
+          </div>
           <div class="flex items-center gap-2">
             <span class="text-header-500">{{ t('common.paddle') }}:</span>
             <span :class="player.pagaieValide === 0 ? 'text-danger-600' : ''">{{ player.pagaieLabel }}</span>
@@ -1150,13 +1251,76 @@ const pdfLinks = computed(() => {
     >
       <form @submit.prevent="addMode === 'existing' ? addExistingPlayer() : createNewPlayer()">
         <div class="space-y-4">
-          <!-- Error -->
+          <!-- Generic error -->
           <div
             v-if="addFormError"
             class="flex items-start gap-3 p-3 bg-danger-50 border border-danger-200 rounded-lg text-danger-800 text-sm"
           >
             <UIcon name="i-heroicons-exclamation-triangle" class="w-5 h-5 shrink-0 mt-0.5" />
             <span>{{ addFormError }}</span>
+          </div>
+
+          <!-- National validation errors -->
+          <div
+            v-if="addFormValidationErrors.length > 0"
+            class="space-y-3"
+          >
+            <div class="flex items-start gap-3 p-3 bg-danger-50 border border-danger-200 rounded-lg text-danger-800 text-sm">
+              <UIcon name="i-heroicons-x-circle" class="w-5 h-5 shrink-0 mt-0.5" />
+              <div>
+                <p class="font-medium mb-1">{{ t('presence.validation_errors_title') }}</p>
+                <ul class="list-disc list-inside space-y-0.5">
+                  <li v-for="err in addFormValidationErrors" :key="err">
+                    {{ t(`presence.error_${err}`) }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Override panel for profile <= 2 -->
+            <div
+              v-if="canOverride"
+              class="p-3 bg-amber-50 border border-amber-300 rounded-lg text-sm text-amber-900 space-y-3"
+            >
+              <div class="flex items-start gap-2">
+                <UIcon name="i-heroicons-shield-exclamation" class="w-5 h-5 shrink-0 mt-0.5 text-amber-600" />
+                <div>
+                  <p class="font-semibold">{{ t('presence.override_allowed_title') }}</p>
+                  <p class="text-xs mt-0.5 text-amber-800">{{ t('presence.override_allowed_notice') }}</p>
+                </div>
+              </div>
+              <div class="flex items-center gap-3">
+                <label class="text-sm font-medium text-amber-900">{{ t('presence.override_status_label') }}</label>
+                <select
+                  v-model="overrideStatus"
+                  class="px-3 py-1 border border-amber-400 rounded-lg text-sm bg-white focus:ring-2 focus:ring-amber-400"
+                >
+                  <option value="A">{{ t('presence.status_referee') }} (A)</option>
+                  <option value="E">{{ t('presence.status_coach') }} (E)</option>
+                </select>
+              </div>
+              <div class="flex justify-end gap-2">
+                <button
+                  type="button"
+                  class="px-3 py-1 text-amber-800 border border-amber-400 hover:bg-amber-100 rounded-lg transition-colors text-sm"
+                  @click="addFormValidationErrors = []"
+                >
+                  {{ t('presence.override_cancel') }}
+                </button>
+                <button
+                  type="button"
+                  class="px-3 py-1 bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors text-sm disabled:opacity-50"
+                  :disabled="addFormSaving"
+                  @click="addWithOverride"
+                >
+                  <span v-if="addFormSaving" class="flex items-center gap-1">
+                    <UIcon name="i-heroicons-arrow-path" class="w-4 h-4 animate-spin" />
+                    {{ t('presence.override_confirm') }}
+                  </span>
+                  <span v-else>{{ t('presence.override_confirm') }}</span>
+                </button>
+              </div>
+            </div>
           </div>
 
           <!-- Tabs -->
@@ -1335,6 +1499,7 @@ const pdfLinks = computed(() => {
             {{ t('common.cancel') }}
           </button>
           <button
+            v-if="addFormValidationErrors.length === 0"
             type="submit"
             class="px-4 py-1 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50"
             :disabled="addFormSaving || (addMode === 'existing' && !selectedPlayer)"

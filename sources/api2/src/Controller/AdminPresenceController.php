@@ -27,7 +27,9 @@ class AdminPresenceController extends AbstractController
     use AdminLoggableTrait;
 
     public function __construct(
-        private readonly Connection $connection
+        private readonly Connection $connection,
+        private readonly array $surclassementCompetitions = [],
+        private readonly array $surclassementExemptCategories = []
     ) {
     }
 
@@ -109,8 +111,11 @@ class AdminPresenceController extends AbstractController
         ]);
         $playerRows = $result->fetchAllAssociative();
 
-        $players = array_map(function ($row) {
-            return $this->formatPlayer($row);
+        $season = $teamRow['Code_saison'];
+        $competCode = $teamRow['Code_compet'];
+        $isNational = $this->isNationalCompetition($competCode);
+        $players = array_map(function ($row) use ($season, $competCode, $isNational) {
+            return $this->formatPlayer($row, $season, $isNational ? $competCode : null);
         }, $playerRows);
 
         // Get last update from journal
@@ -231,10 +236,24 @@ class AdminPresenceController extends AbstractController
             if ($this->isNationalCompetition($teamInfo['code_compet'])) {
                 $validationErrors = $this->validatePlayerForNational($matric, $teamInfo);
                 if (!empty($validationErrors)) {
-                    return $this->json([
-                        'message' => 'Player not valid for national competition',
-                        'errors' => $validationErrors
-                    ], Response::HTTP_BAD_REQUEST);
+                    $forceAdd = !empty($data['forceAdd']);
+                    // Profile <= 2 may override validation, but only as staff (E) or non-playing referee (A)
+                    if ($forceAdd && $user->getNiveau() <= 2) {
+                        $allowedStatuses = ['E', 'A'];
+                        $capitaine = $data['capitaine'] ?? '';
+                        if (!in_array($capitaine, $allowedStatuses)) {
+                            return $this->json([
+                                'message' => 'Force add only allowed with status E (staff) or A (referee)',
+                                'errors' => $validationErrors
+                            ], Response::HTTP_BAD_REQUEST);
+                        }
+                        // Override accepted — proceed with insert
+                    } else {
+                        return $this->json([
+                            'message' => 'Player not valid for national competition',
+                            'errors' => $validationErrors
+                        ], Response::HTTP_BAD_REQUEST);
+                    }
                 }
             }
         }
@@ -1241,7 +1260,7 @@ class AdminPresenceController extends AbstractController
         ]);
     }
 
-    private function formatPlayer(array $row): array
+    private function formatPlayer(array $row, ?string $season = null, ?string $competCode = null): array
     {
         // Determine pagaie validity and label
         $pagaieValide = 0;
@@ -1258,12 +1277,21 @@ class AdminPresenceController extends AbstractController
             $pagaieLabel = $this->getPagaieLabel($row['Pagaie_MER']);
         }
 
+        // Recompute category from birth date + season (ignores stale stored Categ)
+        $categ = $season && !empty($row['Naissance'])
+            ? $this->calculateCategory($row['Naissance'], $season)
+            : ($row['Categ'] ?? '');
+
+        // Indicate whether surclassement is required and whether it's present
+        $surclassementNeeded = $competCode !== null && $this->requiresSurclassement($competCode, $categ);
+        $surclassementOk = !$surclassementNeeded || !empty($row['date_surclassement']);
+
         return [
             'matric' => (int) $row['Matric'],
             'nom' => $row['Nom'] ?? '',
             'prenom' => $row['Prenom'] ?? '',
             'sexe' => $row['Sexe'] ?? 'M',
-            'categ' => $row['Categ'] ?? '',
+            'categ' => $categ,
             'naissance' => $row['Naissance'] ?? null,
             'numero' => (int) ($row['Numero'] ?? 0),
             'capitaine' => $row['Capitaine'] ?? '-',
@@ -1282,6 +1310,8 @@ class AdminPresenceController extends AbstractController
             'arbitre' => $row['arbitre'] ?? '',
             'niveau' => $row['niveau'] ?? '',
             'dateSurclassement' => $row['date_surclassement'] ?? null,
+            'surclassementNeeded' => $surclassementNeeded,
+            'surclassementOk' => $surclassementOk,
             'icf' => $row['icf'] ? (int) $row['icf'] : null
         ];
     }
@@ -1380,15 +1410,11 @@ class AdminPresenceController extends AbstractController
 
     private function requiresSurclassement(string $competitionCode, string $categ): bool
     {
-        $surclNecessaire = ['N1D', 'N1F', 'N1H', 'N2', 'N2H', 'N3H', 'N4H', 'NQH', 'CFF', 'CFH', 'MCP'];
-        $surclNecessaire2 = ['N3', 'N4'];
-        $exemptCategs = ['JUN', 'SEN', 'V1', 'V2', 'V3', 'V4'];
-
-        if (in_array($categ, $exemptCategs)) {
+        if (in_array($categ, $this->surclassementExemptCategories)) {
             return false;
         }
 
-        return in_array($competitionCode, $surclNecessaire) || in_array($competitionCode, $surclNecessaire2);
+        return in_array($competitionCode, $this->surclassementCompetitions);
     }
 
     private function calculateCategory(?string $birthDate, string $season): string
@@ -1397,21 +1423,15 @@ class AdminPresenceController extends AbstractController
             return '';
         }
 
-        $birth = new \DateTime($birthDate);
-        $seasonYear = (int) $season;
-        $age = $seasonYear - (int) $birth->format('Y');
+        $birthYear = (int) substr($birthDate, 0, 4);
+        $age = (int) $season - $birthYear;
 
-        if ($age < 12) return 'BEN';
-        if ($age < 14) return 'M12';
-        if ($age < 16) return 'M14';
-        if ($age < 18) return 'M16';
-        if ($age < 21) return 'M18';
-        if ($age < 23) return 'M21';
-        if ($age < 35) return 'SEN';
-        if ($age < 45) return 'V1';
-        if ($age < 55) return 'V2';
-        if ($age < 65) return 'V3';
-        return 'V4';
+        $row = $this->connection->fetchAssociative(
+            "SELECT id FROM kp_categorie WHERE age_min <= ? AND age_max >= ? LIMIT 1",
+            [$age, $age]
+        );
+
+        return $row ? $row['id'] : '';
     }
 
     private function getLastUpdate(string $table, int $id): ?array
