@@ -32,6 +32,7 @@
 | | Équipes | Équipes inscrites avec clubs |
 | | Joueurs | Joueurs inscrits (hors entraîneurs) |
 | | Joueurs & coachs | Joueurs ET entraîneurs |
+| | Surclassements | Liste des surclassements valides depuis la saison sélectionnée |
 | **Analyses** | Irrégularités | Licences anciennes, pagaies manquantes... (profil ≤ 6) |
 | | Licenciés nationaux | Répartition H/F par catégorie d'âge (profil ≤ 6) |
 | | Cohérence matchs | Détection d'incohérences de planning (profil ≤ 6) |
@@ -121,4 +122,5 @@ En cas de problème :
 ---
 
 **Document créé le** : 2026-01-26
+**Mis à jour le** : 2026-05-16 (ajout stat Surclassements)
 **Statut** : ✅ Fonctionnalité en production

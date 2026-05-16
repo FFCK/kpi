@@ -799,6 +799,7 @@ GET /admin/stats/export/pdf       Export as PDF
 - `ListeJoueurs2` - Players & coaches list
 - `LicenciesNationaux` - National licensees (profile <= 6)
 - `CoherenceMatchs` - Match consistency check (profile <= 6)
+- `ListeSurclassements` - Age-up authorizations list (from selected season)
 
 **Example with curl:**
 ```bash
@@ -913,6 +914,7 @@ POST   /admin/operations/cache/purge                          Purge cache files
 ### Admin Athletes
 ```
 GET    /admin/athletes/search                    Search athletes by name/firstname/licence (autocomplete)
+GET    /admin/athletes/list                      List athletes with advanced filters (paginated)
 GET    /admin/athletes/{matric}                   Get full athlete profile
 GET    /admin/athletes/{matric}/participations    Get athlete participations for a season
 PUT    /admin/athletes/{matric}                   Update athlete (profile <=2, Matric > 2000000)
@@ -920,6 +922,7 @@ PUT    /admin/athletes/{matric}                   Update athlete (profile <=2, M
 
 **Query Parameters:**
 - `/athletes/search`: `q` (min 2 chars), `limit` (default: 20, max: 50)
+- `/athletes/list`: `q`, `club` (club code), `cd` (dept. committee code), `cr` (regional committee code), `category`, `page`, `limit`
 - `/athletes/{matric}/participations`: `season` (required)
 
 **Search Response:**
@@ -1106,7 +1109,7 @@ POST   /admin/users                                    Create user (profile <=2)
 PUT    /admin/users/{code}                             Update user (profile <=2)
 DELETE /admin/users/{code}                             Delete user (profile <=1)
 POST   /admin/users/bulk-delete                        Bulk delete users (profile <=1)
-POST   /admin/users/{code}/reset-password              Reset user password (profile <=2)
+POST   /admin/users/{code}/reset-password              Reset user password or send reset email (profile <=2) — body: `{sendResetEmail: true}` to email a reset link instead of setting password directly
 GET    /admin/users/{code}/mandats                     List user mandates
 POST   /admin/users/{code}/mandats                     Create mandate (profile <=2)
 PUT    /admin/users/{code}/mandats/{id}                Update mandate (profile <=2)

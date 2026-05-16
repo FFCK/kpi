@@ -558,7 +558,7 @@ Pour les menus déroulants à l'intérieur de conteneurs `overflow-hidden` (tabl
 | Équipes | `/teams` | Implémentée (contexte, CRUD, couleurs, logos) |
 | Classements | `/rankings` | Implémentée (contexte, calcul, publication, phases CP, transfert) |
 | Classement initial | `/rankings/initial` | Implémentée (CHPT uniquement, édition inline, RAZ) |
-| Athlètes | `/athletes` | Implémentée (recherche + fiche + participations) |
+| Athlètes | `/athletes` | Implémentée (recherche avancée par club/CD/CR/catégorie, fiche + participations) |
 | Clubs | `/clubs` | Implémentée (carte Leaflet, détail, équipes) |
 | Détail équipe club | `/clubs/team/:numero` | Implémentée |
 | Utilisateurs | `/users` | Implémentée (CRUD, mandats, reset password) |
@@ -571,4 +571,4 @@ Pour les menus déroulants à l'intérieur de conteneurs `overflow-hidden` (tabl
 ---
 
 **Document créé le** : 2026-02-03
-**Dernière mise à jour** : 2026-03-11
+**Dernière mise à jour** : 2026-05-16 (recherche avancée athlètes, stats surclassements)

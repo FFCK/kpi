@@ -6,6 +6,39 @@ Ce document liste les dernières fonctionnalités et améliorations ajoutées au
 
 ## 📅 Mai 2026
 
+### 📊 Statistiques de surclassements (App4) (16/05/2026)
+
+**Nouveau type d'export dans les statistiques de compétition**
+
+Un nouvel onglet **"Surclassements"** est disponible dans la page Statistiques (Administration > Documents > Statistiques) :
+
+- Liste de tous les surclassements valides à partir de la saison sélectionnée
+- Pour chaque joueur : catégorie de la saison, catégorie de surclassement, saison et date d'attribution
+- Export identique aux autres types de statistiques (Excel/ODS)
+
+Ce nouvel export facilite le contrôle des autorisations de surclassement lors des compétitions nationales.
+
+**Accès** : Administration > Documents > Statistiques > Onglet "Surclassements"
+
+---
+
+### 🔑 Réinitialisation de mot de passe par email (App4) (14/05/2026)
+
+**Envoi d'un email de réinitialisation depuis la fiche utilisateur**
+
+Les administrateurs peuvent désormais déclencher l'envoi d'un email de réinitialisation de mot de passe directement depuis la fiche d'un utilisateur :
+
+- Bouton "Envoyer un lien de réinitialisation" dans le formulaire d'édition
+- L'utilisateur reçoit un lien temporaire par email pour définir un nouveau mot de passe
+- Le lien est valide pour une durée limitée (token 64 caractères)
+- Aucune copie du mot de passe n'est nécessaire pour l'administrateur
+
+> Nécessite que l'adresse email soit renseignée dans la fiche utilisateur.
+
+**Accès** : Administration > Utilisateurs > Modifier un utilisateur > Bouton "Envoyer un lien de réinitialisation"
+
+---
+
 ### 👥 Gestion des utilisateurs — nouvelles règles de droits (App4)
 
 **Sécurisation et clarification des permissions sur la page Utilisateurs**
@@ -53,6 +86,76 @@ Un guide illustré apparaît sur la page d'accueil après la sélection d'un év
 - Le numéro de match (`#345`) est désormais cliquable dans la liste des matchs (`/games`) et dans la fiche équipe (`/team`)
 - Comportement identique au clic sur le score : ouvre la feuille de match détaillée
 - Disponible uniquement pour les matchs en cours ou terminés (comme pour le score)
+
+---
+
+### 🔍 Recherche avancée des licenciés (App4) (26/04/2026)
+
+**Filtres enrichis sur la page Licenciés**
+
+La page de gestion des licenciés (Administration > Licenciés) propose maintenant des filtres avancés :
+
+- Filtrage par **club** (liste déroulante avec recherche)
+- Filtrage par **comité départemental** ou **comité régional**
+- Filtrage par **catégorie d'âge**
+- Combinaison possible de plusieurs filtres simultanément
+- Compteur de résultats mis à jour en temps réel
+
+Ces améliorations permettent de retrouver rapidement un athlète dans une base nationale de plusieurs milliers de licenciés.
+
+**Accès** : Administration > Licenciés > Filtres avancés
+
+---
+
+### ⚙️ Event Cache Manager intégré à App4 (26/04/2026)
+
+**Gestion du worker de cache directement depuis l'application d'administration**
+
+Le gestionnaire de cache d'événements (worker PHP) est désormais accessible depuis App4 :
+
+- Démarrage/arrêt/pause du worker depuis l'interface
+- Visualisation du statut en temps réel
+- Configuration : décalage de démarrage, nombre de terrains, intervalle de rafraîchissement
+- Historique des exécutions et messages d'erreur
+
+**Accès** : Administration > Événements > Gestionnaire de cache
+
+---
+
+## 📅 Mars 2026
+
+### 🏐 Vérification de la composition d'équipe (Administration) (27/02/2026)
+
+**Contrôle des joueurs inscrits avant compétition**
+
+Un nouveau rapport de vérification permet de contrôler la composition des équipes inscrites :
+
+- Vérification de la validité des licences (licence à jour pour la saison)
+- Contrôle des certificats médicaux
+- Validation de la pagaie couleur
+- Contrôle des surclassements requis
+- Export PDF ou ODS pour chaque équipe
+
+Le rapport distingue les anomalies bloquantes des avertissements non bloquants.
+
+**Accès** : Administration > Documents > Statistiques > Vérification des équipes
+
+---
+
+### 🔗 Association Événements / Compétitions avec contexte de travail (App4) (27/02/2026)
+
+**Navigation contextuelle dans l'administration**
+
+App4 propose désormais un **sélecteur de contexte de travail** persistent dans toutes les pages :
+
+- Sélection d'un événement ET/OU d'une compétition active
+- Toutes les pages (journées, matchs, classements, documents) filtrent automatiquement selon ce contexte
+- Le contexte est mémorisé entre les pages pendant la session
+- Sélecteur affiché dans l'en-tête de toutes les pages d'administration
+
+Cela remplace la sélection individuelle sur chaque page, réduisant le nombre de clics pour les opérations répétitives lors d'un événement.
+
+**Accès** : En-tête App4 > Sélecteur d'événement / Compétition
 
 ---
 
@@ -459,6 +562,9 @@ Pour connaître les prochains objectifs et travaux planifiés, consultez la **[R
 
 ## 📝 Historique des versions
 
+- **Version 2026.05** - Stats surclassements, Réinitialisation pwd par email, Droits mandats
+- **Version 2026.04** - Recherche licenciés avancée, Event Cache Manager App4, Guide App2
+- **Version 2026.03** - Vérification composition équipe, Contexte de travail App4
 - **Version 2026.01** - Sélection par compétition/groupe, Traduction des groupes
 - **Version 2025.12** - App2 v2.0, Verrouillage phases, Copie compétitions en masse
 - **Version 2025.11** - Documentation intégrée, Fusion automatique licenciés
@@ -468,4 +574,4 @@ Pour connaître les prochains objectifs et travaux planifiés, consultez la **[R
 
 ---
 
-**Dernière mise à jour** : 23 janvier 2026
+**Dernière mise à jour** : 16 mai 2026

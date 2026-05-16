@@ -4,6 +4,7 @@
 --
 -- Hôte : db
 -- Généré le : sam. 29 nov. 2025 à 16:59
+-- Mis à jour : ven. 16 mai 2026 (migrations 20251117 → 20260514)
 -- Version du serveur : 11.4.9-MariaDB-ubu2404
 -- Version de PHP : 8.3.26
 
@@ -219,7 +220,10 @@ CREATE TABLE `kp_competition` (
   `Publication` char(1) NOT NULL DEFAULT '',
   `Date_publi` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   `Code_uti_publi` varchar(8) NOT NULL DEFAULT '',
-  `commentairesCompet` mediumtext DEFAULT NULL
+  `commentairesCompet` mediumtext DEFAULT NULL,
+  `points_grid` text DEFAULT NULL COMMENT 'Grille de points pour les compétitions MULTI (format JSON)',
+  `multi_competitions` text DEFAULT NULL COMMENT 'Liste des codes de compétitions sources pour MULTI (format JSON array)',
+  `ranking_structure_type` varchar(10) DEFAULT 'team' COMMENT 'Type de classement pour MULTI: team, club, cd, cr, nation'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
@@ -486,6 +490,7 @@ CREATE TABLE `kp_groupe` (
   `Code_niveau` char(3) NOT NULL DEFAULT 'NAT',
   `Groupe` varchar(10) NOT NULL DEFAULT '',
   `Libelle` mediumtext NOT NULL,
+  `Libelle_en` varchar(255) DEFAULT NULL,
   `Calendar` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
@@ -523,6 +528,7 @@ CREATE TABLE `kp_journee` (
   `Nom` varchar(80) DEFAULT NULL,
   `Libelle` varchar(80) DEFAULT NULL,
   `Lieu` varchar(40) DEFAULT NULL,
+  `Consolidation` varchar(1) DEFAULT NULL,
   `Departement` varchar(3) DEFAULT NULL,
   `Plan_eau` varchar(80) DEFAULT NULL,
   `Responsable_insc` varchar(80) DEFAULT NULL,
@@ -595,7 +601,8 @@ CREATE TABLE `kp_licence` (
   `Date_certificat_APS` date DEFAULT NULL,
   `Reserve` int(11) DEFAULT NULL,
   `Etat_certificat_APS` char(3) DEFAULT NULL,
-  `Etat_certificat_CK` char(3) DEFAULT NULL
+  `Etat_certificat_CK` char(3) DEFAULT NULL,
+  `Type_licence` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 -- --------------------------------------------------------
@@ -802,12 +809,25 @@ CREATE TABLE `kp_tv` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `kp_tv_label`
+--
+
+CREATE TABLE `kp_tv_label` (
+  `id` int(11) NOT NULL,
+  `type` enum('channel','scenario') NOT NULL,
+  `number` int(11) NOT NULL,
+  `label` varchar(100) NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `kp_user`
 --
 
 CREATE TABLE `kp_user` (
   `Code` varchar(8) NOT NULL DEFAULT '',
-  `Pwd` varchar(40) NOT NULL DEFAULT '',
+  `Pwd` varchar(255) NOT NULL DEFAULT '',
   `Identite` varchar(80) DEFAULT NULL,
   `Mail` varchar(100) NOT NULL DEFAULT '',
   `Tel` varchar(15) NOT NULL,
@@ -827,12 +847,30 @@ CREATE TABLE `kp_user` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `kp_user_mandat`
+--
+
+CREATE TABLE `kp_user_mandat` (
+  `id` int(11) NOT NULL,
+  `user_code` varchar(8) NOT NULL,
+  `libelle` varchar(100) NOT NULL,
+  `niveau` smallint(6) NOT NULL,
+  `filtre_saison` mediumtext NOT NULL DEFAULT '',
+  `filtre_competition` mediumtext NOT NULL DEFAULT '',
+  `limitation_equipe_club` varchar(50) DEFAULT NULL,
+  `filtre_journee` mediumtext NOT NULL DEFAULT '',
+  `id_evenement` varchar(20) NOT NULL DEFAULT ''
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `kp_user_token`
 --
 
 CREATE TABLE `kp_user_token` (
   `user` varchar(8) NOT NULL,
-  `token` varchar(32) NOT NULL,
+  `token` varchar(64) NOT NULL,
   `generated_at` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
@@ -938,7 +976,8 @@ ALTER TABLE `kp_club`
 ALTER TABLE `kp_competition`
   ADD PRIMARY KEY (`Code`,`Code_saison`),
   ADD KEY `fk_competitions_saison` (`Code_saison`),
-  ADD KEY `fk_competitions_groupes` (`Code_ref`);
+  ADD KEY `fk_competitions_groupes` (`Code_ref`),
+  ADD KEY `idx_ranking_structure_type` (`ranking_structure_type`);
 
 --
 -- Index pour la table `kp_competition_equipe`
@@ -1044,7 +1083,8 @@ ALTER TABLE `kp_journee`
   ADD PRIMARY KEY (`Id`),
   ADD KEY `Code_saison` (`Code_saison`),
   ADD KEY `Code_competition` (`Code_competition`),
-  ADD KEY `fk_journees_competitions` (`Code_competition`,`Code_saison`);
+  ADD KEY `fk_journees_competitions` (`Code_competition`,`Code_saison`),
+  ADD KEY `idx_consolidation` (`Consolidation`);
 
 --
 -- Index pour la table `kp_journee_ref`
@@ -1149,10 +1189,24 @@ ALTER TABLE `kp_tv`
   ADD PRIMARY KEY (`Voie`);
 
 --
+-- Index pour la table `kp_tv_label`
+--
+ALTER TABLE `kp_tv_label`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `type_number` (`type`,`number`);
+
+--
 -- Index pour la table `kp_user`
 --
 ALTER TABLE `kp_user`
   ADD PRIMARY KEY (`Code`);
+
+--
+-- Index pour la table `kp_user_mandat`
+--
+ALTER TABLE `kp_user_mandat`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_mandat_user` (`user_code`);
 
 --
 -- Index pour la table `kp_user_token`
@@ -1258,6 +1312,18 @@ ALTER TABLE `kp_rc`
 -- AUTO_INCREMENT pour la table `kp_stats`
 --
 ALTER TABLE `kp_stats`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `kp_tv_label`
+--
+ALTER TABLE `kp_tv_label`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `kp_user_mandat`
+--
+ALTER TABLE `kp_user_mandat`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -1399,6 +1465,12 @@ ALTER TABLE `kp_recherche_licence`
 --
 ALTER TABLE `kp_scrutineering`
   ADD CONSTRAINT `kp_scrutineering_ibfk_1` FOREIGN KEY (`id_equipe`,`matric`) REFERENCES `kp_competition_equipe_joueur` (`Id_equipe`, `Matric`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `kp_user_mandat`
+--
+ALTER TABLE `kp_user_mandat`
+  ADD CONSTRAINT `fk_mandat_user` FOREIGN KEY (`user_code`) REFERENCES `kp_user` (`Code`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
