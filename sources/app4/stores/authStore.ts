@@ -57,7 +57,7 @@ export const useAuthStore = defineStore('auth', {
       this.user = user
       this.token = token
       this.isAuthenticated = true
-      this.mandates = mandates ?? []
+      this.mandates = (mandates ?? []).slice().sort((a, b) => a.niveau - b.niveau)
       this.activeMandate = activeMandate ?? null
       this.effectiveProfile = effectiveProfile ?? user.profile
       this.effectiveFilters = effectiveFilters ?? null
@@ -145,7 +145,7 @@ export const useAuthStore = defineStore('auth', {
           this.isAuthenticated = true
 
           const mandatesJson = localStorage.getItem('kpi_admin_mandates')
-          this.mandates = mandatesJson ? JSON.parse(mandatesJson) : []
+          this.mandates = mandatesJson ? (JSON.parse(mandatesJson) as MandateSummary[]).slice().sort((a, b) => a.niveau - b.niveau) : []
 
           const activeMandateJson = localStorage.getItem('kpi_admin_active_mandate')
           this.activeMandate = activeMandateJson ? JSON.parse(activeMandateJson) : null

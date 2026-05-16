@@ -92,9 +92,24 @@ function handleGlobalClick(e: MouseEvent) {
 onMounted(() => document.addEventListener('click', handleGlobalClick))
 onBeforeUnmount(() => document.removeEventListener('click', handleGlobalClick))
 
+
+function profileLabelWithoutNumber(label: string): string {
+  return label.replace(/^\d+\s*-\s*/, '')
+}
+
+watch(() => form.niveau, (newVal) => {
+  const opt = props.profileOptions.find(o => o.value === newVal)
+  if (opt) form.libelle = profileLabelWithoutNumber(opt.label)
+  // Profile >= 3 cannot use "all competitions" — reset if active
+  if (newVal >= 3 && allCompetitions.value) {
+    allCompetitions.value = false
+  }
+})
+
 // Competitions loaded dynamically based on selected seasons
 const competitions = ref<Competition[]>([])
 const competitionsLoading = ref(false)
+const competitionSearch = ref('')
 
 async function loadCompetitions() {
   competitionsLoading.value = true
@@ -110,29 +125,30 @@ async function loadCompetitions() {
       }
     }
     competitions.value = flat
-    // Remove selected competitions no longer available
     const validCodes = new Set(flat.map(c => c.code))
     form.filtreCompetition = form.filtreCompetition.filter(code => validCodes.has(code))
   } catch { /* ignore */ }
   finally { competitionsLoading.value = false }
 }
 
-function profileLabelWithoutNumber(label: string): string {
-  return label.replace(/^\d+\s*-\s*/, '')
-}
-
-watch(() => form.niveau, (newVal) => {
-  const opt = props.profileOptions.find(o => o.value === newVal)
-  if (opt) form.libelle = profileLabelWithoutNumber(opt.label)
-  // Profile >= 3 cannot use "all competitions" — reset if active
-  if (newVal >= 3 && allCompetitions.value) {
-    allCompetitions.value = false
+const groupedCompetitions = computed(() => {
+  const q = competitionSearch.value.trim().toLowerCase()
+  const filtered = q
+    ? competitions.value.filter(c => c.code.toLowerCase().includes(q) || c.libelle.toLowerCase().includes(q))
+    : competitions.value
+  const groups: Record<string, { label: string; items: Competition[] }> = {}
+  for (const c of filtered) {
+    const key = String(c.section)
+    if (!groups[key]) groups[key] = { label: c.sectionLabel, items: [] }
+    groups[key].items.push(c)
   }
+  return groups
 })
 
 // Reload competitions when selected seasons change
 watch(() => form.filtreSaison, () => {
   if (expanded.value) loadCompetitions()
+  competitionSearch.value = ''
 }, { deep: true })
 
 function resetForm() {
@@ -145,6 +161,7 @@ function resetForm() {
   form.idEvenement = []
   allCompetitions.value = false
   competitions.value = []
+  competitionSearch.value = ''
   selectedClubs.value = []
   clubQuery.value = ''
   clubResults.value = []
@@ -182,16 +199,6 @@ function toggleEvent(id: number) {
   if (idx >= 0) form.idEvenement.splice(idx, 1)
   else form.idEvenement.push(id)
 }
-
-const groupedCompetitions = computed(() => {
-  const groups: Record<string, { label: string; items: Competition[] }> = {}
-  for (const c of competitions.value) {
-    const key = String(c.section)
-    if (!groups[key]) groups[key] = { label: c.sectionLabel, items: [] }
-    groups[key].items.push(c)
-  }
-  return groups
-})
 
 const saveError = ref('')
 
@@ -310,35 +317,56 @@ function handleSave() {
             {{ t('users.modal.filter_competitions') }}
             <span v-if="form.niveau >= 3" class="text-danger-500">*</span>
           </label>
-          <div class="border border-header-300 rounded max-h-38 overflow-y-auto p-1.5 bg-white relative">
-            <div v-if="competitionsLoading" class="absolute inset-0 flex items-center justify-center bg-white/70">
-              <span class="text-[10px] text-header-400">{{ t('common.loading') }}</span>
-            </div>
-            <label v-if="form.niveau < 3" class="flex items-center gap-1.5 text-xs mb-0.5 cursor-pointer">
+          <div class="border border-header-300 rounded p-1.5 bg-white">
+            <label
+              v-if="form.niveau < 3"
+              class="flex items-center gap-1.5 text-xs mb-1.5 cursor-pointer"
+            >
               <input type="checkbox" :checked="allCompetitions" @change="toggleAllCompetitions">
               <span class="font-medium">{{ t('users.modal.filter_competitions_all') }}</span>
             </label>
-            <template v-if="!competitionsLoading">
-              <template v-for="(group, key) in groupedCompetitions" :key="key">
-                <div class="text-[10px] font-semibold text-header-500 mt-1 mb-0.5">— {{ group.label }} —</div>
-                <label
-                  v-for="c in group.items"
-                  :key="c.code"
-                  class="flex items-center gap-1.5 text-xs mb-0.5 cursor-pointer"
-                >
-                  <input
-                    type="checkbox"
-                    :checked="form.filtreCompetition.includes(c.code)"
-                    :disabled="allCompetitions"
-                    @change="toggleCompetition(c.code)"
+            <div class="relative mb-1.5">
+              <input
+                v-model="competitionSearch"
+                type="text"
+                class="w-full px-2 py-1 text-xs border border-header-200 rounded focus:ring-1 focus:ring-primary-400 focus:border-primary-400"
+                :class="competitionSearch ? 'pr-6' : ''"
+                :placeholder="t('users.modal.filter_competitions_search')"
+              >
+              <button
+                v-if="competitionSearch"
+                class="absolute right-1.5 top-1/2 -translate-y-1/2 text-header-400 hover:text-header-600"
+                @click="competitionSearch = ''"
+              >
+                <UIcon name="i-heroicons-x-mark" class="w-3 h-3" />
+              </button>
+            </div>
+            <div class="relative max-h-28 overflow-y-auto">
+              <div v-if="competitionsLoading" class="absolute inset-0 flex items-center justify-center bg-white/70">
+                <span class="text-[10px] text-header-400">{{ t('common.loading') }}</span>
+              </div>
+              <template v-if="!competitionsLoading">
+                <template v-for="(group, key) in groupedCompetitions" :key="key">
+                  <div class="text-[10px] font-semibold text-header-500 mt-1 mb-0.5">— {{ group.label }} —</div>
+                  <label
+                    v-for="c in group.items"
+                    :key="c.code"
+                    class="flex items-center gap-1.5 text-xs mb-0.5 cursor-pointer"
                   >
-                  {{ c.code }}
-                </label>
+                    <input
+                      type="checkbox"
+                      :checked="form.filtreCompetition.includes(c.code)"
+                      :disabled="allCompetitions"
+                      @change="toggleCompetition(c.code)"
+                    >
+                    {{ c.code }} - {{ c.libelle }}
+                  </label>
+                </template>
+                <div v-if="Object.keys(groupedCompetitions).length === 0" class="text-[10px] text-header-400 italic py-1">
+                  {{ t('users.modal.filter_competitions_no_results') }}
+                </div>
               </template>
-              <p v-if="competitions.length === 0 && form.filtreSaison.length > 0" class="text-[10px] text-header-400 italic">
-                {{ t('users.modal.no_competitions_for_seasons') }}
-              </p>
-            </template>
+            </div>
           </div>
         </div>
       </div>

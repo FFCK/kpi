@@ -269,7 +269,7 @@ async function loadMandates(code: string) {
   mandatesLoading.value = true
   try {
     const data = await api.get<{ mandats: Mandate[] }>(`/admin/users/${code}/mandats`)
-    mandates.value = data.mandats || []
+    mandates.value = (data.mandats || []).slice().sort((a, b) => a.niveau - b.niveau)
   } catch { /* ignore */ }
   finally { mandatesLoading.value = false }
 }
