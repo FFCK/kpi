@@ -103,6 +103,7 @@ export interface LastUpdateInfo {
 export interface TeamPlayersResponse {
   team: TeamInfo
   competition: CompetitionInfo
+  canEdit: boolean
   players: Player[]
   lastUpdate?: LastUpdateInfo
 }

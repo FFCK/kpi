@@ -71,6 +71,13 @@ class AdminPresenceController extends AbstractController
             return $this->json(['message' => 'Access denied to this competition'], Response::HTTP_FORBIDDEN);
         }
 
+        // Compute canEdit: not locked + profile <= 8 + club not restricted
+        $isLocked = $teamRow['Verrou'] === 'O';
+        $hasProfileAccess = $user && $user->getNiveau() <= 8;
+        $allowedClubs = $user?->getAllowedClubs();
+        $hasClubAccess = $allowedClubs === null || in_array($teamRow['Code_club'], $allowedClubs);
+        $canEdit = !$isLocked && $hasProfileAccess && $hasClubAccess;
+
         // Get players with full info (license, pagaie, certificates, surclassement)
         $sql = "SELECT cej.Matric, cej.Nom, cej.Prenom, cej.Sexe, cej.Categ,
                        cej.Numero, cej.Capitaine,
@@ -125,10 +132,11 @@ class AdminPresenceController extends AbstractController
             'competition' => [
                 'code' => $teamRow['Code_compet'],
                 'libelle' => $teamRow['comp_libelle'] ?? '',
-                'verrou' => $teamRow['Verrou'] === 'O',
+                'verrou' => $isLocked,
                 'codeNiveau' => $teamRow['Code_niveau'] ?? '',
                 'statut' => $teamRow['Statut'] ?? ''
             ],
+            'canEdit' => $canEdit,
             'players' => $players,
             'lastUpdate' => $lastUpdate
         ]);

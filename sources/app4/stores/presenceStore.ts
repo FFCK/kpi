@@ -34,6 +34,9 @@ interface PresenceState {
   // Lock status (Verrou for team, Validation for match)
   isLocked: boolean
 
+  // Edit permission (from API: combines lock + profile + club access)
+  canEdit: boolean
+
   // Players
   players: Player[]
   lastUpdate: LastUpdateInfo | null
@@ -53,6 +56,7 @@ export const usePresenceStore = defineStore('presence', {
     competition: null,
     match: null,
     isLocked: false,
+    canEdit: false,
     players: [],
     lastUpdate: null,
     loading: false,
@@ -105,6 +109,7 @@ export const usePresenceStore = defineStore('presence', {
       this.teamCode = null
       this.loading = true
       this.initialized = false
+      this.canEdit = false
 
       try {
         const response = await api.get<TeamPlayersResponse>(`/admin/teams/${teamId}/players`)
@@ -114,6 +119,7 @@ export const usePresenceStore = defineStore('presence', {
         this.players = response.players
         this.lastUpdate = response.lastUpdate || null
         this.isLocked = response.competition.verrou
+        this.canEdit = response.canEdit ?? false
         this.initialized = true
       } catch (error) {
         console.error('Failed to load team players:', error)

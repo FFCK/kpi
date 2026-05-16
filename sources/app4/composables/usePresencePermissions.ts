@@ -7,6 +7,7 @@ import type { PresenceMode } from '~/types/presence'
  */
 export function usePresencePermissions(mode: PresenceMode, isLocked: Ref<boolean> | ComputedRef<boolean>) {
   const authStore = useAuthStore()
+  const presenceStore = usePresenceStore()
 
   // View permission (all modes)
   const canView = computed(() => authStore.profile <= 10)
@@ -14,7 +15,11 @@ export function usePresencePermissions(mode: PresenceMode, isLocked: Ref<boolean
   // Edit permission (inline edit, add, delete)
   const canEdit = computed(() => {
     if (isLocked.value) return false
-    if (mode === 'team') return authStore.profile <= 8
+    if (mode === 'team') {
+      // Also enforce server-side club access check returned in the response
+      if (!presenceStore.canEdit) return false
+      return authStore.profile <= 8
+    }
     if (mode === 'match') return authStore.profile <= 9
     return false
   })
