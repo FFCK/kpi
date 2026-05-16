@@ -301,6 +301,7 @@
       "OfficielsJournees": "Gamedays with assigned officials: RC, R1, delegate, head referee",
       "OfficielsMatchs": "Games with all officials: referees, line judges, secretary, timer, shot clock",
       "ListeArbitres": "All FFCK referees: club, level, training season, booklet",
+      "ListeSurclassements": "Age-group waivers from the selected season onwards: season category, waiver category, waiver season and date",
       "ListeEquipes": "Registered teams with club, CD, CR and players' current clubs",
       "ListeJoueurs": "Registered players (excl. coaches): current club, category, team club",
       "ListeJoueurs2": "Registered players AND coaches: current club, category, team club",
@@ -336,6 +337,7 @@
       "irregularites_presence": "Team roster check",
       "irregularites": "Irregularities (games)",
       "liste_arbitres": "Referees",
+      "liste_surclassements": "Age-group waivers",
       "liste_equipes": "Teams",
       "liste_joueurs": "Players",
       "liste_joueurs_coachs": "Players & coaches",
@@ -353,7 +355,7 @@
     "columns": {
       "competition": "Competition",
       "licence": "License",
-      "matric": "ID",
+      "matric": "License",
       "nom": "Last name",
       "prenom": "First name",
       "sexe": "Gender",
@@ -423,7 +425,11 @@
       "total_activite": "Total",
       "type": "Type",
       "date": "Date",
-      "details": "Details"
+      "details": "Details",
+      "categorie_saison": "Season category",
+      "categorie_surclassement": "Waiver category",
+      "saison_surclassement": "Waiver season",
+      "date_surclassement": "Waiver date"
     }
   },
   "documents": {

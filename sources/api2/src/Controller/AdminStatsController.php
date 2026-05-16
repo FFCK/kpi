@@ -153,6 +153,7 @@ class AdminStatsController extends AbstractController
             'ListeEquipes' => $this->getListeEquipes($compets, $codeSaison, $limit),
             'ListeJoueurs' => $this->getListeJoueurs($compets, $codeSaison, $limit),
             'ListeJoueurs2' => $this->getListeJoueurs2($compets, $codeSaison, $limit),
+            'ListeSurclassements' => $this->getListeSurclassements($codeSaison, $limit),
             'LicenciesNationaux' => $this->getLicenciesNationaux($compets, $codeSaison),
             'CoherenceMatchs' => $this->getCoherenceMatchs($compets, $codeSaison),
             default => []
@@ -435,6 +436,7 @@ class AdminStatsController extends AbstractController
             'ListeEquipes' => $this->getListeEquipes($compets, $codeSaison, $limit),
             'ListeJoueurs' => $this->getListeJoueurs($compets, $codeSaison, $limit),
             'ListeJoueurs2' => $this->getListeJoueurs2($compets, $codeSaison, $limit),
+            'ListeSurclassements' => $this->getListeSurclassements($codeSaison, $limit),
             'LicenciesNationaux' => $this->getLicenciesNationaux($compets, $codeSaison),
             'CoherenceMatchs' => $this->getCoherenceMatchs($compets, $codeSaison),
             default => []
@@ -460,7 +462,7 @@ class AdminStatsController extends AbstractController
         return [
             'competition' => 'Compétition',
             'licence' => 'Licence',
-            'matric' => 'Matricule',
+            'matric' => 'Licence',
             'nom' => 'Nom',
             'prenom' => 'Prénom',
             'sexe' => 'Sexe',
@@ -530,6 +532,10 @@ class AdminStatsController extends AbstractController
             'type' => 'Type',
             'date' => 'Date',
             'details' => 'Détails',
+            'categorieSaison' => 'Catégorie saison',
+            'categorieSurclassement' => 'Catégorie surclassement',
+            'saisonSurclassement' => 'Saison surclassement',
+            'dateSurclassement' => 'Date surclassement',
         ];
     }
 
@@ -1314,6 +1320,40 @@ class AdminStatsController extends AbstractController
     }
 
     /**
+     * ListeSurclassements - List of age-group waivers for a season (and more recent seasons)
+     */
+    private function getListeSurclassements(string $codeSaison, int $limit): array
+    {
+        $sql = "SELECT lc.Matric AS licence, lc.Nom AS nom, lc.Prenom AS prenom, lc.Sexe AS sexe,
+                c.Code AS codeClub, c.Libelle AS club,
+                cat.id AS categorieSaison,
+                s.Cat AS categorieSurclassement, s.Saison AS saisonSurclassement, s.Date AS dateSurclassement
+                FROM kp_surclassement s
+                INNER JOIN kp_licence lc ON s.Matric = lc.Matric
+                LEFT JOIN kp_club c ON c.Code = lc.Numero_club
+                LEFT JOIN kp_categorie cat ON cat.sexe = 'T'
+                    AND :saisonAge - YEAR(lc.Naissance) BETWEEN cat.age_min AND cat.age_max
+                WHERE s.Saison >= :saison
+                ORDER BY s.Saison DESC, s.Date DESC, lc.Nom, lc.Prenom
+                LIMIT $limit";
+
+        $result = $this->connection->executeQuery($sql, ['saison' => $codeSaison, 'saisonAge' => $codeSaison]);
+
+        return array_map(fn($row) => [
+            'licence' => $row['licence'],
+            'nom' => mb_strtoupper($row['nom']),
+            'prenom' => mb_convert_case(strtolower($row['prenom']), MB_CASE_TITLE, "UTF-8"),
+            'sexe' => $row['sexe'],
+            'codeClub' => $row['codeClub'],
+            'club' => $row['club'],
+            'categorieSaison' => $row['categorieSaison'],
+            'categorieSurclassement' => $row['categorieSurclassement'],
+            'saisonSurclassement' => $row['saisonSurclassement'],
+            'dateSurclassement' => $row['dateSurclassement'],
+        ], $result->fetchAllAssociative());
+    }
+
+    /**
      * ListeEquipes - List of teams
      */
     private function getListeEquipes(array $compets, string $codeSaison, int $limit): array
@@ -1866,6 +1906,7 @@ class AdminStatsController extends AbstractController
             'OfficielsMatchs' => ['id', 'competition', 'lieu', 'dateMatch', 'heureMatch', 'numeroOrdre', 'equipeA', 'equipeB', 'arbitrePrincipal', 'arbitreSecondaire', 'ligne1', 'ligne2', 'secretaire', 'chronometre', 'timeshoot'],
             'ListeArbitres' => ['matric', 'nom', 'prenom', 'sexe', 'codeClub', 'club', 'arbitre', 'niveau', 'saison'],
             'ListeEquipes' => ['equipe', 'club', 'cd', 'cr', 'clubActuelJoueurs'],
+            'ListeSurclassements' => ['licence', 'nom', 'prenom', 'sexe', 'codeClub', 'club', 'categorieSaison', 'categorieSurclassement', 'saisonSurclassement', 'dateSurclassement'],
             'ListeJoueurs', 'ListeJoueurs2' => ['matric', 'nom', 'prenom', 'sexe', 'naissance', 'clubActuel', 'categorie', 'club'],
             'LicenciesNationaux' => ['saison', 'hommesU16', 'hommesU18', 'hommesU23', 'hommesU35', 'hommesPlus35', 'hommesTotal', 'femmesU16', 'femmesU18', 'femmesU23', 'femmesU35', 'femmesPlus35', 'femmesTotal', 'totalActivite'],
             'CoherenceMatchs' => ['type', 'equipe', 'competition', 'date', 'lieu', 'details'],
@@ -1930,6 +1971,7 @@ class AdminStatsController extends AbstractController
                 'categoryLabelKey' => 'stats.categories.listes',
                 'types' => [
                     ['value' => 'ListeArbitres', 'labelKey' => 'stats.types.liste_arbitres', 'restricted' => false],
+                    ['value' => 'ListeSurclassements', 'labelKey' => 'stats.types.liste_surclassements', 'restricted' => false],
                     ['value' => 'ListeEquipes', 'labelKey' => 'stats.types.liste_equipes', 'restricted' => false],
                     ['value' => 'ListeJoueurs', 'labelKey' => 'stats.types.liste_joueurs', 'restricted' => false],
                     ['value' => 'ListeJoueurs2', 'labelKey' => 'stats.types.liste_joueurs_coachs', 'restricted' => false],

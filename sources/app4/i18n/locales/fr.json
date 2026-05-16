@@ -303,6 +303,7 @@
       "OfficielsJournees": "Journées avec officiels désignés : RC, R1, délégué, chef arbitre",
       "OfficielsMatchs": "Matchs avec tous les officiels : arbitres, juges de ligne, secrétaire, chrono, timeshoot",
       "ListeArbitres": "Tous les arbitres FFCK : club, niveau, saison de formation, livret",
+      "ListeSurclassements": "Surclassements à partir de la saison sélectionnée : catégorie de la saison, catégorie de surclassement, saison et date d'attribution",
       "ListeEquipes": "Équipes inscrites avec club, CD, CR et clubs actuels des joueurs",
       "ListeJoueurs": "Joueurs inscrits (hors entraîneurs) : club actuel, catégorie, club équipe",
       "ListeJoueurs2": "Joueurs ET entraîneurs inscrits : club actuel, catégorie, club équipe",
@@ -338,6 +339,7 @@
       "irregularites_presence": "Contrôle feuilles de présence",
       "irregularites": "Irrégularités (matchs)",
       "liste_arbitres": "Arbitres",
+      "liste_surclassements": "Surclassements",
       "liste_equipes": "Équipes",
       "liste_joueurs": "Joueurs",
       "liste_joueurs_coachs": "Joueurs & coachs",
@@ -355,7 +357,7 @@
     "columns": {
       "competition": "Compétition",
       "licence": "Licence",
-      "matric": "Matricule",
+      "matric": "Licence",
       "nom": "Nom",
       "prenom": "Prénom",
       "sexe": "Sexe",
@@ -425,7 +427,11 @@
       "total_activite": "Total",
       "type": "Type",
       "date": "Date",
-      "details": "Détails"
+      "details": "Détails",
+      "categorie_saison": "Catégorie saison",
+      "categorie_surclassement": "Catégorie surclassement",
+      "saison_surclassement": "Saison surclassement",
+      "date_surclassement": "Date surclassement"
     }
   },
   "documents": {

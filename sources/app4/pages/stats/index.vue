@@ -245,7 +245,7 @@ onMounted(async () => {
 const columnLabels = computed<Record<string, string>>(() => ({
   competition: t('stats.columns.competition'),
   licence: t('stats.columns.licence'),
-  matric: t('stats.columns.matric'),
+  matric: t('stats.columns.licence'),
   nom: t('stats.columns.nom'),
   prenom: t('stats.columns.prenom'),
   sexe: t('stats.columns.sexe'),
@@ -297,6 +297,10 @@ const columnLabels = computed<Record<string, string>>(() => ({
   naissance: t('stats.columns.naissance'),
   clubActuel: t('stats.columns.club_actuel'),
   categorie: t('stats.columns.categorie'),
+  categorieSaison: t('stats.columns.categorie_saison'),
+  categorieSurclassement: t('stats.columns.categorie_surclassement'),
+  saisonSurclassement: t('stats.columns.saison_surclassement'),
+  dateSurclassement: t('stats.columns.date_surclassement'),
   cd: t('stats.columns.cd'),
   cr: t('stats.columns.cr'),
   clubActuelJoueurs: t('stats.columns.club_actuel_joueurs'),
@@ -347,6 +351,17 @@ const formatCellValue = (value: unknown, column: string): string => {
 
 // Check if column is numeric - use Set for O(1) lookup
 const isNumericColumn = (column: string): boolean => numericColumnsSet.has(column)
+
+// Return internal link for linkable columns, or null
+const getCellLink = (row: Record<string, unknown>, column: string): string | null => {
+  if ((column === 'licence' || column === 'matric') && row[column]) {
+    return `/athletes?matric=${row[column]}`
+  }
+  if ((column === 'codeClub' || column === 'numeroClub') && row[column]) {
+    return `/clubs?code=${row[column]}`
+  }
+  return null
+}
 
 // Get column label - use cached computed
 const getColumnLabel = (column: string): string => columnLabels.value[column] || column
@@ -616,7 +631,12 @@ const exportPdf = async () => {
                   ? 'text-right font-mono font-semibold text-header-900 tabular-nums'
                   : 'text-header-900'"
               >
-                {{ formatCellValue(row[column], column) }}
+                <NuxtLink
+                  v-if="getCellLink(row, column)"
+                  :to="getCellLink(row, column)!"
+                  class="link-value"
+                >{{ formatCellValue(row[column], column) }}</NuxtLink>
+                <template v-else>{{ formatCellValue(row[column], column) }}</template>
               </td>
             </tr>
           </tbody>
@@ -655,7 +675,13 @@ const exportPdf = async () => {
             class="flex justify-between"
           >
             <span class="text-header-500">{{ getColumnLabel(column) }}:</span>
+            <NuxtLink
+              v-if="getCellLink(row, column)"
+              :to="getCellLink(row, column)!"
+              class="link-value"
+            >{{ formatCellValue(row[column], column) }}</NuxtLink>
             <span
+              v-else
               :class="isNumericColumn(column)
                 ? 'font-mono font-semibold text-header-900'
                 : 'text-header-700'"
