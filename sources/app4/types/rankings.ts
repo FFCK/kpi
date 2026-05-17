@@ -146,6 +146,7 @@ export interface InitialRankingTeam {
 export interface InitialRankingResponse {
   competition: string
   season: string
+  statut: string
   teams: InitialRankingTeam[]
 }
 

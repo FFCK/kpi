@@ -659,6 +659,12 @@ class AdminRankingsController extends AbstractController
             return $this->json(['message' => 'Season and competition are required'], Response::HTTP_BAD_REQUEST);
         }
 
+        // Get competition statut
+        $compRow = $this->connection->prepare(
+            "SELECT Statut FROM kp_competition WHERE Code_ref = ? AND Code_saison = ?"
+        )->executeQuery([$competition, $season])->fetchAssociative();
+        $statut = $compRow ? $compRow['Statut'] : 'ATT';
+
         // Ensure all teams have init rows (insert missing ones with zeros)
         $sql = "INSERT IGNORE INTO kp_competition_equipe_init (Id, Pts, Clt, J, G, N, P, F, Plus, Moins, Diff)
                 SELECT ce.Id, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -698,6 +704,7 @@ class AdminRankingsController extends AbstractController
         return $this->json([
             'competition' => $competition,
             'season' => $season,
+            'statut' => $statut,
             'teams' => $teams,
         ]);
     }

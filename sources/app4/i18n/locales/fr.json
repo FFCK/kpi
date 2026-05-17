@@ -1934,7 +1934,8 @@
       "reset": "Remise à zéro",
       "reset_confirm": "Remettre à zéro toutes les valeurs initiales ?",
       "reset_success": "Valeurs initiales remises à zéro",
-      "back": "Retour aux classements"
+      "back": "Retour aux classements",
+      "readonly_end": "Compétition terminée — classement en lecture seule"
     },
     "confirm_publish": "Publier le classement calculé comme classement public ?",
     "confirm_unpublish": "Supprimer le classement public ?",

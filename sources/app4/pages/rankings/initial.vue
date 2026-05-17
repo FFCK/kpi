@@ -21,6 +21,7 @@ const loading = ref(false)
 const teams = ref<InitialRankingTeam[]>([])
 const competitionCode = ref('')
 const seasonCode = ref('')
+const competitionStatut = ref('')
 
 // Inline editing
 const editingCell = ref<{ id: number; field: string } | null>(null)
@@ -32,7 +33,18 @@ const resetModalOpen = ref(false)
 const resetting = ref(false)
 
 // Permission
-const canEdit = computed(() => authStore.profile <= 3)
+const isEnded = computed(() => competitionStatut.value === 'END')
+const canEdit = computed(() => authStore.profile <= 3 && !isEnded.value)
+
+// Status badge color (same palette as index.vue)
+const getStatusColor = (status: string) => {
+  switch (status) {
+    case 'ATT': return 'bg-[#888888] text-[#CCEEDD] italic'
+    case 'ON': return 'bg-[#008800] text-[#CCEEDD] italic'
+    case 'END': return 'bg-[#334F64] text-[#CCEEDD]'
+    default: return 'bg-[#888888] text-[#CCEEDD]'
+  }
+}
 
 // Editable fields
 const editableFields = ['Clt', 'Pts', 'J', 'G', 'N', 'P', 'F', 'Plus', 'Moins', 'Diff'] as const
@@ -50,6 +62,7 @@ const loadData = async () => {
     teams.value = response.teams
     competitionCode.value = response.competition
     seasonCode.value = response.season
+    competitionStatut.value = response.statut || ''
   } catch (error: unknown) {
     const message = (error as { message?: string })?.message || t('rankings.error_load')
     toast.add({ title: t('common.error'), description: message, color: 'error', duration: 3000 })
@@ -156,20 +169,39 @@ const fieldLabel = (field: string) => {
 <template>
   <div>
     <!-- Header -->
-    <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
-      <div>
-        <h1 class="text-2xl font-bold text-header-900">{{ t('rankings.initial.title') }}</h1>
-        <p v-if="competitionCode" class="text-sm text-header-500 mt-1">
-          {{ t('rankings.initial.subtitle', { competition: competitionCode }) }}
-        </p>
-      </div>
+    <div class="mb-4 flex flex-wrap items-center gap-3">
       <NuxtLink
         to="/rankings"
-        class="px-3 py-2 border border-header-300 text-header-700 rounded-lg hover:bg-header-50 transition-colors text-sm flex items-center gap-1"
+        class="px-3 py-2 border border-header-300 text-header-700 rounded-lg hover:bg-header-50 transition-colors text-sm flex items-center gap-1 shrink-0"
       >
         <UIcon name="heroicons:arrow-left" class="w-4 h-4" />
         {{ t('rankings.initial.back') }}
       </NuxtLink>
+      <div>
+        <h1 class="text-2xl font-bold text-header-900">{{ t('rankings.initial.title') }}</h1>
+        <div class="flex flex-wrap items-center gap-2 mt-1">
+          <p v-if="competitionCode" class="text-sm text-header-500">
+            {{ t('rankings.initial.subtitle', { competition: competitionCode }) }}
+          </p>
+          <span
+            v-if="competitionStatut"
+            class="px-2 py-0.5 text-xs font-medium rounded uppercase flex items-center gap-1"
+            :class="getStatusColor(competitionStatut)"
+          >
+            <UIcon
+              :name="competitionStatut === 'ON' ? 'heroicons:lock-open' : 'heroicons:lock-closed'"
+              class="w-3 h-3"
+            />
+            {{ t(`competitions.status.${competitionStatut}`) }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Read-only notice when competition is ended -->
+    <div v-if="isEnded" class="mb-4 flex items-center gap-2 px-4 py-3 bg-[#334F64] text-[#CCEEDD] rounded-lg text-sm">
+      <UIcon name="heroicons:lock-closed" class="w-4 h-4 shrink-0" />
+      {{ t('rankings.initial.readonly_end') }}
     </div>
 
     <!-- Toolbar -->

@@ -1921,7 +1921,8 @@
       "reset": "Reset to zero",
       "reset_confirm": "Reset all initial values to zero?",
       "reset_success": "Initial values reset to zero",
-      "back": "Back to rankings"
+      "back": "Back to rankings",
+      "readonly_end": "Competition ended — ranking is read-only"
     },
     "confirm_publish": "Publish computed ranking as public ranking?",
     "confirm_unpublish": "Delete the public ranking?",
