@@ -98,7 +98,7 @@ const authStore = useAuthStore()
 
       <!-- Documents card -->
       <NuxtLink
-        v-if="authStore.hasProfile(9)"
+        v-if="authStore.hasProfile(9) && authStore.profile !== 7"
         to="/documents"
         class="block p-6 bg-white rounded-lg shadow hover:shadow-md transition-shadow"
       >
