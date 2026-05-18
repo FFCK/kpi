@@ -33,6 +33,7 @@ export interface Competition {
   enActif: boolean
   codeTypeclt: string | null
   codeRef: string | null
+  groupeLibelle: string | null
 }
 
 // Competition group (by section)

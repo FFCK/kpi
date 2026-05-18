@@ -134,7 +134,7 @@ class AdminFiltersController extends AbstractController
             $sql = "SELECT c.Code, c.Libelle, c.Soustitre, c.Soustitre2,
                            c.Titre_actif, c.Code_ref, c.Code_tour, c.Code_niveau,
                            c.En_actif, c.Code_typeclt, c.Code_saison,
-                           g.section, g.ordre
+                           g.section, g.ordre, g.Libelle as groupe_libelle
                     FROM kp_competition c
                     INNER JOIN (
                         SELECT c.Code, MAX(c.Code_saison) AS max_saison
@@ -150,7 +150,7 @@ class AdminFiltersController extends AbstractController
             $sql = "SELECT c.Code, c.Libelle, c.Soustitre, c.Soustitre2,
                            c.Titre_actif, c.Code_ref, c.Code_tour, c.Code_niveau,
                            c.En_actif, c.Code_typeclt, c.Code_saison,
-                           g.section, g.ordre
+                           g.section, g.ordre, g.Libelle as groupe_libelle
                     FROM kp_competition c
                     LEFT JOIN kp_groupe g ON c.Code_ref = g.Groupe
                     WHERE $whereClause
@@ -190,6 +190,7 @@ class AdminFiltersController extends AbstractController
                 'enActif' => $row['En_actif'] === 'O',
                 'codeTypeclt' => $row['Code_typeclt'] ?: null,
                 'codeRef' => $row['Code_ref'] ?: null,
+                'groupeLibelle' => $row['groupe_libelle'] ?: null,
             ];
             if ($allSeasons) {
                 $competition['season'] = $row['Code_saison'];

@@ -144,7 +144,7 @@ export const useWorkContextStore = defineStore('workContext', {
           if (!groupMap.has(groupCode)) {
             groupMap.set(groupCode, {
               code: groupCode,
-              libelle: comp.libelle,
+              libelle: comp.groupeLibelle || comp.libelle,
               section: sectionGroup.section,
               competitions: [],
             })
