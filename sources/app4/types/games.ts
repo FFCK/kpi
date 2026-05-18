@@ -78,6 +78,7 @@ export interface GameJournee {
   lieu: string | null
   type: string
   codeTypeclt: string | null
+  authorized: boolean
 }
 
 // Team item for team select

@@ -131,7 +131,7 @@ const tzParam = encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZ
 // ─── Permissions ───
 const canEdit = computed(() => authStore.profile <= 6)
 const canEditScores = computed(() => authStore.profile <= 6 || authStore.profile === 9)
-const canLock = computed(() => authStore.profile <= 4)
+const canLock = computed(() => authStore.profile <= 6)
 const canSelect = computed(() => authStore.profile <= 6)
 // ─── Default form data ───
 function getDefaultFormData(): GameFormData {
@@ -1127,10 +1127,11 @@ const docUrl = (file: string, isPublic = false) => {
 
 // ─── Journee label for dropdown ───
 const journeeLabel = (j: GameJournee) => {
+  const suffix = j.authorized === false ? ` 🔒` : ''
   if (j.codeTypeclt === 'CP') {
-    return `[${j.id}] ${j.codeCompetition} (${j.etape}) ${j.phase || ''}`
+    return `[${j.id}] ${j.codeCompetition} (${j.etape}) ${j.phase || ''}${suffix}`
   }
-  return `[${j.id}] ${j.codeCompetition} ${j.dateDebut ? formatDate(j.dateDebut) : ''} ${j.lieu || ''}`
+  return `[${j.id}] ${j.codeCompetition} ${j.dateDebut ? formatDate(j.dateDebut) : ''} ${j.lieu || ''}${suffix}`
 }
 
 // ─── Status label ───
@@ -1557,7 +1558,7 @@ const statusBtnClass = (game: Game) => {
                   size="md"
                   :active-title="t('games.published')"
                   :inactive-title="t('games.unpublished')"
-                  :disabled="!canEdit"
+                  :disabled="!canEdit || !g.authorized"
                   @toggle="togglePublication(g)"
                 />
               </td>
@@ -1585,7 +1586,7 @@ const statusBtnClass = (game: Game) => {
 
               <!-- Actions -->
               <td v-if="canEdit" class="px-1 py-1 text-center" @click.stop>
-                <button v-if="!isLocked(g)" :title="t('common.edit')" class="text-primary-600 hover:text-primary-800" @click="openEditModal(g)">
+                <button v-if="!isLocked(g) && g.authorized" :title="t('common.edit')" class="text-primary-600 hover:text-primary-800" @click="openEditModal(g)">
                   <UIcon name="heroicons:pencil" class="w-6 h-6" />
                   <br>
                   <span class="text-xs text-header-700">Edit</span>
@@ -1593,17 +1594,17 @@ const statusBtnClass = (game: Game) => {
               </td>
               <td v-if="canEdit || canEditScores" class="px-1 py-1 text-center" @click.stop>
                 <div class="flex items-center text-center gap-0.5">
-                  <a v-if="canEdit" :href="`${legacyBase}/admin/FeuilleMatchMulti.php?listMatch=${g.id}&tz=${tzParam}`" target="_blank" :title="t('games.scoresheet_pdf')" class="p-0.5 text-danger-600 hover:text-danger-800">
+                  <a v-if="canEdit && g.authorized" :href="`${legacyBase}/admin/FeuilleMatchMulti.php?listMatch=${g.id}&tz=${tzParam}`" target="_blank" :title="t('games.scoresheet_pdf')" class="p-0.5 text-danger-600 hover:text-danger-800">
                     <UIcon name="heroicons:document-text" class="w-6 h-6" />
                     <br>
                     <span class="text-xs text-header-700">PDF</span>
                   </a>
-                  <a v-if="canEditScores" :href="`${legacyBase}/admin/FeuilleMarque2.php?idMatch=${g.id}`" target="_blank" :title="t('games.scoresheet_online_v2')" class="p-0.5 text-primary-400 hover:text-primary-600">
+                  <a v-if="canEditScores && g.authorized" :href="`${legacyBase}/admin/FeuilleMarque2.php?idMatch=${g.id}`" target="_blank" :title="t('games.scoresheet_online_v2')" class="p-0.5 text-primary-400 hover:text-primary-600">
                     <UIcon name="heroicons:device-tablet" class="w-6 h-6" />
                     <br>
                     <span class="text-xs text-header-700">V2</span>
                   </a>
-                  <a v-if="canEditScores" :href="`${legacyBase}/admin/FeuilleMarque3.php?idMatch=${g.id}`" target="_blank" :title="t('games.scoresheet_online_v3')" class="p-0.5 text-primary-500 hover:text-primary-700">
+                  <a v-if="canEditScores && g.authorized" :href="`${legacyBase}/admin/FeuilleMarque3.php?idMatch=${g.id}`" target="_blank" :title="t('games.scoresheet_online_v3')" class="p-0.5 text-primary-500 hover:text-primary-700">
                     <UIcon name="heroicons:device-tablet" class="w-6 h-6" />
                     <br>
                     <span class="text-xs text-header-700">V3</span>
@@ -1819,6 +1820,7 @@ const statusBtnClass = (game: Game) => {
                   size="md"
                   :active-title="t('games.locked')"
                   :inactive-title="t('games.unlocked')"
+                  :disabled="!g.authorized"
                   @toggle="toggleValidation(g)"
                 />
                 <UIcon v-else-if="g.validation === 'O'" name="heroicons:lock-closed-solid" class="w-6 h-6 text-primary-500" :title="t('games.locked')" />
@@ -2125,6 +2127,7 @@ const statusBtnClass = (game: Game) => {
               size="md"
               :active-title="t('games.locked')"
               :inactive-title="t('games.unlocked')"
+              :disabled="!g.authorized"
               @toggle="toggleValidation(g)"
             />
             <UIcon v-else-if="g.validation === 'O'" name="heroicons:lock-closed-solid" class="w-5 h-5 text-primary-500" :title="t('games.locked')" />
@@ -2134,7 +2137,7 @@ const statusBtnClass = (game: Game) => {
               inactive-icon="heroicons:eye-slash"
               active-color="success"
               size="md"
-              @toggle="canEdit && togglePublication(g)"
+              @toggle="canEdit && g.authorized && togglePublication(g)"
             />
           </div>
         </template>
@@ -2305,18 +2308,18 @@ const statusBtnClass = (game: Game) => {
         </div>
 
         <template #footer-right>
-          <AdminActionButton v-if="canEdit && !isLocked(g)" icon="heroicons:pencil" @click="openEditModal(g)">
+          <AdminActionButton v-if="canEdit && !isLocked(g) && g.authorized" icon="heroicons:pencil" @click="openEditModal(g)">
             {{ t('common.edit') }}
           </AdminActionButton>
-          <a v-if="canEdit" :href="`${legacyBase}/admin/FeuilleMatchMulti.php?listMatch=${g.id}&tz=${tzParam}`" target="_blank" class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-danger-600 hover:text-danger-800">
+          <a v-if="canEdit && g.authorized" :href="`${legacyBase}/admin/FeuilleMatchMulti.php?listMatch=${g.id}&tz=${tzParam}`" target="_blank" class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-danger-600 hover:text-danger-800">
             <UIcon name="heroicons:document-text" class="w-4 h-4" />
             {{ t('games.scoresheet_pdf') }}
           </a>
-          <a v-if="canEdit && authStore.profile <= 6" :href="`${legacyBase}/admin/FeuilleMarque2.php?idMatch=${g.id}`" target="_blank" class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-emerald-600 hover:text-emerald-800">
+          <a v-if="canEdit && authStore.profile <= 6 && g.authorized" :href="`${legacyBase}/admin/FeuilleMarque2.php?idMatch=${g.id}`" target="_blank" class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-emerald-600 hover:text-emerald-800">
             <UIcon name="heroicons:device-tablet" class="w-4 h-4" />
             v2
           </a>
-          <a v-if="canEdit && authStore.profile <= 2" :href="`${legacyBase}/admin/FeuilleMarque3.php?idMatch=${g.id}`" target="_blank" class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-purple-600 hover:text-purple-800">
+          <a v-if="canEdit && authStore.profile <= 2 && g.authorized" :href="`${legacyBase}/admin/FeuilleMarque3.php?idMatch=${g.id}`" target="_blank" class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-purple-600 hover:text-purple-800">
             <UIcon name="heroicons:device-tablet" class="w-4 h-4" />
             v3
           </a>

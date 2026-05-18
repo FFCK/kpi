@@ -90,16 +90,6 @@ class AdminGamesController extends AbstractController
             }
         }
 
-        // User journee filter
-        if ($user) {
-            $allowedJournees = $user->getAllowedJournees();
-            if ($allowedJournees !== null && count($allowedJournees) > 0) {
-                $placeholders = implode(',', array_fill(0, count($allowedJournees), '?'));
-                $where[] = "m.Id_journee IN ($placeholders)";
-                $params = array_merge($params, $allowedJournees);
-            }
-        }
-
         // Event filter
         $joinEvent = '';
         if (!empty($eventId) && $eventId !== '-1') {
@@ -365,6 +355,9 @@ class AdminGamesController extends AbstractController
             return $this->json(['message' => 'Journée not found'], Response::HTTP_NOT_FOUND);
         }
 
+        if ($err = $this->assertJourneeAuthorized($idJournee, $user)) return $err;
+        if ($err = $this->assertCompetitionNotEnded($journee['Code_competition'], $journee['Code_saison'])) return $err;
+
         // Get next ID
         $nextId = (int) $this->connection->executeQuery("SELECT COALESCE(MAX(Id), 0) + 1 FROM kp_match")->fetchOne();
 
@@ -419,6 +412,9 @@ class AdminGamesController extends AbstractController
         if (!$existing) {
             return $this->json(['message' => 'Game not found'], Response::HTTP_NOT_FOUND);
         }
+
+        if ($err = $this->assertJourneeAuthorized((int) $existing['Id_journee'], $user)) return $err;
+        if ($err = $this->assertCompetitionNotEnded($existing['Code_competition'], $existing['Code_saison'])) return $err;
 
         $data = json_decode($request->getContent(), true);
         if (!$data) {
@@ -508,6 +504,9 @@ class AdminGamesController extends AbstractController
             return $this->json(['message' => 'Game not found'], Response::HTTP_NOT_FOUND);
         }
 
+        if ($err = $this->assertJourneeAuthorized((int) $row['Id_journee'], $user)) return $err;
+        if ($err = $this->assertCompetitionNotEnded($row['Code_competition'], $row['Code_saison'])) return $err;
+
         // Check locked
         if ($row['Validation'] === 'O') {
             return $this->json([
@@ -586,6 +585,9 @@ class AdminGamesController extends AbstractController
             return $this->json(['message' => 'Game not found'], Response::HTTP_NOT_FOUND);
         }
 
+        if ($err = $this->assertJourneeAuthorized((int) $row['Id_journee'], $user)) return $err;
+        if ($err = $this->assertCompetitionNotEnded($row['Code_competition'], $row['Code_saison'])) return $err;
+
         // Validate and format value
         if (in_array($field, ['Numero_ordre'])) {
             $value = $value !== '' ? (int) $value : null;
@@ -648,6 +650,9 @@ class AdminGamesController extends AbstractController
             return $this->json(['message' => 'Game not found'], Response::HTTP_NOT_FOUND);
         }
 
+        if ($err = $this->assertJourneeAuthorized((int) $row['Id_journee'], $user)) return $err;
+        if ($err = $this->assertCompetitionNotEnded($row['Code_competition'], $row['Code_saison'])) return $err;
+
         $newValue = $row['Publication'] === 'O' ? 'N' : 'O';
         $this->connection->update('kp_match', ['Publication' => $newValue, 'Code_uti' => $user?->getUserIdentifier()], ['Id' => $id]);
 
@@ -676,6 +681,9 @@ class AdminGamesController extends AbstractController
         if (!$row) {
             return $this->json(['message' => 'Game not found'], Response::HTTP_NOT_FOUND);
         }
+
+        if ($err = $this->assertJourneeAuthorized((int) $row['Id_journee'], $user)) return $err;
+        if ($err = $this->assertCompetitionNotEnded($row['Code_competition'], $row['Code_saison'])) return $err;
 
         $newValue = $row['Validation'] === 'O' ? 'N' : 'O';
         $this->connection->update('kp_match', ['Validation' => $newValue, 'Code_uti' => $user?->getUserIdentifier()], ['Id' => $id]);
@@ -706,6 +714,9 @@ class AdminGamesController extends AbstractController
             return $this->json(['message' => 'Game not found'], Response::HTTP_NOT_FOUND);
         }
 
+        if ($err = $this->assertJourneeAuthorized((int) $row['Id_journee'], $user)) return $err;
+        if ($err = $this->assertCompetitionNotEnded($row['Code_competition'], $row['Code_saison'])) return $err;
+
         $newValue = $row['Type'] === 'C' ? 'E' : 'C';
         $this->connection->update('kp_match', ['Type' => $newValue, 'Code_uti' => $user?->getUserIdentifier()], ['Id' => $id]);
 
@@ -734,6 +745,9 @@ class AdminGamesController extends AbstractController
         if (!$row) {
             return $this->json(['message' => 'Game not found'], Response::HTTP_NOT_FOUND);
         }
+
+        if ($err = $this->assertJourneeAuthorized((int) $row['Id_journee'], $user)) return $err;
+        if ($err = $this->assertCompetitionNotEnded($row['Code_competition'], $row['Code_saison'])) return $err;
 
         $newValue = match ($row['Statut'] ?? 'ATT') {
             'ATT' => 'ON',
@@ -769,6 +783,9 @@ class AdminGamesController extends AbstractController
         if (!$row) {
             return $this->json(['message' => 'Game not found'], Response::HTTP_NOT_FOUND);
         }
+
+        if ($err = $this->assertJourneeAuthorized((int) $row['Id_journee'], $user)) return $err;
+        if ($err = $this->assertCompetitionNotEnded($row['Code_competition'], $row['Code_saison'])) return $err;
 
         $newValue = $row['Imprime'] === 'O' ? 'N' : 'O';
         $this->connection->update('kp_match', ['Imprime' => $newValue, 'Code_uti' => $user?->getUserIdentifier()], ['Id' => $id]);
@@ -806,6 +823,9 @@ class AdminGamesController extends AbstractController
         if (!$row) {
             return $this->json(['message' => 'Game not found'], Response::HTTP_NOT_FOUND);
         }
+
+        if ($err = $this->assertJourneeAuthorized((int) $row['Id_journee'], $user)) return $err;
+        if ($err = $this->assertCompetitionNotEnded($row['Code_competition'], $row['Code_saison'])) return $err;
 
         $updateVal = $idEquipe && $idEquipe > 0 ? $idEquipe : null;
         $currentTeamId = $row['currentTeamId'] ? (int) $row['currentTeamId'] : null;
@@ -861,6 +881,9 @@ class AdminGamesController extends AbstractController
             return $this->json(['message' => 'Game not found'], Response::HTTP_NOT_FOUND);
         }
 
+        if ($err = $this->assertJourneeAuthorized((int) $row['Id_journee'], $user)) return $err;
+        if ($err = $this->assertCompetitionNotEnded($row['Code_competition'], $row['Code_saison'])) return $err;
+
         $this->connection->update('kp_match', ['Id_journee' => $newJourneeId, 'Code_uti' => $user?->getUserIdentifier()], ['Id' => $id]);
 
         $this->logActionForMatch('Changement journée match', $row['Code_saison'], $row['Code_competition'], (int) $row['Id_journee'], $id, "-> journée $newJourneeId");
@@ -886,6 +909,11 @@ class AdminGamesController extends AbstractController
 
         if (empty($ids)) {
             return $this->json(['message' => 'No IDs provided'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $ids = $this->filterAuthorizedMatchIds(array_values($ids), $user);
+        if (empty($ids)) {
+            return $this->json(['message' => 'No authorized games in selection'], Response::HTTP_FORBIDDEN);
         }
 
         $deleted = 0;
@@ -947,6 +975,11 @@ class AdminGamesController extends AbstractController
             return $this->json(['message' => 'No IDs provided'], Response::HTTP_BAD_REQUEST);
         }
 
+        $ids = $this->filterAuthorizedMatchIds(array_values($ids), $user);
+        if (empty($ids)) {
+            return $this->json(['message' => 'No authorized games in selection'], Response::HTTP_FORBIDDEN);
+        }
+
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
 
         // Toggle: if any are unpublished, publish all. Otherwise unpublish all.
@@ -969,12 +1002,12 @@ class AdminGamesController extends AbstractController
      * Bulk toggle validation
      */
     #[Route('/bulk/validation', name: 'admin_games_bulk_validation', methods: ['PATCH'])]
-    #[IsGranted('ROLE_COMPETITION')]
+    #[IsGranted('ROLE_ORGANIZER')]
     public function bulkValidation(Request $request): JsonResponse
     {
         /** @var User|null $user */
         $user = $this->getUser();
-        if ($user && $user->getNiveau() > 4) {
+        if ($user && $user->getNiveau() > 6) {
             return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
         }
 
@@ -983,6 +1016,11 @@ class AdminGamesController extends AbstractController
 
         if (empty($ids)) {
             return $this->json(['message' => 'No IDs provided'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $ids = $this->filterAuthorizedMatchIds(array_values($ids), $user);
+        if (empty($ids)) {
+            return $this->json(['message' => 'No authorized games in selection'], Response::HTTP_FORBIDDEN);
         }
 
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
@@ -1006,12 +1044,12 @@ class AdminGamesController extends AbstractController
      * Bulk lock + publish
      */
     #[Route('/bulk/lock-publish', name: 'admin_games_bulk_lock_publish', methods: ['PATCH'])]
-    #[IsGranted('ROLE_COMPETITION')]
+    #[IsGranted('ROLE_ORGANIZER')]
     public function bulkLockPublish(Request $request): JsonResponse
     {
         /** @var User|null $user */
         $user = $this->getUser();
-        if ($user && $user->getNiveau() > 4) {
+        if ($user && $user->getNiveau() > 6) {
             return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
         }
 
@@ -1020,6 +1058,11 @@ class AdminGamesController extends AbstractController
 
         if (empty($ids)) {
             return $this->json(['message' => 'No IDs provided'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $ids = $this->filterAuthorizedMatchIds(array_values($ids), $user);
+        if (empty($ids)) {
+            return $this->json(['message' => 'No authorized games in selection'], Response::HTTP_FORBIDDEN);
         }
 
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
@@ -1054,6 +1097,11 @@ class AdminGamesController extends AbstractController
             return $this->json(['message' => 'Missing ids or journeeId'], Response::HTTP_BAD_REQUEST);
         }
 
+        $ids = $this->filterAuthorizedMatchIds(array_values($ids), $user);
+        if (empty($ids)) {
+            return $this->json(['message' => 'No authorized games in selection'], Response::HTTP_FORBIDDEN);
+        }
+
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
 
         $this->connection->prepare(
@@ -1084,6 +1132,11 @@ class AdminGamesController extends AbstractController
 
         if (empty($ids)) {
             return $this->json(['message' => 'No IDs provided'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $ids = $this->filterAuthorizedMatchIds(array_values($ids), $user);
+        if (empty($ids)) {
+            return $this->json(['message' => 'No authorized games in selection'], Response::HTTP_FORBIDDEN);
         }
 
         // Fetch matches in current order
@@ -1131,6 +1184,11 @@ class AdminGamesController extends AbstractController
             return $this->json(['message' => 'Invalid date format (expected YYYY-MM-DD)'], Response::HTTP_BAD_REQUEST);
         }
 
+        $ids = $this->filterAuthorizedMatchIds(array_values($ids), $user);
+        if (empty($ids)) {
+            return $this->json(['message' => 'No authorized games in selection'], Response::HTTP_FORBIDDEN);
+        }
+
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
 
         $affected = $this->connection->prepare(
@@ -1162,6 +1220,11 @@ class AdminGamesController extends AbstractController
 
         if (empty($ids)) {
             return $this->json(['message' => 'No IDs provided'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $ids = $this->filterAuthorizedMatchIds(array_values($ids), $user);
+        if (empty($ids)) {
+            return $this->json(['message' => 'No authorized games in selection'], Response::HTTP_FORBIDDEN);
         }
 
         // Parse start time to minutes
@@ -1217,6 +1280,11 @@ class AdminGamesController extends AbstractController
 
         if (!preg_match('/^[A-Z]{1,5}$/', $oldGroup) || !preg_match('/^[A-Z]{1,5}$/', $newGroup)) {
             return $this->json(['message' => 'Groups must be 1-5 uppercase letters'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $ids = $this->filterAuthorizedMatchIds(array_values($ids), $user);
+        if (empty($ids)) {
+            return $this->json(['message' => 'No authorized games in selection'], Response::HTTP_FORBIDDEN);
         }
 
         // Fetch unlocked matches only
@@ -1327,16 +1395,6 @@ class AdminGamesController extends AbstractController
             }
         }
 
-        // User journee filter
-        if ($user) {
-            $allowedJournees = $user->getAllowedJournees();
-            if ($allowedJournees !== null && count($allowedJournees) > 0) {
-                $placeholders = implode(',', array_fill(0, count($allowedJournees), '?'));
-                $where[] = "j.Id IN ($placeholders)";
-                $params = array_merge($params, $allowedJournees);
-            }
-        }
-
         // Event filter
         $joinEvent = '';
         if (!empty($eventId) && $eventId !== '-1') {
@@ -1357,16 +1415,22 @@ class AdminGamesController extends AbstractController
 
         $rows = $this->connection->prepare($sql)->executeQuery($params)->fetchAllAssociative();
 
-        $journees = array_map(fn($r) => [
-            'id' => (int) $r['Id'],
-            'codeCompetition' => $r['Code_competition'],
-            'phase' => $r['Phase'],
-            'etape' => (int) $r['Etape'],
-            'dateDebut' => $r['Date_debut'],
-            'lieu' => $r['Lieu'],
-            'type' => $r['Type'],
-            'codeTypeclt' => $r['Code_typeclt'],
-        ], $rows);
+        $allowedJournees = $user?->getAllowedJournees();
+
+        $journees = array_map(function ($r) use ($allowedJournees) {
+            $authorized = $allowedJournees === null || in_array((int) $r['Id'], $allowedJournees);
+            return [
+                'id' => (int) $r['Id'],
+                'codeCompetition' => $r['Code_competition'],
+                'phase' => $r['Phase'],
+                'etape' => (int) $r['Etape'],
+                'dateDebut' => $r['Date_debut'],
+                'lieu' => $r['Lieu'],
+                'type' => $r['Type'],
+                'codeTypeclt' => $r['Code_typeclt'],
+                'authorized' => $authorized,
+            ];
+        }, $rows);
 
         return $this->json(['journees' => $journees]);
     }
@@ -1544,6 +1608,69 @@ class AdminGamesController extends AbstractController
         }
 
         return $this->json($results);
+    }
+
+    /**
+     * Returns 403 if the competition linked to $journeeId has Statut = 'END'.
+     */
+    private function assertCompetitionNotEnded(string $codeCompetition, string $codeSaison): ?JsonResponse
+    {
+        $statut = $this->connection->prepare(
+            "SELECT Statut FROM kp_competition WHERE Code = ? AND Code_saison = ?"
+        )->executeQuery([$codeCompetition, $codeSaison])->fetchOne();
+
+        if ($statut === 'END') {
+            return $this->json(['message' => 'Competition is ended'], Response::HTTP_FORBIDDEN);
+        }
+        return null;
+    }
+
+    /**
+     * Returns 403 if the user has a journee restriction and $journeeId is not in the allowed list.
+     */
+    private function assertJourneeAuthorized(int $journeeId, ?User $user): ?JsonResponse
+    {
+        if (!$user) return null;
+        $allowed = $user->getAllowedJournees();
+        if ($allowed !== null && !in_array($journeeId, $allowed)) {
+            return $this->json(['message' => 'Access denied for this journée'], Response::HTTP_FORBIDDEN);
+        }
+        return null;
+    }
+
+    /**
+     * Filters an array of match IDs to only those the user is allowed to edit:
+     * - journée restriction (if any)
+     * - competition not ended (Statut != 'END')
+     */
+    private function filterAuthorizedMatchIds(array $ids, ?User $user): array
+    {
+        if (empty($ids)) return $ids;
+
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+
+        $allowed = $user?->getAllowedJournees();
+        if ($allowed !== null && count($allowed) > 0) {
+            $journeePlaceholders = implode(',', array_fill(0, count($allowed), '?'));
+            $rows = $this->connection->prepare(
+                "SELECT m.Id FROM kp_match m
+                 INNER JOIN kp_journee j ON j.Id = m.Id_journee
+                 INNER JOIN kp_competition c ON c.Code = j.Code_competition AND c.Code_saison = j.Code_saison
+                 WHERE m.Id IN ($placeholders)
+                   AND m.Id_journee IN ($journeePlaceholders)
+                   AND c.Statut != 'END'"
+            )->executeQuery(array_merge($ids, $allowed))->fetchAllAssociative();
+        } else {
+            $rows = $this->connection->prepare(
+                "SELECT m.Id FROM kp_match m
+                 INNER JOIN kp_journee j ON j.Id = m.Id_journee
+                 INNER JOIN kp_competition c ON c.Code = j.Code_competition AND c.Code_saison = j.Code_saison
+                 WHERE m.Id IN ($placeholders)
+                   AND c.Statut != 'END'"
+            )->executeQuery($ids)->fetchAllAssociative();
+        }
+
+        return array_map(fn($r) => (int) $r['Id'], $rows);
     }
 
     /**
