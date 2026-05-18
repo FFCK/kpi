@@ -73,9 +73,11 @@ class AdminUsersController extends AbstractController
         $params = [];
 
         // An admin only sees users with profile >= their own (except super admin)
+        // Profiles 3 and 4 also see profile 3 users (to manage mandates on them)
         if ($adminNiveau > 1) {
+            $visibleFrom = ($adminNiveau === 3 || $adminNiveau === 4) ? 3 : $adminNiveau;
             $whereConditions[] = 'u.Niveau >= ?';
-            $params[] = $adminNiveau;
+            $params[] = $visibleFrom;
         }
 
         if (!empty($search)) {
@@ -121,7 +123,7 @@ class AdminUsersController extends AbstractController
 
         // Fetch items
         $offset = $limit > 0 ? ($page - 1) * $limit : 0;
-        $sql = "SELECT u.Code, u.Identite, u.Mail, u.Tel, u.Fonction, u.Niveau,
+        $sql = "SELECT u.Code, u.Identite, u.Fonction, u.Niveau,
                        u.Filtre_saison, u.Filtre_competition, u.Id_Evenement,
                        u.Filtre_journee, u.Limitation_equipe_club,
                        (SELECT COUNT(*) FROM kp_user_mandat m WHERE m.user_code = u.Code) AS mandateCount
@@ -159,8 +161,6 @@ class AdminUsersController extends AbstractController
         $items = array_map(fn(array $row) => [
             'code' => $row['Code'],
             'identite' => $row['Identite'] ?? '',
-            'mail' => $row['Mail'] ?? '',
-            'tel' => $row['Tel'] ?? '',
             'fonction' => $row['Fonction'] ?? '',
             'niveau' => (int) $row['Niveau'],
             'filtreSaison' => $row['Filtre_saison'] ?? '',
@@ -220,8 +220,10 @@ class AdminUsersController extends AbstractController
             return $this->json(['error' => true, 'message' => 'User not found', 'code' => 'NOT_FOUND'], Response::HTTP_NOT_FOUND);
         }
 
-        // Check that admin can see this user
-        if ($currentUser->getEffectiveNiveau() > 1 && (int) $row['Niveau'] < $currentUser->getEffectiveNiveau()) {
+        // Check that admin can see this user (profiles 3 and 4 also see profile 3)
+        $adminNiveau = $currentUser->getEffectiveNiveau();
+        $visibleFrom = ($adminNiveau === 3 || $adminNiveau === 4) ? 3 : $adminNiveau;
+        if ($adminNiveau > 1 && (int) $row['Niveau'] < $visibleFrom) {
             return $this->json(['error' => true, 'message' => 'Access denied', 'code' => 'ACCESS_DENIED'], Response::HTTP_FORBIDDEN);
         }
 
@@ -997,7 +999,7 @@ class AdminUsersController extends AbstractController
     {
         /** @var User|null $currentUser */
         $currentUser = $this->getUser();
-        if (!$currentUser || $currentUser->getEffectiveNiveau() > 3) {
+        if (!$currentUser || $currentUser->getEffectiveNiveau() > 4) {
             return $this->json(['error' => true, 'message' => 'Access denied', 'code' => 'ACCESS_DENIED'], Response::HTTP_FORBIDDEN);
         }
 
@@ -1037,7 +1039,7 @@ class AdminUsersController extends AbstractController
     {
         /** @var User|null $currentUser */
         $currentUser = $this->getUser();
-        if (!$currentUser || $currentUser->getEffectiveNiveau() > 3) {
+        if (!$currentUser || $currentUser->getEffectiveNiveau() > 4) {
             return $this->json(['error' => true, 'message' => 'Access denied', 'code' => 'ACCESS_DENIED'], Response::HTTP_FORBIDDEN);
         }
 
@@ -1112,7 +1114,7 @@ class AdminUsersController extends AbstractController
     {
         /** @var User|null $currentUser */
         $currentUser = $this->getUser();
-        if (!$currentUser || $currentUser->getEffectiveNiveau() > 3) {
+        if (!$currentUser || $currentUser->getEffectiveNiveau() > 4) {
             return $this->json(['error' => true, 'message' => 'Access denied', 'code' => 'ACCESS_DENIED'], Response::HTTP_FORBIDDEN);
         }
 
@@ -1190,16 +1192,21 @@ class AdminUsersController extends AbstractController
     {
         /** @var User|null $currentUser */
         $currentUser = $this->getUser();
-        if (!$currentUser || $currentUser->getEffectiveNiveau() > 3) {
+        if (!$currentUser || $currentUser->getEffectiveNiveau() > 4) {
             return $this->json(['error' => true, 'message' => 'Access denied', 'code' => 'ACCESS_DENIED'], Response::HTTP_FORBIDDEN);
         }
 
         $existing = $this->connection->fetchAssociative(
-            'SELECT id FROM kp_user_mandat WHERE id = ? AND user_code = ?',
+            'SELECT id, niveau FROM kp_user_mandat WHERE id = ? AND user_code = ?',
             [$id, $code]
         );
         if (!$existing) {
             return $this->json(['error' => true, 'message' => 'Mandate not found', 'code' => 'NOT_FOUND'], Response::HTTP_NOT_FOUND);
+        }
+
+        // Profile 4 cannot delete mandates with niveau <= 4
+        if ($currentUser->getEffectiveNiveau() >= 4 && (int) $existing['niveau'] <= $currentUser->getEffectiveNiveau()) {
+            return $this->json(['error' => true, 'message' => 'Access denied', 'code' => 'ACCESS_DENIED'], Response::HTTP_FORBIDDEN);
         }
 
         $this->connection->executeStatement('DELETE FROM kp_user_mandat WHERE id = ? AND user_code = ?', [$id, $code]);
@@ -1229,8 +1236,9 @@ class AdminUsersController extends AbstractController
         $params = [];
 
         if ($adminNiveau > 1) {
+            $visibleFrom = ($adminNiveau === 3 || $adminNiveau === 4) ? 3 : $adminNiveau;
             $conditions[] = 'u.Niveau >= ?';
-            $params[] = $adminNiveau;
+            $params[] = $visibleFrom;
         }
         if (!empty($search)) {
             $conditions[] = '(u.Code LIKE ? OR u.Identite LIKE ? OR u.Mail LIKE ?)';

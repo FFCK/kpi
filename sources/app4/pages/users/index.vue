@@ -21,6 +21,7 @@ if (authStore.profile > 4) {
 
 // Permissions
 const canEdit = computed(() => authStore.hasProfile(3))
+const canManageMandates = computed(() => authStore.hasProfile(4))
 const canDelete = computed(() => authStore.hasProfile(2))
 
 // Per-row permission: an admin can only edit/delete users with a strictly higher profile number (lower privilege)
@@ -28,6 +29,13 @@ const canDelete = computed(() => authStore.hasProfile(2))
 function canEditUser(userNiveau: number): boolean {
   if (!canEdit.value) return false
   return authStore.profile === 1 || userNiveau > authStore.profile
+}
+function canOpenMandatesModal(userNiveau: number): boolean {
+  if (!canManageMandates.value) return false
+  if (authStore.profile === 1) return true
+  // Profiles 3 and 4 can open the mandates modal for users with niveau >= 3
+  const minVisible = (authStore.profile === 3 || authStore.profile === 4) ? 3 : authStore.profile
+  return userNiveau >= minVisible
 }
 function canDeleteUser(userNiveau: number): boolean {
   if (!canDelete.value) return false
@@ -218,24 +226,42 @@ onMounted(() => {
 // Mandate tooltip
 const tooltipUser = ref<string | null>(null)
 const tooltipRef = ref<HTMLElement | null>(null)
-const tooltipStyle = ref({ top: '0px', left: '0px' })
+const tooltipStyle = ref<Record<string, string>>({ top: '0px', left: '0px' })
+let _tooltipAnchorRect: DOMRect | null = null
 
 function showTooltip(code: string, event: MouseEvent) {
   tooltipUser.value = code
-  positionTooltip(event)
+  _tooltipAnchorRect = (event.currentTarget as HTMLElement).getBoundingClientRect()
+  tooltipStyle.value = { top: '-9999px', left: '-9999px' }
+  nextTick(() => positionTooltip())
 }
 
-function positionTooltip(event: MouseEvent) {
-  const target = event.currentTarget as HTMLElement
-  const rect = target.getBoundingClientRect()
-  tooltipStyle.value = {
-    top: `${rect.bottom + window.scrollY + 6}px`,
-    left: `${rect.left + window.scrollX}px`,
+function positionTooltip() {
+  const rect = _tooltipAnchorRect
+  if (!rect) return
+  const tip = tooltipRef.value
+  const tipHeight = tip ? tip.offsetHeight : 0
+  const tipWidth = tip ? tip.offsetWidth : 0
+  const gap = 6
+  const viewportH = window.innerHeight
+  const viewportW = window.innerWidth
+
+  let top: number
+  if (rect.bottom + gap + tipHeight > viewportH && rect.top - gap - tipHeight >= 0) {
+    top = rect.top - gap - tipHeight
+  } else {
+    top = rect.bottom + gap
   }
+
+  let left = rect.left
+  if (left + tipWidth > viewportW) left = viewportW - tipWidth - 8
+
+  tooltipStyle.value = { top: `${top}px`, left: `${left}px` }
 }
 
 function hideTooltip() {
   tooltipUser.value = null
+  _tooltipAnchorRect = null
 }
 
 // Mobile mandate expand
@@ -697,13 +723,23 @@ const profileOptions = computed(() => {
                 >
                   <UIcon name="i-heroicons-pencil-square" class="w-5 h-5" />
                 </button>
-                <span
-                  v-else-if="canEdit"
-                  class="p-1.5 text-header-300 cursor-help"
-                  :title="t('users.table.edit_not_allowed')"
-                >
-                  <UIcon name="i-heroicons-information-circle" class="w-5 h-5" />
-                </span>
+                <template v-else>
+                  <button
+                    v-if="canOpenMandatesModal(user.niveau)"
+                    class="p-1.5 text-primary-500 hover:text-primary-700 rounded"
+                    :title="t('users.mandate_edit')"
+                    @click="openEditModal(user)"
+                  >
+                    <UIcon name="i-heroicons-identification" class="w-5 h-5" />
+                  </button>
+                  <span
+                    v-else-if="canEdit"
+                    class="p-1.5 text-header-300 cursor-help"
+                    :title="t('users.table.edit_not_allowed')"
+                  >
+                    <UIcon name="i-heroicons-information-circle" class="w-5 h-5" />
+                  </span>
+                </template>
                 <button
                   v-if="canDeleteUser(user.niveau)"
                   class="p-1.5 text-header-500 hover:text-danger-600 rounded"
@@ -787,6 +823,13 @@ const profileOptions = computed(() => {
               @click="openEditModal(user)"
             >
               {{ t('common.edit') }}
+            </button>
+            <button
+              v-else-if="canOpenMandatesModal(user.niveau)"
+              class="px-3 py-1 text-xs text-primary-600 border border-primary-300 rounded hover:bg-primary-50"
+              @click="openEditModal(user)"
+            >
+              {{ t('users.view_mode_mandates') }}
             </button>
             <button
               v-if="canDeleteUser(user.niveau)"

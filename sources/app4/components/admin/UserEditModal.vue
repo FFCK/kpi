@@ -122,8 +122,15 @@ watch(() => props.open, async (isOpen) => {
   }
 
   if (props.user) {
-    // Edit mode: load user detail (sets selectedSeasons, which triggers competition reload via watch)
-    await loadUserDetail(props.user.code)
+    if (mandatesOnly.value) {
+      // Mandates-only mode: identity already available from the list, skip the full detail API call
+      form.code = props.user.code
+      form.identite = props.user.identite
+      await loadMandates(props.user.code)
+    } else {
+      // Edit mode: load user detail (sets selectedSeasons, which triggers competition reload via watch)
+      await loadUserDetail(props.user.code)
+    }
   } else {
     // Create mode: defaults (resetForm sets selectedSeasons, which triggers competition reload)
     resetForm()
@@ -228,7 +235,7 @@ async function loadUserDetail(code: string) {
     }
 
     // Load mandates if profile allows
-    if (adminNiveau.value <= 3) {
+    if (adminNiveau.value <= 4) {
       await loadMandates(code)
     }
   } catch { /* useApi handles toast */ }
@@ -550,6 +557,11 @@ async function handleSubmit() {
   } finally {
     submitting.value = false
   }
+}
+
+function canDeleteMandate(mandateNiveau: number): boolean {
+  if (adminNiveau.value === 1) return true
+  return mandateNiveau > adminNiveau.value
 }
 
 // Mandate CRUD
@@ -924,6 +936,7 @@ onBeforeUnmount(() => {
               </span>
             </div>
             <button
+              v-if="canDeleteMandate(mandate.niveau)"
               class="p-1 text-danger-500 hover:text-danger-700"
               @click="deleteMandate(mandate.id)"
             >
