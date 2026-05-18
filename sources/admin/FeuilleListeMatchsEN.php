@@ -30,6 +30,7 @@ class FeuilleListeMatchs extends MyPage
         $filtreTour = utyGetGet('filtreTour', $filtreTour);
 
         $filtreMatchsNonVerrouilles = $urlMode ? '' : utyGetSession('filtreMatchsNonVerrouilles', '');
+        $filtreMatchsNonVerrouilles = utyGetGet('filtreMatchsNonVerrouilles', $filtreMatchsNonVerrouilles);
 
         if ($urlMode) {
             $arrayJournees = [];
@@ -38,11 +39,8 @@ class FeuilleListeMatchs extends MyPage
             $arrayJournees = explode(',', $lstJournee);
         }
 
-        // Filtre Journée/Phase/Poule : si une journée spécifique est sélectionnée, utiliser celle-ci
         $idSelJournee = $urlMode ? '*' : utyGetSession('idSelJournee', '*');
-        if ($idSelJournee != '*' && $idSelJournee != '' && $idSelJournee > 0) {
-            $arrayJournees = [$idSelJournee];
-        }
+        $idSelJournee = utyGetGet('idSelJournee', $idSelJournee);
         $idEvenement = $urlMode ? -1 : utyGetSession('idEvenement', -1);
         $idEvenement = utyGetGet('idEvenement', $idEvenement);
         if (utyGetGet('idEvenement', 0) > 0) {
@@ -54,24 +52,32 @@ class FeuilleListeMatchs extends MyPage
                 $arrayJournees[] = $row['Id_journee'];
             }
         }
+        // Filtre Journée/Phase/Poule : appliqué en dernier pour prendre le dessus
+        if ($idSelJournee != '*' && $idSelJournee != '' && $idSelJournee > 0) {
+            $arrayJournees = [(int)$idSelJournee];
+        }
         $codeSaison = $myBdd->GetActiveSaison();
         $codeSaison = utyGetGet('S', $codeSaison);
 
         $orderMatchs = $urlMode ? 'ORDER BY a.Date_match, d.Lieu, a.Heure_match, a.Terrain' : utyGetSession('orderMatchs', 'ORDER BY a.Date_match, d.Lieu, a.Heure_match, a.Terrain');
+        $orderMatchs = utyGetGet('orderMatchs', $orderMatchs);
         $laCompet = $urlMode ? 0 : utyGetSession('codeCompet', 0);
         $laCompet = utyGetGet('Compet', $laCompet);
-        if ($laCompet != 0 && $laCompet != '*' && $laCompet != '') {
+        $arrayCompets = ($laCompet != 0 && $laCompet != '*' && $laCompet != '') ? array_filter(array_map('trim', explode(',', $laCompet))) : [];
+        if (count($arrayCompets) > 0) {
             $idEvenement = -1;
-            $arrayJournees = [];
+            if ($idSelJournee == '*' || $idSelJournee == '' || $idSelJournee <= 0) {
+                $arrayJournees = [];
+            }
         }
-        $codeCompet = $laCompet;
+        $codeCompet = count($arrayCompets) === 1 ? $arrayCompets[0] : $laCompet;
         $sql = "SELECT a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre,
             a.Date_match, a.Heure_match, a.Libelle, a.Terrain, b.Libelle EquipeA,
             c.Libelle EquipeB, a.Terrain, a.ScoreA, a.ScoreB, a.Arbitre_principal,
             a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire,
             d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee,
             e.Nom Nom_arb_prin, e.Prenom Prenom_arb_prin, f.Nom Nom_arb_sec,
-            f.Prenom Prenom_arb_sec, cp.Soustitre2, a.Validation
+            f.Prenom Prenom_arb_sec, cp.Soustitre2, cp.Code_typeclt, a.Validation
             FROM kp_competition cp, kp_journee d, kp_match a
             LEFT OUTER JOIN kp_competition_equipe b ON (a.Id_equipeA = b.Id)
             LEFT OUTER JOIN kp_competition_equipe c ON (a.Id_equipeB = c.Id)
@@ -79,15 +85,18 @@ class FeuilleListeMatchs extends MyPage
             LEFT OUTER JOIN kp_licence f ON (a.Matric_arbitre_secondaire = f.Matric)
             WHERE a.Id_journee = d.Id
             AND d.Code_competition = cp.Code
-            AND a.Publication = 'O'
             AND d.Code_saison = cp.Code_saison ";
-        if (count($arrayJournees) == 0 && ($laCompet == 0 || $laCompet == '*' || $laCompet == '')) {
+        if (count($arrayJournees) == 0 && count($arrayCompets) == 0) {
             // Toutes les compétitions de la saison
             $sql .= "AND d.Code_saison = ? ";
             $arrayQuery = array($codeSaison);
-        } elseif (count($arrayJournees) == 0) {
+        } elseif (count($arrayJournees) == 0 && count($arrayCompets) == 1) {
             $sql .= "AND d.Code_competition = ? AND d.Code_saison = ? ";
-            $arrayQuery = array($laCompet, $codeSaison);
+            $arrayQuery = array($arrayCompets[0], $codeSaison);
+        } elseif (count($arrayJournees) == 0) {
+            $in = str_repeat('?,', count($arrayCompets) - 1) . '?';
+            $sql .= "AND d.Code_competition IN ($in) AND d.Code_saison = ? ";
+            $arrayQuery = array_merge(array_values($arrayCompets), [$codeSaison]);
         } else {
             $in = str_repeat('?,', count($arrayJournees) - 1) . '?';
             $sql .= "AND a.Id_journee IN ($in) ";
@@ -106,22 +115,24 @@ class FeuilleListeMatchs extends MyPage
             $arrayQuery = array_merge($arrayQuery, [$filtreTour]);
         }
         if ($filtreMatchsNonVerrouilles == 'on') {
-            $sql .= "AND a.Validation = 'N' ";
+            $sql .= "AND (a.Validation IS NULL OR a.Validation != 'O') ";
         }
         $sql .= $orderMatchs;
 
         $orderMatchsKey1 = utyKeyOrder($orderMatchs, 0);
+        $orderMatchsKey2 = utyKeyOrder($orderMatchs, 1);
 
         $result = $myBdd->pdo->prepare($sql);
         $result->execute($arrayQuery);
 
-        $PhaseLibelle = 0;
+        $phaseLibelleByCompet = [];
         $resultarray = $result->fetchAll(PDO::FETCH_ASSOC);
-        foreach ($resultarray as $key => $row1) {
-            if (trim($row1['Phase']) != '') {
-                $PhaseLibelle = 1;
+        foreach ($resultarray as $row1) {
+            $code = $row1['Code_competition'];
+            if (!isset($phaseLibelleByCompet[$code])) {
+                $phaseLibelleByCompet[$code] = ($row1['Code_typeclt'] === 'CP') ? 1 : 0;
             }
-            $lastCompetEvt = $row1['Code_competition'];
+            $lastCompetEvt = $code;
         }
 
         $Oldrupture = "";
@@ -174,7 +185,6 @@ class FeuilleListeMatchs extends MyPage
         $pdf->AddPage();
 
         // Display
-        $qr_x = 262;
         $yStart = 30;
         $pdf->SetAutoPageBreak(false);
 
@@ -198,10 +208,6 @@ class FeuilleListeMatchs extends MyPage
                 $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
             }
         }
-        // QRCode
-        $qrcode = new QRcode('https://www.kayak-polo.info/kpmatchs.php?Compet=' . $codeCompet . '&Group=' . $arrayCompetition['Code_ref'] . '&Saison=' . $codeSaison, 'L');
-        $qrcode->displayFPDF($pdf, $qr_x, 9, 21);
-
         $pdf->SetY($yStart);
         $pdf->SetLeftMargin(15);
         $pdf->SetRightMargin(15);
@@ -217,7 +223,8 @@ class FeuilleListeMatchs extends MyPage
         $pdf->SetX(15);
 
         $heure1 = '';
-        foreach ($resultarray as $key => $row) {
+        foreach ($resultarray as $row) {
+            $codeCompetLookup = $row['Code_competition'];
             if ($row['Soustitre2'] != '') {
                 $row['Code_competition'] = $row['Soustitre2'];
             }
@@ -262,6 +269,8 @@ class FeuilleListeMatchs extends MyPage
             // rupture ligne
             if ($orderMatchsKey1 == "Numero_ordre") {
                 $rupture = $row['Date_match'];
+            } elseif ($orderMatchsKey2 == 'Lieu') {
+                $rupture = $row['Date_match'] . '|' . $row['Lieu'];
             } else {
                 $rupture = $row[$orderMatchsKey1];
             }
@@ -304,7 +313,7 @@ class FeuilleListeMatchs extends MyPage
                         $pdf->Cell(8, 5, '#', 'LTRB', '0', 'R');
                         $pdf->Cell(16, 5, 'Date', 'TRB', '0', 'C');
                         $pdf->Cell(10, 5, 'Time', 'TRB', '0', 'C');
-                        if ($PhaseLibelle == 1) {
+                        if ($phaseLibelleByCompet[$codeCompetLookup] ?? 0) {
                             $pdf->Cell(52, 5, 'Phase | Game', 'TRB', '0', 'C');
                         } else {
                             $pdf->Cell(52, 5, 'Place', 'TRB', '0', 'C');
@@ -324,7 +333,7 @@ class FeuilleListeMatchs extends MyPage
                         $pdf->Cell(16, 5, 'Date', 'TRB', '0', 'C');
                         $pdf->Cell(10, 5, 'Time', 'TRB', '0', 'C');
                         $pdf->Cell(17, 5, 'Cat.', 'TRB', '0', 'C');
-                        if ($PhaseLibelle == 1) {
+                        if ($phaseLibelleByCompet[$codeCompetLookup] ?? 0) {
                             $pdf->Cell(50, 5, 'Phase | Game', 'TRB', '0', 'C');
                         } else {
                             $pdf->Cell(50, 5, 'Place', 'TRB', '0', 'C');
@@ -338,12 +347,12 @@ class FeuilleListeMatchs extends MyPage
                         break;
                     default:
                         $pdf->SetFont('Arial', 'B', 9);
-                        $rupture2 = new DateTime($rupture);
+                        $rupture2 = new DateTime($row['Date_match']);
                         $pdf->Cell(150, 5, date_format($rupture2, 'l jS F, Y') . ' - ' . html_entity_decode($row['Lieu']), 'LTBR', '1', 'C');
                         $pdf->Cell(8, 5, '#', 'LTRB', '0', 'R');
                         $pdf->Cell(10, 5, 'Time', 'TRB', '0', 'C');
                         $pdf->Cell(22, 5, 'Cat.', 'TRB', '0', 'C');
-                        if ($PhaseLibelle == 1) {
+                        if ($phaseLibelleByCompet[$codeCompetLookup] ?? 0) {
                             $pdf->Cell(45, 5, 'Phase | Game', 'TRB', '0', 'C');
                         } else {
                             $pdf->Cell(45, 5, 'Place', 'TRB', '0', 'C');
@@ -393,7 +402,7 @@ class FeuilleListeMatchs extends MyPage
                     $pdf->Cell(8, 5, $row['Numero_ordre'], 'LTBR', '0', 'C');
                     $pdf->Cell(16, 5, $row['Date_match'], 'TBR', '0', 'C');
                     $pdf->Cell(10, 5, $row['Heure_match'], 'TBR', '0', 'C');
-                    if ($PhaseLibelle == 1) {
+                    if ($phaseLibelleByCompet[$codeCompetLookup] ?? 0) {
                         $pdf->Cell(52, 5, $phase_match, 'TBR', '0', 'C');
                     } else {
                         $pdf->Cell(52, 5, html_entity_decode($row['Lieu']), 'TRB', '0', 'C');
@@ -435,7 +444,7 @@ class FeuilleListeMatchs extends MyPage
                     $pdf->Cell(16, 5, $row['Date_match'], 'TBR', '0', 'C');
                     $pdf->Cell(10, 5, $row['Heure_match'], 'TBR', '0', 'C');
                     $pdf->Cell(17, 5, $row['Code_competition'], 'TBR', '0', 'C');
-                    if ($PhaseLibelle == 1) {
+                    if ($phaseLibelleByCompet[$codeCompetLookup] ?? 0) {
                         $pdf->Cell(50, 5, $phase_match, 'TBR', '0', 'C');
                     } else {
                         $pdf->Cell(50, 5, html_entity_decode($row['Lieu']), 'TRB', '0', 'C');
@@ -481,7 +490,7 @@ class FeuilleListeMatchs extends MyPage
                     $pdf->Cell(8, 5, $row['Numero_ordre'], 'LR' . $ltbr, '0', 'C');
                     $pdf->Cell(10, 5, $row['Heure_match'], 'R' . $ltbr, '0', 'C');
                     $pdf->Cell(22, 5, $row['Code_competition'], 'R' . $ltbr, '0', 'C');
-                    if ($PhaseLibelle == 1) {
+                    if ($phaseLibelleByCompet[$codeCompetLookup] ?? 0) {
                         $pdf->Cell(45, 5, $phase_match, 'R' . $ltbr, '0', 'C');
                     } else {
                         $pdf->Cell(45, 5, html_entity_decode($row['Lieu']), 'R' . $ltbr, '0', 'C');

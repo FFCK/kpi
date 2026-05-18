@@ -37,7 +37,7 @@ class PdfListeMatchs extends MyPage
                 $lstJournee[] = $row['Id_journee'];
             }
         } else {
-            $lstJournee = explode(',', $lstJournee);
+            $lstJournee = is_array($lstJournee) ? $lstJournee : explode(',', $lstJournee);
         }
         $codeSaison = $myBdd->GetActiveSaison();
         $codeSaison = utyGetGet('S', $codeSaison);

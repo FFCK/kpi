@@ -1080,14 +1080,42 @@ const docBaseParams = computed(() => {
   params.set('S', workContext.season || '')
   params.set('tz', Intl.DateTimeFormat().resolvedOptions().timeZone)
 
-  if (workContext.pageEventGroupType === 'event') {
-    // Event selected → pass idEvenement only (no Compet, it would override)
-    params.set('idEvenement', workContext.pageEventGroupValue)
-  } else if (workContext.pageCompetitionCodeAll) {
-    // A specific single competition selected
+  if (workContext.pageCompetitionCodeAll) {
+    // A specific single competition selected → takes priority over event/group
     params.set('Compet', workContext.pageCompetitionCodeAll)
+  } else if (workContext.pageEventGroupType === 'event') {
+    // Event selected with "All competitions" → pass idEvenement
+    params.set('idEvenement', workContext.pageEventGroupValue)
+  } else if (workContext.pageEventGroupType === 'group') {
+    // Group selected with "All competitions" → pass all group competition codes
+    const group = workContext.uniqueGroups.find(g => g.code === workContext.pageEventGroupValue)
+    if (group && group.competitions.length > 0) {
+      const contextCodes = new Set(workContext.competitionCodes)
+      const groupCodes = group.competitions.filter(c => contextCodes.has(c))
+      if (groupCodes.length > 0) params.set('Compet', groupCodes.join(','))
+    }
+  } else if (workContext.selectionType === 'event' && workContext.eventId) {
+    // Global work context is an event with no page-level override → pass idEvenement
+    params.set('idEvenement', String(workContext.eventId))
   }
-  // When "All competitions" with a group or no specific filter: pass S alone to trigger urlMode
+  // When no specific filter: pass S alone to trigger urlMode
+
+  if (selectedTour.value) params.set('filtreTour', selectedTour.value)
+  if (selectedJournee.value && selectedJournee.value !== '*') params.set('idSelJournee', selectedJournee.value)
+  if (selectedDate.value) params.set('filtreJour', selectedDate.value)
+  if (selectedTerrain.value) params.set('filtreTerrain', selectedTerrain.value)
+  if (unlockedOnly.value) params.set('filtreMatchsNonVerrouilles', 'on')
+
+  const sortMap: Record<string, string> = {
+    date_time_terrain: 'Order By a.Date_match, a.Heure_match, a.Terrain, a.Numero_ordre',
+    competition_date: 'Order By d.Code_competition, a.Date_match, a.Heure_match, a.Terrain, a.Numero_ordre',
+    competition_phase: 'Order By d.Code_competition, d.Niveau, d.Phase, a.Heure_match, a.Terrain, a.Numero_ordre',
+    terrain_date: 'Order By a.Terrain, a.Date_match, a.Heure_match, a.Numero_ordre',
+    number: 'Order By a.Numero_ordre, a.Date_match, a.Heure_match, a.Terrain',
+  }
+  if (selectedSort.value && selectedSort.value !== 'date_time_terrain') {
+    params.set('orderMatchs', sortMap[selectedSort.value] ?? '')
+  }
 
   return params.toString()
 })

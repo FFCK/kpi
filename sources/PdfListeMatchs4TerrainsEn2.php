@@ -38,6 +38,7 @@ class PdfListeMatchs extends MyPage
 
     // Filtre Journée/Phase/Poule : si une journée spécifique est sélectionnée, utiliser celle-ci
     $idSelJournee = $urlMode ? '*' : utyGetSession('idSelJournee', '*');
+    $idSelJournee = utyGetGet('idSelJournee', $idSelJournee);
     if ($idSelJournee != '*' && $idSelJournee != '' && $idSelJournee > 0) {
       $lstJournee = $idSelJournee;
     }
@@ -55,19 +56,18 @@ class PdfListeMatchs extends MyPage
         $lstJournee[] = $row['Id_journee'];
       }
     } else {
-      $lstJournee = explode(',', $lstJournee);
+      $lstJournee = is_array($lstJournee) ? $lstJournee : explode(',', $lstJournee);
     }
     $codeSaison = $myBdd->GetActiveSaison();
     $codeSaison = utyGetGet('S', $codeSaison);
     $orderMatchs = 'ORDER BY a.Date_match, d.Lieu, a.Heure_match, a.Terrain';
     $laCompet = $urlMode ? 0 : utyGetSession('codeCompet', 0);
     $laCompet = utyGetGet('Compet', $laCompet);
-    // Ne vider $lstJournee que si $laCompet est une VRAIE compétition
-    // Pas *, pas 0, pas vide
-    if ($laCompet != 0 && $laCompet != '*' && $laCompet != '') {
+    $arrayCompets = ($laCompet != 0 && $laCompet != '*' && $laCompet != '') ? array_filter(array_map('trim', explode(',', $laCompet))) : [];
+    if (count($arrayCompets) > 0) {
       $idEvenement = -1;
     }
-    $codeCompet = $laCompet;
+    $codeCompet = count($arrayCompets) === 1 ? $arrayCompets[0] : $laCompet;
     if ($lstJournee != []) {
       $in  = str_repeat('?,', count($lstJournee) - 1) . '?';
       $sql = "SELECT a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre,
@@ -102,7 +102,7 @@ class PdfListeMatchs extends MyPage
       $sql .= $orderMatchs;
       $result = $myBdd->pdo->prepare($sql);
       $result->execute($merge);
-    } elseif ($laCompet == 0 || $laCompet == '*' || $laCompet == '') {
+    } elseif (count($arrayCompets) == 0) {
       // Toutes les compétitions de la saison
       $sql = "SELECT a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre,
                 a.Date_match, a.Heure_match, a.Libelle, a.Terrain, b.Libelle EquipeA,
@@ -136,7 +136,7 @@ class PdfListeMatchs extends MyPage
       $sql .= $orderMatchs;
       $result = $myBdd->pdo->prepare($sql);
       $result->execute($merge);
-    } else {
+    } elseif (count($arrayCompets) == 1) {
       $sql = "SELECT a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre,
                 a.Date_match, a.Heure_match, a.Libelle, a.Terrain, b.Libelle EquipeA,
                 c.Libelle EquipeB, a.Terrain, a.ScoreA, a.ScoreB, a.Arbitre_principal,
@@ -151,7 +151,24 @@ class PdfListeMatchs extends MyPage
                 AND d.Code_saison = cp.Code_saison
                 AND d.Code_competition = ?
                 AND d.Code_saison = ? ";
-      $merge = array($laCompet, $codeSaison);
+      $merge = array($arrayCompets[0], $codeSaison);
+    } else {
+      $in = str_repeat('?,', count($arrayCompets) - 1) . '?';
+      $sql = "SELECT a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre,
+                a.Date_match, a.Heure_match, a.Libelle, a.Terrain, b.Libelle EquipeA,
+                c.Libelle EquipeB, a.Terrain, a.ScoreA, a.ScoreB, a.Arbitre_principal,
+                a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire,
+                a.Validation, d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee,
+                cp.Soustitre2
+                FROM kp_competition cp, kp_journee d, kp_match a
+                LEFT OUTER JOIN kp_competition_equipe b ON (a.Id_equipeA = b.Id)
+                LEFT OUTER JOIN kp_competition_equipe c ON (a.Id_equipeB = c.Id)
+                WHERE a.Id_journee = d.Id
+                AND d.Code_competition = cp.Code
+                AND d.Code_saison = cp.Code_saison
+                AND d.Code_competition IN ($in)
+                AND d.Code_saison = ? ";
+      $merge = array_merge(array_values($arrayCompets), [$codeSaison]);
       if ($filtreJour != '') {
         $sql .= "AND a.Date_match = ? ";
         $merge = array_merge($merge, [$filtreJour]);
