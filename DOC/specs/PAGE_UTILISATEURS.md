@@ -67,7 +67,7 @@ Page d'administration des utilisateurs accredites du systeme KPI. Permet de list
 | 18 | Lien vers documentation dans l'email | <= 3 | Checkbox piece jointe Manuel7.pdf | ⏸ Remplacer par un lien vers la documentation en ligne dans l'email de reinitialisation |
 | 19 | Message complementaire / standard | <= 3 | Textarea + template message standard | ✅ Conserver — textarea dans la modale pour ajouter un message personnalise a l'email + bouton "Message standard" pre-rempli |
 | 20 | Afficher/masquer le formulaire | <= 3 | Toggle jQuery | ⏸ Remplacer par modale |
-| 21 | Gestion des mandats (profils supplementaires par perimetre) | <= 3 | Non existant | ✅ Nouveau — section mandats dans la modale (voir 3.1) |
+| 21 | Gestion des mandats (profils supplementaires par perimetre) | <= 4 | Non existant | ✅ Nouveau — section mandats dans la modale (voir 3.1) ; profils 3-4 ne voient que les utilisateurs de niveau >= 3 |
 
 ### 2.3 Ameliorations par rapport au legacy
 
@@ -190,7 +190,7 @@ Reutilise le meme endpoint que l'export CSV mais en JSON : `GET /admin/users/man
 
 Cliquer sur "Modifier le mandat" sur une ligne de mandat ouvre la modale `AdminUserEditModal` pour l'utilisateur concerne, avec le panneau "Mandats" directement ouvert et le formulaire d'edition pre-rempli sur le mandat de cette ligne.
 
-Profil requis : <= 3 (meme que la creation/modification d'un mandat). Les profils 4 en mode Mandats voient les lignes mais n'ont pas le bouton "Modifier le mandat".
+Profil requis : <= 4. Les profils 3-4 voient et peuvent modifier les mandats des utilisateurs de niveau >= 3 uniquement. Le profil 1 peut accéder à tous les mandats sans restriction.
 
 #### 2.6.5 Wireframe mode Mandats (desktop)
 

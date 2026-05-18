@@ -87,14 +87,14 @@ const pdfDropdownMode = ref<'admin' | 'public'>('admin')
 // Permission checks
 const canViewComputed = computed(() => authStore.profile <= 6)
 const canCompute = computed(() => authStore.profile <= 6)
-const canEditInline = computed(() => authStore.profile <= 4 && competitionInfo.value?.statut === 'ON')
-const canPublish = computed(() => authStore.profile <= 4 && competitionInfo.value?.statut === 'ON')
+const canEditInline = computed(() => authStore.profile <= 6 && competitionInfo.value?.statut === 'ON')
+const canPublish = computed(() => authStore.profile <= 6 && competitionInfo.value?.statut === 'ON')
 const canUnpublish = computed(() => authStore.profile <= 3 && competitionInfo.value?.statut === 'ON')
-const canConsolidate = computed(() => authStore.profile <= 4 && competitionInfo.value?.statut === 'ON')
+const canConsolidate = computed(() => authStore.profile <= 6 && competitionInfo.value?.statut === 'ON')
 const canTransfer = computed(() => authStore.profile <= 4)
 const canChangeType = computed(() => authStore.profile <= 2)
 const canChangeStatus = computed(() => authStore.profile <= 3)
-const canAccessInitial = computed(() => authStore.profile <= 3)
+const canAccessInitial = computed(() => authStore.profile <= 6)
 const isStatusOn = computed(() => competitionInfo.value?.statut === 'ON')
 
 // Current effective type
