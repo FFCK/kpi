@@ -18,6 +18,7 @@ const { bracketLabels } = useBracketDisplay()
 const FILTERS_STORAGE_KEY = 'app4_games_filters'
 
 interface SavedFilters {
+  contextKey: string
   selectedTour: string
   selectedJournee: string
   selectedDate: string
@@ -37,6 +38,7 @@ function loadSavedFilters(): Partial<SavedFilters> {
 function saveFilters() {
   try {
     const data: SavedFilters = {
+      contextKey: workContext.pageCompetitionCodeAll + '|' + workContext.pageEventGroupSelection,
       selectedTour: selectedTour.value,
       selectedJournee: selectedJournee.value,
       selectedDate: selectedDate.value,
@@ -276,14 +278,17 @@ onMounted(async () => {
   const phaseFromQuery = route.query.phase as string
   if (phaseFromQuery) {
     selectedJournee.value = phaseFromQuery
-    // Remove query param from URL without triggering navigation
     router.replace({ query: { ...route.query, phase: undefined } })
   } else {
-    // No explicit phase requested: reset competition-specific filters
-    // to avoid stale localStorage values from a different competition
-    selectedJournee.value = '*'
-    selectedDate.value = ''
-    selectedTerrain.value = ''
+    // Reset competition-specific filters only if the context has changed since last visit
+    const savedContextKey = loadSavedFilters().contextKey ?? ''
+    const currentContextKey = workContext.pageCompetitionCodeAll + '|' + workContext.pageEventGroupSelection
+    if (savedContextKey !== currentContextKey) {
+      selectedTour.value = ''
+      selectedJournee.value = '*'
+      selectedDate.value = ''
+      selectedTerrain.value = ''
+    }
   }
 
   initialLoadDone = true
