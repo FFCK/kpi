@@ -176,6 +176,7 @@ const loadStats = async () => {
     columns.value = response.columns
     data.value = response.data
     count.value = response.meta.count
+    searchQuery.value = ''
   } catch (error: unknown) {
     const message = (error as { message?: string })?.message || t('stats.error_load_data')
     toast.add({
@@ -408,6 +409,17 @@ const showRankingColumn = computed(() => {
   return rankedStatTypes.includes(selectedStatType.value)
 })
 
+// Search
+const searchQuery = ref('')
+
+const filteredData = computed(() => {
+  if (!searchQuery.value.trim()) return data.value
+  const q = searchQuery.value.trim().toLowerCase()
+  return data.value.filter(row =>
+    Object.values(row).some(v => v !== null && v !== undefined && String(v).toLowerCase().includes(q))
+  )
+})
+
 // Export functions
 const exportingXlsx = ref(false)
 const exportingPdf = ref(false)
@@ -540,6 +552,16 @@ const exportPdf = async () => {
             <UIcon v-else name="heroicons:document-text" class="w-4 h-4" />
             {{ t('stats.params.export_pdf') }}
           </button>
+          <!-- Search field -->
+          <div class="relative">
+            <UIcon name="heroicons:magnifying-glass" class="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-header-400 pointer-events-none" />
+            <input
+              v-model="searchQuery"
+              type="search"
+              :placeholder="t('stats.search_placeholder')"
+              class="pl-8 pr-3 py-2 border border-header-300 rounded-lg bg-white text-header-900 text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500 w-48"
+            >
+          </div>
           <!-- Parameters button -->
           <button
             type="button"
@@ -603,7 +625,7 @@ const exportPdf = async () => {
             </tr>
 
             <!-- Empty state -->
-            <tr v-else-if="data.length === 0">
+            <tr v-else-if="filteredData.length === 0">
               <td :colspan="(showRankingColumn ? 1 : 0) + (columns.length || 1)" class="px-4 py-8 text-center text-header-500">
                 {{ t('stats.empty') }}
               </td>
@@ -611,7 +633,7 @@ const exportPdf = async () => {
 
             <!-- Data rows -->
             <tr
-              v-for="(row, index) in data"
+              v-for="(row, index) in filteredData"
               :key="index"
               class="hover:bg-header-50"
               :class="{ 'bg-header-100 italic text-header-500': row.isNonJoueur }"
@@ -648,12 +670,12 @@ const exportPdf = async () => {
     <AdminCardList
       class="lg:hidden"
       :loading="loading && data.length === 0"
-      :empty="data.length === 0"
+      :empty="filteredData.length === 0"
       :loading-text="t('common.loading')"
       :empty-text="t('stats.empty')"
     >
       <AdminCard
-        v-for="(row, index) in data"
+        v-for="(row, index) in filteredData"
         :key="index"
         :class="{ 'opacity-60 italic': row.isNonJoueur }"
       >

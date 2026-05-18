@@ -264,6 +264,7 @@
     "results_count": "{count} result(s)",
     "error_load_filters": "Error loading filters",
     "error_load_data": "Error loading data",
+    "search_placeholder": "Search...",
     "params": {
       "title": "Parameters",
       "configure": "Settings",

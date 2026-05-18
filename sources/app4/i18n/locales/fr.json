@@ -266,6 +266,7 @@
     "error_load_filters": "Erreur lors du chargement des filtres",
     "error_load_data": "Erreur lors du chargement des données",
     "error_export": "Erreur lors de l'export",
+    "search_placeholder": "Rechercher...",
     "params": {
       "title": "Paramètres",
       "configure": "Paramétrage",
