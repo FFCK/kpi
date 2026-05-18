@@ -135,6 +135,8 @@ const canEdit = computed(() => authStore.profile <= 6)
 const canEditScores = computed(() => authStore.profile <= 6 || authStore.profile === 9)
 const canLock = computed(() => authStore.profile <= 6)
 const canSelect = computed(() => authStore.profile <= 6)
+const showPublicationColumn = computed(() => authStore.profile !== 7)
+const showPrintedColumn = computed(() => authStore.profile !== 7)
 // ─── Default form data ───
 function getDefaultFormData(): GameFormData {
   return {
@@ -1476,7 +1478,7 @@ const statusBtnClass = (game: Game) => {
                 >
               </th>
               <!-- Publication -->
-              <th class="w-8 px-1 py-2 text-center"><UIcon name="heroicons:eye" class="w-6 h-6" /></th>
+              <th v-if="showPublicationColumn" class="w-8 px-1 py-2 text-center"><UIcon name="heroicons:eye" class="w-6 h-6" /></th>
               <!-- N° -->
               <th class="w-10 px-1 py-2 text-center text-header-500 font-medium">{{ t('games.field.number') }}</th>
               <!-- Actions -->
@@ -1514,7 +1516,7 @@ const statusBtnClass = (game: Game) => {
               <!-- Referee 2 -->
               <th class="px-1 py-2 text-left text-header-500 font-medium">{{ t('games.field.referee_2') }}</th>
               <!-- Printed -->
-              <th class="w-8 px-1 py-2 text-center"><UIcon name="heroicons:inbox-arrow-down" class="w-6 h-6" /></th>
+              <th v-if="showPrintedColumn" class="w-8 px-1 py-2 text-center"><UIcon name="heroicons:inbox-arrow-down" class="w-6 h-6" /></th>
               <!-- Delete -->
               <th v-if="canEdit" class="w-8 px-1 py-2" />
             </tr>
@@ -1554,7 +1556,7 @@ const statusBtnClass = (game: Game) => {
               </td>
 
               <!-- Publication toggle -->
-              <td class="px-1 py-1 text-center">
+              <td v-if="showPublicationColumn" class="px-1 py-1 text-center">
                 <AdminToggleButton
                   :active="g.publication === 'O'"
                   active-icon="heroicons:eye-solid"
@@ -1998,7 +2000,7 @@ const statusBtnClass = (game: Game) => {
               </td>
 
               <!-- Printed toggle -->
-              <td class="px-1 py-1 text-center">
+              <td v-if="showPrintedColumn" class="px-1 py-1 text-center">
                 <AdminToggleButton
                   :active="g.imprime === 'O'"
                   active-icon="heroicons:inbox-arrow-down-solid"

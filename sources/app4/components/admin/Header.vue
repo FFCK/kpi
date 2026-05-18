@@ -58,8 +58,8 @@ const competitionMenuItems = computed<MenuItem[]>(() => {
     })
   }
 
-  // Documents - profile <= 9
-  if (profile <= 9) {
+  // Documents - hidden for profile 7
+  if (profile !== 7 && profile <= 9) {
     items.push({
       to: '/documents',
       icon: 'heroicons:document-text',

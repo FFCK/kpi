@@ -127,6 +127,13 @@ class AdminGamesController extends AbstractController
             $where[] = "(m.Validation IS NULL OR m.Validation != 'O')";
         }
 
+        // Profile 7 restrictions: only published games from published gamedays, skip ATT competitions
+        if ($user && $user->getEffectiveNiveau() === 7) {
+            $where[] = "m.Publication = 'O'";
+            $where[] = "j.Publication = 'O'";
+            $where[] = "EXISTS (SELECT 1 FROM kp_competition c2 WHERE c2.Code = j.Code_competition AND c2.Code_saison = j.Code_saison AND c2.Statut != 'ATT')";
+        }
+
         // Search filter
         if (!empty($search)) {
             $where[] = '(m.Libelle LIKE ? OR cea.Libelle LIKE ? OR ceb.Libelle LIKE ? OR m.Arbitre_principal LIKE ? OR m.Arbitre_secondaire LIKE ? OR CAST(m.Numero_ordre AS CHAR) LIKE ?)';
@@ -1401,6 +1408,12 @@ class AdminGamesController extends AbstractController
             $joinEvent = 'INNER JOIN kp_evenement_journee ej ON ej.Id_journee = j.Id';
             $where[] = 'ej.Id_evenement = ?';
             $params[] = (int) $eventId;
+        }
+
+        // Profile 7 restrictions: only published gamedays, skip ATT competitions
+        if ($user && $user->getEffectiveNiveau() === 7) {
+            $where[] = "j.Publication = 'O'";
+            $where[] = "EXISTS (SELECT 1 FROM kp_competition c2 WHERE c2.Code = j.Code_competition AND c2.Code_saison = j.Code_saison AND c2.Statut != 'ATT')";
         }
 
         $whereClause = 'WHERE ' . implode(' AND ', $where);

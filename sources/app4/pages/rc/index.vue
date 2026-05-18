@@ -356,9 +356,6 @@ watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGrou
             <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">
               {{ t('rc.field.licence') }}
             </th>
-            <th class="px-3 py-3 text-left text-xs font-medium text-header-500 uppercase">
-              {{ t('rc.field.email') }}
-            </th>
             <th v-if="canEdit" class="w-16 px-3 py-3" />
           </tr>
         </thead>
@@ -392,9 +389,6 @@ watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGrou
             <td class="px-3 py-4 text-sm text-header-500 font-mono">
               {{ rc.matric }}
             </td>
-            <td class="px-3 py-4 text-sm text-header-500">
-              {{ rc.email || '-' }}
-            </td>
             <td v-if="canEdit" class="px-3 py-4" @click.stop>
               <UIcon
                 name="i-heroicons-pencil"
@@ -404,7 +398,7 @@ watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGrou
             </td>
           </tr>
           <tr v-if="filteredRc.length === 0">
-            <td :colspan="canDelete ? 8 : 7" class="px-3 py-8 text-center text-sm text-header-500">
+            <td :colspan="canDelete ? 7 : 6" class="px-3 py-8 text-center text-sm text-header-500">
               {{ loading ? t('common.loading') : t('rc.no_results') }}
             </td>
           </tr>
@@ -437,7 +431,6 @@ watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGrou
         <div class="space-y-1 text-sm">
           <div><span class="text-header-500">{{ t('rc.field.ordre') }}:</span> {{ rc.ordre }}</div>
           <div><span class="text-header-500">{{ t('rc.field.licence') }}:</span> {{ rc.matric }}</div>
-          <div v-if="rc.email"><span class="text-header-500">{{ t('rc.field.email') }}:</span> {{ rc.email }}</div>
         </div>
       </AdminCard>
     </AdminCardList>

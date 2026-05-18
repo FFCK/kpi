@@ -104,6 +104,12 @@ class AdminGamedaysController extends AbstractController
             $params[] = (int) $month;
         }
 
+        // Profile 7 restrictions: only published gamedays, skip ATT competitions
+        if ($user && $user->getEffectiveNiveau() === 7) {
+            $where[] = "j.Publication = 'O'";
+            $where[] = "EXISTS (SELECT 1 FROM kp_competition c2 WHERE c2.Code = j.Code_competition AND c2.Code_saison = j.Code_saison AND c2.Statut != 'ATT')";
+        }
+
         // Search filter
         if (!empty($search)) {
             if (is_numeric($search)) {

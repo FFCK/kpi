@@ -177,6 +177,7 @@ const canEditInline = computed(() => authStore.profile <= 6)
 const canManageSpecialOps = computed(() => authStore.profile <= 4)
 const canAddDelete = computed(() => authStore.profile <= 3 && !competitionInfo.value?.verrou)
 const canEditProperties = computed(() => authStore.profile <= 2)
+const showPoolDrawColumns = computed(() => !(authStore.profile === 7 && competitionInfo.value?.statut === 'ATT'))
 
 // Computed: teams grouped by pool
 const teamsByPool = computed(() => {
@@ -982,10 +983,10 @@ const getLogoUrl = (team: CompetitionTeam) => {
                   <th v-if="canAddDelete" class="px-3 py-2">
                     <span class="sr-only">Select</span>
                   </th>
-                  <th class="px-3 py-2 text-left text-xs font-medium text-header-500 uppercase">
+                  <th v-if="showPoolDrawColumns" class="px-3 py-2 text-left text-xs font-medium text-header-500 uppercase">
                     {{ t('teams_page.columns.poule') }}
                   </th>
-                  <th class="px-3 py-2 text-left text-xs font-medium text-header-500 uppercase">
+                  <th v-if="showPoolDrawColumns" class="px-3 py-2 text-left text-xs font-medium text-header-500 uppercase">
                     {{ t('teams_page.columns.tirage') }}
                   </th>
                   <th class="px-3 py-2 text-center text-xs font-medium text-header-500 uppercase">
@@ -1025,7 +1026,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                   </td>
 
                   <!-- Poule (inline editable) -->
-                  <td class="px-3 py-2 text-sm">
+                  <td v-if="showPoolDrawColumns" class="px-3 py-2 text-sm">
                     <template v-if="editingCell?.id === team.id && editingCell.field === 'poule'">
                       <input
                         :id="`inline-edit-${team.id}-poule`"
@@ -1048,7 +1049,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                   </td>
 
                   <!-- Tirage (inline editable) -->
-                  <td class="px-3 py-2 text-sm">
+                  <td v-if="showPoolDrawColumns" class="px-3 py-2 text-sm">
                     <template v-if="editingCell?.id === team.id && editingCell.field === 'tirage'">
                       <input
                         :id="`inline-edit-${team.id}-tirage`"
@@ -1217,46 +1218,48 @@ const getLogoUrl = (team: CompetitionTeam) => {
                   <div class="font-medium text-header-900">{{ team.libelle }}</div>
                   <div class="flex flex-wrap items-center gap-2 text-xs text-header-500 mt-1">
                     <!-- Poule inline edit (mobile) -->
-                    <template v-if="editingCell?.id === team.id && editingCell.field === 'poule'">
-                      <input
-                        :id="`mobile-edit-${team.id}-poule`"
-                        v-model="editingValue"
-                        type="text"
-                        maxlength="5"
-                        class="w-12 px-1 py-0.5 border border-primary-400 rounded text-center text-xs uppercase focus:ring-2 focus:ring-primary-500"
-                        @keydown="handleInlineKeydown"
-                        @blur="saveInlineEdit"
+                    <template v-if="showPoolDrawColumns">
+                      <template v-if="editingCell?.id === team.id && editingCell.field === 'poule'">
+                        <input
+                          :id="`mobile-edit-${team.id}-poule`"
+                          v-model="editingValue"
+                          type="text"
+                          maxlength="5"
+                          class="w-12 px-1 py-0.5 border border-primary-400 rounded text-center text-xs uppercase focus:ring-2 focus:ring-primary-500"
+                          @keydown="handleInlineKeydown"
+                          @blur="saveInlineEdit"
+                        >
+                      </template>
+                      <span
+                        v-else
+                        :class="canEditInline ? 'editable-cell' : ''"
+                        @click="canEditInline && startEdit(team, 'poule')"
                       >
-                    </template>
-                    <span
-                      v-else
-                      :class="canEditInline ? 'editable-cell' : ''"
-                      @click="canEditInline && startEdit(team, 'poule')"
-                    >
-                      {{ t('teams_page.columns.poule') }}: {{ team.poule || '-' }}
-                    </span>
-                    <span>|</span>
-                    <!-- Tirage inline edit (mobile) -->
-                    <template v-if="editingCell?.id === team.id && editingCell.field === 'tirage'">
-                      <input
-                        :id="`mobile-edit-${team.id}-tirage`"
-                        v-model="editingValue"
-                        type="number"
-                        min="0"
-                        max="99"
-                        class="w-14 px-1 py-0.5 border border-primary-400 rounded text-center text-xs focus:ring-2 focus:ring-primary-500"
-                        @keydown="handleInlineKeydown"
-                        @blur="saveInlineEdit"
+                        {{ t('teams_page.columns.poule') }}: {{ team.poule || '-' }}
+                      </span>
+                      <span>|</span>
+                      <!-- Tirage inline edit (mobile) -->
+                      <template v-if="editingCell?.id === team.id && editingCell.field === 'tirage'">
+                        <input
+                          :id="`mobile-edit-${team.id}-tirage`"
+                          v-model="editingValue"
+                          type="number"
+                          min="0"
+                          max="99"
+                          class="w-14 px-1 py-0.5 border border-primary-400 rounded text-center text-xs focus:ring-2 focus:ring-primary-500"
+                          @keydown="handleInlineKeydown"
+                          @blur="saveInlineEdit"
+                        >
+                      </template>
+                      <span
+                        v-else
+                        :class="canEditInline ? 'editable-cell' : ''"
+                        @click="canEditInline && startEdit(team, 'tirage')"
                       >
+                        #{{ team.tirage }}
+                      </span>
+                      <span>|</span>
                     </template>
-                    <span
-                      v-else
-                      :class="canEditInline ? 'editable-cell' : ''"
-                      @click="canEditInline && startEdit(team, 'tirage')"
-                    >
-                      #{{ team.tirage }}
-                    </span>
-                    <span>|</span>
                     <span>{{ team.codeClub }}</span>
                     <span>|</span>
                     <span>{{ team.nbMatchs }} {{ t('teams_page.columns.matchs') }}</span>

@@ -69,11 +69,9 @@ class AdminRcController extends AbstractController
         // Build query
         $sql = "SELECT rc.Id, rc.Code_competition, rc.Code_saison, rc.Ordre, rc.Matric,
                        lc.Nom, lc.Prenom, lc.Numero_club,
-                       u.Mail,
                        comp.Libelle AS competition_libelle
                 FROM kp_rc rc
                 LEFT JOIN kp_licence lc ON rc.Matric = lc.Matric
-                LEFT JOIN kp_user u ON rc.Matric = u.Code
                 LEFT JOIN kp_competition comp ON rc.Code_competition = comp.Code AND rc.Code_saison = comp.Code_saison
                 WHERE rc.Code_saison = ?";
 
@@ -108,7 +106,6 @@ class AdminRcController extends AbstractController
                 'nom' => $row['Nom'] ?? '',
                 'prenom' => $row['Prenom'] ?? '',
                 'club' => $row['Numero_club'] ?? '',
-                'email' => $row['Mail'] ?? null,
             ];
         }, $rows);
 
