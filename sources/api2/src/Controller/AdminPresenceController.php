@@ -349,7 +349,7 @@ class AdminPresenceController extends AbstractController
         // Log action
         $field = array_key_first($updateData);
         $value = $updateData[$field];
-        $this->logActionForCompetition('Modification kp_competition_equipe_joueur', $teamInfo['code_saison'], $teamInfo['code_compet'], "Equipe {$teamId} - {$field}={$value}");
+        $this->logActionForCompetition('Modification kp_competition_equipe_joueur', $teamInfo['code_saison'], $teamInfo['code_compet'], "Equipe {$teamId} - Joueur {$matric} - {$field}={$value}");
 
         return $this->json(['success' => true]);
     }
@@ -787,7 +787,7 @@ class AdminPresenceController extends AbstractController
             return $this->json(['message' => 'Failed to add player: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        $this->logAction('Ajout joueur match', "Match:{$matchId} - Equipe:{$teamCode} - Joueur:{$matric}");
+        $this->logActionForMatch('Ajout joueur match', $matchInfo['code_saison'], $matchInfo['code_competition'], $matchInfo['id_journee'], $matchId, "Equipe:{$teamCode} - Joueur:{$matric}");
 
         return $this->json(['success' => true, 'matric' => $matric], Response::HTTP_CREATED);
     }
@@ -835,7 +835,7 @@ class AdminPresenceController extends AbstractController
 
         $this->connection->executeStatement($sql, [$matchId, $teamCode, $teamId]);
 
-        $this->logAction('Ajout titulaires match', "Match:{$matchId} - Equipe:{$teamId}");
+        $this->logActionForMatch('Ajout titulaires match', $matchInfo['code_saison'], $matchInfo['code_competition'], $matchInfo['id_journee'], $matchId, "Equipe:{$teamId}");
 
         return $this->json(['success' => true]);
     }
@@ -885,7 +885,9 @@ class AdminPresenceController extends AbstractController
             ['Id_match' => $matchId, 'Matric' => $matric, 'Equipe' => $teamCode]
         );
 
-        $this->logAction('Modification kp_match_joueur', "Match:{$matchId} - Equipe:{$teamCode} - Joueur:{$matric}");
+        $field = array_key_first($updateData);
+        $value = $updateData[$field];
+        $this->logActionForMatch('Modification kp_match_joueur', $matchInfo['code_saison'], $matchInfo['code_competition'], $matchInfo['id_journee'], $matchId, "Equipe:{$teamCode} - Joueur:{$matric} - {$field}={$value}");
 
         return $this->json(['success' => true]);
     }
@@ -928,7 +930,7 @@ class AdminPresenceController extends AbstractController
         $params = array_merge([$matchId, $teamCode], $matricIds);
         $this->connection->executeStatement($sql, $params);
 
-        $this->logAction('Suppression joueurs match', "Match:{$matchId} - Equipe:{$teamCode} - Joueurs:" . implode(',', $matricIds));
+        $this->logActionForMatch('Suppression joueurs match', $matchInfo['code_saison'], $matchInfo['code_competition'], $matchInfo['id_journee'], $matchId, "Equipe:{$teamCode} - Joueurs:" . implode(',', $matricIds));
 
         return $this->json(['success' => true, 'deleted' => count($matricIds)]);
     }
@@ -963,7 +965,7 @@ class AdminPresenceController extends AbstractController
         $sql = "DELETE FROM kp_match_joueur WHERE Id_match = ? AND Equipe = ?";
         $this->connection->executeStatement($sql, [$matchId, $teamCode]);
 
-        $this->logAction('Suppression joueurs match', "Match:{$matchId} - Equipe:{$teamCode} - Tous");
+        $this->logActionForMatch('Suppression joueurs match', $matchInfo['code_saison'], $matchInfo['code_competition'], $matchInfo['id_journee'], $matchId, "Equipe:{$teamCode} - Tous");
 
         return $this->json(['success' => true]);
     }
@@ -1164,9 +1166,13 @@ class AdminPresenceController extends AbstractController
             $copied++;
         }
 
-        $this->logAction(
+        $this->logActionForMatch(
             "Copie Compo sur " . ($scope === 'day' ? 'Journée' : 'Compet'),
-            "Match:{$matchId} - Equipe:{$teamId} - {$copied} match(s)"
+            $matchInfo['code_saison'],
+            $matchInfo['code_competition'],
+            $matchInfo['id_journee'],
+            $matchId,
+            "Equipe:{$teamId} - {$copied} match(s)"
         );
 
         return $this->json(['success' => true, 'copied' => $copied]);
@@ -1178,8 +1184,11 @@ class AdminPresenceController extends AbstractController
 
     private function getMatchInfo(int $matchId): ?array
     {
-        $sql = "SELECT Id, Id_journee, Id_equipeA, Id_equipeB, `Validation`
-                FROM kp_match WHERE Id = ?";
+        $sql = "SELECT m.Id, m.Id_journee, m.Id_equipeA, m.Id_equipeB, m.`Validation`,
+                       j.Code_competition, j.Code_saison
+                FROM kp_match m
+                LEFT JOIN kp_journee j ON m.Id_journee = j.Id
+                WHERE m.Id = ?";
         $stmt = $this->connection->prepare($sql);
         $result = $stmt->executeQuery([$matchId]);
         $row = $result->fetchAssociative();
@@ -1193,7 +1202,9 @@ class AdminPresenceController extends AbstractController
             'id_journee' => (int) $row['Id_journee'],
             'id_equipe_a' => $row['Id_equipeA'] ? (int) $row['Id_equipeA'] : null,
             'id_equipe_b' => $row['Id_equipeB'] ? (int) $row['Id_equipeB'] : null,
-            'validation' => $row['Validation']
+            'validation' => $row['Validation'],
+            'code_competition' => $row['Code_competition'] ?? null,
+            'code_saison' => $row['Code_saison'] ?? null,
         ];
     }
 
@@ -1244,20 +1255,6 @@ class AdminPresenceController extends AbstractController
             'dateSurclassement' => $row['date_surclassement'] ?? null,
             'icf' => ($row['icf'] ?? null) ? (int) $row['icf'] : null
         ];
-    }
-
-    private function logAction(string $action, string $detail): void
-    {
-        /** @var User|null $user */
-        $user = $this->getUser();
-        $username = $user?->getUserIdentifier() ?? 'unknown';
-
-        $this->connection->insert('kp_journal', [
-            'Dates' => (new \DateTime())->format('Y-m-d H:i:s'),
-            'Users' => $username,
-            'Actions' => $action,
-            'Journal' => $detail
-        ]);
     }
 
     private function formatPlayer(array $row, ?string $season = null, ?string $competCode = null): array
