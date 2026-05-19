@@ -9,6 +9,7 @@ include_once('../commun/MyTools.php');
 
 use OpenSpout\Writer\ODS\Writer;
 use OpenSpout\Common\Entity\Row;
+use OpenSpout\Common\Entity\Style\Style;
 
 if(!isset($_SESSION)) {
 	session_start();
@@ -16,7 +17,8 @@ if(!isset($_SESSION)) {
 
 // Chargement des langues
 $langue = parse_ini_file("../commun/MyLang.ini", true);
-if (utyGetSession('lang') == 'en') {
+$isEn = utyGetSession('lang') == 'en';
+if ($isEn) {
 	$lang = $langue['en'];
 } else {
 	$lang = $langue['fr'];
@@ -65,7 +67,7 @@ $listMatch = explode(',', $listMatch);
 $arrayMatchs = array();
 $in = str_repeat('?,', count($listMatch) - 1) . '?';
 $sql = "SELECT a.*, b.Libelle EquipeA, c.Libelle EquipeB, d.Code_competition,
-			d.Phase, d.Niveau, d.Lieu, d.Nom LibelleJournee
+			d.Phase, d.Niveau, d.Etape, d.Type TypeJournee, d.Lieu, d.Nom LibelleJournee
 			FROM kp_journee d, kp_match a
 			LEFT OUTER JOIN kp_competition_equipe b ON (a.Id_equipeA = b.Id)
 			LEFT OUTER JOIN kp_competition_equipe c ON (a.Id_equipeB = c.Id)
@@ -108,15 +110,41 @@ $temp_file = '/tmp/' . $file_name;
 try {
 	$writer = new Writer();
 	$writer->openToFile($temp_file);
+	// Couleurs pastel distinctes pour jusqu'à 8 compétitions
+	$competitionColors = [
+		'FFD6D6', // rose pâle
+		'D6E8FF', // bleu ciel
+		'D6FFD6', // vert menthe
+		'FFF3D6', // jaune pâle
+		'EDD6FF', // lavande
+		'D6FFF3', // turquoise
+		'FFE8D6', // pêche
+		'F0F0D6', // jaune verdâtre
+	];
+	$competitionColorMap = [];
+	$colorIndex = 0;
+
+	// Pré-indexer les couleurs par Code_competition
+	foreach ($arrayMatchs as $match) {
+		$code = $match['Code_competition'] ?? '';
+		if ($code !== '' && !isset($competitionColorMap[$code])) {
+			$competitionColorMap[$code] = $competitionColors[$colorIndex % count($competitionColors)];
+			$colorIndex++;
+		}
+	}
+
 	$headerRow = Row::fromValues([
 		$lang['Num'] ?? 'N°',
 		$lang['Journee'] ?? 'Journée',
 		$lang['Competition'] ?? 'Compétition',
 		$lang['Phase'] ?? 'Phase',
+		$isEn ? 'Stage' : 'Tour',
+		'Type',
 		$lang['Lieu'] ?? 'Lieu',
 		$lang['Date'] ?? 'Date',
 		$lang['Heure'] ?? 'Heure',
 		$lang['Terrain'] ?? 'Terrain',
+		'Code',
 		$lang['Equipe_A'] ?? 'Équipe A',
 		$lang['Equipe_B'] ?? 'Équipe B',
 		$lang['Score'] . ' A',
@@ -132,15 +160,23 @@ try {
 	]);
 	$writer->addRow($headerRow);
 	foreach ($arrayMatchs as $match) {
+		$code = $match['Code_competition'] ?? '';
+		$rowStyle = null;
+		if ($code !== '' && isset($competitionColorMap[$code])) {
+			$rowStyle = (new Style())->setBackgroundColor($competitionColorMap[$code]);
+		}
 		$dataRow = Row::fromValues([
 			$match['Numero_ordre'] ?? '',
 			$match['LibelleJournee'] ?? '',
 			$match['Code_competition'] ?? '',
 			$match['Phase'] ?? '',
+			$match['Etape'] ?? '',
+			($match['TypeJournee'] ?? '') === 'C' ? 'Classification' : ($isEn ? 'Elimination' : 'Élimination'),
 			$match['Lieu'] ?? '',
 			$match['Date_match'] ?? '',
 			$match['Heure_match'] ?? '',
 			$match['Terrain'] ?? '',
+			$match['Libelle'] ?? '',
 			$match['EquipeA'] ?? '',
 			$match['EquipeB'] ?? '',
 			$match['ScoreA'] ?? '',
@@ -153,7 +189,7 @@ try {
 			$match['Chronometre'] ?? '',
 			$match['Timeshoot'] ?? '',
 			$match['Commentaires_officiels'] ?? ''
-		]);
+		], $rowStyle);
 		$writer->addRow($dataRow);
 	}
 	$writer->close();
