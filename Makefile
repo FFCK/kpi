@@ -367,14 +367,14 @@ app2_generate_dev: ## Génère l'application Nuxt (app2) en mode statique pour d
 
 app2_generate_preprod: ## Génère l'application Nuxt (app2) en mode statique pour pré-production (utilise container temporaire)
 	@echo "Building app2 for pre-production using temporary Node.js container..."
-	docker run --rm -v "$(CURDIR)/sources/app2:/app" -w /app node:20-alpine sh -c "npm ci && npx dotenv-cli -e .env.preprod -- nuxt generate"
+	docker run --rm -v "$(CURDIR)/sources/app2:/app" -w /app node:22-alpine sh -c "npm ci && npx dotenv-cli -e .env.preprod -- nuxt generate"
 	@echo "Restarting nginx to remount volume..."
 	docker restart $(APPLICATION_NAME)_nginx_app2 > /dev/null
 	@echo "App2 generated and nginx restarted!"
 
 app2_generate_production: ## Génère l'application Nuxt (app2) en mode statique pour production (utilise container temporaire)
 	@echo "Building app2 for production using temporary Node.js container..."
-	docker run --rm -v "$(CURDIR)/sources/app2:/app" -w /app node:20-alpine sh -c "npm ci && npx dotenv-cli -e .env.production -- nuxt generate"
+	docker run --rm -v "$(CURDIR)/sources/app2:/app" -w /app node:22-alpine sh -c "npm ci && npx dotenv-cli -e .env.production -- nuxt generate"
 	@echo "Restarting nginx to remount volume..."
 	docker restart $(APPLICATION_NAME)_nginx_app2 > /dev/null
 	@echo "App2 generated and nginx restarted!"
@@ -405,6 +405,11 @@ app2_npm_update: ## Met à jour toutes les dépendances npm de app2
 	@echo "Mise à jour des dépendances npm pour app2 (container: $(NODE_CONTAINER_NAME))..."
 	$(DOCKER_EXEC_NODE) sh -c "npm update"
 
+app2_npm_update_lock: ## Régénère le package-lock.json de app2 via container temporaire (Node 22)
+	@echo "Régénération du package-lock.json pour app2..."
+	docker run --rm -v "$(CURDIR)/sources/app2:/app" -w /app node:22-alpine sh -c "npm install --package-lock-only"
+	@echo "package-lock.json mis à jour. Pensez à le committer."
+
 app2_npm_add: ## Ajoute un package npm à app2 (usage: make app2_npm_add package=uuid)
 	@echo "Ajout du package $(package) pour app2 (container: $(NODE_CONTAINER_NAME))..."
 	$(DOCKER_EXEC_NODE) sh -c "npm install $(package)"
@@ -426,12 +431,12 @@ app3_generate_dev: ## Génère l'application Nuxt (app3) en mode statique pour d
 
 app3_generate_preprod: ## Génère l'application Nuxt (app3) en mode statique pour pré-production (utilise container temporaire)
 	@echo "Building app3 for pre-production using temporary Node.js container..."
-	docker run --rm -v "$(CURDIR)/sources/app3:/app" -w /app node:20-alpine sh -c "npm ci && npx dotenv-cli -e .env.preprod -- nuxt generate"
+	docker run --rm -v "$(CURDIR)/sources/app3:/app" -w /app node:22-alpine sh -c "npm ci && npx dotenv-cli -e .env.preprod -- nuxt generate"
 	@echo "Build complete! Files are in sources/app3/.output/public/"
 
 app3_generate_prod: ## Génère l'application Nuxt (app3) en mode statique pour production (utilise container temporaire)
 	@echo "Building app3 for production using temporary Node.js container..."
-	docker run --rm -v "$(CURDIR)/sources/app3:/app" -w /app node:20-alpine sh -c "npm ci && npx dotenv-cli -e .env.production -- nuxt generate"
+	docker run --rm -v "$(CURDIR)/sources/app3:/app" -w /app node:22-alpine sh -c "npm ci && npx dotenv-cli -e .env.production -- nuxt generate"
 	@echo "Build complete! Files are in sources/app3/.output/public/"
 
 app3_lint: ## Exécute ESLint sur app3
@@ -457,6 +462,11 @@ app3_npm_clean: ## Supprime node_modules et package-lock.json de app3
 app3_npm_update: ## Met à jour toutes les dépendances npm de app3
 	@echo "Mise à jour des dépendances npm pour app3 (container: $(NODE3_CONTAINER_NAME))..."
 	$(DOCKER_EXEC_NODE3) sh -c "npm update"
+
+app3_npm_update_lock: ## Régénère le package-lock.json de app3 via container temporaire (Node 22)
+	@echo "Régénération du package-lock.json pour app3..."
+	docker run --rm -v "$(CURDIR)/sources/app3:/app" -w /app node:22-alpine sh -c "npm install --package-lock-only"
+	@echo "package-lock.json mis à jour. Pensez à le committer."
 
 app3_npm_add: ## Ajoute un package npm à app3 (usage: make app3_npm_add package=uuid)
 	@echo "Ajout du package $(package) pour app3 (container: $(NODE3_CONTAINER_NAME))..."
@@ -488,14 +498,14 @@ app4_generate_dev: ## Génère l'application Nuxt (app4 admin) en mode statique 
 
 app4_generate_preprod: ## Génère l'application Nuxt (app4 admin) en mode statique pour pré-production (utilise container temporaire)
 	@echo "Building app4 for pre-production using temporary Node.js container..."
-	docker run --rm -v "$(CURDIR)/sources/app4:/app" -w /app node:20-alpine sh -c "npm ci && npx nuxt generate"
+	docker run --rm -v "$(CURDIR)/sources/app4:/app" -w /app node:22-alpine sh -c "npm ci && npx nuxt generate"
 	@echo "Restarting nginx to remount volume..."
 	docker restart $(APPLICATION_NAME)_nginx_app4 > /dev/null
 	@echo "App4 generated and nginx restarted!"
 
 app4_generate_prod: ## Génère l'application Nuxt (app4 admin) en mode statique pour production (utilise container temporaire)
 	@echo "Building app4 for production using temporary Node.js container..."
-	docker run --rm -v "$(CURDIR)/sources/app4:/app" -w /app node:20-alpine sh -c "npm ci && npx nuxt generate"
+	docker run --rm -v "$(CURDIR)/sources/app4:/app" -w /app node:22-alpine sh -c "npm ci && npx nuxt generate"
 	@echo "Restarting nginx to remount volume..."
 	docker restart $(APPLICATION_NAME)_nginx_app4 > /dev/null
 	@echo "App4 generated and nginx restarted!"
@@ -523,6 +533,11 @@ app4_npm_clean: ## Supprime node_modules et package-lock.json de app4
 app4_npm_update: ## Met à jour toutes les dépendances npm de app4
 	@echo "Mise à jour des dépendances npm pour app4 (container: $(NODE4_CONTAINER_NAME))..."
 	$(DOCKER_EXEC_NODE4) sh -c "npm update"
+
+app4_npm_update_lock: ## Régénère le package-lock.json de app4 via container temporaire (Node 22)
+	@echo "Régénération du package-lock.json pour app4..."
+	docker run --rm -v "$(CURDIR)/sources/app4:/app" -w /app node:22-alpine sh -c "npm install --package-lock-only"
+	@echo "package-lock.json mis à jour. Pensez à le committer."
 
 app4_npm_add: ## Ajoute un package npm à app4 (usage: make app4_npm_add package=uuid)
 	@echo "Ajout du package $(package) pour app4 (container: $(NODE4_CONTAINER_NAME))..."
