@@ -152,6 +152,24 @@ class PdfListeMatchs extends MyPage
                 AND d.Code_competition = ?
                 AND d.Code_saison = ? ";
       $merge = array($arrayCompets[0], $codeSaison);
+      if ($filtreJour != '') {
+        $sql .= "AND a.Date_match = ? ";
+        $merge = array_merge($merge, [$filtreJour]);
+      }
+      if ($filtreTerrain != '') {
+        $sql .= "AND a.Terrain = ? ";
+        $merge = array_merge($merge, [$filtreTerrain]);
+      }
+      if ($filtreTour != '') {
+        $sql .= "AND d.Etape = ? ";
+        $merge = array_merge($merge, [$filtreTour]);
+      }
+      if ($filtreMatchsNonVerrouilles == 'on') {
+        $sql .= "AND a.Validation = 'N' ";
+      }
+      $sql .= $orderMatchs;
+      $result = $myBdd->pdo->prepare($sql);
+      $result->execute($merge);
     } else {
       $in = str_repeat('?,', count($arrayCompets) - 1) . '?';
       $sql = "SELECT a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre,
