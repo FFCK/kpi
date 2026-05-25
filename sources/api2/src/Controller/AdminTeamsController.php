@@ -1066,7 +1066,7 @@ class AdminTeamsController extends AbstractController
             return $this->json(['message' => 'Competition not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $newVerrou = $current ? '' : 'O';
+        $newVerrou = $current === 'O' ? '' : 'O';
         $sql = "UPDATE kp_competition SET Verrou = ? WHERE Code = ? AND Code_saison = ?";
         $stmt = $this->connection->prepare($sql);
         $stmt->executeStatement([$newVerrou, $competition, $season]);

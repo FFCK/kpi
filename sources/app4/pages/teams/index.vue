@@ -297,6 +297,12 @@ onMounted(async () => {
   }
 })
 
+onActivated(async () => {
+  if (workContext.pageCompetitionCode) {
+    await loadTeams()
+  }
+})
+
 // Selection handlers
 const toggleSelectAll = () => {
   if (selectAll.value) {

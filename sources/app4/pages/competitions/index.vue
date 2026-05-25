@@ -251,6 +251,10 @@ onMounted(async () => {
   await loadCompetitionsForMulti()
 })
 
+onActivated(async () => {
+  await loadCompetitions()
+})
+
 
 const isSelected = (code: string) => selectedCodes.value.includes(code)
 
