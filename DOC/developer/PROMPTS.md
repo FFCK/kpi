@@ -62,7 +62,6 @@ Exploiter la charte graphique :
 
 TODO :
 * ✅ Compétitions : formulaire de création/modification : manque sélection des images (logo, bandeau, sponsor)
-  
 * ✅ Uniformisation header des pages de gestion de compétition
 * ✅ Synthèse d'une compétition (mise en page des logos, décomptes...)
 * Numéro de version dans app2 et app4
@@ -70,23 +69,36 @@ TODO :
 * Matchs : saisie arbitres ? (inline + formulaire)
 * gamesday et games : manque toast de confirmation lors d'une modification en ligne.
 * Journées/Phases : autocomplete sur les officiels, etc...
-* Schéma de progression /gamedays/schema : imprimabe en pdf
+* ⚠️ Schéma de progression /gamedays/schema : imprimabe en pdf
 * Page/Rubrique TV (Tv control panel)
-* Recherche/Copie système de jeu : ✅ Spécifié dans DOC/specs/PAGE_COPIE_COMPETITION.md
+* ✅ Recherche/Copie système de jeu : Spécifié dans DOC/specs/PAGE_COPIE_COMPETITION.md
 * Journées/Phases : 
   * copier les officiels et les paramètres du calendrier public depuis une phase sur toutes les autres phases de la compétition (type CP) (depuis le formulaire ? depuis une action sur la liste ? )
   * Générer la feuille de jury d'appel à partir des officiels de la compétition, avec possibilité de modifier les données avant impression
 * App2 : masquer la progression pout les compétitions en attente. 
 * dans opérations : pouvoir déclencher les cron d'import PCE et de verrou présences manuellement, en plus de leur exécution automatique programmée.
 - Reproduire les pdf en stateless ?
-
+- Mode nuit
 - Association événement : à tester
 - Matchs : tester en profondeur,
 - Classements : tester en profondeur
-
+- Lien vers app2 depuis app4
 - Droits par profil :
   - Les profils > 2 ne peuvent pas créer, modifier ou supprimer quoi que ce soit dans les saisons antérieures à la saison active.
 - Mandats : revoir l'organisation pour simplifier le renouvellement annuel des droits
+- Empêcher la création de plusieurs mandats avec le même profil pour un même utilisateur ? (à étudier)
+- Copie de système de jeu : type CP par défaut
+- Gamedays : lien global vers schéma de compétition à partir du moment ou une compétition (CP ?) est sélectionnée.
+- Gamedays + Games : nb éléments par page : par défaut Tous si au moins un événement, un groupe ou une compétition est sélectionné, sinon 50 par page.
+garder en mémoire ? ou rester sur cette règle ?
+- Teams : focus sur le champs de recherche lors de l'ouverture du formulaire de création/modification d'équipe
+- Teams : recherche avec et sans tiret (Ex : "Team A" doit être trouvé avec "Team A" et "Team-A" et inversement)
+- ⚠️ gamedays/schema : afficher les équipes associées à chaque phase/journée dans le schéma de compétition (actuellement seulement les matchs éliminatoires affichent les équipes associées, pas les phases de poules)
+- ⚠️ presence/team/ focus sur le champs de recherche lors de l'ouverture du formulaire de saisie des présences d'équipe, focus sur le numéro lors de la sélection d'un joueur dans les résultats de recherche.
+Ajouter un bouton "Enregistrer et ajouter" pour faciliter la saisie de plusieurs joueurs d'une même équipe (ou trouver une formulation plus explicite pour les deux boutons "Enregistrer" et "Enregistrer et ajouter")
+Le champs de recherche ne trouve pas les noms composés Van De Kapelle Enzo (la recherche Nom Prénom ou Prénom Nom est perturbée par les noms ou prénoms composés)
+- page clubs, j'ai un 404 sur certains clubs, peut-être lié au fait qu'ils ne sont pas localisés ?
+- "Faire confiance à cet appareil" ? (trouver une solution pour conserver la session active sur app4 sans avoir à se reconnecter à chaque fois, tout en assurant la sécurité de l'application)
 - ✅ Import PCE : manquant dans Opérations, doit être exécutable par cron
 - ✅ Verrou présences : manquant dans Opérations, doit être exécutable par cron
 - ✅ Vérifier l'envoi de mail des cron et autres alertes (antispam de Hostinger ?)

@@ -16,8 +16,21 @@ const { t } = useI18n()
 
 const hasRanking = computed(() => props.phase.ranking && props.phase.ranking.length > 0)
 const hasPoolTeams = computed(() => props.phase.poolTeams && props.phase.poolTeams.length > 0)
+
+// Derive team names from matches when no ranking/poolTeams data
+const teamsFromMatches = computed(() => {
+  if (hasRanking.value || hasPoolTeams.value) return []
+  const seen = new Set<string>()
+  const teams: string[] = []
+  for (const m of props.phase.matches) {
+    if (m.equipeA && !seen.has(m.equipeA)) { seen.add(m.equipeA); teams.push(m.equipeA) }
+    if (m.equipeB && !seen.has(m.equipeB)) { seen.add(m.equipeB); teams.push(m.equipeB) }
+  }
+  return teams
+})
+
 const emptyRows = computed(() => {
-  if (hasRanking.value || hasPoolTeams.value) return 0
+  if (hasRanking.value || hasPoolTeams.value || teamsFromMatches.value.length > 0) return 0
   return props.phase.nbequipes
 })
 
@@ -73,6 +86,20 @@ const isHighlighted = (team: string) => {
         @mouseleave="emit('hoverTeam', null)"
       >
         <span class="font-medium">{{ team.libelle }}</span>
+      </div>
+    </div>
+
+    <!-- Teams derived from matches (placeholders or real names) -->
+    <div v-else-if="teamsFromMatches.length > 0" class="space-y-0.5">
+      <div
+        v-for="team in teamsFromMatches"
+        :key="team"
+        class="py-0.5 px-1 rounded transition-colors duration-100 text-xs"
+        :class="{ 'bg-warning-100': isHighlighted(team) }"
+        @mouseenter="emit('hoverTeam', team)"
+        @mouseleave="emit('hoverTeam', null)"
+      >
+        <span class="font-medium">{{ team }}</span>
       </div>
     </div>
 
