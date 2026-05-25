@@ -47,6 +47,8 @@ const addMode = ref<'existing' | 'create'>('existing')
 const addFormData = ref<AddPlayerFormData>({ mode: 'existing', capitaine: '-' })
 const addFormError = ref('')
 const addFormSaving = ref(false)
+const playerAutocompleteRef = ref<{ focus: () => void } | null>(null)
+const numeroInputRef = ref<HTMLInputElement | null>(null)
 
 // National validation failure state (for override flow)
 const addFormValidationErrors = ref<string[]>([])
@@ -248,6 +250,13 @@ const handleInlineKeydown = (e: KeyboardEvent) => {
   }
 }
 
+// Auto-focus search field when modal opens
+watch(addModalOpen, (open) => {
+  if (open) {
+    nextTick(() => playerAutocompleteRef.value?.focus())
+  }
+})
+
 // Add player - handle selection from autocomplete
 const onPlayerSelected = (player: PlayerAutocomplete | null) => {
   selectedPlayer.value = player
@@ -255,11 +264,12 @@ const onPlayerSelected = (player: PlayerAutocomplete | null) => {
   addFormError.value = ''
   if (player) {
     addFormData.value.matric = player.matric
+    nextTick(() => numeroInputRef.value?.focus())
   }
 }
 
 // Add player - submit
-const addExistingPlayer = async () => {
+const addExistingPlayer = async (keepOpen = false) => {
   if (!selectedPlayer.value) return
 
   addFormSaving.value = true
@@ -275,8 +285,13 @@ const addExistingPlayer = async () => {
     }, api)
 
     toast.add({ title: t('presence.player_added'), color: 'success' })
-    addModalOpen.value = false
-    resetAddForm()
+    if (keepOpen) {
+      resetAddForm(true)
+      nextTick(() => playerAutocompleteRef.value?.focus())
+    } else {
+      addModalOpen.value = false
+      resetAddForm()
+    }
   } catch (error: unknown) {
     const err = error as { message?: string; errors?: string[] }
     if (err.errors && err.errors.length > 0) {
@@ -317,7 +332,7 @@ const addWithOverride = async () => {
   }
 }
 
-const createNewPlayer = async () => {
+const createNewPlayer = async (keepOpen = false) => {
   if (!addFormData.value.nom || !addFormData.value.prenom || !addFormData.value.sexe) {
     addFormError.value = t('presence.required_fields')
     return
@@ -332,8 +347,12 @@ const createNewPlayer = async () => {
     }, api)
 
     toast.add({ title: t('presence.player_created'), color: 'success' })
-    addModalOpen.value = false
-    resetAddForm()
+    if (keepOpen) {
+      resetAddForm(true)
+    } else {
+      addModalOpen.value = false
+      resetAddForm()
+    }
   } catch (error: unknown) {
     addFormError.value = (error as { message?: string })?.message || t('presence.create_player_failed')
   } finally {
@@ -349,8 +368,10 @@ const selectDuplicate = (dup: PlayerAutocomplete) => {
   onPlayerSelected(dup)
 }
 
-const resetAddForm = () => {
-  addFormData.value = { mode: 'existing', capitaine: '-', sexe: undefined, arbitre: '', niveau: '' }
+const resetAddForm = (keepMode = false) => {
+  const mode = keepMode ? addMode.value : 'existing'
+  addMode.value = mode as 'existing' | 'create'
+  addFormData.value = { mode, capitaine: '-', sexe: undefined, arbitre: '', niveau: '' }
   selectedPlayer.value = null
   addFormError.value = ''
   addFormValidationErrors.value = []
@@ -1249,7 +1270,7 @@ const pdfLinks = computed(() => {
       max-width="lg"
       @close="addModalOpen = false"
     >
-      <form @submit.prevent="addMode === 'existing' ? addExistingPlayer() : createNewPlayer()">
+      <form @submit.prevent="addMode === 'existing' ? addExistingPlayer(false) : createNewPlayer(false)">
         <div class="space-y-4">
           <!-- Generic error -->
           <div
@@ -1349,9 +1370,11 @@ const pdfLinks = computed(() => {
             <div>
               <label class="block text-sm font-medium text-header-700 mb-1">{{ t('presence.search_placeholder') }}</label>
               <AdminPlayerAutocomplete
+                ref="playerAutocompleteRef"
                 :model-value="selectedPlayer"
                 :placeholder="t('presence.search_placeholder')"
                 @update:model-value="onPlayerSelected"
+                @player-selected="onPlayerSelected"
               />
             </div>
           </template>
@@ -1467,6 +1490,7 @@ const pdfLinks = computed(() => {
             <div>
               <label class="block text-sm font-medium text-header-700 mb-1">#</label>
               <input
+                ref="numeroInputRef"
                 v-model.number="addFormData.numero"
                 type="number"
                 min="0"
@@ -1498,18 +1522,31 @@ const pdfLinks = computed(() => {
           >
             {{ t('common.cancel') }}
           </button>
-          <button
-            v-if="addFormValidationErrors.length === 0"
-            type="submit"
-            class="px-4 py-1 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50"
-            :disabled="addFormSaving || (addMode === 'existing' && !selectedPlayer)"
-          >
-            <span v-if="addFormSaving" class="flex items-center gap-2">
-              <UIcon name="i-heroicons-arrow-path" class="w-4 h-4 animate-spin" />
-              {{ t('common.save') }}
-            </span>
-            <span v-else>{{ t('common.save') }}</span>
-          </button>
+          <template v-if="addFormValidationErrors.length === 0">
+            <button
+              type="button"
+              class="px-4 py-1 border border-primary-600 text-primary-600 rounded-lg hover:bg-primary-50 transition-colors disabled:opacity-50"
+              :disabled="addFormSaving || (addMode === 'existing' && !selectedPlayer)"
+              @click="addMode === 'existing' ? addExistingPlayer(true) : createNewPlayer(true)"
+            >
+              <span v-if="addFormSaving" class="flex items-center gap-2">
+                <UIcon name="i-heroicons-arrow-path" class="w-4 h-4 animate-spin" />
+                {{ t('presence.save_and_add') }}
+              </span>
+              <span v-else>{{ t('presence.save_and_add') }}</span>
+            </button>
+            <button
+              type="submit"
+              class="px-4 py-1 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50"
+              :disabled="addFormSaving || (addMode === 'existing' && !selectedPlayer)"
+            >
+              <span v-if="addFormSaving" class="flex items-center gap-2">
+                <UIcon name="i-heroicons-arrow-path" class="w-4 h-4 animate-spin" />
+                {{ t('presence.save_and_close') }}
+              </span>
+              <span v-else>{{ t('presence.save_and_close') }}</span>
+            </button>
+          </template>
         </div>
       </form>
     </AdminModal>

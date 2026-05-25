@@ -1209,7 +1209,9 @@
     "override_allowed_notice": "As an administrator, you may add this player only as a non-playing referee (A) or staff (E).",
     "override_status_label": "Forced status",
     "override_confirm": "Add anyway",
-    "override_cancel": "Cancel"
+    "override_cancel": "Cancel",
+    "save_and_add": "Save and add another",
+    "save_and_close": "Save and close"
   },
   "gamedays": {
     "title": "Gamedays / Phases",

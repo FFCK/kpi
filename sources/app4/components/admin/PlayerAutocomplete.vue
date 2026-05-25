@@ -9,7 +9,10 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'update:modelValue', value: PlayerAutocomplete | null): void
+  (e: 'player-selected', value: PlayerAutocomplete): void
 }>()
+
+defineExpose({ focus: () => inputRef.value?.focus() })
 
 const { t } = useI18n()
 const api = useApi()
@@ -68,6 +71,7 @@ watch(searchQuery, () => {
 // Handle selection
 function selectPlayer(player: PlayerAutocomplete) {
   emit('update:modelValue', player)
+  emit('player-selected', player)
   skipNextSearch = true
   searchQuery.value = `${player.nom} ${player.prenom}`
   results.value = []

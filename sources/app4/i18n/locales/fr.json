@@ -1222,7 +1222,9 @@
     "override_allowed_notice": "En tant qu'administrateur, vous pouvez ajouter ce joueur uniquement en tant qu'arbitre non-joueur (A) ou staff (E).",
     "override_status_label": "Statut imposé",
     "override_confirm": "Ajouter malgré tout",
-    "override_cancel": "Annuler"
+    "override_cancel": "Annuler",
+    "save_and_add": "Enregistrer et ajouter",
+    "save_and_close": "Enregistrer et fermer"
   },
   "gamedays": {
     "title": "Journées / Phases",
