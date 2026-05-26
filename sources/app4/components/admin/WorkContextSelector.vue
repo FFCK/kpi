@@ -7,6 +7,10 @@ const api = useApi()
 
 const authStore = useAuthStore()
 
+const sectionSelect = ref<HTMLSelectElement | null>(null)
+const groupSelect = ref<HTMLSelectElement | null>(null)
+const eventSelect = ref<HTMLSelectElement | null>(null)
+
 // Initialize context on mount
 onMounted(() => {
   workContext.initContext()
@@ -24,7 +28,7 @@ async function onSeasonChange(seasonCode: string) {
 }
 
 // Selection type handler
-function onSelectionTypeChange(type: 'selection' | 'section' | 'group' | 'event') {
+async function onSelectionTypeChange(type: 'selection' | 'section' | 'group' | 'event') {
   if (type === workContext.selectionType) return
 
   switch (type) {
@@ -36,6 +40,18 @@ function onSelectionTypeChange(type: 'selection' | 'section' | 'group' | 'event'
       workContext.selectionType = type
       workContext.saveToStorage()
       break
+  }
+
+  await nextTick()
+  const selectMap: Record<string, Ref<HTMLSelectElement | null>> = {
+    section: sectionSelect,
+    group: groupSelect,
+    event: eventSelect,
+  }
+  const el = selectMap[type]?.value
+  if (el) {
+    el.focus()
+    el.showPicker?.()
   }
 }
 
@@ -223,6 +239,7 @@ function formatEventLabel(event: { id: number; libelle: string; dateDebut: strin
                   </label>
                   <select
                     v-if="workContext.selectionType === 'section'"
+                    ref="sectionSelect"
                     :value="workContext.sectionId ?? ''"
                     class="mt-1 w-full rounded-md border-header-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-sm"
                     @change="onSectionChange(($event.target as HTMLSelectElement).value)"
@@ -255,6 +272,7 @@ function formatEventLabel(event: { id: number; libelle: string; dateDebut: strin
                   </label>
                   <select
                     v-if="workContext.selectionType === 'group'"
+                    ref="groupSelect"
                     :value="workContext.groupCode ?? ''"
                     class="mt-1 w-full rounded-md border-header-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-sm"
                     @change="onGroupChange(($event.target as HTMLSelectElement).value)"
@@ -293,6 +311,7 @@ function formatEventLabel(event: { id: number; libelle: string; dateDebut: strin
                   </label>
                   <select
                     v-if="workContext.selectionType === 'event'"
+                    ref="eventSelect"
                     :value="workContext.eventId ?? ''"
                     class="mt-1 w-full rounded-md border-header-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 text-sm"
                     @change="onEventChange(($event.target as HTMLSelectElement).value)"

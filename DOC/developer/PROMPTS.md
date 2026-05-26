@@ -87,25 +87,24 @@ TODO :
   - Les profils > 2 ne peuvent pas créer, modifier ou supprimer quoi que ce soit dans les saisons antérieures à la saison active.
 - Mandats : revoir l'organisation pour simplifier le renouvellement annuel des droits
 - Empêcher la création de plusieurs mandats avec le même profil pour un même utilisateur ? (à étudier)
-- Copie de système de jeu : type CP par défaut
-- Gamedays : lien global vers schéma de compétition à partir du moment ou une compétition (CP ?) est sélectionnée.
-- Gamedays + Games : nb éléments par page : par défaut Tous si au moins un événement, un groupe ou une compétition est sélectionné, sinon 50 par page.
-garder en mémoire ? ou rester sur cette règle ?
+- ✅ Copie de système de jeu : type CP par défaut
+- ✅ Gamedays : lien global vers schéma de compétition à partir du moment ou une compétition (CP ?) est sélectionnée.
+- ✅ Gamedays + Games : nb éléments par page : par défaut Tous si au moins un événement, un groupe ou une compétition est sélectionné, sinon 50 par page.
 - Teams : focus sur le champs de recherche lors de l'ouverture du formulaire de création/modification d'équipe
 - Teams : recherche avec et sans tiret (Ex : "Team A" doit être trouvé avec "Team A" et "Team-A" et inversement)
 - ✅ gamedays/schema : afficher les équipes associées à chaque phase/journée dans le schéma de compétition (actuellement seulement les matchs éliminatoires affichent les équipes associées, pas les phases de poules)
 - ✅ presence/team/ focus sur le champs de recherche lors de l'ouverture du formulaire de saisie des présences d'équipe, focus sur le numéro lors de la sélection d'un joueur dans les résultats de recherche.
-Ajouter un bouton "Enregistrer et ajouter" pour faciliter la saisie de plusieurs joueurs d'une même équipe (ou trouver une formulation plus explicite pour les deux boutons "Enregistrer" et "Enregistrer et ajouter")
+- ✅ Ajouter un bouton "Enregistrer et ajouter" pour faciliter la saisie de plusieurs joueurs d'une même équipe (ou trouver une formulation plus explicite pour les deux boutons "Enregistrer" et "Enregistrer et ajouter")
 - ⚠️ presence/team/ formulaire ajout de joueur : Le champs de recherche ne trouve pas les noms composés Van De Kapelle Enzo (la recherche Nom Prénom ou Prénom Nom est perturbée par les noms ou prénoms composés, tirets, apostrophes, etc... Il faudrait trouver une solution pour que la recherche soit plus efficace et intuitive, par exemple en permettant de rechercher avec ou sans les caractères spéciaux, ou en utilisant une approche de recherche plus flexible qui prend en compte les différentes variations possibles des noms et prénoms.
 - ⚠️ presence/team/ afficher les noms des joueurs en majuscule, les prénoms avec première lettre de chaque mot en majuscule (et partout où sont affichés des noms de joueurs dans l'application app4)
 - presence/team/ : modification en ligne du numéro de joueur : sélectionner la valeur au clic pour faciliter la modification.
-suppression d'un joueur : ajouter une confirmation pour éviter les suppressions accidentelles.
-- games : changement de focus avec la tabulation : date -> heure -> terrain -> code match
-bouton Recharger (à gauche de Documents) pour recharger les données du match dans l'odre choisi après des modifications en ligne (date, heure, terrain, code match)
-- page clubs, j'ai un 404 sur certains clubs, peut-être lié au fait qu'ils ne sont pas localisés ?
+- suppression d'un joueur : ajouter une confirmation pour éviter les suppressions accidentelles.
+- ✅ games : changement de focus avec la tabulation : date -> heure -> terrain -> code match
+- ✅ bouton Recharger (à gauche de Documents) pour recharger les données du match dans l'odre choisi après des modifications en ligne (date, heure, terrain, code match)
+- ✅ page clubs, j'ai un 404 sur certains clubs, peut-être lié au fait qu'ils ne sont pas localisés ?
 - "Faire confiance à cet appareil" ? (trouver une solution pour conserver la session active sur app4 sans avoir à se reconnecter à chaque fois, tout en assurant la sécurité de l'application)
 - Import/Export événements en json : vérifier la prise en compte des dernières migrations de la structure des données depuis la création de cette fonctionnalité.
-- Contexte de travail : à la sélection d'un périmètre, ouvrir le select correspondant.
+- ✅ Contexte de travail : à la sélection d'un périmètre, ouvrir le select correspondant.
 - Créer pages d'administration (profil 1) pour les comités départementaux / pays
 - ✅ PdfListeMatchs4TerrainsEn2.php?S=2026&tz=Europe%2FParis&idEvenement=239 je voudrais une version avec 5 terrains (au lieu de 4)
 - ✅ Import PCE : manquant dans Opérations, doit être exécutable par cron
