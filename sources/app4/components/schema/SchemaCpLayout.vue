@@ -62,7 +62,7 @@ const formatTimeRange = (start: string | null, end: string | null) => {
           <div v-else class="p-1">
             <div class="grid grid-cols-1 gap-3">
               <SchemaCpBracketMatch
-                v-for="match in phase.matches"
+                v-for="match in [...phase.matches].sort((a, b) => (a.numeroOrdre ?? Infinity) - (b.numeroOrdre ?? Infinity))"
                 :key="match.id"
                 :match="match"
                 :hovered-team="hoveredTeam"

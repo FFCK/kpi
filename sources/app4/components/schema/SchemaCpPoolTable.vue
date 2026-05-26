@@ -26,7 +26,7 @@ const teamsFromMatches = computed(() => {
     if (m.equipeA && !seen.has(m.equipeA)) { seen.add(m.equipeA); teams.push(m.equipeA) }
     if (m.equipeB && !seen.has(m.equipeB)) { seen.add(m.equipeB); teams.push(m.equipeB) }
   }
-  return teams
+  return teams.sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
 })
 
 const emptyRows = computed(() => {
@@ -94,7 +94,7 @@ const isHighlighted = (team: string) => {
       <div
         v-for="team in teamsFromMatches"
         :key="team"
-        class="py-0.5 px-1 rounded transition-colors duration-100 text-xs"
+        class="py-0.5 px-1 rounded transition-colors duration-100 text-xs text-header-700"
         :class="{ 'bg-warning-100': isHighlighted(team) }"
         @mouseenter="emit('hoverTeam', team)"
         @mouseleave="emit('hoverTeam', null)"
