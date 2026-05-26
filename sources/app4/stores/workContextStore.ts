@@ -388,6 +388,15 @@ export const useWorkContextStore = defineStore('workContext', {
             }
           }
         }
+        else {
+          // Synchronize from work context if no explicit page selection saved
+          if (this.selectionType === 'event' && this.eventId) {
+            this.setPageEventGroupSelection(`event:${this.eventId}`)
+          }
+          else if (this.selectionType === 'group' && this.groupCode) {
+            this.setPageEventGroupSelection(`group:${this.groupCode}`)
+          }
+        }
 
         // Synchronize single and multi selections
         if (this.pageCompetitionCodes.length === 0 && this.pageCompetitionCode) {
@@ -568,6 +577,7 @@ export const useWorkContextStore = defineStore('workContext', {
       this.eventId = null
 
       this.resetPageCompetition()
+      this.setPageEventGroupSelection(`group:${groupCode}`)
       this.saveToStorage()
       this.computeCompetitionCodes()
     },
@@ -581,6 +591,7 @@ export const useWorkContextStore = defineStore('workContext', {
       this.eventId = eventId
 
       this.resetPageCompetition()
+      this.setPageEventGroupSelection(`event:${eventId}`)
       this.saveToStorage()
       await this.loadEventCompetitions(apiInstance)
     },

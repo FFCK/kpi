@@ -41,10 +41,11 @@ class AdminGamedaysController extends AbstractController
         /** @var User|null $user */
         $user = $this->getUser();
 
-        // Pagination
+        // Pagination (limit=0 means no pagination, return all)
         $page = max(1, (int) $request->query->get('page', 1));
-        $limit = min(200, max(1, (int) $request->query->get('limit', 25)));
-        $offset = ($page - 1) * $limit;
+        $rawLimit = (int) $request->query->get('limit', 25);
+        $limit = $rawLimit === 0 ? 0 : min(200, max(1, $rawLimit));
+        $offset = $limit === 0 ? 0 : ($page - 1) * $limit;
 
         // Filters
         $season = $request->query->get('season', '');
@@ -156,8 +157,8 @@ class AdminGamedaysController extends AbstractController
                 LEFT JOIN kp_competition c ON c.Code = j.Code_competition AND c.Code_saison = j.Code_saison
                 $joinEvent
                 $whereClause
-                ORDER BY $orderBy
-                LIMIT $limit OFFSET $offset";
+                ORDER BY $orderBy"
+            . ($limit > 0 ? " LIMIT $limit OFFSET $offset" : '');
 
         $stmt = $this->connection->prepare($sql);
         $rows = $stmt->executeQuery($params)->fetchAllAssociative();
@@ -207,7 +208,7 @@ class AdminGamedaysController extends AbstractController
             'items' => $items,
             'total' => $total,
             'page' => $page,
-            'totalPages' => (int) ceil($total / $limit),
+            'totalPages' => $limit > 0 ? (int) ceil($total / $limit) : 1,
         ]);
     }
 
