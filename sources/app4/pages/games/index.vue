@@ -55,8 +55,10 @@ const loading = ref(false)
 const games = ref<Game[]>([])
 const total = ref(0)
 const page = ref(1)
-const limit = ref(50)
 const totalPages = ref(0)
+
+const hasContextFilter = computed(() => !!(workContext.pageCompetitionCodeAll || workContext.pageEventGroupSelection))
+const limit = ref(hasContextFilter.value ? 0 : 50)
 const phaseLibelle = ref(false)
 const availableDates = ref<string[]>([])
 
@@ -310,6 +312,7 @@ watch([page, limit, selectedSort], () => {
 
 watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGroupSelection, selectedTour, selectedJournee, selectedDate, selectedTerrain], () => {
   page.value = 1
+  limit.value = (workContext.pageCompetitionCodeAll || workContext.pageEventGroupSelection) ? 0 : 50
   loadGames()
 })
 
@@ -1240,6 +1243,11 @@ const statusBtnClass = (game: Game) => {
       @add="openAddModal"
     >
       <template #left>
+        <!-- Total count (when nothing selected) -->
+        <span v-if="selectedIds.length === 0 && total > 0" class="text-sm text-header-600">
+          {{ t('games.total', { count: total }) }}
+        </span>
+
         <!-- Bulk actions dropdown -->
         <div v-if="canSelect && selectedIds.length > 0" ref="bulkActionsRef" class="relative">
           <button
@@ -1350,6 +1358,15 @@ const statusBtnClass = (game: Game) => {
         </div>
       </template>
       <template #before-search>
+        <!-- Refresh button -->
+        <button
+          class="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-header-700 bg-white border border-header-300 rounded-lg hover:bg-header-50"
+          :title="t('common.refresh')"
+          @click="loadGames"
+        >
+          <UIcon name="heroicons:arrow-path" class="w-5 h-5 text-header-500" />
+        </button>
+
         <!-- Documents dropdown (all games with current filters) -->
         <div ref="documentsRef" class="relative">
           <button

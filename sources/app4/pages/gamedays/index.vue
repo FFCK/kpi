@@ -18,8 +18,10 @@ const loading = ref(false)
 const gamedays = ref<Gameday[]>([])
 const total = ref(0)
 const page = ref(1)
-const limit = ref(25)
 const totalPages = ref(0)
+
+const hasContextFilter = computed(() => !!(workContext.pageCompetitionCodeAll || workContext.pageEventGroupSelection))
+const limit = ref(hasContextFilter.value ? 0 : 25)
 
 // Filters
 const searchQuery = ref('')
@@ -217,6 +219,7 @@ watch([page, limit, selectedSort], () => {
 
 watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGroupSelection, selectedMonth], () => {
   page.value = 1
+  limit.value = (workContext.pageCompetitionCodeAll || workContext.pageEventGroupSelection) ? 0 : 25
   loadGamedays()
 })
 
@@ -791,6 +794,17 @@ const printJurySheet = (gamedayId: number) => {
           </div>
         </div>
       </template>
+      <template #before-search>
+        <!-- Schema link (only when a CP competition is selected) -->
+        <button
+          v-if="showCPColumns"
+          class="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-header-700 bg-white border border-header-300 rounded-lg hover:bg-header-50"
+          @click="goToSchema(workContext.pageCompetitionCodeAll)"
+        >
+          <UIcon name="heroicons:rectangle-group" class="w-5 h-5 text-header-500" />
+          {{ t('schema.title') }}
+        </button>
+      </template>
     </AdminToolbar>
 
     <!-- Desktop Table -->
@@ -1139,6 +1153,8 @@ const printJurySheet = (gamedayId: number) => {
         :total="total"
         :total-pages="totalPages"
         :showing-text="t('gamedays.total', { count: total })"
+        :limit-options="[10, 25, 50, 100]"
+        show-all
       />
     </div>
 
