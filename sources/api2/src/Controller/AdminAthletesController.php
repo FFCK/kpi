@@ -370,7 +370,7 @@ class AdminAthletesController extends AbstractController
         $nom = mb_substr(mb_strtoupper(trim($data['nom'] ?? '')), 0, 30);
         $prenom = mb_substr(mb_strtoupper(trim($data['prenom'] ?? '')), 0, 30);
         $sexe = trim($data['sexe'] ?? '');
-        $naissance = trim($data['naissance'] ?? '');
+        $naissance = isset($data['naissance']) && $data['naissance'] !== null && $data['naissance'] !== '' ? trim($data['naissance']) : null;
         $origine = mb_substr(trim($data['origine'] ?? ''), 0, 6);
         $icf = isset($data['icf']) && $data['icf'] !== null && $data['icf'] !== '' ? (int) $data['icf'] : null;
 
@@ -382,9 +382,6 @@ class AdminAthletesController extends AbstractController
             return $this->json(['error' => true, 'message' => 'Sexe invalide (M ou F)', 'code' => 'VALIDATION_ERROR'], Response::HTTP_BAD_REQUEST);
         }
 
-        if (empty($naissance)) {
-            return $this->json(['error' => true, 'message' => 'Date de naissance requise', 'code' => 'VALIDATION_ERROR'], Response::HTTP_BAD_REQUEST);
-        }
 
         // Arbitrage
         $arbQualification = trim($data['arbitrage']['qualification'] ?? '');

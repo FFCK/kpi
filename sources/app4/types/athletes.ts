@@ -114,7 +114,7 @@ export interface AthleteUpdatePayload {
   nom: string
   prenom: string
   sexe: string
-  naissance: string
+  naissance: string | null
   origine: string
   icf: number | null
   arbitrage: {

@@ -139,10 +139,6 @@ async function handleSubmit() {
     return
   }
 
-  if (!form.naissance) {
-    formError.value = t('athletes.edit.error')
-    return
-  }
 
   submitting.value = true
   try {
@@ -150,7 +146,7 @@ async function handleSubmit() {
       nom: form.nom.trim().toUpperCase(),
       prenom: form.prenom.trim().toUpperCase(),
       sexe: form.sexe,
-      naissance: form.naissance,
+      naissance: form.naissance || null,
       origine: form.origine.trim(),
       icf: form.icf !== '' ? Number(form.icf) : null,
       arbitrage: {
