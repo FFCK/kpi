@@ -1,0 +1,441 @@
+<?php
+
+include_once('commun/MyPage.php');
+include_once('commun/MyBdd.php');
+include_once('commun/MyTools.php');
+
+require_once('commun/MyPDF.php');
+// QRcode class is now autoloaded via Composer
+
+// Liste des Matchs d'une Journee ou d'un Evenement 
+class PdfListeMatchs extends MyPage
+{
+  function __construct()
+  {
+    parent::__construct();
+    $myBdd = new MyBdd();
+
+    // Mode URL : si des paramètres GET de filtre sont présents,
+    // ignorer les variables de session pour éviter les interférences
+    $urlMode = (utyGetGet('Compet', '') !== '' || utyGetGet('idEvenement', '') !== '' || utyGetGet('S', '') !== '');
+
+    // Chargement des Matchs des journées ...
+    $filtreJour = $urlMode ? '' : utyGetSession('filtreJour', '');
+    $filtreJour = utyGetPost('filtreJour', $filtreJour);
+    $filtreJour = utyGetGet('filtreJour', $filtreJour);
+
+    $filtreTerrain = $urlMode ? '' : utyGetSession('filtreTerrain', '');
+    $filtreTerrain = utyGetPost('filtreTerrain', $filtreTerrain);
+    $filtreTerrain = utyGetGet('filtreTerrain', $filtreTerrain);
+
+    $filtreTour = $urlMode ? '' : utyGetSession('filtreTour', '');
+    $filtreTour = utyGetPost('filtreTour', $filtreTour);
+    $filtreTour = utyGetGet('filtreTour', $filtreTour);
+
+    $filtreMatchsNonVerrouilles = $urlMode ? '' : utyGetSession('filtreMatchsNonVerrouilles', '');
+
+    $lstJournee = $urlMode ? [] : utyGetSession('lstJournee', 0);
+
+    // Filtre Journée/Phase/Poule : si une journée spécifique est sélectionnée, utiliser celle-ci
+    $idSelJournee = $urlMode ? '*' : utyGetSession('idSelJournee', '*');
+    $idSelJournee = utyGetGet('idSelJournee', $idSelJournee);
+    if ($idSelJournee != '*' && $idSelJournee != '' && $idSelJournee > 0) {
+      $lstJournee = $idSelJournee;
+    }
+
+    $idEvenement = $urlMode ? -1 : utyGetSession('idEvenement', -1);
+    $idEvenement = utyGetGet('idEvenement', $idEvenement);
+    if (utyGetGet('idEvenement', 0) > 0) {
+      $lstJournee = [];
+      $sql = "SELECT Id_journee
+                FROM kp_evenement_journee
+                WHERE Id_evenement = ? ";
+      $result = $myBdd->pdo->prepare($sql);
+      $result->execute(array($idEvenement));
+      while ($row = $result->fetch()) {
+        $lstJournee[] = $row['Id_journee'];
+      }
+    } else {
+      $lstJournee = is_array($lstJournee) ? $lstJournee : explode(',', $lstJournee);
+    }
+    $codeSaison = $myBdd->GetActiveSaison();
+    $codeSaison = utyGetGet('S', $codeSaison);
+    $orderMatchs = 'ORDER BY a.Date_match, d.Lieu, a.Heure_match, a.Terrain';
+    $laCompet = $urlMode ? 0 : utyGetSession('codeCompet', 0);
+    $laCompet = utyGetGet('Compet', $laCompet);
+    $arrayCompets = ($laCompet != 0 && $laCompet != '*' && $laCompet != '') ? array_filter(array_map('trim', explode(',', $laCompet))) : [];
+    if (count($arrayCompets) > 0) {
+      $idEvenement = -1;
+    }
+    $codeCompet = count($arrayCompets) === 1 ? $arrayCompets[0] : $laCompet;
+    if ($lstJournee != []) {
+      $in  = str_repeat('?,', count($lstJournee) - 1) . '?';
+      $sql = "SELECT a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre,
+                a.Date_match, a.Heure_match, a.Libelle, a.Terrain, b.Libelle EquipeA,
+                c.Libelle EquipeB, a.Terrain, a.ScoreA, a.ScoreB, a.Arbitre_principal,
+                a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire,
+                a.Validation, d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee,
+                cp.Soustitre2
+                FROM kp_competition cp, kp_journee d, kp_match a
+                LEFT OUTER JOIN kp_competition_equipe b ON (a.Id_equipeA = b.Id)
+                LEFT OUTER JOIN kp_competition_equipe c ON (a.Id_equipeB = c.Id)
+                WHERE a.Id_journee = d.Id
+                AND d.Code_competition = cp.Code
+                AND d.Code_saison = cp.Code_saison
+                AND a.Id_journee IN ($in) ";
+      $merge = $lstJournee;
+      if ($filtreJour != '') {
+        $sql .= "AND a.Date_match = ? ";
+        $merge = array_merge($merge, [$filtreJour]);
+      }
+      if ($filtreTerrain != '') {
+        $sql .= "AND a.Terrain = ? ";
+        $merge = array_merge($merge, [$filtreTerrain]);
+      }
+      if ($filtreTour != '') {
+        $sql .= "AND d.Etape = ? ";
+        $merge = array_merge($merge, [$filtreTour]);
+      }
+      if ($filtreMatchsNonVerrouilles == 'on') {
+        $sql .= "AND a.Validation = 'N' ";
+      }
+      $sql .= $orderMatchs;
+      $result = $myBdd->pdo->prepare($sql);
+      $result->execute($merge);
+    } elseif (count($arrayCompets) == 0) {
+      // Toutes les compétitions de la saison
+      $sql = "SELECT a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre,
+                a.Date_match, a.Heure_match, a.Libelle, a.Terrain, b.Libelle EquipeA,
+                c.Libelle EquipeB, a.Terrain, a.ScoreA, a.ScoreB, a.Arbitre_principal,
+                a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire,
+                a.Validation, d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee,
+                cp.Soustitre2
+                FROM kp_competition cp, kp_journee d, kp_match a
+                LEFT OUTER JOIN kp_competition_equipe b ON (a.Id_equipeA = b.Id)
+                LEFT OUTER JOIN kp_competition_equipe c ON (a.Id_equipeB = c.Id)
+                WHERE a.Id_journee = d.Id
+                AND d.Code_competition = cp.Code
+                AND d.Code_saison = cp.Code_saison
+                AND d.Code_saison = ? ";
+      $merge = array($codeSaison);
+      if ($filtreJour != '') {
+        $sql .= "AND a.Date_match = ? ";
+        $merge = array_merge($merge, [$filtreJour]);
+      }
+      if ($filtreTerrain != '') {
+        $sql .= "AND a.Terrain = ? ";
+        $merge = array_merge($merge, [$filtreTerrain]);
+      }
+      if ($filtreTour != '') {
+        $sql .= "AND d.Etape = ? ";
+        $merge = array_merge($merge, [$filtreTour]);
+      }
+      if ($filtreMatchsNonVerrouilles == 'on') {
+        $sql .= "AND a.Validation = 'N' ";
+      }
+      $sql .= $orderMatchs;
+      $result = $myBdd->pdo->prepare($sql);
+      $result->execute($merge);
+    } elseif (count($arrayCompets) == 1) {
+      $sql = "SELECT a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre,
+                a.Date_match, a.Heure_match, a.Libelle, a.Terrain, b.Libelle EquipeA,
+                c.Libelle EquipeB, a.Terrain, a.ScoreA, a.ScoreB, a.Arbitre_principal,
+                a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire,
+                a.Validation, d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee,
+                cp.Soustitre2
+                FROM kp_competition cp, kp_journee d, kp_match a
+                LEFT OUTER JOIN kp_competition_equipe b ON (a.Id_equipeA = b.Id)
+                LEFT OUTER JOIN kp_competition_equipe c ON (a.Id_equipeB = c.Id)
+                WHERE a.Id_journee = d.Id
+                AND d.Code_competition = cp.Code
+                AND d.Code_saison = cp.Code_saison
+                AND d.Code_competition = ?
+                AND d.Code_saison = ? ";
+      $merge = array($arrayCompets[0], $codeSaison);
+      if ($filtreJour != '') {
+        $sql .= "AND a.Date_match = ? ";
+        $merge = array_merge($merge, [$filtreJour]);
+      }
+      if ($filtreTerrain != '') {
+        $sql .= "AND a.Terrain = ? ";
+        $merge = array_merge($merge, [$filtreTerrain]);
+      }
+      if ($filtreTour != '') {
+        $sql .= "AND d.Etape = ? ";
+        $merge = array_merge($merge, [$filtreTour]);
+      }
+      if ($filtreMatchsNonVerrouilles == 'on') {
+        $sql .= "AND a.Validation = 'N' ";
+      }
+      $sql .= $orderMatchs;
+      $result = $myBdd->pdo->prepare($sql);
+      $result->execute($merge);
+    } else {
+      $in = str_repeat('?,', count($arrayCompets) - 1) . '?';
+      $sql = "SELECT a.Id, a.Id_journee, a.Id_equipeA, a.Id_equipeB, a.Numero_ordre,
+                a.Date_match, a.Heure_match, a.Libelle, a.Terrain, b.Libelle EquipeA,
+                c.Libelle EquipeB, a.Terrain, a.ScoreA, a.ScoreB, a.Arbitre_principal,
+                a.Arbitre_secondaire, a.Matric_arbitre_principal, a.Matric_arbitre_secondaire,
+                a.Validation, d.Code_competition, d.Phase, d.Niveau, d.Lieu, d.Libelle LibelleJournee,
+                cp.Soustitre2
+                FROM kp_competition cp, kp_journee d, kp_match a
+                LEFT OUTER JOIN kp_competition_equipe b ON (a.Id_equipeA = b.Id)
+                LEFT OUTER JOIN kp_competition_equipe c ON (a.Id_equipeB = c.Id)
+                WHERE a.Id_journee = d.Id
+                AND d.Code_competition = cp.Code
+                AND d.Code_saison = cp.Code_saison
+                AND d.Code_competition IN ($in)
+                AND d.Code_saison = ? ";
+      $merge = array_merge(array_values($arrayCompets), [$codeSaison]);
+      if ($filtreJour != '') {
+        $sql .= "AND a.Date_match = ? ";
+        $merge = array_merge($merge, [$filtreJour]);
+      }
+      if ($filtreTerrain != '') {
+        $sql .= "AND a.Terrain = ? ";
+        $merge = array_merge($merge, [$filtreTerrain]);
+      }
+      if ($filtreTour != '') {
+        $sql .= "AND d.Etape = ? ";
+        $merge = array_merge($merge, [$filtreTour]);
+      }
+      if ($filtreMatchsNonVerrouilles == 'on') {
+        $sql .= "AND a.Validation = 'N' ";
+      }
+      $sql .= $orderMatchs;
+      $result = $myBdd->pdo->prepare($sql);
+      $result->execute($merge);
+    }
+
+    $resultarray = $result->fetchAll(PDO::FETCH_ASSOC);
+    foreach ($resultarray as $key => $row1) {
+      $lastCompetEvt = $row1['Code_competition'];
+    }
+    $Oldrupture = "";
+    // Chargement des infos de l'évènement ou de la compétition
+    $titreEvenementCompet = '';
+    if ($idEvenement != -1) {
+      $libelleEvenement = $myBdd->GetEvenementLibelle($idEvenement);
+      $titreEvenementCompet = 'Evénement : ' . $libelleEvenement;
+      $arrayCompetition = $myBdd->GetCompetition($lastCompetEvt, $codeSaison);
+    } else {
+      $arrayCompetition = $myBdd->GetCompetition($codeCompet, $codeSaison);
+      if ($arrayCompetition['Titre_actif'] == 'O') {
+        $titreEvenementCompet = $arrayCompetition['Libelle'];
+      } else {
+        $titreEvenementCompet = $arrayCompetition['Soustitre'];
+      }
+      if ($arrayCompetition['Soustitre2'] != '') {
+        $titreEvenementCompet .= ' - ' . $arrayCompetition['Soustitre2'];
+      }
+    }
+
+    $visuels = utyGetVisuels($arrayCompetition, FALSE);
+
+    // Initialiser les clés de arrayCompetition avec des valeurs par défaut pour éviter les NULL
+    $arrayCompetition = array_merge([
+      'Bandeau_actif' => '',
+      'Kpi_ffck_actif' => '',
+      'Logo_actif' => '',
+      'Sponsor_actif' => '',
+      'Titre_actif' => '',
+      'Libelle' => '',
+      'Soustitre' => '',
+      'Soustitre2' => '',
+      'Code_ref' => ''
+    ], array_filter($arrayCompetition, function($v) { return $v !== null; }));
+
+    // Entête PDF ...
+    $pdf = new MyPDF('L');
+    $pdf->SetTitle("Game table");
+    $pdf->SetAuthor("Kayak-polo.info");
+    $pdf->SetCreator("Kayak-polo.info avec mPDF");
+
+    // Construire le header HTML pour affichage sur toutes les pages
+    $headerHTML = '<div style="text-align: center;">';
+
+    // Bandeau
+    if ($arrayCompetition['Bandeau_actif'] == 'O' && isset($visuels['bandeau'])) {
+      $img = redimImage($visuels['bandeau'], 297, 10, 20, 'C');
+      $headerHTML .= '<img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" />';
+    } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O' && $arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+      // KPI + Logo
+      $img = redimImage($visuels['logo'], 297, 10, 20, 'R');
+      $headerHTML .= '<table width="100%"><tr>';
+      $headerHTML .= '<td width="33%" align="left"><img src="img/CNAKPI_small.jpg" style="height: 20mm;" /></td>';
+      $headerHTML .= '<td width="34%"></td>';
+      $headerHTML .= '<td width="33%" align="right"><img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /></td>';
+      $headerHTML .= '</tr></table>';
+    } elseif ($arrayCompetition['Kpi_ffck_actif'] == 'O') {
+      // KPI seul
+      $headerHTML .= '<img src="img/CNAKPI_small.jpg" style="height: 20mm;" />';
+    } elseif ($arrayCompetition['Logo_actif'] == 'O' && isset($visuels['logo'])) {
+      // Logo seul
+      $img = redimImage($visuels['logo'], 297, 10, 20, 'C');
+      $headerHTML .= '<img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" />';
+    }
+
+    $headerHTML .= '</div>';
+    $pdf->SetHTMLHeader($headerHTML);
+
+    // Construire le footer HTML pour affichage sur toutes les pages
+    $footerHTML = '';
+
+    // Sponsor d'abord (en haut du footer)
+    if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
+      $img = redimImage($visuels['sponsor'], 297, 10, 16, 'C');
+      $footerHTML .= '<div style="text-align: center;"><img src="' . $img['image'] . '" style="height: ' . $img['newHauteur'] . 'mm;" /></div>';
+    }
+
+    // Page number et date en dessous (plus près du bord bas)
+    $footerHTML .= '<table width="100%" style="font-family: Arial; font-size: 8pt; font-style: italic;"><tr>';
+    $footerHTML .= '<td width="50%" align="left">Page {PAGENO}</td>';
+    $footerHTML .= '<td width="50%" align="right">Print: ' . date("Y-m-d H:i") . '</td>';
+    $footerHTML .= '</tr></table>';
+
+    $pdf->SetHTMLFooter($footerHTML);
+
+    if ($arrayCompetition['Sponsor_actif'] == 'O' && isset($visuels['sponsor'])) {
+      $pdf->SetAutoPageBreak(true, 30);  // Marge basse pour footer sponsor + page/date
+    } else {
+      $pdf->SetAutoPageBreak(true, 20);  // Marge basse pour footer simple (page/date uniquement)
+    }
+
+    // Configurer les marges pour éviter chevauchement avec header/footer
+    $pdf->SetTopMargin(30);  // Marge haute pour laisser place au bandeau/logo
+
+    // QRCode (optionnel - commenté dans l'original)
+    // $qrcode = new QRcode('https://www.kayak-polo.info/Journee.php?Compet=' . $codeCompet . '&Group=' . $arrayCompetition['Code_ref'] . '&Saison=' . $codeSaison, 'L');
+    // $qrcode->displayFPDF($pdf, 265, 9, 21);
+
+    $titreDate = "Season " . $codeSaison;
+    // titre
+    $pdf->SetFont('Arial', 'BI', 12);
+    $pdf->Cell(137, 5, $titreEvenementCompet, 0, 0, 'L');
+    $pdf->Cell(136, 5, $titreDate, 0, 1, 'R');
+    $pdf->SetFont('Arial', 'B', 14);
+    $pdf->Cell(273, 6, "Game list", 0, 1, 'C');
+    $pdf->Ln(3);
+
+    // Initialiser $tab pour éviter "Undefined variable" si aucun résultat
+    $tab = [];
+
+    foreach ($resultarray as $key => $row) {
+      // Convertir NULL en chaîne vide pour éviter les problèmes avec mPDF et strtolower
+      $row = array_map(function($v) { return $v === null ? '' : $v; }, $row);
+
+      $EquipesAffectAuto = ['', '', '', ''];
+      if ($row['Soustitre2'] != '') {
+        $row['Code_competition'] = $row['Soustitre2'];
+      }
+      if ($row['Libelle'] != '') {
+        $EquipesAffectAuto = utyEquipesAffectAuto($row['Libelle']);
+      }
+      if ($row['Id_equipeA'] < 1 && isset($EquipesAffectAuto[0]) && $EquipesAffectAuto[0] != '') {
+        $row['EquipeA'] = $EquipesAffectAuto[0];
+      }
+      if ($row['Id_equipeB'] < 1 && isset($EquipesAffectAuto[1]) && $EquipesAffectAuto[1] != '') {
+        $row['EquipeB'] = $EquipesAffectAuto[1];
+      }
+      if ($row['Arbitre_principal'] != '' && $row['Arbitre_principal'] != '-1') {
+        $row['Arbitre_principal'] = utyArbSansNiveau($row['Arbitre_principal']);
+      } elseif (isset($EquipesAffectAuto[2]) && $EquipesAffectAuto[2] != '') {
+        $row['Arbitre_principal'] = $EquipesAffectAuto[2];
+      } else {
+        $row['Arbitre_principal'] = '';
+      }
+      if ($row['Arbitre_secondaire'] != '' && $row['Arbitre_secondaire'] != '-1') {
+        $row['Arbitre_secondaire'] = utyArbSansNiveau($row['Arbitre_secondaire']);
+      } elseif (isset($EquipesAffectAuto[3]) && $EquipesAffectAuto[3] != '') {
+        $row['Arbitre_secondaire'] = $EquipesAffectAuto[3];
+      } else {
+        $row['Arbitre_secondaire'] = '';
+      }
+
+      $datematch = $row['Date_match'] ?? '';
+      $heure = $row['Heure_match'] ?? '';
+      $terrain = $row['Terrain'] ?? '';
+
+      $tab[$datematch][$heure][$terrain][] = $row;
+    }
+
+    foreach ($tab as $date => $tab_heure) {
+      $pdf->AddPage();
+      $pdf->SetLeftMargin(8.5);   // Centre le tableau de 280mm sur une page de 297mm
+      $pdf->SetRightMargin(8.5);
+      $pdf->SetX(8.5);
+
+      $pdf->SetFillColor(220, 220, 220);
+      $pdf->SetFont('Arial', 'B', 7);
+      $date = date_create($date);
+      $date = date_format($date, 'l Y-m-d');
+      $pdf->Cell(30, 5, $date, 0, 1, 'L');
+
+      $pdf->Cell(10, 5, '', 0, 0, 'L');
+      $pdf->Cell(54, 5, 'Pitch 1', 1, 0, 'C', 1);
+      $pdf->Cell(54, 5, 'Pitch 2', 1, 0, 'C', 1);
+      $pdf->Cell(54, 5, 'Pitch 3', 1, 0, 'C', 1);
+      $pdf->Cell(54, 5, 'Pitch 4', 1, 0, 'C', 1);
+      $pdf->Cell(54, 5, 'Pitch 5', 1, 1, 'C', 1);
+
+      $pdf->Cell(10, 5, 'Time', 1, 0, 'C', 1);
+
+      $pdf->Cell(6, 5, '#', 1, 0, 'C', 1);
+      $pdf->Cell(12, 5, 'Cat.', 1, 0, 'C', 1);
+      $pdf->Cell(18, 5, 'Team A', 1, 0, 'C', 1);
+      $pdf->Cell(18, 5, 'Team B', 1, 0, 'C', 1);
+
+      $pdf->Cell(6, 5, '#', 1, 0, 'C', 1);
+      $pdf->Cell(12, 5, 'Cat.', 1, 0, 'C', 1);
+      $pdf->Cell(18, 5, 'Team A', 1, 0, 'C', 1);
+      $pdf->Cell(18, 5, 'Team B', 1, 0, 'C', 1);
+
+      $pdf->Cell(6, 5, '#', 1, 0, 'C', 1);
+      $pdf->Cell(12, 5, 'Cat.', 1, 0, 'C', 1);
+      $pdf->Cell(18, 5, 'Team A', 1, 0, 'C', 1);
+      $pdf->Cell(18, 5, 'Team B', 1, 0, 'C', 1);
+
+      $pdf->Cell(6, 5, '#', 1, 0, 'C', 1);
+      $pdf->Cell(12, 5, 'Cat.', 1, 0, 'C', 1);
+      $pdf->Cell(18, 5, 'Team A', 1, 0, 'C', 1);
+      $pdf->Cell(18, 5, 'Team B', 1, 0, 'C', 1);
+
+      $pdf->Cell(6, 5, '#', 1, 0, 'C', 1);
+      $pdf->Cell(12, 5, 'Cat.', 1, 0, 'C', 1);
+      $pdf->Cell(18, 5, 'Team A', 1, 0, 'C', 1);
+      $pdf->Cell(18, 5, 'Team B', 1, 1, 'C', 1);
+
+      foreach ($tab_heure as $heure => $tab_terrain) {
+
+        $pdf->SetFont('Arial', '', 6);
+        $pdf->Cell(10, 5, $heure, 1, '0', 'C');
+
+        for ($i = 1; $i <= 5; $i++) {
+          $findeligne = ($i == 5) ? 1 : 0;
+          if (isset($tab_terrain[$i]) && $tab_terrain[$i][0]['Phase'] !== 'Break' && $tab_terrain[$i][0]['Phase'] !== 'Pause') {
+            $pdf->Cell(6, 5, $tab_terrain[$i][0]['Numero_ordre'], 1, 0, 'C', 1);
+            $pdf->Cell(12, 5, $tab_terrain[$i][0]['Code_competition'], 1, 0, 'C');
+
+            $lenA = strlen($tab_terrain[$i][0]['EquipeA']);
+            $pdf->SetFont('Arial', '', $lenA > 14 ? 4 : ($lenA > 8 ? 5 : 6));
+            $pdf->Cell(18, 5, $tab_terrain[$i][0]['EquipeA'], 1, 0, 'C');
+
+            $lenB = strlen($tab_terrain[$i][0]['EquipeB']);
+            $pdf->SetFont('Arial', '', $lenB > 14 ? 4 : ($lenB > 8 ? 5 : 6));
+            $pdf->Cell(18, 5, $tab_terrain[$i][0]['EquipeB'], 1, $findeligne, 'C');
+          } else {
+            $pdf->SetFont('Arial', '', 6);
+            $pdf->Cell(54, 5, 'Break', 1, $findeligne, 'C', 1);
+          }
+        }
+      }
+    }
+
+
+
+    $pdf->Cell(280, 3, '', 'T', '1', 'C');
+    $pdf->Output('GameTable-Teams.pdf', \Mpdf\Output\Destination::INLINE);
+  }
+}
+
+$page = new PdfListeMatchs();

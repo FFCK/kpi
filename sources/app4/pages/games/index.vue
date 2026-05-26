@@ -1456,6 +1456,24 @@ const statusBtnClass = (game: Game) => {
               <UIcon name="heroicons:table-cells" class="w-5 h-5 text-header-500" />
               {{ t('games.documents.pitches_5_8_phases') }}
             </a>
+            <a
+              :href="docUrl('PdfListeMatchs5TerrainsEn.php', true)"
+              target="_blank"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
+              @click="documentsOpen = false"
+            >
+              <UIcon name="heroicons:table-cells" class="w-5 h-5 text-header-500" />
+              {{ t('games.documents.pitches_1_5_phases') }}
+            </a>
+            <a
+              :href="docUrl('PdfListeMatchs5TerrainsEnTeams.php', true)"
+              target="_blank"
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
+              @click="documentsOpen = false"
+            >
+              <UIcon name="heroicons:table-cells" class="w-5 h-5 text-header-500" />
+              {{ t('games.documents.pitches_1_5_teams') }}
+            </a>
           </div>
         </div>
       </template>
