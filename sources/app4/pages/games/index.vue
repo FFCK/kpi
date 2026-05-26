@@ -557,9 +557,63 @@ const cancelInlineEdit = () => {
   editingCell.value = null
 }
 
+const inlineTabOrder = ['Heure_match', 'Terrain', 'Libelle']
+
 const handleInlineKeydown = (e: KeyboardEvent) => {
-  if (e.key === 'Enter') saveInlineEdit()
-  else if (e.key === 'Escape') cancelInlineEdit()
+  if (e.key === 'Enter') {
+    saveInlineEdit()
+  } else if (e.key === 'Escape') {
+    cancelInlineEdit()
+  } else if (e.key === 'Tab') {
+    e.preventDefault()
+    if (!editingCell.value) return
+    const { id, field } = editingCell.value
+    const currentIdx = inlineTabOrder.indexOf(field)
+    if (currentIdx === -1) {
+      saveInlineEdit()
+      return
+    }
+    const value = editingValue.value
+    const originalValue = editingOriginalValue.value
+    editingCell.value = null
+
+    const nextIdx = e.shiftKey
+      ? (currentIdx - 1 + inlineTabOrder.length) % inlineTabOrder.length
+      : (currentIdx + 1) % inlineTabOrder.length
+
+    // Determine which game to move to (next/prev row on wrap)
+    let targetGame = filteredGames.value.find(g => g.id === id) ?? null
+    if (!e.shiftKey && nextIdx === 0) {
+      const rowIdx = filteredGames.value.findIndex(g => g.id === id)
+      targetGame = filteredGames.value[rowIdx + 1] ?? null
+    } else if (e.shiftKey && nextIdx === inlineTabOrder.length - 1) {
+      const rowIdx = filteredGames.value.findIndex(g => g.id === id)
+      targetGame = filteredGames.value[rowIdx - 1] ?? null
+    }
+
+    // Save current value if changed
+    if (value !== originalValue) {
+      api.patch(`/admin/games/${id}/inline`, { field, value }).then(() => {
+        const game = games.value.find(g => g.id === id)
+        if (game) {
+          const prop = inlineFieldMap[field]
+          if (prop) {
+            const numericFields = ['numeroOrdre']
+            if (numericFields.includes(prop)) {
+              ;(game as Record<string, unknown>)[prop] = value ? parseInt(value) : null
+            } else {
+              ;(game as Record<string, unknown>)[prop] = value || null
+            }
+          }
+        }
+        toast.add({ title: t('common.saved'), color: 'success' })
+      }).catch(() => {})
+    }
+
+    if (targetGame && isGameEditable(targetGame)) {
+      startInlineEdit(targetGame, inlineTabOrder[nextIdx])
+    }
+  }
 }
 
 const onScoreInput = () => {
