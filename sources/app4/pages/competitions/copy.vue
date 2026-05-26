@@ -20,8 +20,8 @@ const copyApi = useCompetitionCopyApi()
 
 // --- Search state ---
 const searchNbEquipes = ref<number | null>(null)
-const searchType = ref<'' | 'CHPT' | 'CP'>('')
-const searchTri = ref<'saison' | 'matchs'>('saison')
+const searchType = ref<'' | 'CHPT' | 'CP'>('CP')
+const searchTri = ref<'saison' | 'matchs'>('matchs')
 const searchLoading = ref(false)
 const schemas = ref<SchemaSearchResult[]>([])
 const hasSearched = ref(false)
