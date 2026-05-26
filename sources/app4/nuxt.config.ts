@@ -3,6 +3,7 @@
 const baseUrl = process.env.BASE_URL ?? '/admin2'
 const api2BaseUrl = process.env.API2_BASE_URL ?? 'https://kpi.localhost/api2'
 const legacyBaseUrl = process.env.LEGACY_BASE_URL ?? 'https://kpi.localhost'
+const app2BaseUrl = process.env.APP2_BASE_URL ?? 'https://app.kpi.localhost'
 
 export default defineNuxtConfig({
   ssr: false,
@@ -25,7 +26,8 @@ export default defineNuxtConfig({
     public: {
       baseUrl,
       api2BaseUrl,
-      legacyBaseUrl
+      legacyBaseUrl,
+      app2BaseUrl
     }
   },
 

@@ -327,6 +327,16 @@ onMounted(() => {
             <UIcon name="heroicons:arrow-top-right-on-square" class="w-4 h-4" />
             <span>KPI Public</span>
           </a>
+          <a
+            :href="runtimeConfig.public.app2BaseUrl"
+            target="_blank"
+            class="flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium transition-colors
+              text-success-300 hover:text-light-50 hover:bg-success-800
+            "
+          >
+            <UIcon name="heroicons:arrow-top-right-on-square" class="w-4 h-4" />
+            <span>KPI App</span>
+          </a>
           <!-- Section: Competition Management -->
           <template v-for="item in competitionMenuItems" :key="item.label">
             <NuxtLink
@@ -521,6 +531,14 @@ onMounted(() => {
           >
             <UIcon name="heroicons:arrow-top-right-on-square" class="w-5 h-5" />
             <span>KPI Public</span>
+          </a>
+          <a
+            :href="runtimeConfig.public.app2BaseUrl"
+            target="_blank"
+            class="flex items-center gap-2 py-2 text-sm font-medium transition-colors text-success-300 hover:text-success-100"
+          >
+            <UIcon name="heroicons:arrow-top-right-on-square" class="w-5 h-5" />
+            <span>KPI App</span>
           </a>
           <!-- Section: Competition Management -->
           <template v-for="item in competitionMenuItems" :key="item.label">
