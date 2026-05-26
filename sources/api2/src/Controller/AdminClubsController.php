@@ -123,7 +123,7 @@ class AdminClubsController extends AbstractController
     /**
      * Get a single club detail
      */
-    #[Route('/admin/clubs/{code}', name: 'admin_clubs_detail', methods: ['GET'], requirements: ['code' => '\d+'])]
+    #[Route('/admin/clubs/{code}', name: 'admin_clubs_detail', methods: ['GET'], requirements: ['code' => '[A-Za-z0-9]+'])]
     public function detail(string $code): JsonResponse
     {
         $sql = "SELECT c.Code, c.Libelle, c.Code_comite_dep, c.Coord, c.Coord2, c.Postal, c.www, c.email,
@@ -155,7 +155,7 @@ class AdminClubsController extends AbstractController
     /**
      * Update a club (coord, postal, www, email)
      */
-    #[Route('/admin/clubs/{code}', name: 'admin_clubs_update', methods: ['PATCH'], requirements: ['code' => '\d+'])]
+    #[Route('/admin/clubs/{code}', name: 'admin_clubs_update', methods: ['PATCH'], requirements: ['code' => '[A-Za-z0-9]+'])]
     #[IsGranted('ROLE_ADMIN')]
     public function update(string $code, Request $request): JsonResponse
     {
@@ -278,7 +278,7 @@ class AdminClubsController extends AbstractController
     /**
      * Get all teams (kp_equipe) for a club, with last season and competition count
      */
-    #[Route('/admin/clubs/{code}/teams', name: 'admin_clubs_teams', methods: ['GET'], requirements: ['code' => '\d+'])]
+    #[Route('/admin/clubs/{code}/teams', name: 'admin_clubs_teams', methods: ['GET'], requirements: ['code' => '[A-Za-z0-9]+'])]
     public function clubTeams(string $code): JsonResponse
     {
         // Check club exists
