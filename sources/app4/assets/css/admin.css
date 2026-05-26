@@ -608,6 +608,11 @@ label[for] {
   cursor: pointer;
 }
 
+/* ===== Game Code (libelle) font ===== */
+.game-code {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 /* ===== Inline Editable Cells ===== */
 /* Subtle visual indicator for fields that can be edited inline (click to edit) */
 .editable-cell {

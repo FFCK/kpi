@@ -1819,7 +1819,7 @@ const statusBtnClass = (game: Game) => {
                     v-model="editingValue" v-inline-focus
                     type="text"
                     maxlength="30"
-                    class="w-full px-0.5 py-0 text-xs border border-primary-400 rounded"
+                    class="w-full px-0.5 py-0 text-xs border border-primary-400 rounded game-code"
                     @keydown="handleInlineKeydown"
                     @blur="saveInlineEdit"
                   >
@@ -1827,6 +1827,7 @@ const statusBtnClass = (game: Game) => {
                 <template v-else>
                   <span
                     :class="isGameEditable(g) ? 'editable-cell' : ''"
+                    class="game-code"
                     @click="startInlineEdit(g, 'Libelle')"
                   >{{ g.libelle || '-' }}</span>
                 </template>
