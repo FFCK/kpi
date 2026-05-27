@@ -731,8 +731,8 @@ const pdfLinks = computed(() => {
               </select>
             </td>
 
-            <td class="px-3 py-1 text-sm font-medium text-header-900">{{ player.nom }}</td>
-            <td class="px-3 py-1 text-sm text-header-900">{{ player.prenom }}</td>
+            <td class="px-3 py-1 text-sm font-medium text-header-900">{{ formatNom(player.nom) }}</td>
+            <td class="px-3 py-1 text-sm text-header-900">{{ formatPrenom(player.prenom) }}</td>
             <td class="px-3 py-1 text-sm text-header-500 font-mono text-center">
               <NuxtLink
                 :to="`/athletes?matric=${player.matric}`"
@@ -862,8 +862,8 @@ const pdfLinks = computed(() => {
                   <option value="X">{{ t('presence.status_inactive') }}</option>
                 </select>
               </td>
-              <td class="px-3 py-1 text-sm font-medium text-header-900">{{ player.nom }}</td>
-              <td class="px-3 py-1 text-sm text-header-900">{{ player.prenom }}</td>
+              <td class="px-3 py-1 text-sm font-medium text-header-900">{{ formatNom(player.nom) }}</td>
+              <td class="px-3 py-1 text-sm text-header-900">{{ formatPrenom(player.prenom) }}</td>
               <td class="px-3 py-1 text-sm text-header-500 font-mono text-center">
                 <NuxtLink
                   :to="`/athletes?matric=${player.matric}`"
@@ -965,8 +965,8 @@ const pdfLinks = computed(() => {
                   <option value="X">{{ t('presence.status_inactive') }}</option>
                 </select>
               </td>
-              <td class="px-3 py-1 text-sm font-medium text-header-900">{{ player.nom }}</td>
-              <td class="px-3 py-1 text-sm text-header-900">{{ player.prenom }}</td>
+              <td class="px-3 py-1 text-sm font-medium text-header-900">{{ formatNom(player.nom) }}</td>
+              <td class="px-3 py-1 text-sm text-header-900">{{ formatPrenom(player.prenom) }}</td>
               <td class="px-3 py-1 text-sm text-header-500 font-mono text-center">
                 <NuxtLink
                   :to="`/athletes?matric=${player.matric}`"
@@ -1068,8 +1068,8 @@ const pdfLinks = computed(() => {
                   <option value="X">{{ t('presence.status_inactive') }}</option>
                 </select>
               </td>
-              <td class="px-3 py-1 text-sm font-medium text-header-900">{{ player.nom }}</td>
-              <td class="px-3 py-1 text-sm text-header-900">{{ player.prenom }}</td>
+              <td class="px-3 py-1 text-sm font-medium text-header-900">{{ formatNom(player.nom) }}</td>
+              <td class="px-3 py-1 text-sm text-header-900">{{ formatPrenom(player.prenom) }}</td>
               <td class="px-3 py-1 text-sm text-header-500 font-mono text-center">
                 <NuxtLink
                   :to="`/athletes?matric=${player.matric}`"
@@ -1154,7 +1154,7 @@ const pdfLinks = computed(() => {
               class="rounded border-header-300"
             >
             <div>
-              <div class="font-bold text-header-900">{{ player.nom }} {{ player.prenom }}</div>
+              <div class="font-bold text-header-900">{{ formatNom(player.nom) }} {{ formatPrenom(player.prenom) }}</div>
               <NuxtLink
                 :to="`/athletes?matric=${player.matric}`"
                 class="link-value text-sm"
@@ -1415,7 +1415,7 @@ const pdfLinks = computed(() => {
                           class="text-xs text-amber-800 underline hover:text-amber-950 cursor-pointer"
                           @click="selectDuplicate(dup)"
                         >
-                          {{ dup.nom }} {{ dup.prenom }} ({{ dup.matric }}) - {{ dup.club }}
+                          {{ formatNom(dup.nom) }} {{ formatPrenom(dup.prenom) }} ({{ dup.matric }}) - {{ dup.club }}
                         </button>
                       </li>
                     </ul>

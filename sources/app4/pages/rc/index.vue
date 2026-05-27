@@ -381,10 +381,10 @@ watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGrou
               {{ rc.ordre }}
             </td>
             <td class="px-3 py-4 text-sm font-medium text-header-900">
-              {{ rc.nom }}
+              {{ formatNom(rc.nom) }}
             </td>
             <td class="px-3 py-4 text-sm text-header-900">
-              {{ rc.prenom }}
+              {{ formatPrenom(rc.prenom) }}
             </td>
             <td class="px-3 py-4 text-sm text-header-500 font-mono">
               {{ rc.matric }}
@@ -423,7 +423,7 @@ watch([() => workContext.pageCompetitionCodeAll, () => workContext.pageEventGrou
       >
         <template #header>
           <div>
-            <div class="font-bold">{{ rc.nom }} {{ rc.prenom }}</div>
+            <div class="font-bold">{{ formatNom(rc.nom) }} {{ formatPrenom(rc.prenom) }}</div>
             <div class="text-sm text-header-500">{{ rc.competitionLabel }}</div>
           </div>
         </template>

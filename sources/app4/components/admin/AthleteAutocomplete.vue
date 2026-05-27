@@ -81,9 +81,7 @@ watch(searchQuery, () => {
 function selectItem(item: AthleteResult) {
   justSelected = true
   skipNextSearch = true
-  const prenom = item.prenom.charAt(0).toUpperCase() + item.prenom.slice(1).toLowerCase()
-  const nom = item.nom.toUpperCase()
-  const value = `${prenom} ${nom} (${item.matric})`
+  const value = `${formatPrenom(item.prenom)} ${formatNom(item.nom)} (${item.matric})`
   searchQuery.value = value
   emit('update:modelValue', value)
   results.value = []
@@ -183,7 +181,7 @@ onUnmounted(() => {
         class="w-full px-3 py-1.5 text-left hover:bg-primary-50 border-b border-header-50 transition-colors"
         @mousedown.prevent="selectItem(item)"
       >
-        <div class="text-sm font-medium">{{ item.nom }} {{ item.prenom }}</div>
+        <div class="text-sm font-medium">{{ formatNom(item.nom) }} {{ formatPrenom(item.prenom) }}</div>
         <div class="text-xs text-header-500">{{ item.matric }} - {{ item.club }}</div>
       </button>
     </div>

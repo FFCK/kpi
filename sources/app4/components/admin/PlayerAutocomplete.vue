@@ -73,7 +73,7 @@ function selectPlayer(player: PlayerAutocomplete) {
   emit('update:modelValue', player)
   emit('player-selected', player)
   skipNextSearch = true
-  searchQuery.value = `${player.nom} ${player.prenom}`
+  searchQuery.value = `${formatNom(player.nom)} ${formatPrenom(player.prenom)}`
   results.value = []
   isOpen.value = false
 }
@@ -162,7 +162,7 @@ onUnmounted(() => {
         class="w-full px-3 py-2 text-left hover:bg-primary-50 border-b border-header-100 last:border-b-0 transition-colors"
         @click="selectPlayer(player)"
       >
-        <div class="font-medium text-sm">{{ player.nom }} {{ player.prenom }}</div>
+        <div class="font-medium text-sm">{{ formatNom(player.nom) }} {{ formatPrenom(player.prenom) }}</div>
         <div class="text-xs text-header-700">{{ player.label }}</div>
       </button>
     </div>
@@ -171,7 +171,7 @@ onUnmounted(() => {
     <div v-if="modelValue" class="mt-2 p-3 bg-primary-50 border border-primary-200 rounded-lg">
       <div class="flex items-center justify-between">
         <div>
-          <span class="font-semibold text-header-900">{{ modelValue.nom }} {{ modelValue.prenom }}</span>
+          <span class="font-semibold text-header-900">{{ formatNom(modelValue.nom) }} {{ formatPrenom(modelValue.prenom) }}</span>
           <span class="text-sm text-header-500 ml-2">{{ modelValue.matric }}</span>
         </div>
         <button

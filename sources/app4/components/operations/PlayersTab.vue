@@ -239,7 +239,7 @@ const onClickOutside = () => {
               class="w-full px-4 py-2 text-left hover:bg-header-50 text-sm text-header-900"
               @click="selectSource(player)"
             >
-              <div class="font-medium">{{ player.nom }} {{ player.prenom }}</div>
+              <div class="font-medium">{{ formatNom(player.nom) }} {{ formatPrenom(player.prenom) }}</div>
               <div class="text-xs text-header-500">
                 {{ player.matric }} - {{ player.club || 'Sans club' }}
               </div>
@@ -249,7 +249,7 @@ const onClickOutside = () => {
           <div v-if="selectedSource" class="mt-2 p-2 bg-primary-50 border border-primary-200 rounded-lg">
             <div class="flex items-center gap-2">
               <UIcon name="i-heroicons-check-circle" class="w-5 h-5 text-primary-600" />
-              <span class="text-sm font-medium">{{ selectedSource.nom }} {{ selectedSource.prenom }}</span>
+              <span class="text-sm font-medium">{{ formatNom(selectedSource.nom) }} {{ formatPrenom(selectedSource.prenom) }}</span>
               <span class="text-xs text-header-500">({{ selectedSource.matric }})</span>
             </div>
           </div>
@@ -280,7 +280,7 @@ const onClickOutside = () => {
               class="w-full px-4 py-2 text-left hover:bg-header-50 text-sm text-header-900"
               @click="selectTarget(player)"
             >
-              <div class="font-medium">{{ player.nom }} {{ player.prenom }}</div>
+              <div class="font-medium">{{ formatNom(player.nom) }} {{ formatPrenom(player.prenom) }}</div>
               <div class="text-xs text-header-500">
                 {{ player.matric }} - {{ player.club || 'Sans club' }}
               </div>
@@ -290,7 +290,7 @@ const onClickOutside = () => {
           <div v-if="selectedTarget" class="mt-2 p-2 bg-success-50 border border-success-200 rounded-lg">
             <div class="flex items-center gap-2">
               <UIcon name="i-heroicons-check-circle" class="w-5 h-5 text-success-500" />
-              <span class="text-sm font-medium">{{ selectedTarget.nom }} {{ selectedTarget.prenom }}</span>
+              <span class="text-sm font-medium">{{ formatNom(selectedTarget.nom) }} {{ formatPrenom(selectedTarget.prenom) }}</span>
               <span class="text-xs text-header-500">({{ selectedTarget.matric }})</span>
             </div>
           </div>

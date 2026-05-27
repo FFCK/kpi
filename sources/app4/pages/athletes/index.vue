@@ -497,7 +497,7 @@ onBeforeUnmount(() => {
           @click="selectAthlete(result)"
         >
           <span class="font-mono text-xs text-header-500 bg-header-100 px-1.5 py-0.5 rounded shrink-0">{{ result.matric }}</span>
-          <span class="font-medium">{{ result.nom }} {{ result.prenom }}</span>
+          <span class="font-medium">{{ formatNom(result.nom) }} {{ formatPrenom(result.prenom) }}</span>
           <span v-if="result.club" class="text-header-600 text-xs truncate">— {{ result.club }}</span>
         </button>
       </div>
@@ -530,7 +530,7 @@ onBeforeUnmount(() => {
           <div class="flex items-center justify-between gap-4">
             <h2 class="text-lg font-bold text-header-900">
               {{ t('athletes.licence') }}{{ athlete.matric }}
-              <span class="ml-3">{{ athlete.nom }} {{ athlete.prenom }}</span>
+              <span class="ml-3">{{ formatNom(athlete.nom) }} {{ formatPrenom(athlete.prenom) }}</span>
               <span class="text-header-500 font-normal ml-2">({{ athlete.sexe }})</span>
               <span v-if="athlete.naissance" class="text-header-500 font-normal ml-2">
                 {{ formatDate(athlete.naissance) }}

@@ -358,18 +358,56 @@ class AdminOperationsController extends AbstractController
             return $this->json([]);
         }
 
-        // Split query into all words to support compound names (e.g. "Van De Kapelle Enzo")
-        $words = preg_split('/\s+/', trim($query), -1, PREG_SPLIT_NO_EMPTY);
+        // Normalize query: replace hyphens and apostrophes with spaces, then split
+        // This handles compound names stored with spaces when user types with hyphens or apostrophes
+        // e.g. "Sainte-Martine" → also tries "Sainte Martine"; "D'Artagnan" → also "D Artagnan"
+        $normalizeCompound = static function (string $word): array {
+            $variants = [$word];
+            // Replace hyphens and apostrophes with space to match DB variants
+            $spaced = preg_replace('/[-\'\x{2019}]/u', ' ', $word);
+            if ($spaced !== $word) {
+                $variants[] = $spaced;
+            }
+            // Also replace spaces with hyphen (in case DB stores with hyphen but user typed with space)
+            $hyphenated = preg_replace('/\s+/', '-', $word);
+            if ($hyphenated !== $word && !in_array($hyphenated, $variants, true)) {
+                $variants[] = $hyphenated;
+            }
+            return $variants;
+        };
 
-        if (count($words) >= 2) {
-            // Each word must appear somewhere in (Nom + Prenom), regardless of order
+        // Split query on spaces and also on hyphens/apostrophes to extract all atoms
+        $rawWords = preg_split('/[\s\-\'\x{2019}]+/u', trim($query), -1, PREG_SPLIT_NO_EMPTY);
+
+        if (count($rawWords) >= 2) {
+            // Each raw word must appear somewhere in (Nom + Prenom), regardless of order
+            // For words that contain hyphens/apostrophes originally, also try spaced variant
+            $originalWords = preg_split('/\s+/', trim($query), -1, PREG_SPLIT_NO_EMPTY);
+
             $conditions = [];
             $params = [];
-            foreach ($words as $word) {
-                $term = "%$word%";
-                $conditions[] = "(l.Nom LIKE ? OR l.Prenom LIKE ?)";
-                $params[] = $term;
-                $params[] = $term;
+            foreach ($originalWords as $word) {
+                $variants = $normalizeCompound($word);
+                // Build OR conditions for all variants of this word
+                $wordClauses = [];
+                foreach ($variants as $variant) {
+                    // A variant with a space means a sub-sequence: use LIKE '%part1%part2%'
+                    if (str_contains($variant, ' ')) {
+                        $parts = preg_split('/\s+/', $variant, -1, PREG_SPLIT_NO_EMPTY);
+                        $likePat = '%' . implode('%', $parts) . '%';
+                        $wordClauses[] = "l.Nom LIKE ?";
+                        $params[] = $likePat;
+                        $wordClauses[] = "l.Prenom LIKE ?";
+                        $params[] = $likePat;
+                    } else {
+                        $term = "%$variant%";
+                        $wordClauses[] = "l.Nom LIKE ?";
+                        $params[] = $term;
+                        $wordClauses[] = "l.Prenom LIKE ?";
+                        $params[] = $term;
+                    }
+                }
+                $conditions[] = '(' . implode(' OR ', $wordClauses) . ')';
             }
             $sql = "SELECT l.Matric, l.Nom, l.Prenom, l.Naissance, l.Numero_club, c.Libelle as Club
                     FROM kp_licence l
@@ -379,14 +417,36 @@ class AdminOperationsController extends AbstractController
                     LIMIT $limit";
         } else {
             // Single word: search across nom, prenom, matric, ICF (Reserve)
+            // Also try normalized variant (hyphen↔space)
+            $variants = $normalizeCompound($query);
+            $wordClauses = [];
+            $params = [];
+            foreach ($variants as $variant) {
+                if (str_contains($variant, ' ')) {
+                    $parts = preg_split('/\s+/', $variant, -1, PREG_SPLIT_NO_EMPTY);
+                    $likePat = '%' . implode('%', $parts) . '%';
+                    $wordClauses[] = "l.Nom LIKE ?";
+                    $params[] = $likePat;
+                    $wordClauses[] = "l.Prenom LIKE ?";
+                    $params[] = $likePat;
+                } else {
+                    $term = "%$variant%";
+                    $wordClauses[] = "l.Nom LIKE ?";
+                    $params[] = $term;
+                    $wordClauses[] = "l.Prenom LIKE ?";
+                    $params[] = $term;
+                    $wordClauses[] = "l.Matric LIKE ?";
+                    $params[] = $term;
+                    $wordClauses[] = "l.Reserve LIKE ?";
+                    $params[] = $term;
+                }
+            }
             $sql = "SELECT l.Matric, l.Nom, l.Prenom, l.Naissance, l.Numero_club, c.Libelle as Club
                     FROM kp_licence l
                     LEFT JOIN kp_club c ON l.Numero_club = c.Code
-                    WHERE l.Nom LIKE ? OR l.Prenom LIKE ? OR l.Matric LIKE ? OR l.Reserve LIKE ?
+                    WHERE " . implode(' OR ', $wordClauses) . "
                     ORDER BY l.Nom, l.Prenom
                     LIMIT $limit";
-            $searchTerm = "%$query%";
-            $params = [$searchTerm, $searchTerm, $searchTerm, $searchTerm];
         }
 
         $stmt = $this->connection->prepare($sql);

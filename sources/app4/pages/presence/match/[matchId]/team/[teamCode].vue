@@ -513,8 +513,8 @@ const formatDate = (dateStr: string) => {
               </select>
             </td>
 
-            <td class="px-3 py-1 text-sm font-medium text-header-900">{{ player.nom }}</td>
-            <td class="px-3 py-1 text-sm text-header-900">{{ player.prenom }}</td>
+            <td class="px-3 py-1 text-sm font-medium text-header-900">{{ formatNom(player.nom) }}</td>
+            <td class="px-3 py-1 text-sm text-header-900">{{ formatPrenom(player.prenom) }}</td>
             <td class="px-3 py-1 text-sm text-header-500 font-mono">
                 <NuxtLink
                   :to="`/athletes?matric=${player.matric}`"
@@ -573,8 +573,8 @@ const formatDate = (dateStr: string) => {
               </td>
               <td class="px-3 py-1 text-sm text-header-900">{{ player.numero || '-' }}</td>
               <td class="px-3 py-1 text-sm">{{ statusLabel(player.capitaine) }}</td>
-              <td class="px-3 py-1 text-sm font-medium text-header-900">{{ player.nom }}</td>
-              <td class="px-3 py-1 text-sm text-header-900">{{ player.prenom }}</td>
+              <td class="px-3 py-1 text-sm font-medium text-header-900">{{ formatNom(player.nom) }}</td>
+              <td class="px-3 py-1 text-sm text-header-900">{{ formatPrenom(player.prenom) }}</td>
               <td class="px-3 py-1 text-sm text-header-500 font-mono">
                 <NuxtLink
                   :to="`/athletes?matric=${player.matric}`"
@@ -625,7 +625,7 @@ const formatDate = (dateStr: string) => {
               class="rounded border-header-300"
             >
             <div>
-              <div class="font-bold text-header-900">{{ player.nom }} {{ player.prenom }}</div>
+              <div class="font-bold text-header-900">{{ formatNom(player.nom) }} {{ formatPrenom(player.prenom) }}</div>
               <NuxtLink
                 :to="`/athletes?matric=${player.matric}`"
                 class="link-value text-sm"
@@ -819,7 +819,7 @@ const formatDate = (dateStr: string) => {
             >
               <option :value="0" disabled>{{ t('presence.select_player') }}</option>
               <option v-for="p in availableTeamPlayers" :key="p.matric" :value="p.matric">
-                {{ p.nom }} {{ p.prenom }} ({{ p.matric }})
+                {{ formatNom(p.nom) }} {{ formatPrenom(p.prenom) }} ({{ p.matric }})
               </option>
             </select>
           </div>
