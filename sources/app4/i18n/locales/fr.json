@@ -1186,6 +1186,7 @@
     "pdf_photo": "PDF Photo",
     "pdf_visa": "PDF Visa",
     "pdf_controle": "PDF Contrôle",
+    "confirm_delete_player": "Supprimer ce joueur de la composition ?",
     "confirm_delete_players": "Supprimer {count} joueur(s) de la composition ?",
     "section_coaches": "Staff",
     "section_referees": "Arbitres non-joueurs",
