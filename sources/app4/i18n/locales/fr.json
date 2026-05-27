@@ -1425,6 +1425,8 @@
       "lock_publish": "Verrouiller + Publier",
       "lock": "Verrouillage",
       "toggle_printed": "Imprimé",
+      "auto_assign": "Affectation automatique",
+      "cancel_assign": "Annuler l'affectation",
       "change_journee": "Changer de Journée",
       "change_journee_title": "Changer de Journée / Phase / Poule",
       "change_journee_label": "Nouvelle journée",
@@ -1482,7 +1484,11 @@
     "bulk_renumbered": "{count} match(s) renuméroté(s).",
     "bulk_date_changed": "Date modifiée pour {count} match(s).",
     "bulk_time_changed": "Heure modifiée pour {count} match(s).",
-    "bulk_group_changed": "Groupe modifié pour {count} match(s)."
+    "bulk_group_changed": "Groupe modifié pour {count} match(s).",
+    "bulk_auto_assign_confirm": "Lancer l'affectation automatique pour {count} match(s) sélectionné(s) ?",
+    "bulk_auto_assigned": "{count} match(s) affecté(s) automatiquement.",
+    "bulk_cancel_assign_confirm": "Vider équipes et arbitres de {count} match(s) sélectionné(s) ?",
+    "bulk_assign_cancelled": "Affectation annulée pour {count} match(s)."
   },
   "clubs": {
     "title": "Gestion des Clubs",

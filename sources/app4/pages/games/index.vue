@@ -91,6 +91,8 @@ const bulkRenumberOpen = ref(false)
 const bulkChangeDateOpen = ref(false)
 const bulkIncrementTimeOpen = ref(false)
 const bulkChangeGroupOpen = ref(false)
+const bulkAutoAssignConfirmOpen = ref(false)
+const bulkCancelAssignConfirmOpen = ref(false)
 
 // Bulk action form data
 const bulkJourneeId = ref<number | null>(null)
@@ -1128,6 +1130,36 @@ const confirmBulkChangeGroup = async () => {
   }
 }
 
+// ─── Bulk Auto-Assign (bracket parsing) ───
+const confirmBulkAutoAssign = async () => {
+  formSaving.value = true
+  try {
+    const response = await api.post<{ updated: number }>('/admin/games/bulk/auto-assign', { ids: selectedIds.value })
+    toast.add({ title: t('common.success'), description: t('games.bulk_auto_assigned', { count: response.updated }), color: 'success' })
+    bulkAutoAssignConfirmOpen.value = false
+    await loadGames(true)
+  } catch {
+    // Error already shown
+  } finally {
+    formSaving.value = false
+  }
+}
+
+// ─── Bulk Cancel-Assign ───
+const confirmBulkCancelAssign = async () => {
+  formSaving.value = true
+  try {
+    const response = await api.post<{ updated: number }>('/admin/games/bulk/cancel-assign', { ids: selectedIds.value })
+    toast.add({ title: t('common.success'), description: t('games.bulk_assign_cancelled', { count: response.updated }), color: 'success' })
+    bulkCancelAssignConfirmOpen.value = false
+    await loadGames(true)
+  } catch {
+    // Error already shown
+  } finally {
+    formSaving.value = false
+  }
+}
+
 // ─── Bulk Match Sheets (PDF) ───
 const openBulkMatchSheets = () => {
   bulkActionsOpen.value = false
@@ -1352,6 +1384,20 @@ const statusBtnClass = (game: Game) => {
             <!-- ── Edit section ── -->
             <div class="border-t border-header-100 my-1" />
             <div class="px-3 py-1 text-[10px] font-semibold text-header-400 uppercase tracking-wider">{{ t('games.bulk.edit_section') }}</div>
+            <button
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
+              @click="bulkAutoAssignConfirmOpen = true; bulkActionsOpen = false"
+            >
+              <UIcon name="heroicons:cpu-chip" class="w-5 h-5 text-emerald-600" />
+              {{ t('games.bulk.auto_assign') }}
+            </button>
+            <button
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
+              @click="bulkCancelAssignConfirmOpen = true; bulkActionsOpen = false"
+            >
+              <UIcon name="heroicons:x-circle" class="w-5 h-5 text-warning-500" />
+              {{ t('games.bulk.cancel_assign') }}
+            </button>
             <button
               class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
               @click="openBulkChangeJournee"
@@ -2884,6 +2930,27 @@ const statusBtnClass = (game: Game) => {
         </button>
       </template>
     </AdminModal>
+
+    <!-- ═══════ BULK AUTO-ASSIGN CONFIRM ═══════ -->
+    <AdminConfirmModal
+      :open="bulkAutoAssignConfirmOpen"
+      :title="t('games.bulk.auto_assign')"
+      :message="t('games.bulk_auto_assign_confirm', { count: selectedIds.length })"
+      :loading="formSaving"
+      @close="bulkAutoAssignConfirmOpen = false"
+      @confirm="confirmBulkAutoAssign"
+    />
+
+    <!-- ═══════ BULK CANCEL-ASSIGN CONFIRM ═══════ -->
+    <AdminConfirmModal
+      :open="bulkCancelAssignConfirmOpen"
+      :title="t('games.bulk.cancel_assign')"
+      :message="t('games.bulk_cancel_assign_confirm', { count: selectedIds.length })"
+      :loading="formSaving"
+      variant="warning"
+      @close="bulkCancelAssignConfirmOpen = false"
+      @confirm="confirmBulkCancelAssign"
+    />
 
     <!-- Scroll to top -->
     <AdminScrollToTop :title="t('common.scroll_to_top')" />

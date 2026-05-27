@@ -1319,6 +1319,310 @@ class AdminGamesController extends AbstractController
     }
 
     /**
+     * Bulk cancel assignment (clear teams + referees)
+     */
+    #[Route('/bulk/cancel-assign', name: 'admin_games_bulk_cancel_assign', methods: ['POST'])]
+    #[IsGranted('ROLE_ORGANIZER')]
+    public function bulkCancelAssign(Request $request): JsonResponse
+    {
+        /** @var User|null $user */
+        $user = $this->getUser();
+        if ($user && $user->getNiveau() > 6) {
+            return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $ids = array_filter(array_map('intval', $data['ids'] ?? []), fn($id) => $id > 0);
+
+        if (empty($ids)) {
+            return $this->json(['message' => 'No IDs provided'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $ids = $this->filterAuthorizedMatchIds(array_values($ids), $user);
+        if (empty($ids)) {
+            return $this->json(['message' => 'No authorized games in selection'], Response::HTTP_FORBIDDEN);
+        }
+
+        // Only unlocked matches without score
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $rows = $this->connection->prepare(
+            "SELECT m.Id, j.Code_competition, j.Code_saison
+             FROM kp_match m
+             JOIN kp_journee j ON m.Id_journee = j.Id
+             WHERE m.Id IN ($placeholders)
+               AND m.Validation != 'O'
+               AND (m.ScoreA = '' OR m.ScoreA = '?' OR m.ScoreA IS NULL)
+               AND j.Phase NOT IN ('Break', 'Pause')"
+        )->executeQuery($ids)->fetchAllAssociative();
+
+        $updated = 0;
+        $this->connection->beginTransaction();
+        try {
+            foreach ($rows as $row) {
+                $id = (int) $row['Id'];
+                $this->connection->prepare(
+                    "UPDATE kp_match
+                     SET Id_equipeA = NULL, Id_equipeB = NULL,
+                         Arbitre_principal = '-1', Arbitre_secondaire = '-1',
+                         Matric_arbitre_principal = 0, Matric_arbitre_secondaire = 0,
+                         Code_uti = ?
+                     WHERE Id = ?"
+                )->executeStatement([$user?->getUserIdentifier(), $id]);
+
+                $this->connection->prepare(
+                    "DELETE FROM kp_match_joueur WHERE Id_match = ?"
+                )->executeStatement([$id]);
+
+                $this->logActionForMatch('Annul auto équipes', $row['Code_saison'], $row['Code_competition'], null, $id, '');
+                $updated++;
+            }
+            $this->connection->commit();
+        } catch (\Exception $e) {
+            $this->connection->rollBack();
+            return $this->json(['message' => 'Database error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return $this->json(['updated' => $updated]);
+    }
+
+    /**
+     * Bulk auto-assign teams and referees from bracket notation in Libelle
+     */
+    #[Route('/bulk/auto-assign', name: 'admin_games_bulk_auto_assign', methods: ['POST'])]
+    #[IsGranted('ROLE_ORGANIZER')]
+    public function bulkAutoAssign(Request $request): JsonResponse
+    {
+        /** @var User|null $user */
+        $user = $this->getUser();
+        if ($user && $user->getNiveau() > 6) {
+            return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $ids = array_filter(array_map('intval', $data['ids'] ?? []), fn($id) => $id > 0);
+
+        if (empty($ids)) {
+            return $this->json(['message' => 'No IDs provided'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $ids = $this->filterAuthorizedMatchIds(array_values($ids), $user);
+        if (empty($ids)) {
+            return $this->json(['message' => 'No authorized games in selection'], Response::HTTP_FORBIDDEN);
+        }
+
+        // Load unlocked matches without score
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $rows = $this->connection->prepare(
+            "SELECT m.Id, m.Libelle, m.Id_equipeA, m.Id_equipeB,
+                    m.Matric_arbitre_principal, m.Matric_arbitre_secondaire,
+                    j.Code_competition, j.Code_saison, j.Phase
+             FROM kp_match m
+             JOIN kp_journee j ON m.Id_journee = j.Id
+             WHERE m.Id IN ($placeholders)
+               AND m.Validation != 'O'
+               AND (m.ScoreA = '' OR m.ScoreA = '?' OR m.ScoreA IS NULL)"
+        )->executeQuery($ids)->fetchAllAssociative();
+
+        $errors = [];
+        $updated = 0;
+
+        $this->connection->beginTransaction();
+        try {
+            foreach ($rows as $row) {
+                $id = (int) $row['Id'];
+
+                if (in_array($row['Phase'], ['Break', 'Pause'])) {
+                    continue;
+                }
+
+                // Parse bracket notation: [PART1-PART2-PART3-PART4]
+                $libelle = preg_replace('/\s/', '', (string) $row['Libelle']);
+                if (!preg_match('/\[([^\]]+)\]/', $libelle, $m)) {
+                    $errors[] = ['id' => $id, 'reason' => 'no_bracket'];
+                    continue;
+                }
+                $parts = preg_split('/[\-\/*,;]/', $m[1]);
+
+                $selectNum = [null, null, null, null];
+                $selectNom = ['', '', '', ''];
+                $hasError = false;
+
+                for ($j = 0; $j < 4; $j++) {
+                    // Skip referee slots if already nominatively assigned
+                    if ($j === 2 && (int) $row['Matric_arbitre_principal'] !== 0) {
+                        continue;
+                    }
+                    if ($j === 3 && (int) $row['Matric_arbitre_secondaire'] !== 0) {
+                        continue;
+                    }
+
+                    if (!isset($parts[$j]) || trim($parts[$j]) === '') {
+                        continue;
+                    }
+
+                    $part = $parts[$j];
+                    preg_match('/([A-Z_]+)/', $part, $letters);
+                    preg_match('/([0-9]+)/', $part, $numbers);
+
+                    if (empty($letters[1]) || empty($numbers[1])) {
+                        continue;
+                    }
+
+                    $letter = $letters[1];
+                    $number = (int) $numbers[1];
+                    $posLetter = strpos($part, $letter);
+                    $posNumber = strpos($part, (string) $number);
+
+                    if ($posNumber > $posLetter) {
+                        // Letter before number: tirage (T/D), winner (V/G/W), loser (P/L)
+                        switch ($letter) {
+                            case 'T':
+                            case 'D':
+                                $team = $this->connection->prepare(
+                                    "SELECT ce.Id, ce.Libelle
+                                     FROM kp_competition_equipe ce
+                                     WHERE ce.Tirage = ? AND ce.Code_compet = ? AND ce.Code_saison = ?"
+                                )->executeQuery([$number, $row['Code_competition'], $row['Code_saison']])->fetchAssociative();
+                                if ($team) {
+                                    $selectNum[$j] = (int) $team['Id'];
+                                    $selectNom[$j] = $team['Libelle'];
+                                } else {
+                                    $errors[] = ['id' => $id, 'reason' => "draw_not_found:$number"];
+                                    $hasError = true;
+                                }
+                                break;
+
+                            case 'V':
+                            case 'G':
+                            case 'W':
+                                $match = $this->connection->prepare(
+                                    "SELECT m.Id_equipeA, m.Id_equipeB, ce.Libelle Nom_equipeA, ce2.Libelle Nom_equipeB,
+                                            m.ScoreA, m.ScoreB
+                                     FROM kp_match m
+                                     JOIN kp_journee j ON m.Id_journee = j.Id
+                                     JOIN kp_competition_equipe ce ON m.Id_equipeA = ce.Id
+                                     JOIN kp_competition_equipe ce2 ON m.Id_equipeB = ce2.Id
+                                     WHERE m.Numero_ordre = ? AND m.ScoreA != m.ScoreB
+                                       AND j.Code_competition = ? AND j.Code_saison = ?"
+                                )->executeQuery([$number, $row['Code_competition'], $row['Code_saison']])->fetchAssociative();
+                                if ($match) {
+                                    $aWins = ($match['ScoreA'] > $match['ScoreB'] && $match['ScoreA'] !== 'F') || $match['ScoreB'] === 'F';
+                                    $selectNum[$j] = $aWins ? (int) $match['Id_equipeA'] : (int) $match['Id_equipeB'];
+                                    $selectNom[$j] = $aWins ? $match['Nom_equipeA'] : $match['Nom_equipeB'];
+                                } else {
+                                    $errors[] = ['id' => $id, 'reason' => "winner_not_found:$number"];
+                                    $hasError = true;
+                                }
+                                break;
+
+                            case 'P':
+                            case 'L':
+                                $match = $this->connection->prepare(
+                                    "SELECT m.Id_equipeA, m.Id_equipeB, ce.Libelle Nom_equipeA, ce2.Libelle Nom_equipeB,
+                                            m.ScoreA, m.ScoreB
+                                     FROM kp_match m
+                                     JOIN kp_journee j ON m.Id_journee = j.Id
+                                     JOIN kp_competition_equipe ce ON m.Id_equipeA = ce.Id
+                                     JOIN kp_competition_equipe ce2 ON m.Id_equipeB = ce2.Id
+                                     WHERE m.Numero_ordre = ? AND m.ScoreA != m.ScoreB
+                                       AND j.Code_competition = ? AND j.Code_saison = ?"
+                                )->executeQuery([$number, $row['Code_competition'], $row['Code_saison']])->fetchAssociative();
+                                if ($match) {
+                                    $aLoses = ($match['ScoreA'] < $match['ScoreB'] && $match['ScoreB'] !== 'F') || $match['ScoreA'] === 'F';
+                                    $selectNum[$j] = $aLoses ? (int) $match['Id_equipeA'] : (int) $match['Id_equipeB'];
+                                    $selectNom[$j] = $aLoses ? $match['Nom_equipeA'] : $match['Nom_equipeB'];
+                                } else {
+                                    $errors[] = ['id' => $id, 'reason' => "loser_not_found:$number"];
+                                    $hasError = true;
+                                }
+                                break;
+
+                            default:
+                                $errors[] = ['id' => $id, 'reason' => "unknown_code:$letter"];
+                                $hasError = true;
+                        }
+                    } else {
+                        // Number before letter: ranking in pool (e.g. 1A = 1st of pool A)
+                        $poolLetter = $letter;
+                        $team = $this->connection->prepare(
+                            "SELECT cej.Id, ce.Libelle
+                             FROM kp_competition_equipe_journee cej
+                             JOIN kp_journee j ON cej.Id_journee = j.Id
+                             JOIN kp_competition_equipe ce ON cej.Id = ce.Id
+                             WHERE cej.Clt = ?
+                               AND (j.Phase LIKE ? OR j.Phase LIKE ? OR j.Phase LIKE ? OR j.Phase LIKE ? OR j.Phase LIKE ?)
+                               AND j.Code_competition = ? AND j.Code_saison = ?"
+                        )->executeQuery([
+                            $number,
+                            $poolLetter,
+                            '% poule ' . $poolLetter . '%',
+                            '% Poule ' . $poolLetter . '%',
+                            '% Groupe ' . $poolLetter . '%',
+                            '% Group ' . $poolLetter . '%',
+                            $row['Code_competition'],
+                            $row['Code_saison'],
+                        ])->fetchAssociative();
+                        if ($team) {
+                            $selectNum[$j] = (int) $team['Id'];
+                            $selectNom[$j] = $team['Libelle'];
+                        } else {
+                            $errors[] = ['id' => $id, 'reason' => "pool_rank_not_found:{$number}{$poolLetter}"];
+                            $hasError = true;
+                        }
+                    }
+                }
+
+                if ($hasError) {
+                    continue;
+                }
+
+                $oldEquipeA = (int) ($row['Id_equipeA'] ?? 0);
+                $oldEquipeB = (int) ($row['Id_equipeB'] ?? 0);
+
+                // Build UPDATE
+                $setClauses = ['Id_equipeA = ?', 'Id_equipeB = ?'];
+                $params = [$selectNum[0], $selectNum[1]];
+                if ($selectNom[2] !== '') {
+                    $setClauses[] = 'Arbitre_principal = ?';
+                    $params[] = $selectNom[2];
+                }
+                if ($selectNom[3] !== '') {
+                    $setClauses[] = 'Arbitre_secondaire = ?';
+                    $params[] = $selectNom[3];
+                }
+                $setClauses[] = 'Code_uti = ?';
+                $params[] = $user?->getUserIdentifier();
+                $params[] = $id;
+
+                $this->connection->prepare(
+                    'UPDATE kp_match SET ' . implode(', ', $setClauses) . ' WHERE Id = ?'
+                )->executeStatement($params);
+
+                // Delete players for changed teams
+                if ($selectNum[0] !== null && $selectNum[0] !== $oldEquipeA) {
+                    $this->connection->prepare(
+                        "DELETE FROM kp_match_joueur WHERE Id_match = ? AND Equipe = 'A'"
+                    )->executeStatement([$id]);
+                }
+                if ($selectNum[1] !== null && $selectNum[1] !== $oldEquipeB) {
+                    $this->connection->prepare(
+                        "DELETE FROM kp_match_joueur WHERE Id_match = ? AND Equipe = 'B'"
+                    )->executeStatement([$id]);
+                }
+
+                $this->logActionForMatch('Affect auto équipes', $row['Code_saison'], $row['Code_competition'], null, $id, '');
+                $updated++;
+            }
+            $this->connection->commit();
+        } catch (\Exception $e) {
+            $this->connection->rollBack();
+            return $this->json(['message' => 'Database error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return $this->json(['updated' => $updated, 'errors' => $errors]);
+    }
+
+    /**
      * Get teams for a journee (for team select dropdowns)
      */
     #[Route('/teams', name: 'admin_games_teams', methods: ['GET'])]
