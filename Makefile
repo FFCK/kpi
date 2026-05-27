@@ -407,7 +407,7 @@ app2_npm_update: ## Met à jour toutes les dépendances npm de app2
 
 app2_npm_update_lock: ## Régénère le package-lock.json de app2 via container temporaire (Node 22)
 	@echo "Régénération du package-lock.json pour app2..."
-	docker run --rm -v "$(CURDIR)/sources/app2:/app" -w /app node:22-alpine sh -c "npm install --package-lock-only"
+	docker run --rm -v "$(CURDIR)/sources/app2:/app" -w /app node:22-alpine sh -c "npm install --package-lock-only --ignore-scripts"
 	@echo "package-lock.json mis à jour. Pensez à le committer."
 
 app2_npm_add: ## Ajoute un package npm à app2 (usage: make app2_npm_add package=uuid)
@@ -465,7 +465,7 @@ app3_npm_update: ## Met à jour toutes les dépendances npm de app3
 
 app3_npm_update_lock: ## Régénère le package-lock.json de app3 via container temporaire (Node 22)
 	@echo "Régénération du package-lock.json pour app3..."
-	docker run --rm -v "$(CURDIR)/sources/app3:/app" -w /app node:22-alpine sh -c "npm install --package-lock-only"
+	docker run --rm -v "$(CURDIR)/sources/app3:/app" -w /app node:22-alpine sh -c "npm install --package-lock-only --ignore-scripts"
 	@echo "package-lock.json mis à jour. Pensez à le committer."
 
 app3_npm_add: ## Ajoute un package npm à app3 (usage: make app3_npm_add package=uuid)
@@ -536,7 +536,7 @@ app4_npm_update: ## Met à jour toutes les dépendances npm de app4
 
 app4_npm_update_lock: ## Régénère le package-lock.json de app4 via container temporaire (Node 22)
 	@echo "Régénération du package-lock.json pour app4..."
-	docker run --rm -v "$(CURDIR)/sources/app4:/app" -w /app node:22-alpine sh -c "npm install --package-lock-only"
+	docker run --rm -v "$(CURDIR)/sources/app4:/app" -w /app node:22-alpine sh -c "npm install --package-lock-only --ignore-scripts"
 	@echo "package-lock.json mis à jour. Pensez à le committer."
 
 app4_npm_add: ## Ajoute un package npm à app4 (usage: make app4_npm_add package=uuid)
