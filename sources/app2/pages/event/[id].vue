@@ -42,7 +42,10 @@ const fetchAllEvents = async () => {
     const stdEvents = await stdResponse.json()
     const champEvents = await champResponse.json()
     
-    const allEvents = [...stdEvents, ...champEvents].map(event => ({ ...event, id: parseInt(event.id) }))
+    const allEvents = [
+      ...stdEvents.map(event => ({ ...event, id: parseInt(event.id), type: 'std' })),
+      ...champEvents.map(event => ({ ...event, id: parseInt(event.id), type: 'champ' }))
+    ]
     await eventStore.clearAndUpdateEvents(allEvents)
     return true
   } catch (error) {
@@ -76,7 +79,9 @@ onMounted(async () => {
     const selectedEvent = eventStore.getEventById(eventId)
     if (selectedEvent) {
       await preferenceStore.putItem('lastEvent', toRaw(selectedEvent))
-      await preferenceStore.putItem('last_team', null) // Reset team preference
+      await preferenceStore.putItem('last_team', null)
+      const mode = selectedEvent.type === 'champ' ? 'champ' : 'std'
+      await preferenceStore.putItem('eventMode', mode)
     }
   }
 
