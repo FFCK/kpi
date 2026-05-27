@@ -341,14 +341,14 @@ class EventExportImportService
     {
         foreach ($journees as $j) {
             $sql = "INSERT INTO kp_journee (
-                        Id, Code_competition, Code_saison, Date_debut, Date_fin, Nom, Libelle, Lieu,
+                        Id, Code_competition, Code_saison, Date_debut, Date_fin, Nom, Libelle, Lieu, Consolidation,
                         Departement, Plan_eau, Responsable_insc, Responsable_insc_adr, Responsable_insc_cp,
                         Responsable_insc_ville, Responsable_R1, Etat, Type, Code_organisateur, Organisateur,
                         Organisateur_adr, Organisateur_cp, Organisateur_ville, Delegue, ChefArbitre, Rep_athletes,
                         Arb_nj1, Arb_nj2, Arb_nj3, Arb_nj4, Arb_nj5, Validation, Code_uti, Phase, Niveau,
                         Etape, Nbequipes, Publication, Id_dupli, Public_prin, Public_sec
                     ) VALUES (
-                        :Id, :Code_competition, :Code_saison, :Date_debut, :Date_fin, :Nom, :Libelle, :Lieu,
+                        :Id, :Code_competition, :Code_saison, :Date_debut, :Date_fin, :Nom, :Libelle, :Lieu, :Consolidation,
                         :Departement, :Plan_eau, :Responsable_insc, :Responsable_insc_adr, :Responsable_insc_cp,
                         :Responsable_insc_ville, :Responsable_R1, :Etat, :Type, :Code_organisateur, :Organisateur,
                         :Organisateur_adr, :Organisateur_cp, :Organisateur_ville, :Delegue, :ChefArbitre, :Rep_athletes,
@@ -363,6 +363,7 @@ class EventExportImportService
                         Nom = VALUES(Nom),
                         Libelle = VALUES(Libelle),
                         Lieu = VALUES(Lieu),
+                        Consolidation = VALUES(Consolidation),
                         Departement = VALUES(Departement),
                         Plan_eau = VALUES(Plan_eau),
                         Responsable_insc = VALUES(Responsable_insc),
@@ -405,6 +406,7 @@ class EventExportImportService
                 'Nom' => $j['Nom'],
                 'Libelle' => $j['Libelle'],
                 'Lieu' => $j['Lieu'],
+                'Consolidation' => $j['Consolidation'] ?? null,
                 'Departement' => $j['Departement'],
                 'Plan_eau' => $j['Plan_eau'],
                 'Responsable_insc' => $j['Responsable_insc'],
@@ -455,14 +457,16 @@ class EventExportImportService
                         ToutGroup, TouteSaisons, Code_ref, GroupOrder, Code_typeclt, Age_min, Age_max, Sexe, Code_tour,
                         Nb_equipes, Verrou, Statut, Qualifies, Elimines, Points, goalaverage, Date_calcul, Mode_calcul,
                         Date_publication, Date_publication_calcul, Mode_publication_calcul, Code_uti_calcul,
-                        Code_uti_publication, Publication, Date_publi, Code_uti_publi, commentairesCompet
+                        Code_uti_publication, Publication, Date_publi, Code_uti_publi, commentairesCompet,
+                        points_grid, multi_competitions, ranking_structure_type
                     ) VALUES (
                         :Code, :Code_saison, :Code_niveau, :Libelle, :Soustitre, :Soustitre2, :Web, :BandeauLink, :LogoLink,
                         :SponsorLink, :En_actif, :Titre_actif, :Bandeau_actif, :Logo_actif, :Sponsor_actif, :Kpi_ffck_actif,
                         :ToutGroup, :TouteSaisons, :Code_ref, :GroupOrder, :Code_typeclt, :Age_min, :Age_max, :Sexe, :Code_tour,
                         :Nb_equipes, :Verrou, :Statut, :Qualifies, :Elimines, :Points, :goalaverage, :Date_calcul, :Mode_calcul,
                         :Date_publication, :Date_publication_calcul, :Mode_publication_calcul, :Code_uti_calcul,
-                        :Code_uti_publication, :Publication, :Date_publi, :Code_uti_publi, :commentairesCompet
+                        :Code_uti_publication, :Publication, :Date_publi, :Code_uti_publi, :commentairesCompet,
+                        :points_grid, :multi_competitions, :ranking_structure_type
                     )
                     ON DUPLICATE KEY UPDATE
                         Code_niveau = VALUES(Code_niveau),
@@ -505,7 +509,10 @@ class EventExportImportService
                         Publication = VALUES(Publication),
                         Date_publi = VALUES(Date_publi),
                         Code_uti_publi = VALUES(Code_uti_publi),
-                        commentairesCompet = VALUES(commentairesCompet)";
+                        commentairesCompet = VALUES(commentairesCompet),
+                        points_grid = VALUES(points_grid),
+                        multi_competitions = VALUES(multi_competitions),
+                        ranking_structure_type = VALUES(ranking_structure_type)";
 
             $this->connection->executeStatement($sql, [
                 'Code' => $c['Code'],
@@ -551,6 +558,9 @@ class EventExportImportService
                 'Date_publi' => $c['Date_publi'],
                 'Code_uti_publi' => $c['Code_uti_publi'],
                 'commentairesCompet' => $c['commentairesCompet'],
+                'points_grid' => $c['points_grid'] ?? null,
+                'multi_competitions' => $c['multi_competitions'] ?? null,
+                'ranking_structure_type' => $c['ranking_structure_type'] ?? 'team',
             ]);
 
             $codes[] = $c['Code'];
@@ -816,13 +826,13 @@ class EventExportImportService
                         Numero_ordre, Periode, Id_equipeA, Id_equipeB, ColorA, ColorB, ScoreA, ScoreB,
                         ScoreDetailA, ScoreDetailB, CoeffA, CoeffB, Commentaires_officiels, Commentaires,
                         Arbitre_principal, Arbitre_secondaire, Matric_arbitre_principal, Matric_arbitre_secondaire,
-                        Secretaire, Chronometre, Timeshoot, Ligne1, Ligne2, Publication, Code_uti, Validation
+                        Secretaire, Chronometre, Timeshoot, Ligne1, Ligne2, Publication, Code_uti, Validation, Imprime
                     ) VALUES (
                         :Id, :Id_journee, :Libelle, :Type, :Statut, :Date_match, :Heure_match, :Heure_fin, :Terrain,
                         :Numero_ordre, :Periode, :Id_equipeA, :Id_equipeB, :ColorA, :ColorB, :ScoreA, :ScoreB,
                         :ScoreDetailA, :ScoreDetailB, :CoeffA, :CoeffB, :Commentaires_officiels, :Commentaires,
                         :Arbitre_principal, :Arbitre_secondaire, :Matric_arbitre_principal, :Matric_arbitre_secondaire,
-                        :Secretaire, :Chronometre, :Timeshoot, :Ligne1, :Ligne2, :Publication, :Code_uti, :Validation
+                        :Secretaire, :Chronometre, :Timeshoot, :Ligne1, :Ligne2, :Publication, :Code_uti, :Validation, :Imprime
                     )";
 
             $this->connection->executeStatement($sql, [
@@ -861,6 +871,7 @@ class EventExportImportService
                 'Publication' => $m['Publication'],
                 'Code_uti' => $m['Code_uti'],
                 'Validation' => $m['Validation'],
+                'Imprime' => $m['Imprime'] ?? 'N',
             ]);
 
             $matchIds[] = $m['Id'];
@@ -936,8 +947,8 @@ class EventExportImportService
         }
 
         foreach ($chronos as $c) {
-            $sql = "INSERT INTO kp_chrono (IdMatch, action, start_time, start_time_server, run_time, max_time)
-                    VALUES (:IdMatch, :action, :start_time, :start_time_server, :run_time, :max_time)";
+            $sql = "INSERT INTO kp_chrono (IdMatch, action, start_time, start_time_server, run_time, max_time, shotclock, penalties)
+                    VALUES (:IdMatch, :action, :start_time, :start_time_server, :run_time, :max_time, :shotclock, :penalties)";
 
             $this->connection->executeStatement($sql, [
                 'IdMatch' => $c['IdMatch'],
@@ -946,6 +957,8 @@ class EventExportImportService
                 'start_time_server' => $c['start_time_server'],
                 'run_time' => $c['run_time'],
                 'max_time' => $c['max_time'],
+                'shotclock' => $c['shotclock'] ?? null,
+                'penalties' => $c['penalties'] ?? null,
             ]);
         }
     }
