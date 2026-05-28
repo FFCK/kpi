@@ -4,6 +4,10 @@ const baseUrl = process.env.BASE_URL ?? ''
 const apiBaseUrl = process.env.API_BASE_URL ?? 'https://kpi.localhost/api'
 const backendBaseUrl = process.env.BACKEND_BASE_URL ?? 'https://kpi.localhost'
 
+const matomoUrl = process.env.MATOMO_URL ?? ''
+const matomoSiteId = process.env.MATOMO_SITE_ID ?? ''
+const matomoEnabled = process.env.MATOMO_ENABLED === 'true'
+
 // Generate unique build ID based on timestamp to force cache invalidation
 // This ensures browser cache is invalidated when deploying new builds
 const buildId = `v${Date.now()}`
@@ -37,7 +41,10 @@ export default defineNuxtConfig({
     public: {
       baseUrl,
       apiBaseUrl,
-      backendBaseUrl
+      backendBaseUrl,
+      matomoUrl,
+      matomoSiteId,
+      matomoEnabled
     }
   },
   compatibilityDate: '2025-07-15',

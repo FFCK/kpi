@@ -5,6 +5,10 @@ const api2BaseUrl = process.env.API2_BASE_URL ?? 'https://kpi.localhost/api2'
 const legacyBaseUrl = process.env.LEGACY_BASE_URL ?? 'https://kpi.localhost'
 const app2BaseUrl = process.env.APP2_BASE_URL ?? 'https://app.kpi.localhost'
 
+const matomoUrl = process.env.MATOMO_URL ?? ''
+const matomoSiteId = process.env.MATOMO_SITE_ID ?? ''
+const matomoEnabled = process.env.MATOMO_ENABLED === 'true'
+
 export default defineNuxtConfig({
   ssr: false,
 
@@ -27,7 +31,10 @@ export default defineNuxtConfig({
       baseUrl,
       api2BaseUrl,
       legacyBaseUrl,
-      app2BaseUrl
+      app2BaseUrl,
+      matomoUrl,
+      matomoSiteId,
+      matomoEnabled
     }
   },
 
@@ -50,7 +57,8 @@ export default defineNuxtConfig({
   colorMode: {
     preference: 'light',
     fallback: 'light',
-    classSuffix: ''
+    classSuffix: '',
+    storageKey: 'nuxt-color-mode-admin4',
   },
 
   icon: {
