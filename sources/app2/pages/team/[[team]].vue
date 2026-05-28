@@ -248,7 +248,7 @@
                   <td class="py-2 px-3">
                     <div class="font-medium flex items-center">
                       <span v-if="player.captain !== 'E'" class="text-sm text-gray-500 mr-2">#{{ player.number }}</span>
-                      <span class="text-xs md:text-sm lg:text-base ml-1">{{ player.firstname }} {{ player.name }}</span>
+                      <span class="text-xs md:text-sm lg:text-base ml-1">{{ formatPrenom(player.firstname) }} {{ formatNom(player.name) }}</span>
                       <span v-if="player.captain === 'C'" class="ml-2 bg-black text-white text-xs font-bold w-4 h-4 flex items-center justify-center rounded-sm">C</span>
                       <span v-if="player.captain === 'E'" class="ml-2 text-xs text-gray-500">({{ t('Stats.Coach') }})</span>
                     </div>
@@ -302,7 +302,7 @@
                     <td class="py-2 px-3">
                       <div class="font-medium flex items-center">
                         <span v-if="player.captain !== 'E'" class="text-sm text-gray-500 mr-2">#{{ player.number }}</span>
-                        <span class="text-xs md:text-sm lg:text-base ml-1">{{ player.firstname }} {{ player.name }}</span>
+                        <span class="text-xs md:text-sm lg:text-base ml-1">{{ formatPrenom(player.firstname) }} {{ formatNom(player.name) }}</span>
                         <span v-if="player.captain === 'C'" class="ml-2 bg-black text-white text-xs font-bold w-4 h-4 flex items-center justify-center rounded-sm">C</span>
                         <span v-if="player.captain === 'E'" class="ml-2 text-xs text-gray-500">({{ t('Stats.Coach') }})</span>
                       </div>
@@ -339,6 +339,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useGames } from '~/composables/useGames'
 import { useCharts } from '~/composables/useCharts'
+import { formatNom, formatPrenom } from '~/utils/nameFormat'
 
 // Protect this page - require event selection
 definePageMeta({
