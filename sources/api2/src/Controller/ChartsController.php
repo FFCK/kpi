@@ -120,9 +120,16 @@ class ChartsController extends AbstractController
 
         while ($row = $resultGames->fetchAssociative()) {
             if ($row['d_type'] === 'E' || $row['c_type'] === 'CHPT') {
+                // Resolve placeholder team labels for elimination phases
+                if (!$row['t_a_label'] && $row['g_code']) {
+                    $parsed = $this->parseMatchLabel($row['g_code']);
+                    if (isset($parsed[0])) $row['t_a_label'] = $parsed[0];
+                    if (isset($parsed[1])) $row['t_b_label'] = $parsed[1];
+                }
                 $games[$row['d_id']][] = $row;
             } elseif ($row['d_type'] === 'C' && $row['c_type'] === 'CP') {
-                $games[$row['d_id']][] = $row['g_code'];
+                // Store full row so we can extract team names from matches
+                $games[$row['d_id']][] = $row;
             }
         }
 
@@ -190,13 +197,75 @@ class ChartsController extends AbstractController
             }
 
             $charts[$row['c_code']]['rounds'][$row['d_round']]['type'] = $row['d_type'];
-            $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$phaseOrder]['teams'][] = $row;
+            if ($row['t_id'] !== null) {
+                $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$phaseOrder]['teams'][] = $row;
+            }
             $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$phaseOrder]['type'] = $row['d_type'];
             $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$phaseOrder]['libelle'] = $row['d_phase'];
             $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$phaseOrder]['level'] = $row['d_level'];
             $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$phaseOrder]['t_count'] = $row['t_count'];
+            $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$phaseOrder]['d_id'] = $row['d_id'];
             $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$phaseOrder]['games'] = $games[$row['d_id']] ?? null;
         }
+
+        // For CP pool phases (type C) without ranking data, derive teams from matches
+        foreach ($charts as &$chart) {
+            if ($chart['type'] !== 'CP') continue;
+            foreach ($chart['rounds'] as &$round) {
+                foreach ($round['phases'] as &$phase) {
+                    if ($phase['type'] !== 'C') continue;
+                    if (!empty($phase['teams'])) continue;
+                    $dId = $phase['d_id'] ?? null;
+                    if (!$dId || empty($games[$dId])) continue;
+                    $seen = [];
+                    foreach ($games[$dId] as $g) {
+                        if (!is_array($g)) continue;
+                        $idA = (int)($g['t_a_id'] ?? 0);
+                        $idB = (int)($g['t_b_id'] ?? 0);
+                        // Resolve placeholder labels from g_code when teams not yet assigned
+                        $labelA = $g['t_a_label'] ?? null;
+                        $labelB = $g['t_b_label'] ?? null;
+                        if ((!$labelA || !$labelB) && !empty($g['g_code'])) {
+                            $parsed = $this->parseMatchLabel($g['g_code']);
+                            if (!$labelA && isset($parsed[0])) $labelA = $parsed[0];
+                            if (!$labelB && isset($parsed[1])) $labelB = $parsed[1];
+                        }
+                        // Deduplicate by id (real teams) or by label (placeholders)
+                        $keyA = $idA > 1 ? "id:$idA" : "lbl:$labelA";
+                        $keyB = $idB > 1 ? "id:$idB" : "lbl:$labelB";
+                        if ($labelA && !isset($seen[$keyA])) {
+                            $seen[$keyA] = true;
+                            $phase['teams'][] = [
+                                't_id' => $idA > 1 ? $idA : null,
+                                't_number' => $g['t_a_number'] ?? null,
+                                't_label' => $labelA, 't_club' => $g['t_a_club'] ?? null,
+                                't_clt' => null, 't_pts' => null, 't_pld' => null,
+                                't_diff' => null, 't_logo' => $g['t_a_logo'] ?? null,
+                            ];
+                        }
+                        if ($labelB && !isset($seen[$keyB])) {
+                            $seen[$keyB] = true;
+                            $phase['teams'][] = [
+                                't_id' => $idB > 1 ? $idB : null,
+                                't_number' => $g['t_b_number'] ?? null,
+                                't_label' => $labelB, 't_club' => $g['t_b_club'] ?? null,
+                                't_clt' => null, 't_pts' => null, 't_pld' => null,
+                                't_diff' => null, 't_logo' => $g['t_b_logo'] ?? null,
+                            ];
+                        }
+                    }
+                    if (!empty($phase['teams'])) {
+                        $hasNumbers = array_filter($phase['teams'], fn($t) => $t['t_number'] !== null);
+                        if ($hasNumbers) {
+                            usort($phase['teams'], fn($a, $b) => ((int)($a['t_number'] ?? 0)) <=> ((int)($b['t_number'] ?? 0)));
+                        } else {
+                            usort($phase['teams'], fn($a, $b) => strnatcasecmp($a['t_label'] ?? '', $b['t_label'] ?? ''));
+                        }
+                    }
+                }
+            }
+        }
+        unset($chart, $round, $phase);
 
         // Get overall rankings
         foreach ($arrayChpt as $compet) {
@@ -231,5 +300,37 @@ class ChartsController extends AbstractController
         $response = new JsonResponse(array_values($charts));
         $response->setEncodingOptions($response->getEncodingOptions() | JSON_UNESCAPED_UNICODE);
         return $response;
+    }
+
+    private function parseMatchLabel(string $libelle): array
+    {
+        $result = [];
+        $parts = preg_split('/\[/', $libelle);
+        if (!isset($parts[1]) || $parts[1] === '') return $result;
+        $inner = preg_split('/\]/', $parts[1]);
+        if ($inner[0] === '') return $result;
+        $codes = preg_split('/[-\/*,;]/', $inner[0]);
+        for ($j = 0; $j < 4; $j++) {
+            if (!isset($codes[$j])) continue;
+            $code = trim($codes[$j]);
+            preg_match('/([A-Z_]+)/', $code, $codeLettres);
+            preg_match('/([0-9]+)/', $code, $codeNumero);
+            if (!isset($codeLettres[1], $codeNumero[1])) continue;
+            $posL = strpos($code, $codeLettres[1]);
+            $posN = strpos($code, $codeNumero[1]);
+            if ($posN > $posL) {
+                $result[$j] = match ($codeLettres[1]) {
+                    'T', 'D' => '(Team ' . $codeNumero[1] . ')',
+                    'V', 'G', 'W' => '(Winner game #' . $codeNumero[1] . ')',
+                    'P', 'L' => '(Loser game #' . $codeNumero[1] . ')',
+                    default => $code,
+                };
+            } else {
+                $n = (int)$codeNumero[1];
+                $ord = match ($n) { 1 => '1st', 2 => '2nd', 3 => '3rd', default => $n . 'th' };
+                $result[$j] = "($ord Group {$codeLettres[1]})";
+            }
+        }
+        return $result;
     }
 }

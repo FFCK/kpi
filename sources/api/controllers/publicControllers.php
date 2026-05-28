@@ -179,6 +179,40 @@ function GetGamesController($route, $params)
   return_200($array);
 }
 
+function charts_parse_match_label(string $libelle): array
+{
+  $result = [];
+  $parts = preg_split('/\[/', $libelle);
+  if (!isset($parts[1]) || $parts[1] === '') return $result;
+  $inner = preg_split('/\]/', $parts[1]);
+  if ($inner[0] === '') return $result;
+  $codes = preg_split('/[-\/*,;]/', $inner[0]);
+  for ($j = 0; $j < 4; $j++) {
+    if (!isset($codes[$j])) continue;
+    $code = trim($codes[$j]);
+    preg_match('/([A-Z_]+)/', $code, $codeLettres);
+    preg_match('/([0-9]+)/', $code, $codeNumero);
+    if (!isset($codeLettres[1], $codeNumero[1])) continue;
+    $posL = strpos($code, $codeLettres[1]);
+    $posN = strpos($code, $codeNumero[1]);
+    if ($posN > $posL) {
+      // Letter before number: match result code (V125, P126, W3, L4, T1, D2...)
+      $result[$j] = match ($codeLettres[1]) {
+        'T', 'D' => '(Team ' . $codeNumero[1] . ')',
+        'V', 'G', 'W' => '(Winner game #' . $codeNumero[1] . ')',
+        'P', 'L' => '(Loser game #' . $codeNumero[1] . ')',
+        default => $code,
+      };
+    } else {
+      // Number before letter: pool ranking code (1H, 2K, 3rd place...)
+      $n = (int)$codeNumero[1];
+      $ord = match ($n) { 1 => '1st', 2 => '2nd', 3 => '3rd', default => $n . 'th' };
+      $result[$j] = "($ord Group {$codeLettres[1]})";
+    }
+  }
+  return $result;
+}
+
 function GetChartsController($route, $params)
 {
   $event_id = (int) $route[1];
@@ -246,9 +280,16 @@ function GetChartsController($route, $params)
   $games = [];
   while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
     if ($row['d_type'] === 'E' || $row['c_type'] === 'CHPT') {
+      // Resolve placeholder team labels for elimination phases
+      if (!$row['t_a_label'] && $row['g_code']) {
+        $parsed = charts_parse_match_label($row['g_code']);
+        if (isset($parsed[0])) $row['t_a_label'] = $parsed[0];
+        if (isset($parsed[1])) $row['t_b_label'] = $parsed[1];
+      }
       $games[$row['d_id']][] = $row;
     } elseif ($row['d_type'] === 'C' && $row['c_type'] === 'CP') {
-      $games[$row['d_id']][] = $row['g_code'];
+      // Store full row for pool phases so we can extract team names from matches
+      $games[$row['d_id']][] = $row;
     }
   }
 
@@ -313,13 +354,59 @@ function GetChartsController($route, $params)
       ];
     }
     $charts[$row['c_code']]['rounds'][$row['d_round']]['type'] = $row['d_type'];
-    $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$phaseOrder]['teams'][] = $row;
+    if ($row['t_id'] !== null) {
+      $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$phaseOrder]['teams'][] = $row;
+    }
     $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$phaseOrder]['type'] = $row['d_type'];
     $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$phaseOrder]['libelle'] = $row['d_phase'];
     $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$phaseOrder]['level'] = $row['d_level'];
     $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$phaseOrder]['t_count'] = $row['t_count'];
+    $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$phaseOrder]['d_id'] = $row['d_id'];
     $charts[$row['c_code']]['rounds'][$row['d_round']]['phases'][$phaseOrder]['games'] = $games[$row['d_id']] ?? null;
   }
+
+  // For CP pool phases (type C) without ranking data, derive teams from matches
+  foreach ($charts as &$chart) {
+    if ($chart['type'] !== 'CP') continue;
+    foreach ($chart['rounds'] as &$round) {
+      foreach ($round['phases'] as &$phase) {
+        if ($phase['type'] !== 'C') continue;
+        if (!empty($phase['teams'])) continue; // Already has teams from kp_competition_equipe_journee
+        $d_id = $phase['d_id'] ?? null;
+        if (!$d_id || empty($games[$d_id])) continue;
+        $seen = [];
+        foreach ($games[$d_id] as $g) {
+          if (is_array($g)) {
+            if (!empty($g['t_a_id']) && (int)$g['t_a_id'] > 1 && !isset($seen[$g['t_a_id']])) {
+              $seen[$g['t_a_id']] = true;
+              $phase['teams'][] = [
+                't_id' => $g['t_a_id'],
+                't_number' => $g['t_a_number'] ?? null,
+                't_label' => $g['t_a_label'],
+                't_club' => $g['t_a_club'] ?? null,
+                't_clt' => null, 't_pts' => null, 't_pld' => null,
+                't_diff' => null, 't_logo' => $g['t_a_logo'] ?? null,
+              ];
+            }
+            if (!empty($g['t_b_id']) && (int)$g['t_b_id'] > 1 && !isset($seen[$g['t_b_id']])) {
+              $seen[$g['t_b_id']] = true;
+              $phase['teams'][] = [
+                't_id' => $g['t_b_id'],
+                't_number' => $g['t_b_number'] ?? null,
+                't_label' => $g['t_b_label'],
+                't_club' => $g['t_b_club'] ?? null,
+                't_clt' => null, 't_pts' => null, 't_pld' => null,
+                't_diff' => null, 't_logo' => $g['t_b_logo'] ?? null,
+              ];
+            }
+          }
+        }
+        // Sort by t_number (draw/tirage order)
+        usort($phase['teams'], fn($a, $b) => ((int)($a['t_number'] ?? 0)) <=> ((int)($b['t_number'] ?? 0)));
+      }
+    }
+  }
+  unset($chart, $round, $phase);
 
   foreach ($array_chpt as $compet) {
     if ($compet['type'] === 'CHPT') {

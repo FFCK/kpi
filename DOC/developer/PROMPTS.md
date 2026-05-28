@@ -110,6 +110,7 @@ TODO :
 - ✅ Import PCE : manquant dans Opérations, doit être exécutable par cron
 - ✅ Verrou présences : manquant dans Opérations, doit être exécutable par cron
 - ✅ Vérifier l'envoi de mail des cron et autres alertes (antispam de Hostinger ?)
-- Manque actions Affect Auto et Annul Auto dans la gestion des matchs
+- ⚠️ Manque actions Affect Auto et Annul Auto dans la gestion des matchs
+- api legacy encore utilisée ?
 - Matomo sur app2 et app4
 - ⚠️
