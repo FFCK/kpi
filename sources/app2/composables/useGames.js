@@ -113,16 +113,9 @@ export const useGames = () => {
           // Sauvegarder la date de chargement API
           await preferenceStore.putItem('games_last_api_load', now)
 
-          // Mettre à jour l'interface (comparaison simple par taille pour éviter JSON.stringify coûteux)
-          const hasDataChanged = gamelist.length !== gameStore.games.length ||
-            (gamelist.length > 0 && gameStore.games.length > 0 &&
-             gamelist[0].g_id !== gameStore.games[0].g_id)
-
-          if (hasDataChanged || gameStore.games.length === 0) {
-            await gameStore.clearAndUpdateGames(gamelist)
-            loadCategories()
-            filterGames()
-          }
+          await gameStore.clearAndUpdateGames(gamelist)
+          loadCategories()
+          filterGames()
           isFromCache.value = false
         } catch (apiError) {
           // API failed, fall back to cache if available

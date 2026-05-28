@@ -157,15 +157,9 @@ export const useCharts = () => {
           // Sauvegarder la date de chargement API
           await preferenceStore.putItem('charts_last_api_load', now)
 
-          // Mettre à jour l'interface (comparaison simple par taille)
-          const hasDataChanged = !allChartData.value ||
-            data.length !== allChartData.value.length
-
-          if (hasDataChanged) {
-            allChartData.value = data
-            loadCategories()
-            chartIndex.value++
-          }
+          allChartData.value = data
+          loadCategories()
+          chartIndex.value++
           isFromCache.value = false
         } catch (apiError) {
           if (!hasCachedCharts) {
