@@ -384,6 +384,21 @@ const handleInlineKeydown = (e: KeyboardEvent) => {
   }
 }
 
+// Focus helpers for search inputs
+const focusHistorySearch = () => {
+  nextTick(() => {
+    const el = document.getElementById('history-search-input')
+    if (el) el.focus()
+  })
+}
+
+const focusManualLibelle = () => {
+  nextTick(() => {
+    const el = document.getElementById('manual-libelle-input')
+    if (el) el.focus()
+  })
+}
+
 // Add modal
 const openAddModal = () => {
   addFormData.value = getDefaultAddFormData()
@@ -399,6 +414,7 @@ const openAddModal = () => {
   selectedCD.value = ''
   addModalOpen.value = true
   loadRegionalCommittees()
+  focusHistorySearch()
 }
 
 const loadRegionalCommittees = async () => {
@@ -521,7 +537,7 @@ const loadCompositions = async (numero: number) => {
 }
 
 // Save add form
-const saveAddForm = async () => {
+const saveAddForm = async (keepOpen = false) => {
   addFormError.value = ''
 
   if (addFormData.value.mode === 'manual') {
@@ -558,8 +574,27 @@ const saveAddForm = async () => {
 
     await api.post('/admin/competition-teams', body)
     toast.add({ title: t('common.success'), description: t('teams_page.success_added'), color: 'success', duration: 3000 })
-    addModalOpen.value = false
     loadTeams()
+    if (keepOpen) {
+      const currentTab = addFormTab.value
+      const currentPoule = addFormData.value.poule
+      const currentTirage = addFormData.value.tirage
+      addFormData.value = { ...getDefaultAddFormData(), poule: currentPoule, tirage: currentTirage }
+      addFormTab.value = currentTab
+      clubSearchQuery.value = ''
+      clubSearchResults.value = []
+      historySearchQuery.value = ''
+      historySearchResults.value = []
+      showCopyComposition.value = false
+      compositions.value = []
+      if (currentTab === 'history') {
+        focusHistorySearch()
+      } else {
+        focusManualLibelle()
+      }
+    } else {
+      addModalOpen.value = false
+    }
   } catch (error: unknown) {
     addFormError.value = (error as { message?: string })?.message || t('teams_page.error_save')
   } finally {
@@ -1400,7 +1435,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
       max-width="xl"
       @close="addModalOpen = false"
     >
-      <form @submit.prevent="saveAddForm">
+      <form @submit.prevent="saveAddForm(false)">
         <div class="space-y-4 max-h-[70vh] overflow-y-auto px-1">
           <!-- Error -->
           <div
@@ -1417,7 +1452,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
               type="button"
               class="px-4 py-2 text-sm font-medium border-b-2 transition-colors"
               :class="addFormTab === 'history' ? 'border-primary-600 text-primary-600' : 'border-transparent text-header-500 hover:text-header-700'"
-              @click="addFormTab = 'history'; addFormData.mode = 'history'"
+              @click="addFormTab = 'history'; addFormData.mode = 'history'; focusHistorySearch()"
             >
               {{ t('teams_page.add_modal.tab_history') }}
             </button>
@@ -1425,7 +1460,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
               type="button"
               class="px-4 py-2 text-sm font-medium border-b-2 transition-colors"
               :class="addFormTab === 'manual' ? 'border-primary-600 text-primary-600' : 'border-transparent text-header-500 hover:text-header-700'"
-              @click="addFormTab = 'manual'; addFormData.mode = 'manual'"
+              @click="addFormTab = 'manual'; addFormData.mode = 'manual'; focusManualLibelle()"
             >
               {{ t('teams_page.add_modal.tab_manual') }}
             </button>
@@ -1438,14 +1473,25 @@ const getLogoUrl = (team: CompetitionTeam) => {
               <label class="block text-sm font-medium text-header-700 mb-1">
                 {{ t('teams_page.add_modal.libelle') }} <span class="text-danger-500">*</span>
               </label>
-              <input
-                v-model="addFormData.libelle"
-                type="text"
-                :placeholder="t('teams_page.add_modal.libelle_placeholder')"
-                maxlength="30"
-                required
-                class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-              >
+              <div class="relative">
+                <input
+                  id="manual-libelle-input"
+                  v-model="addFormData.libelle"
+                  type="text"
+                  :placeholder="t('teams_page.add_modal.libelle_placeholder')"
+                  maxlength="30"
+                  required
+                  class="w-full px-3 py-2 pr-8 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                >
+                <button
+                  v-if="addFormData.libelle"
+                  type="button"
+                  class="absolute right-2 top-1/2 -translate-y-1/2 text-header-400 hover:text-header-600"
+                  @click="addFormData.libelle = ''; focusManualLibelle()"
+                >
+                  <UIcon name="heroicons:x-mark" class="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
             <!-- Club autocomplete -->
@@ -1532,13 +1578,24 @@ const getLogoUrl = (team: CompetitionTeam) => {
               <label class="block text-sm font-medium text-header-700 mb-1">
                 {{ t('teams_page.add_modal.search_team') }}
               </label>
-              <input
-                v-model="historySearchQuery"
-                type="text"
-                :placeholder="t('teams_page.add_modal.search_team')"
-                class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-                @input="searchHistoryTeams"
-              >
+              <div class="relative">
+                <input
+                  id="history-search-input"
+                  v-model="historySearchQuery"
+                  type="text"
+                  :placeholder="t('teams_page.add_modal.search_team')"
+                  class="w-full px-3 py-2 pr-8 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                  @input="searchHistoryTeams"
+                >
+                <button
+                  v-if="historySearchQuery"
+                  type="button"
+                  class="absolute right-2 top-1/2 -translate-y-1/2 text-header-400 hover:text-header-600"
+                  @click="historySearchQuery = ''; historySearchResults = []; focusHistorySearch()"
+                >
+                  <UIcon name="heroicons:x-mark" class="w-4 h-4" />
+                </button>
+              </div>
             </div>
 
             <!-- Search results -->
@@ -1667,15 +1724,27 @@ const getLogoUrl = (team: CompetitionTeam) => {
             {{ t('common.cancel') }}
           </button>
           <button
+            type="button"
+            class="px-4 py-2 border border-primary-600 text-primary-600 rounded-lg hover:bg-primary-50 transition-colors disabled:opacity-50"
+            :disabled="addFormSaving"
+            @click="saveAddForm(true)"
+          >
+            <span v-if="addFormSaving" class="flex items-center gap-2">
+              <UIcon name="heroicons:arrow-path" class="w-6 h-6 animate-spin" />
+              {{ t('presence.save_and_add') }}
+            </span>
+            <span v-else>{{ t('presence.save_and_add') }}</span>
+          </button>
+          <button
             type="submit"
             class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors disabled:opacity-50"
             :disabled="addFormSaving"
           >
             <span v-if="addFormSaving" class="flex items-center gap-2">
               <UIcon name="heroicons:arrow-path" class="w-6 h-6 animate-spin" />
-              {{ t('common.save') }}
+              {{ t('presence.save_and_close') }}
             </span>
-            <span v-else>{{ t('common.save') }}</span>
+            <span v-else>{{ t('presence.save_and_close') }}</span>
           </button>
         </div>
       </form>

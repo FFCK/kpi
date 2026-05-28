@@ -131,18 +131,21 @@ class AdminTeamsController extends AbstractController
             return $this->json([]);
         }
 
+        $qDash = str_replace(' ', '-', $q);
+        $qSpace = str_replace('-', ' ', $q);
+
         $sql = "SELECT e.Numero, e.Libelle, e.Code_club, c.Libelle AS club_libelle,
                        CASE WHEN cr.Code = '98' THEN 1 ELSE 0 END AS international
                 FROM kp_equipe e
                 LEFT JOIN kp_club c ON e.Code_club = c.Code
                 LEFT JOIN kp_cd cd ON c.Code_comite_dep = cd.Code
                 LEFT JOIN kp_cr cr ON cd.Code_comite_reg = cr.Code
-                WHERE e.Libelle LIKE ?
+                WHERE e.Libelle LIKE ? OR e.Libelle LIKE ?
                 ORDER BY e.Libelle
                 LIMIT " . (int) $limit;
 
         $stmt = $this->connection->prepare($sql);
-        $result = $stmt->executeQuery(["%$q%"]);
+        $result = $stmt->executeQuery(["%$qSpace%", "%$qDash%"]);
         $rows = $result->fetchAllAssociative();
 
         $teams = array_map(function ($row) {
@@ -219,8 +222,11 @@ class AdminTeamsController extends AbstractController
             return $this->json([]);
         }
 
-        $params = ["%$q%", "%$q%"];
-        $where = 'WHERE (Libelle LIKE ? OR Code LIKE ?)';
+        $qDash = str_replace(' ', '-', $q);
+        $qSpace = str_replace('-', ' ', $q);
+
+        $params = ["%$qSpace%", "%$qDash%", "%$qSpace%", "%$qDash%"];
+        $where = 'WHERE (Libelle LIKE ? OR Libelle LIKE ? OR Code LIKE ? OR Code LIKE ?)';
 
         if ($cd !== '') {
             $where .= ' AND Code_comite_dep = ?';
