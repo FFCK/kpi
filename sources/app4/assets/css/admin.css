@@ -13,7 +13,7 @@
   --color-danger: #c94a4c;
 }
 
-@theme {
+@theme inline {
   /* Header - deep blue (#20265b) */
   --color-header-50: oklch(0.970 0.014 274.28);
   --color-header-100: oklch(0.940 0.033 274.28);
@@ -216,9 +216,27 @@ h1, h2 {
 }
 
 /* ===== Force Light Mode for Admin Interface ===== */
-/* Override dark mode styles to ensure consistent light theme */
 :root {
   color-scheme: light;
+}
+
+/* Neutralize dark mode: restore light-mode UI variables even when .dark class is on <html> */
+.dark {
+  --ui-text-dimmed: var(--ui-color-neutral-400);
+  --ui-text-muted: var(--ui-color-neutral-500);
+  --ui-text-toned: var(--ui-color-neutral-600);
+  --ui-text: var(--ui-color-neutral-700);
+  --ui-text-highlighted: var(--ui-color-neutral-900);
+  --ui-text-inverted: #fff;
+  --ui-bg: #fff;
+  --ui-bg-muted: var(--ui-color-neutral-50);
+  --ui-bg-elevated: var(--ui-color-neutral-100);
+  --ui-bg-accented: var(--ui-color-neutral-200);
+  --ui-bg-inverted: var(--ui-color-neutral-900);
+  --ui-border: var(--ui-color-neutral-200);
+  --ui-border-muted: var(--ui-color-neutral-200);
+  --ui-border-accented: var(--ui-color-neutral-300);
+  --ui-border-inverted: var(--ui-color-neutral-900);
 }
 
 /* Ensure dropdowns and popover menus have dark text on white backgrounds */
