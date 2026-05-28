@@ -48,7 +48,7 @@ class CompetitionLockService
     }
 
     /**
-     * Lock national/CF competitions starting within 6 days.
+     * Lock national/CF competitions starting within 6 days or currently in progress.
      *
      * @return string[] Competition codes that were locked
      */
@@ -57,8 +57,10 @@ class CompetitionLockService
         $sql = "SELECT DISTINCT Code_competition
             FROM kp_journee
             WHERE Code_saison = ?
-            AND Date_debut > CURDATE()
-            AND DATEDIFF(Date_debut, CURDATE()) < 6
+            AND (
+                (Date_debut > CURDATE() AND DATEDIFF(Date_debut, CURDATE()) < 6)
+                OR (Date_debut <= CURDATE() AND Date_fin >= CURDATE())
+            )
             AND (Code_competition LIKE 'N%' OR Code_competition LIKE 'CF%')";
 
         $codes = $this->connection->fetchFirstColumn($sql, [$season]);
