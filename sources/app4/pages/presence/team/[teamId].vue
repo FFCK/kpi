@@ -49,6 +49,7 @@ const addFormError = ref('')
 const addFormSaving = ref(false)
 const playerAutocompleteRef = ref<{ focus: () => void } | null>(null)
 const numeroInputRef = ref<HTMLInputElement | null>(null)
+const nomInputRef = ref<HTMLInputElement | null>(null)
 
 // National validation failure state (for override flow)
 const addFormValidationErrors = ref<string[]>([])
@@ -252,12 +253,19 @@ const handleInlineKeydown = (e: KeyboardEvent) => {
   }
 }
 
-// Auto-focus search field when modal opens
-watch(addModalOpen, (open) => {
-  if (open) {
-    nextTick(() => playerAutocompleteRef.value?.focus())
-  }
-})
+const focusAddModalFirstField = () => {
+  nextTick(() => {
+    if (addMode.value === 'existing') {
+      playerAutocompleteRef.value?.focus()
+    } else {
+      nomInputRef.value?.focus()
+    }
+  })
+}
+
+// Auto-focus first field when modal opens or tab changes
+watch(addModalOpen, (open) => { if (open) focusAddModalFirstField() })
+watch(addMode, () => focusAddModalFirstField())
 
 // Add player - handle selection from autocomplete
 const onPlayerSelected = (player: PlayerAutocomplete | null) => {
@@ -351,6 +359,7 @@ const createNewPlayer = async (keepOpen = false) => {
     toast.add({ title: t('presence.player_created'), color: 'success' })
     if (keepOpen) {
       resetAddForm(true)
+      nextTick(() => nomInputRef.value?.focus())
     } else {
       addModalOpen.value = false
       resetAddForm()
@@ -1415,6 +1424,7 @@ const pdfLinks = computed(() => {
               <div>
                 <label class="block text-sm font-medium text-header-700 mb-1">{{ t('common.last_name') }} *</label>
                 <input
+                  ref="nomInputRef"
                   :value="addFormData.nom"
                   type="text"
                   required
