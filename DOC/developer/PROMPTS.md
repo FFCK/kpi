@@ -114,4 +114,5 @@ TODO :
 - api legacy encore utilisée ?
 - ✅ Matomo sur app2 et app4
 - Teams : inverser les colonnes Games & Players
+- ✅ App2 : refresh automatique des données toutes les 5 minutes lorsque la page est active (pages games, charts, team) en plus du refresh manuel, ou lors de la réactivation de la page lorsque ça fait plus de 5 minutes que la page est inactive.
 - ⚠️

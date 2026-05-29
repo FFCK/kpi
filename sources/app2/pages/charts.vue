@@ -108,6 +108,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useCharts } from '~/composables/useCharts'
+import { useAutoRefresh } from '~/composables/useAutoRefresh'
 import Charts from '~/components/Charts.vue'
 
 // Protect this page - require event selection
@@ -158,6 +159,8 @@ const handleRefresh = () => {
     visibleButton.value = true
   }, 5000)
 }
+
+useAutoRefresh(() => loadCharts(true), 'charts_last_api_load')
 
 onMounted(async () => {
   await getFav()

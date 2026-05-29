@@ -339,6 +339,7 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useGames } from '~/composables/useGames'
 import { useCharts } from '~/composables/useCharts'
+import { useAutoRefresh } from '~/composables/useAutoRefresh'
 import { formatNom, formatPrenom } from '~/utils/nameFormat'
 
 // Protect this page - require event selection
@@ -1000,6 +1001,8 @@ const handleRefresh = () => {
     visibleButton.value = true
   }, 5000)
 }
+
+useAutoRefresh(() => loadData(true), 'games_last_api_load')
 
 onMounted(async () => {
   await Promise.all([

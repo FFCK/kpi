@@ -173,6 +173,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useGames } from '~/composables/useGames'
+import { useAutoRefresh } from '~/composables/useAutoRefresh'
 import { useGameStore } from '~/stores/gameStore'
 import GameList from '~/components/GameList.vue'
 
@@ -224,6 +225,8 @@ const handleRefresh = () => {
     visibleButton.value = true
   }, 5000)
 }
+
+useAutoRefresh(() => loadGames(true), 'games_last_api_load')
 
 onMounted(async () => {
   await getFav()
