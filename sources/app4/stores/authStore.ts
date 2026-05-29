@@ -5,6 +5,7 @@ import type { MandateSummary, MandateFilters } from '~/types/users'
 interface AuthState {
   user: User | null
   token: string | null
+  tokenExpiresAt: number | null // Unix timestamp ms
   isAuthenticated: boolean
   mandates: MandateSummary[]
   activeMandate: { id: number; libelle: string } | null
@@ -16,6 +17,7 @@ export const useAuthStore = defineStore('auth', {
   state: (): AuthState => ({
     user: null,
     token: null,
+    tokenExpiresAt: null,
     isAuthenticated: false,
     mandates: [],
     activeMandate: null,
@@ -46,6 +48,12 @@ export const useAuthStore = defineStore('auth', {
       return state.mandates.length > 0
     },
 
+    // True when token expires within the next 15 minutes
+    isTokenExpiringSoon: (state): boolean => {
+      if (!state.tokenExpiresAt) return false
+      return state.tokenExpiresAt - Date.now() < 15 * 60 * 1000
+    },
+
     // Get current filters (effective or base)
     currentFilters: (state): UserFilters | MandateFilters | null => {
       return state.effectiveFilters ?? state.user?.filters ?? null
@@ -53,9 +61,10 @@ export const useAuthStore = defineStore('auth', {
   },
 
   actions: {
-    setAuth(user: User, token: string, mandates?: MandateSummary[], activeMandate?: { id: number; libelle: string } | null, effectiveProfile?: number, effectiveFilters?: MandateFilters) {
+    setAuth(user: User, token: string, mandates?: MandateSummary[], activeMandate?: { id: number; libelle: string } | null, effectiveProfile?: number, effectiveFilters?: MandateFilters, tokenTtlSeconds = 86400) {
       this.user = user
       this.token = token
+      this.tokenExpiresAt = Date.now() + tokenTtlSeconds * 1000
       this.isAuthenticated = true
       this.mandates = (mandates ?? []).slice().sort((a, b) => a.niveau - b.niveau)
       this.activeMandate = activeMandate ?? null
@@ -64,6 +73,7 @@ export const useAuthStore = defineStore('auth', {
 
       if (import.meta.client) {
         localStorage.setItem('kpi_admin_token', token)
+        localStorage.setItem('kpi_admin_token_expires_at', String(this.tokenExpiresAt))
         localStorage.setItem('kpi_admin_user', JSON.stringify(user))
         localStorage.setItem('kpi_admin_mandates', JSON.stringify(this.mandates))
         if (this.activeMandate) {
@@ -82,14 +92,16 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    setMandate(token: string, activeMandate: { id: number; libelle: string } | null, effectiveProfile: number, effectiveFilters: MandateFilters | null) {
+    setMandate(token: string, activeMandate: { id: number; libelle: string } | null, effectiveProfile: number, effectiveFilters: MandateFilters | null, tokenTtlSeconds = 86400) {
       this.token = token
+      this.tokenExpiresAt = Date.now() + tokenTtlSeconds * 1000
       this.activeMandate = activeMandate
       this.effectiveProfile = effectiveProfile
       this.effectiveFilters = effectiveFilters
 
       if (import.meta.client) {
         localStorage.setItem('kpi_admin_token', token)
+        localStorage.setItem('kpi_admin_token_expires_at', String(this.tokenExpiresAt))
         if (activeMandate) {
           localStorage.setItem('kpi_admin_active_mandate', JSON.stringify(activeMandate))
         } else {
@@ -111,6 +123,7 @@ export const useAuthStore = defineStore('auth', {
     clearAuth() {
       this.user = null
       this.token = null
+      this.tokenExpiresAt = null
       this.isAuthenticated = false
       this.mandates = []
       this.activeMandate = null
@@ -119,6 +132,7 @@ export const useAuthStore = defineStore('auth', {
 
       if (import.meta.client) {
         localStorage.removeItem('kpi_admin_token')
+        localStorage.removeItem('kpi_admin_token_expires_at')
         localStorage.removeItem('kpi_admin_user')
         localStorage.removeItem('kpi_admin_mandates')
         localStorage.removeItem('kpi_admin_active_mandate')
@@ -136,12 +150,20 @@ export const useAuthStore = defineStore('auth', {
 
       const token = localStorage.getItem('kpi_admin_token')
       const userJson = localStorage.getItem('kpi_admin_user')
+      const expiresAtStr = localStorage.getItem('kpi_admin_token_expires_at')
+
+      // Reject hard-expired tokens (no grace: server will also reject them)
+      if (expiresAtStr && Date.now() > Number(expiresAtStr)) {
+        this.clearAuth()
+        return
+      }
 
       if (token && userJson) {
         try {
           const user = JSON.parse(userJson) as User
           this.user = user
           this.token = token
+          this.tokenExpiresAt = expiresAtStr ? Number(expiresAtStr) : null
           this.isAuthenticated = true
 
           const mandatesJson = localStorage.getItem('kpi_admin_mandates')

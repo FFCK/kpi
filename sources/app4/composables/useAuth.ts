@@ -16,6 +16,16 @@ interface LoginResponse {
   hasMandates: boolean
 }
 
+interface RefreshResponse {
+  token: string
+  user: {
+    mandates: MandateSummary[]
+    activeMandate: { id: number; libelle: string } | null
+    effectiveProfile: number
+    effectiveFilters: MandateFilters | null
+  }
+}
+
 interface SwitchMandateResponse {
   token: string
   user: {
@@ -72,6 +82,37 @@ export const useAuth = () => {
     authStore.clearAuth()
   }
 
+  // Refresh the JWT token silently using the existing valid token
+  const refreshToken = async (): Promise<boolean> => {
+    if (!authStore.token) return false
+
+    try {
+      const response = await fetch(`${baseUrl}/auth/refresh`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${authStore.token}`
+        }
+      })
+
+      if (!response.ok) return false
+
+      const data: RefreshResponse = await response.json()
+
+      authStore.setAuth(
+        authStore.user!,
+        data.token,
+        data.user.mandates,
+        data.user.activeMandate,
+        data.user.effectiveProfile,
+        data.user.effectiveFilters ?? undefined
+      )
+
+      return true
+    } catch {
+      return false
+    }
+  }
+
   // Check if token is still valid
   const checkAuth = async (): Promise<boolean> => {
     if (!authStore.token) return false
@@ -124,6 +165,7 @@ export const useAuth = () => {
     login,
     logout,
     checkAuth,
+    refreshToken,
     switchMandate
   }
 }

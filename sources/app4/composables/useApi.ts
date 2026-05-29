@@ -15,12 +15,16 @@ enum ErrorType {
 let last401Time = 0
 const THROTTLE_401_MS = 5000
 
+// Prevent concurrent refresh attempts
+let refreshPromise: Promise<boolean> | null = null
+
 // Request timeout in milliseconds
 const REQUEST_TIMEOUT_MS = 10000
 
 export const useApi = () => {
   const config = useRuntimeConfig()
   const authStore = useAuthStore()
+  const { refreshToken } = useAuth()
   const toast = useToast()
   const { t } = useI18n()
 
@@ -128,7 +132,33 @@ export const useApi = () => {
     })
   }
 
-  // Generic fetch wrapper with timeout and error handling
+  // Perform a single raw fetch attempt (no retry logic)
+  const doFetch = (url: string, options: RequestInit) =>
+    Promise.race([
+      fetch(url, { ...options, headers: { ...getHeaders(), ...options.headers } }),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('Request timeout')), REQUEST_TIMEOUT_MS)
+      )
+    ])
+
+  // Force logout and redirect to login page
+  const forceLogout = () => {
+    const now = Date.now()
+    if (now - last401Time > THROTTLE_401_MS) {
+      last401Time = now
+      toast.add({
+        title: t('errors.http.401.title'),
+        description: t('errors.http.401.description'),
+        icon: 'i-heroicons-shield-exclamation',
+        color: 'error',
+        duration: 3000
+      })
+    }
+    authStore.clearAuth()
+    navigateTo('/login')
+  }
+
+  // Generic fetch wrapper with timeout, silent refresh on 401, and error handling
   const apiFetch = async <T>(
     endpoint: string,
     options: RequestInit = {}
@@ -139,37 +169,29 @@ export const useApi = () => {
 
     try {
       // Add timeout wrapper
-      response = await Promise.race([
-        fetch(url, {
-          ...options,
-          headers: {
-            ...getHeaders(),
-            ...options.headers
-          }
-        }),
-        new Promise<never>((_, reject) =>
-          setTimeout(() => reject(new Error('Request timeout')), REQUEST_TIMEOUT_MS)
-        )
-      ])
+      response = await doFetch(url, options)
 
       if (!response.ok) {
         const errorType = detectErrorType(null, response)
 
-        // Handle 401 - unauthorized with throttling
+        // Handle 401 - try silent token refresh once before giving up
         if (errorType === ErrorType.HTTP_401) {
-          const now = Date.now()
-          if (now - last401Time > THROTTLE_401_MS) {
-            last401Time = now
-            toast.add({
-              title: t('errors.http.401.title'),
-              description: t('errors.http.401.description'),
-              icon: 'i-heroicons-shield-exclamation',
-              color: 'error',
-              duration: 3000
-            })
+          // Deduplicate concurrent refresh calls
+          if (!refreshPromise) {
+            refreshPromise = refreshToken().finally(() => { refreshPromise = null })
           }
-          authStore.clearAuth()
-          navigateTo('/login')
+          const refreshed = await refreshPromise
+
+          if (refreshed) {
+            // Retry the original request with the new token
+            response = await doFetch(url, options)
+            if (response.ok) {
+              if (response.status === 204) return {} as T
+              return response.json()
+            }
+          }
+
+          forceLogout()
           throw new Error('Session expired')
         }
 
@@ -295,19 +317,7 @@ export const useApi = () => {
         const errorType = detectErrorType(null, response)
 
         if (errorType === ErrorType.HTTP_401) {
-          const now = Date.now()
-          if (now - last401Time > THROTTLE_401_MS) {
-            last401Time = now
-            toast.add({
-              title: t('errors.http.401.title'),
-              description: t('errors.http.401.description'),
-              icon: 'i-heroicons-shield-exclamation',
-              color: 'error',
-              duration: 3000
-            })
-          }
-          authStore.clearAuth()
-          navigateTo('/login')
+          forceLogout()
           throw new Error('Session expired')
         }
 
@@ -375,19 +385,7 @@ export const useApi = () => {
         const errorType = detectErrorType(null, response)
 
         if (errorType === ErrorType.HTTP_401) {
-          const now = Date.now()
-          if (now - last401Time > THROTTLE_401_MS) {
-            last401Time = now
-            toast.add({
-              title: t('errors.http.401.title'),
-              description: t('errors.http.401.description'),
-              icon: 'i-heroicons-shield-exclamation',
-              color: 'error',
-              duration: 3000
-            })
-          }
-          authStore.clearAuth()
-          navigateTo('/login')
+          forceLogout()
           throw new Error('Session expired')
         }
 
