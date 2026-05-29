@@ -1040,10 +1040,10 @@ const getLogoUrl = (team: CompetitionTeam) => {
                     {{ t('teams_page.columns.club') }}
                   </th>
                   <th class="px-3 py-2 text-center text-xs font-medium text-header-500 uppercase">
-                    {{ t('teams_page.columns.matchs') }}
+                    {{ t('teams_page.columns.joueurs') }}
                   </th>
                   <th class="px-3 py-2 text-center text-xs font-medium text-header-500 uppercase">
-                    {{ t('teams_page.columns.joueurs') }}
+                    {{ t('teams_page.columns.matchs') }}
                   </th>
                   <th class="px-3 py-2 text-center text-xs font-medium text-header-500 uppercase">
                     {{ t('teams_page.columns.pdf') }}
@@ -1162,11 +1162,6 @@ const getLogoUrl = (team: CompetitionTeam) => {
                     </NuxtLink>
                   </td>
 
-                  <!-- Matches -->
-                  <td class="px-3 py-2 text-sm text-center text-header-500">
-                    {{ team.nbMatchs }}
-                  </td>
-
                   <!-- Actions -->
                   <td class="px-3 py-2">
                     <div class="flex items-center justify-center gap-1">
@@ -1179,6 +1174,11 @@ const getLogoUrl = (team: CompetitionTeam) => {
                         <UIcon name="heroicons:user-group" class="w-6 h-6" />
                       </NuxtLink>
                     </div>
+                  </td>
+
+                  <!-- Matches -->
+                  <td class="px-3 py-2 text-sm text-center text-header-500">
+                    {{ team.nbMatchs }}
                   </td>
                   <td class="px-3 py-2">
                     <div class="flex items-center justify-center gap-1">
