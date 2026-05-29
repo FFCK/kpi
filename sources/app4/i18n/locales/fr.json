@@ -2014,6 +2014,7 @@
     "phase_games": "match | matchs",
     "show_game_count": "Matchs",
     "show_time_slots": "Horaires",
+    "export_pdf": "PDF",
     "close": "Fermer",
     "no_competition": "Sélectionnez une compétition pour afficher le schéma",
     "no_data": "Aucune donnée disponible pour cette compétition",

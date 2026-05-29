@@ -113,4 +113,5 @@ TODO :
 - ⚠️ Manque actions Affect Auto et Annul Auto dans la gestion des matchs
 - api legacy encore utilisée ?
 - ✅ Matomo sur app2 et app4
+- Teams : inverser les colonnes Games & Players
 - ⚠️

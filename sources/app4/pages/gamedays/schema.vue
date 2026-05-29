@@ -56,9 +56,31 @@ const stageColumns = computed(() => {
     .map(([etape, phases]) => ({ etape, phases }))
 })
 
+// Badge color by level
+function getLevelBadgeClass(level: string) {
+  switch (level) {
+    case 'INT': return 'bg-purple-100 text-purple-800'
+    case 'NAT': return 'bg-primary-100 text-primary-800'
+    case 'REG': return 'bg-orange-100 text-orange-800'
+    default: return 'bg-header-100 text-header-800'
+  }
+}
+
 // Close button: close the tab/window
 function closeWindow() {
   window.close()
+}
+
+// PDF export: set title for filename then print
+function printPdf() {
+  const competition = data.value?.competition
+  const group = competition?.codeRef?.trim().replace(/\s+/g, '_') || ''
+  const category = competition?.soustitre2?.trim().replace(/\s+/g, '_') || ''
+  const parts = [group, 'Draw_progression', category].filter(Boolean)
+  const prevTitle = document.title
+  document.title = parts.join('_')
+  window.print()
+  document.title = prevTitle
 }
 
 // Load data
@@ -101,6 +123,19 @@ onMounted(async () => {
 
       <!-- Right side: toggles + close -->
       <div class="flex items-center gap-3">
+        <!-- Level + type badges -->
+        <template v-if="data">
+          <span
+            class="px-2 py-1 text-xs font-medium rounded uppercase"
+            :class="getLevelBadgeClass(data.competition.codeNiveau)"
+          >
+            {{ data.competition.codeNiveau }}
+          </span>
+          <span class="px-2 py-1 text-xs font-medium rounded uppercase bg-header-100 text-header-800">
+            {{ data.competition.codeTypeclt }}
+          </span>
+        </template>
+
         <!-- Toggles (CP only) -->
         <template v-if="isCp">
           <label class="inline-flex items-center gap-1.5 text-xs text-header-600 cursor-pointer select-none">
@@ -122,6 +157,16 @@ onMounted(async () => {
             {{ t('schema.show_time_slots') }}
           </label>
         </template>
+
+        <!-- PDF button -->
+        <button
+          v-if="data"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-header-700 bg-white border border-header-300 rounded-lg hover:bg-header-50 transition-colors"
+          @click="printPdf"
+        >
+          <UIcon name="heroicons:arrow-down-tray" class="w-4 h-4" />
+          {{ t('schema.export_pdf') }}
+        </button>
 
         <!-- Close button -->
         <button
@@ -145,8 +190,21 @@ onMounted(async () => {
     </div>
 
     <!-- Content -->
-    <div v-else-if="data">
-      <!-- Header (with images, printable) -->
+    <div v-else-if="data" id="schema-print-area">
+      <!-- Bandeau: screen (above header) + print fixed header -->
+      <div v-if="hasBandeau" class="flex justify-center py-3 schema-bandeau-screen">
+        <img
+          :src="imageUrl(data.competition.bandeauLink)"
+          :alt="data.competition.libelle"
+          class="max-h-20 object-contain"
+          @error="showBandeau = false"
+        >
+      </div>
+      <div v-if="hasBandeau" class="schema-bandeau-print" aria-hidden="true">
+        <img :src="imageUrl(data.competition.bandeauLink)" :alt="data.competition.libelle">
+      </div>
+
+      <!-- Header -->
       <SchemaHeader
         :competition="data.competition"
         :total-matches="data.totalMatches"
@@ -155,44 +213,40 @@ onMounted(async () => {
         :is-cp="isCp"
       />
 
-      <!-- Bandeau (above schema) -->
-      <div v-if="hasBandeau" class="flex justify-center py-4">
-        <img
-          :src="imageUrl(data.competition.bandeauLink)"
-          :alt="data.competition.libelle"
-          class="max-h-20 object-contain"
-          @error="showBandeau = false"
-        >
+      <!-- Schema (vertically centered in print via flex wrapper) -->
+      <div class="schema-content-wrapper">
+        <!-- CP Layout -->
+        <SchemaCpLayout
+          v-if="isCp"
+          :stages="stageColumns"
+          :show-match-count="showMatchCount"
+          :show-time-slots="showTimeSlots"
+          :hovered-team="hoveredTeam"
+          :qualifies="data.competition.qualifies"
+          :elimines="data.competition.elimines"
+          @hover-team="hoveredTeam = $event"
+        />
+
+        <!-- CHPT Layout -->
+        <SchemaChptLayout
+          v-else
+          :phases="data.phases"
+          :hovered-team="hoveredTeam"
+          @hover-team="hoveredTeam = $event"
+        />
       </div>
 
-      <!-- CP Layout -->
-      <SchemaCpLayout
-        v-if="isCp"
-        :stages="stageColumns"
-        :show-match-count="showMatchCount"
-        :show-time-slots="showTimeSlots"
-        :hovered-team="hoveredTeam"
-        :qualifies="data.competition.qualifies"
-        :elimines="data.competition.elimines"
-        @hover-team="hoveredTeam = $event"
-      />
-
-      <!-- CHPT Layout -->
-      <SchemaChptLayout
-        v-else
-        :phases="data.phases"
-        :hovered-team="hoveredTeam"
-        @hover-team="hoveredTeam = $event"
-      />
-
-      <!-- Sponsor (below schema) -->
-      <div v-if="hasSponsor" class="flex justify-center py-4">
+      <!-- Sponsor: screen (below schema) + print fixed footer -->
+      <div v-if="hasSponsor" class="flex justify-center py-3 schema-sponsor-screen">
         <img
           :src="imageUrl(data.competition.sponsorLink)"
           alt="Sponsor"
           class="max-h-16 object-contain"
           @error="showSponsor = false"
         >
+      </div>
+      <div v-if="hasSponsor" class="schema-sponsor-print" aria-hidden="true">
+        <img :src="imageUrl(data.competition.sponsorLink)" alt="Sponsor">
       </div>
     </div>
 
@@ -203,11 +257,93 @@ onMounted(async () => {
   </div>
 </template>
 
-<style scoped>
+<style>
+/* Screen: hide print-only duplicates */
+.schema-bandeau-print,
+.schema-sponsor-print {
+  display: none;
+}
+
 @media print {
   @page {
     size: A4 landscape;
-    margin: 10mm;
+    margin: 10mm 10mm;
+  }
+
+  /* Hide everything, reveal only the print zone */
+  body * {
+    visibility: hidden;
+  }
+
+  #schema-print-area,
+  #schema-print-area * {
+    visibility: visible;
+  }
+
+  /* Print area: full page, flex column, content vertically centered */
+  #schema-print-area {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    /* top: bandeau height (25mm) + page margin (10mm) + gap (4mm) */
+    /* bottom: sponsor height (20mm) + page margin (10mm) + gap (4mm) */
+    padding: 39mm 0 34mm;
+    box-sizing: border-box;
+  }
+
+  /* Hide screen duplicates */
+  .schema-bandeau-screen,
+  .schema-sponsor-screen {
+    display: none !important;
+  }
+
+  /* Schema vertically centered in remaining space */
+  .schema-content-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  /* Bandeau: fixed at top */
+  .schema-bandeau-print {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 25mm;
+    background: white;
+    visibility: visible;
+  }
+
+  .schema-bandeau-print img {
+    max-height: 22mm;
+    max-width: 100%;
+    object-fit: contain;
+  }
+
+  /* Sponsor: fixed at bottom */
+  .schema-sponsor-print {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 20mm;
+    background: white;
+    visibility: visible;
+  }
+
+  .schema-sponsor-print img {
+    max-height: 16mm;
+    max-width: 100%;
+    object-fit: contain;
   }
 }
 </style>

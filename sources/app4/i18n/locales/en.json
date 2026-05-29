@@ -2001,6 +2001,7 @@
     "phase_games": "game | games",
     "show_game_count": "Games",
     "show_time_slots": "Time slots",
+    "export_pdf": "PDF",
     "close": "Close",
     "no_competition": "Select a competition to display the chart",
     "no_data": "No data available for this competition",

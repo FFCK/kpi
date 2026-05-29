@@ -23,15 +23,6 @@ const imageUrl = (link: string | null) => {
 
 const hasLogo = computed(() => props.competition.logoActif && props.competition.logoLink && showLogo.value)
 
-// Badge helpers
-const getLevelColor = (level: string) => {
-  switch (level) {
-    case 'INT': return 'bg-purple-100 text-purple-800'
-    case 'NAT': return 'bg-primary-100 text-primary-800'
-    case 'REG': return 'bg-orange-100 text-orange-800'
-    default: return 'bg-header-100 text-header-800'
-  }
-}
 </script>
 
 <template>
@@ -61,21 +52,10 @@ const getLevelColor = (level: string) => {
         </div>
       </div>
 
-      <div class="flex items-center gap-2 flex-wrap">
-        <span
-          class="px-2 py-1 text-xs font-medium rounded uppercase"
-          :class="getLevelColor(competition.codeNiveau)"
-        >
-          {{ competition.codeNiveau }}
-        </span>
-        <span class="px-2 py-1 text-xs font-medium rounded uppercase bg-header-100 text-header-800">
-          {{ competition.codeTypeclt }}
-        </span>
-        <!-- Game count badge -->
-        <span class="px-2 py-1 text-xs font-medium rounded bg-header-100 text-header-700">
-          {{ t('schema.games_count', { count: totalMatches }, totalMatches) }}
-        </span>
-      </div>
+      <!-- Game count badge (right side) -->
+      <span v-if="showMatchCount" class="px-2 py-1 text-xs font-medium rounded bg-header-100 text-header-700">
+        {{ t('schema.games_count', { count: totalMatches }, totalMatches) }}
+      </span>
     </div>
   </div>
 </template>
