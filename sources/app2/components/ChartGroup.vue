@@ -37,7 +37,7 @@
               </template>
               <template v-else>
                 <td class="px-1 py-1 text-xs text-gray-400">{{ index + 1 }}</td>
-                <td class="px-1 py-1 text-xs text-gray-400 italic" colspan="4">—</td>
+                <td class="px-1 py-1 text-xs text-gray-400 italic" colspan="4">{{ team.t_label || '—' }}</td>
               </template>
             </tr>
           </tbody>
@@ -138,15 +138,25 @@ const sortedTeams = computed(() => {
   })
 })
 
-// Pad with empty rows to always show the expected team count
 const displayTeams = computed(() => {
-  const teams = sortedTeams.value
+  const all = sortedTeams.value
+  const hasRealTeam = all.some(t => t.t_id != null)
+
+  if (!hasRealTeam) return all
+
+  // Separate real teams and placeholders
+  const real = all.filter(t => t.t_id != null)
+  const placeholders = all.filter(t => t.t_id == null)
+
+  // Fill remaining slots with placeholders, then _empty rows
   const count = props.chartTeamCount || 0
-  if (count <= teams.length) return teams
-  const padded = [...teams]
-  for (let i = teams.length; i < count; i++) {
-    padded.push({ _empty: true })
+  const result = [...real]
+  let pi = 0
+  while (result.length < count) {
+    result.push(pi < placeholders.length
+      ? { ...placeholders[pi++], _placeholder: true }
+      : { _empty: true })
   }
-  return padded
+  return result
 })
 </script>
