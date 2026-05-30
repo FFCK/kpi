@@ -6,7 +6,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import pkg from '../package.json'
+import pkg from '~/package.json'
 
 const version = ref(pkg.version)
 </script>
