@@ -559,7 +559,7 @@ const availableTeams = computed(() => {
             Object.values(round.phases).forEach(phase => {
               if (phase.teams) {
                 phase.teams.forEach(team => {
-                  if (team.t_label) {
+                  if (team.t_label && team.t_id != null) {
                     teamsSet.add(team.t_label)
                   }
                 })

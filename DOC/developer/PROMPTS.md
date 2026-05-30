@@ -115,4 +115,16 @@ TODO :
 - ✅ Matomo sur app2 et app4
 - ✅ Teams : inverser les colonnes Games & Players
 - ✅ App2 : refresh automatique des données toutes les 5 minutes lorsque la page est active (pages games, charts, team) en plus du refresh manuel, ou lors de la réactivation de la page lorsque ça fait plus de 5 minutes que la page est inactive.
+- depuis la modification des couleurs dans draw progression en dev, je n'ai plus le bouton login sur app4, je suppose que c'est lié, à vérifier et corriger si c'est le cas.
+- Ajout de joueur, lors de la recherche d'un joueur, si aucune réponse ne convient, il faut pouvoir transférer la saisie du champ de recherche vers le champ de création du joueur pour éviter d'avoir à ressaisir les informations du joueur à créer.
+- dans la recherche, afficher également le numéro icf dans les résultats
+- dans la recherche du formulaire ajout de joueur, permettre optionnellement de filtrer par club.
+- vérifier le contraste des couleurs dans l'application app4.
+- Init titulaires depuis les matchs manquant.
+- Init titulaires depuis les équipes : bug sur TIP U18
+- changer le contexte de travail depuis les stats
+- FMV3 : départ du timeshoot manuel et pas en même temps que le chrono + Bouton Pause.
+- ✅ App2 : pas d'équipe non affectée (1st Group A, etc.) dans le dropdown team de la page Team
+- ✅ Activer Admin2 dans le menu legacy pour le profil 2
+- outils de contrôle de planification : pouvoir vérifier dans app4 l'enchainement des matchs et arbitrages
 - ⚠️
