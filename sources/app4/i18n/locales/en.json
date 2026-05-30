@@ -1036,7 +1036,12 @@
     "locked": "Competition locked",
     "unlocked": "Competition unlocked",
     "competition_locked_notice": "This competition is locked. Some modifications are restricted.",
-    "cannot_delete_has_matches": "Cannot delete: team has played games"
+    "cannot_delete_has_matches": "Cannot delete: team has played games",
+    "bulk": {
+      "actions": "Actions",
+      "delete": "Delete",
+      "init_starters": "Init starters"
+    }
   },
   "errors": {
     "generic": {

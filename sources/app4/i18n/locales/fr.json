@@ -1049,7 +1049,12 @@
     "locked": "Compétition verrouillée",
     "unlocked": "Compétition déverrouillée",
     "competition_locked_notice": "Cette compétition est verrouillée. Certaines modifications sont restreintes.",
-    "cannot_delete_has_matches": "Impossible de supprimer : l'équipe a des matchs joués"
+    "cannot_delete_has_matches": "Impossible de supprimer : l'équipe a des matchs joués",
+    "bulk": {
+      "actions": "Actions",
+      "delete": "Supprimer",
+      "init_starters": "Init. titulaires"
+    }
   },
   "errors": {
     "generic": {

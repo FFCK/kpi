@@ -41,6 +41,13 @@ const editingCell = ref<{ id: number; field: 'poule' | 'tirage' } | null>(null)
 const editingValue = ref('')
 const editingOriginalValue = ref('')
 
+// Bulk actions dropdown state
+const bulkActionsOpen = ref(false)
+const bulkActionsRef = ref<HTMLDivElement | null>(null)
+
+// Bulk init starters (confirm modal)
+const bulkInitStartersModalOpen = ref(false)
+
 // Presence sheet dropdown state
 const openDropdownId = ref<number | null>(null)
 const dropdownStyle = ref<{ top: string; left: string }>({ top: '0px', left: '0px' })
@@ -95,6 +102,9 @@ const handleClickOutsideDropdown = (e: MouseEvent) => {
     if (!target.closest('.global-pdf-trigger') && !target.closest('.global-pdf-menu')) {
       globalPdfOpen.value = false
     }
+  }
+  if (bulkActionsOpen.value && bulkActionsRef.value && !bulkActionsRef.value.contains(target)) {
+    bulkActionsOpen.value = false
   }
 }
 onMounted(() => document.addEventListener('click', handleClickOutsideDropdown))
@@ -919,39 +929,55 @@ const getLogoUrl = (team: CompetitionTeam) => {
       <!-- Toolbar -->
       <div class="mb-4 bg-white rounded-lg shadow p-4">
         <div class="flex flex-wrap items-center gap-2">
-          <!-- Selection actions (left) -->
+          <!-- Select all checkbox + bulk actions dropdown (left) -->
           <template v-if="canAddDelete && teams.length > 0">
-            <!-- Select all / Deselect all -->
-            <button
-              class="px-3 py-2 border border-header-300 text-header-700 rounded-lg hover:bg-header-50 transition-colors text-sm"
-              @click="selectAll = !selectAll; toggleSelectAll()"
-            >
-              {{ selectAll ? t('teams_page.deselect_all') : t('teams_page.select_all') }}
-            </button>
+            <label class="flex items-center gap-2 cursor-pointer select-none text-sm text-header-700">
+              <input
+                v-model="selectAll"
+                type="checkbox"
+                class="w-4 h-4 rounded border-header-300 text-primary-600 cursor-pointer"
+                @change="toggleSelectAll"
+              >
+              {{ t('teams_page.select_all') }}
+            </label>
 
-            <!-- Bulk delete -->
-            <button
-              v-if="selectedIds.length > 0"
-              class="px-3 py-2 bg-danger-600 text-white rounded-lg hover:bg-danger-700 transition-colors text-sm flex items-center gap-1"
-              @click="openBulkDeleteModal"
-            >
-              <UIcon name="heroicons:trash-solid" class="w-6 h-6" />
-              {{ t('teams_page.delete_selected') }} ({{ selectedIds.length }})
-            </button>
+            <!-- Bulk actions dropdown -->
+            <div v-if="selectedIds.length > 0" ref="bulkActionsRef" class="relative">
+              <button
+                class="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-primary-700 bg-primary-50 border border-primary-200 rounded-lg hover:bg-primary-100"
+                @click="bulkActionsOpen = !bulkActionsOpen"
+              >
+                <UIcon name="heroicons:bolt" class="w-5 h-5" />
+                {{ t('teams_page.bulk.actions') }}
+                <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800">
+                  {{ selectedIds.length }}
+                </span>
+                <UIcon name="heroicons:chevron-down" class="w-4 h-4 transition-transform" :class="{ 'rotate-180': bulkActionsOpen }" />
+              </button>
+              <div v-show="bulkActionsOpen" class="absolute z-20 mt-1 w-56 bg-white border border-header-200 rounded-lg shadow-lg py-1 left-0">
+                <button
+                  v-if="canManageSpecialOps"
+                  class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
+                  @click="initStartersModalOpen = true; bulkActionsOpen = false"
+                >
+                  <UIcon name="heroicons:user-group" class="w-5 h-5 text-primary-600" />
+                  {{ t('teams_page.bulk.init_starters') }}
+                </button>
+                <div class="border-t border-header-100 my-1" />
+                <button
+                  class="w-full flex items-center gap-2 px-4 py-2 text-sm text-danger-600 hover:bg-danger-50"
+                  @click="openBulkDeleteModal(); bulkActionsOpen = false"
+                >
+                  <UIcon name="heroicons:trash" class="w-5 h-5" />
+                  {{ t('teams_page.bulk.delete') }}
+                </button>
+              </div>
+            </div>
           </template>
 
           <div class="flex-1" />
 
           <!-- Common actions (right) -->
-
-          <!-- Init starters -->
-          <button
-            v-if="canManageSpecialOps"
-            class="px-3 py-2 border border-header-300 text-header-700 rounded-lg hover:bg-header-50 transition-colors text-sm"
-            @click="initStartersModalOpen = true"
-          >
-            {{ t('teams_page.init_starters') }}
-          </button>
 
           <!-- Update logos -->
           <button
