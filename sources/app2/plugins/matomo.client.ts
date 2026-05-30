@@ -4,7 +4,7 @@ declare global {
   }
 }
 
-export default defineNuxtPlugin(() => {
+export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig()
   const { matomoUrl, matomoSiteId, matomoEnabled } = config.public
 
@@ -20,4 +20,11 @@ export default defineNuxtPlugin(() => {
   script.async = true
   script.src = `${matomoUrl}/matomo.js`
   document.head.appendChild(script)
+
+  const router = useRouter()
+  router.afterEach((to) => {
+    window._paq.push(['setCustomUrl', to.fullPath])
+    window._paq.push(['setDocumentTitle', document.title])
+    window._paq.push(['trackPageView'])
+  })
 })
