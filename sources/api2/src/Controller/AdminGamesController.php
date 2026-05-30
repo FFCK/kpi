@@ -1550,15 +1550,11 @@ class AdminGamesController extends AbstractController
                              JOIN kp_journee j ON cej.Id_journee = j.Id
                              JOIN kp_competition_equipe ce ON cej.Id = ce.Id
                              WHERE cej.Clt = ?
-                               AND (j.Phase LIKE ? OR j.Phase LIKE ? OR j.Phase LIKE ? OR j.Phase LIKE ? OR j.Phase LIKE ?)
+                               AND j.Phase REGEXP ?
                                AND j.Code_competition = ? AND j.Code_saison = ?"
                         )->executeQuery([
                             $number,
-                            $poolLetter,
-                            '% poule ' . $poolLetter . '%',
-                            '% Poule ' . $poolLetter . '%',
-                            '% Groupe ' . $poolLetter . '%',
-                            '% Group ' . $poolLetter . '%',
+                            '(^|[[:space:]])(Group|Groupe|Poule|poule)[[:space:]]+' . $poolLetter . '([[:space:]]|$)',
                             $row['Code_competition'],
                             $row['Code_saison'],
                         ])->fetchAssociative();
