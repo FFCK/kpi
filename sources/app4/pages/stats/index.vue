@@ -496,15 +496,11 @@ const exportPdf = async () => {
 
 <template>
   <div>
-    <!-- Work Context Summary -->
-    <!-- <AdminWorkContextSummary /> -->
-
     <!-- Page header -->
-    <div class="mb-6">
-      <h1 class="text-2xl font-bold text-header-900">
-        {{ t('stats.title') }}
-      </h1>
-    </div>
+    <AdminPageHeader
+      :title="t('stats.title')"
+      :show-filters="false"
+    />
 
     <!-- Current parameters summary -->
     <div class="bg-white rounded-lg shadow p-4 mb-6">

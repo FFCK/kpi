@@ -122,9 +122,10 @@ TODO :
 - vérifier le contraste des couleurs dans l'application app4.
 - Init titulaires depuis les matchs manquant.
 - Init titulaires depuis les équipes : bug sur TIP U18
-- changer le contexte de travail depuis les stats
+- ✅ changer le contexte de travail depuis les stats
 - FMV3 : départ du timeshoot manuel et pas en même temps que le chrono + Bouton Pause.
 - ✅ App2 : pas d'équipe non affectée (1st Group A, etc.) dans le dropdown team de la page Team
 - ✅ Activer Admin2 dans le menu legacy pour le profil 2
 - outils de contrôle de planification : pouvoir vérifier dans app4 l'enchainement des matchs et arbitrages
+- Scénarios TV : bouton Tester doit ouvrir le scénario dans une nouvelle fenêtre.
 - ⚠️
