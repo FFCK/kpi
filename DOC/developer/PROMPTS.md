@@ -116,16 +116,18 @@ TODO :
 - ✅ Teams : inverser les colonnes Games & Players
 - ✅ App2 : refresh automatique des données toutes les 5 minutes lorsque la page est active (pages games, charts, team) en plus du refresh manuel, ou lors de la réactivation de la page lorsque ça fait plus de 5 minutes que la page est inactive.
 - depuis la modification des couleurs dans draw progression en dev, je n'ai plus le bouton login sur app4, je suppose que c'est lié, à vérifier et corriger si c'est le cas.
-- Ajout de joueur, lors de la recherche d'un joueur, si aucune réponse ne convient, il faut pouvoir transférer la saisie du champ de recherche vers le champ de création du joueur pour éviter d'avoir à ressaisir les informations du joueur à créer.
-- dans la recherche, afficher également le numéro icf dans les résultats
-- dans la recherche du formulaire ajout de joueur, permettre optionnellement de filtrer par club.
+- ✅ Ajout de joueur, lors de la recherche d'un joueur, si aucune réponse ne convient, il faut pouvoir transférer la saisie du champ de recherche vers le champ de création du joueur pour éviter d'avoir à ressaisir les informations du joueur à créer.
+- ✅ dans la recherche, afficher également le numéro icf dans les résultats
+- ✅ dans la recherche du formulaire ajout de joueur, permettre optionnellement de filtrer par club.
 - vérifier le contraste des couleurs dans l'application app4.
-- Init titulaires depuis les matchs manquant.
-- Init titulaires depuis les équipes : bug sur TIP U18
+- ✅ Teams: Init titulaires action.
 - ✅ changer le contexte de travail depuis les stats
 - FMV3 : départ du timeshoot manuel et pas en même temps que le chrono + Bouton Pause.
 - ✅ App2 : pas d'équipe non affectée (1st Group A, etc.) dans le dropdown team de la page Team
 - ✅ Activer Admin2 dans le menu legacy pour le profil 2
 - outils de contrôle de planification : pouvoir vérifier dans app4 l'enchainement des matchs et arbitrages
-- Scénarios TV : bouton Tester doit ouvrir le scénario dans une nouvelle fenêtre.
+- Scénarios TV : bouton Tester => Contrôle doit ouvrir le scénario dans une nouvelle fenêtre.
+- TV : langue FR n'est pas prise en compte.
+- Feat: Jury d'appel : 3 représentants des athlètes.
+- Ouverture FMV2 et FMV3 depuis app4 : ouvrir dans une fenêtre identique si déjà ouverte.
 - ⚠️

@@ -5,6 +5,9 @@ const props = defineProps<{
   modelValue: PlayerAutocomplete | null
   placeholder?: string
   disabled?: boolean
+  filterClub?: string
+  filterSexe?: string
+  filterArbitre?: string
 }>()
 
 const emit = defineEmits<{
@@ -12,7 +15,10 @@ const emit = defineEmits<{
   (e: 'player-selected', value: PlayerAutocomplete): void
 }>()
 
-defineExpose({ focus: () => inputRef.value?.focus() })
+defineExpose({
+  focus: () => inputRef.value?.focus(),
+  getSearchQuery: () => searchQuery.value
+})
 
 const { t } = useI18n()
 const api = useApi()
@@ -39,9 +45,13 @@ async function performSearch() {
 
   isLoading.value = true
   try {
+    const params: Record<string, string> = { q: searchQuery.value }
+    if (props.filterClub) params.club = props.filterClub
+    if (props.filterSexe) params.sexe = props.filterSexe
+    if (props.filterArbitre) params.arbitre = props.filterArbitre
     const data = await api.get<PlayerAutocomplete[]>(
       '/admin/operations/autocomplete/players',
-      { q: searchQuery.value }
+      params
     )
     results.value = data || []
     isOpen.value = true
@@ -67,6 +77,12 @@ watch(searchQuery, () => {
   }
   debouncedSearch()
 })
+
+// Re-search when filters change
+watch(
+  () => [props.filterClub, props.filterSexe, props.filterArbitre],
+  () => { if (searchQuery.value.length >= 2) debouncedSearch() }
+)
 
 // Handle selection
 function selectPlayer(player: PlayerAutocomplete) {
@@ -163,7 +179,11 @@ onUnmounted(() => {
         @click="selectPlayer(player)"
       >
         <div class="font-medium text-sm">{{ formatNom(player.nom) }} {{ formatPrenom(player.prenom) }}</div>
-        <div class="text-xs text-header-700">{{ player.label }}</div>
+        <div class="text-xs text-header-500 font-mono flex items-center gap-2">
+          <span>{{ player.icf ? `ICF-${player.icf}` : player.matric }}</span>
+          <span v-if="player.club">&mdash; {{ player.club }}</span>
+          <span v-if="player.arbitre" class="px-1 rounded bg-primary-100 text-primary-700 not-italic">{{ player.arbitre }}</span>
+        </div>
       </button>
     </div>
 

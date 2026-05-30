@@ -102,5 +102,7 @@ export interface PlayerAutocomplete {
   naissance: string | null
   numeroClub: string | null
   club: string | null
+  icf: number | null
+  arbitre: string | null
   label: string // Format: "12345 - DUPONT Jean (3512 - Club Name)"
 }

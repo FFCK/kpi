@@ -47,7 +47,7 @@ const addMode = ref<'existing' | 'create'>('existing')
 const addFormData = ref<AddPlayerFormData>({ mode: 'existing', capitaine: '-' })
 const addFormError = ref('')
 const addFormSaving = ref(false)
-const playerAutocompleteRef = ref<{ focus: () => void } | null>(null)
+const playerAutocompleteRef = ref<{ focus: () => void; getSearchQuery: () => string } | null>(null)
 const numeroInputRef = ref<HTMLInputElement | null>(null)
 const nomInputRef = ref<HTMLInputElement | null>(null)
 
@@ -57,6 +57,9 @@ const overrideStatus = ref<'E' | 'A'>('A')
 
 // Player search (existing players)
 const selectedPlayer = ref<PlayerAutocomplete | null>(null)
+const searchFilterClub = ref('')
+const searchFilterSexe = ref('')
+const searchFilterArbitre = ref('')
 
 // Duplicate check for new player creation
 const duplicateMatches = ref<PlayerAutocomplete[]>([])
@@ -388,6 +391,11 @@ const resetAddForm = (keepMode = false) => {
   addFormValidationErrors.value = []
   overrideStatus.value = 'A'
   duplicateMatches.value = []
+  if (!keepMode) {
+    searchFilterClub.value = ''
+    searchFilterSexe.value = ''
+    searchFilterArbitre.value = ''
+  }
 }
 
 // Copy composition
@@ -690,6 +698,7 @@ const pdfLinks = computed(() => {
             <th v-if="presenceStore.isNationalCompetition" class="px-3 py-1 text-center text-xs font-medium text-header-500 uppercase" :title="t('presence.surclassement')">{{ t('presence.surclassement') }}</th>
             <th class="px-3 py-1 text-center text-xs font-medium text-header-500 uppercase">{{ t('common.paddle') }}</th>
             <th class="px-3 py-1 text-center text-xs font-medium text-header-500 uppercase">{{ t('common.certificate') }}</th>
+            <th class="px-3 py-1 text-center text-xs font-medium text-header-500 uppercase">{{ t('presence.status_referee') }}</th>
             <th v-if="canEdit" class="w-16 px-3 py-1"/>
           </tr>
         </thead>
@@ -819,6 +828,11 @@ const pdfLinks = computed(() => {
               </span>
             </td>
 
+            <!-- Arbitre -->
+            <td class="px-3 py-1 text-sm text-header-500 text-center font-mono">
+              {{ [player.arbitre, player.niveau].filter(Boolean).join('-') || '' }}
+            </td>
+
             <!-- Actions -->
             <td v-if="canEdit" class="px-3 py-1 text-right">
               <button
@@ -833,7 +847,7 @@ const pdfLinks = computed(() => {
           <!-- Coaches (E) -->
           <template v-if="coaches.length > 0">
             <tr class="bg-header-800">
-              <td :colspan="(canEdit ? 11 : 10) + (presenceStore.isNationalCompetition ? 1 : 0)" class="px-3 py-1 text-xs text-header-50 text-center">
+              <td :colspan="(canEdit ? 12 : 11) + (presenceStore.isNationalCompetition ? 1 : 0)" class="px-3 py-1 text-xs text-header-50 text-center">
                 {{ t('presence.section_coaches') }}
               </td>
             </tr>
@@ -925,6 +939,9 @@ const pdfLinks = computed(() => {
                 <span v-if="player.certifCK === 'OUI'" class="text-success-500">{{ t('common.yes') }}</span>
                 <span v-else class="text-danger-600">{{ t('common.no') }}</span>
               </td>
+              <td class="px-3 py-1 text-sm text-header-500 text-center font-mono">
+                {{ [player.arbitre, player.niveau].filter(Boolean).join('-') || '' }}
+              </td>
               <td v-if="canEdit" class="px-3 py-1 text-right">
                 <button class="text-danger-600 hover:text-danger-800" @click="deletePlayer(player.matric)">
                   <UIcon name="i-heroicons-trash" class="w-6 h-6" />
@@ -936,7 +953,7 @@ const pdfLinks = computed(() => {
           <!-- Referees (A) -->
           <template v-if="referees.length > 0">
             <tr class="bg-header-800">
-              <td :colspan="(canEdit ? 11 : 10) + (presenceStore.isNationalCompetition ? 1 : 0)" class="px-3 py-1 text-xs text-header-50 text-center">
+              <td :colspan="(canEdit ? 12 : 11) + (presenceStore.isNationalCompetition ? 1 : 0)" class="px-3 py-1 text-xs text-header-50 text-center">
                 {{ t('presence.section_referees') }}
               </td>
             </tr>
@@ -1028,6 +1045,9 @@ const pdfLinks = computed(() => {
                 <span v-if="player.certifCK === 'OUI'" class="text-success-500">{{ t('common.yes') }}</span>
                 <span v-else class="text-danger-600">{{ t('common.no') }}</span>
               </td>
+              <td class="px-3 py-1 text-sm text-header-500 text-center font-mono">
+                {{ [player.arbitre, player.niveau].filter(Boolean).join('-') || '' }}
+              </td>
               <td v-if="canEdit" class="px-3 py-1 text-right">
                 <button class="text-danger-600 hover:text-danger-800" @click="deletePlayer(player.matric)">
                   <UIcon name="i-heroicons-trash" class="w-6 h-6" />
@@ -1039,7 +1059,7 @@ const pdfLinks = computed(() => {
           <!-- Inactive players (X) -->
           <template v-if="inactivePlayers.length > 0">
             <tr class="bg-header-800">
-              <td :colspan="(canEdit ? 11 : 10) + (presenceStore.isNationalCompetition ? 1 : 0)" class="px-3 py-1 text-xs text-header-50 text-center">
+              <td :colspan="(canEdit ? 12 : 11) + (presenceStore.isNationalCompetition ? 1 : 0)" class="px-3 py-1 text-xs text-header-50 text-center">
                 {{ t('presence.section_inactive') }}
               </td>
             </tr>
@@ -1130,6 +1150,9 @@ const pdfLinks = computed(() => {
               <td class="px-3 py-1 text-sm text-center">
                 <span v-if="player.certifCK === 'OUI'" class="text-success-500">{{ t('common.yes') }}</span>
                 <span v-else class="text-danger-600">{{ t('common.no') }}</span>
+              </td>
+              <td class="px-3 py-1 text-sm text-header-500 text-center font-mono">
+                {{ [player.arbitre, player.niveau].filter(Boolean).join('-') || '' }}
               </td>
               <td v-if="canEdit" class="px-3 py-1 text-right">
                 <button class="text-danger-600 hover:text-danger-800" @click="deletePlayer(player.matric)">
@@ -1398,7 +1421,12 @@ const pdfLinks = computed(() => {
               type="button"
               class="px-4 py-1 text-sm font-medium border-b-2 transition-colors"
               :class="addMode === 'create' ? 'border-primary-600 text-primary-600' : 'border-transparent text-header-500 hover:text-header-700'"
-              @click="addMode = 'create'; addFormData.mode = 'create'"
+              @click="() => {
+                const q = playerAutocompleteRef.value?.getSearchQuery()?.trim() || ''
+                addMode = 'create'
+                addFormData.mode = 'create'
+                if (q && !addFormData.nom) addFormData.nom = q.toUpperCase()
+              }"
             >
               {{ t('presence.create_new_player') }}
             </button>
@@ -1406,12 +1434,49 @@ const pdfLinks = computed(() => {
 
           <!-- Existing player search -->
           <template v-if="addMode === 'existing'">
+            <!-- Filters -->
+            <div class="grid grid-cols-3 gap-2">
+              <div>
+                <label class="block text-xs font-medium text-header-600 mb-1">{{ t('common.club') }}</label>
+                <AdminClubAutocomplete
+                  v-model="searchFilterClub"
+                />
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-header-600 mb-1">{{ t('presence.sex') }}</label>
+                <select
+                  v-model="searchFilterSexe"
+                  class="w-full px-2 py-1 border border-header-300 rounded text-xs focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+                >
+                  <option value="">-</option>
+                  <option value="M">M</option>
+                  <option value="F">F</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-xs font-medium text-header-600 mb-1">{{ t('presence.referee_qualification') }}</label>
+                <select
+                  v-model="searchFilterArbitre"
+                  class="w-full px-2 py-1 border border-header-300 rounded text-xs focus:ring-1 focus:ring-primary-500 focus:border-primary-500"
+                >
+                  <option value="">-</option>
+                  <option value="INT">INT</option>
+                  <option value="NAT">NAT</option>
+                  <option value="REG">REG</option>
+                  <option value="OTM">OTM</option>
+                  <option value="JO">JO</option>
+                </select>
+              </div>
+            </div>
             <div>
               <label class="block text-sm font-medium text-header-700 mb-1">{{ t('presence.search_placeholder') }}</label>
               <AdminPlayerAutocomplete
                 ref="playerAutocompleteRef"
                 :model-value="selectedPlayer"
                 :placeholder="t('presence.search_placeholder')"
+                :filter-club="searchFilterClub"
+                :filter-sexe="searchFilterSexe"
+                :filter-arbitre="searchFilterArbitre"
                 @update:model-value="onPlayerSelected"
                 @player-selected="onPlayerSelected"
               />

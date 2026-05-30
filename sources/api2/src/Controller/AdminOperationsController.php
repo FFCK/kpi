@@ -353,6 +353,9 @@ class AdminOperationsController extends AbstractController
     {
         $query = $request->query->get('q', '');
         $limit = min(20, max(1, (int) $request->query->get('limit', 10)));
+        $filterClub = trim($request->query->get('club', ''));
+        $filterSexe = trim($request->query->get('sexe', ''));
+        $filterArbitre = trim($request->query->get('arbitre', ''));
 
         if (strlen($query) < 2) {
             return $this->json([]);
@@ -409,9 +412,22 @@ class AdminOperationsController extends AbstractController
                 }
                 $conditions[] = '(' . implode(' OR ', $wordClauses) . ')';
             }
-            $sql = "SELECT l.Matric, l.Nom, l.Prenom, l.Naissance, l.Numero_club, c.Libelle as Club
+            if ($filterClub !== '') {
+                $conditions[] = 'l.Numero_club = ?';
+                $params[] = $filterClub;
+            }
+            if ($filterSexe !== '') {
+                $conditions[] = 'l.Sexe = ?';
+                $params[] = $filterSexe;
+            }
+            if ($filterArbitre !== '') {
+                $conditions[] = 'a.arbitre = ?';
+                $params[] = $filterArbitre;
+            }
+            $sql = "SELECT l.Matric, l.Nom, l.Prenom, l.Naissance, l.Numero_club, l.Reserve, c.Libelle as Club, a.arbitre as ArbitreQual
                     FROM kp_licence l
                     LEFT JOIN kp_club c ON l.Numero_club = c.Code
+                    LEFT JOIN kp_arbitre a ON l.Matric = a.Matric
                     WHERE " . implode(' AND ', $conditions) . "
                     ORDER BY l.Nom, l.Prenom
                     LIMIT $limit";
@@ -441,10 +457,28 @@ class AdminOperationsController extends AbstractController
                     $params[] = $term;
                 }
             }
-            $sql = "SELECT l.Matric, l.Nom, l.Prenom, l.Naissance, l.Numero_club, c.Libelle as Club
+            $extraConditions = [];
+            if ($filterClub !== '') {
+                $extraConditions[] = 'l.Numero_club = ?';
+                $params[] = $filterClub;
+            }
+            if ($filterSexe !== '') {
+                $extraConditions[] = 'l.Sexe = ?';
+                $params[] = $filterSexe;
+            }
+            if ($filterArbitre !== '') {
+                $extraConditions[] = 'a.arbitre = ?';
+                $params[] = $filterArbitre;
+            }
+            $mainWhere = '(' . implode(' OR ', $wordClauses) . ')';
+            $allWhere = $extraConditions
+                ? $mainWhere . ' AND ' . implode(' AND ', $extraConditions)
+                : $mainWhere;
+            $sql = "SELECT l.Matric, l.Nom, l.Prenom, l.Naissance, l.Numero_club, l.Reserve, c.Libelle as Club, a.arbitre as ArbitreQual
                     FROM kp_licence l
                     LEFT JOIN kp_club c ON l.Numero_club = c.Code
-                    WHERE " . implode(' OR ', $wordClauses) . "
+                    LEFT JOIN kp_arbitre a ON l.Matric = a.Matric
+                    WHERE $allWhere
                     ORDER BY l.Nom, l.Prenom
                     LIMIT $limit";
         }
@@ -460,6 +494,8 @@ class AdminOperationsController extends AbstractController
                 'naissance' => $row['Naissance'],
                 'numeroClub' => $row['Numero_club'],
                 'club' => $row['Club'],
+                'icf' => $row['Reserve'] ? (int) $row['Reserve'] : null,
+                'arbitre' => $row['ArbitreQual'] ?: null,
                 'label' => "{$row['Nom']} {$row['Prenom']} ({$row['Matric']}) - {$row['Club']}"
             ];
         }, $result->fetchAllAssociative());
