@@ -824,21 +824,21 @@ const printJurySheet = (gamedayId: number) => {
                 >
               </th>
               <!-- Publication -->
-              <th class="w-10 px-2 py-3 text-center text-xs font-medium text-header-500 uppercase">
+              <th class="w-10 px-2 py-3 text-center text-xs font-medium text-header-600 uppercase">
                 <UIcon name="heroicons:eye" class="w-6 h-6" />
               </th>
               <!-- Id -->
-              <th class="px-2 py-3 text-left text-xs font-medium text-header-500 uppercase">{{ t('gamedays.field.id') }}</th>
+              <th class="px-2 py-3 text-left text-xs font-medium text-header-600 uppercase">{{ t('gamedays.field.id') }}</th>
               <!-- Actions -->
               <th v-if="canEdit" class="w-20 px-2 py-3" />
               <!-- Competition / Phase -->
-              <th class="px-2 py-3 text-left text-xs font-medium text-header-500 uppercase">{{ t('gamedays.field.competition') }} / {{ t('gamedays.field.phase') }}</th>
+              <th class="px-2 py-3 text-left text-xs font-medium text-header-600 uppercase">{{ t('gamedays.field.competition') }} / {{ t('gamedays.field.phase') }}</th>
               <!-- CP columns -->
-              <th v-if="showCPColumns" class="px-2 py-3 text-center text-xs font-medium text-header-500 uppercase">{{ t('gamedays.field.niveau') }}</th>
-              <th v-if="showCPColumns" class="px-2 py-3 text-center text-xs font-medium text-header-500 uppercase">{{ t('gamedays.field.etape') }}</th>
-              <th v-if="showCPColumns" class="px-2 py-3 text-center text-xs font-medium text-header-500 uppercase">{{ t('gamedays.field.nb_equipes') }}</th>
+              <th v-if="showCPColumns" class="px-2 py-3 text-center text-xs font-medium text-header-600 uppercase">{{ t('gamedays.field.niveau') }}</th>
+              <th v-if="showCPColumns" class="px-2 py-3 text-center text-xs font-medium text-header-600 uppercase">{{ t('gamedays.field.etape') }}</th>
+              <th v-if="showCPColumns" class="px-2 py-3 text-center text-xs font-medium text-header-600 uppercase">{{ t('gamedays.field.nb_equipes') }}</th>
               <!-- Type -->
-              <th class="w-10 px-2 py-3 text-center text-xs font-medium text-header-500 uppercase">{{ t('gamedays.field.type') }}</th>
+              <th class="w-10 px-2 py-3 text-center text-xs font-medium text-header-600 uppercase">{{ t('gamedays.field.type') }}</th>
               <!-- Calendar public columns (green headers) -->
               <th class="px-2 py-3 text-left text-xs font-medium text-success-700 uppercase bg-success-100">{{ t('gamedays.field.nom') }}</th>
               <th class="px-2 py-3 text-left text-xs font-medium text-success-700 uppercase bg-success-100">{{ t('gamedays.field.date_debut') }}</th>
@@ -846,9 +846,9 @@ const printJurySheet = (gamedayId: number) => {
               <th class="px-2 py-3 text-left text-xs font-medium text-success-700 uppercase bg-success-100">{{ t('gamedays.field.lieu') }}</th>
               <th class="px-2 py-3 text-left text-xs font-medium text-success-700 uppercase bg-success-100">{{ t('gamedays.field.departement') }}</th>
               <!-- Matches -->
-              <th class="px-2 py-3 text-center text-xs font-medium text-header-500 uppercase">{{ t('gamedays.field.matches') }}</th>
+              <th class="px-2 py-3 text-center text-xs font-medium text-header-600 uppercase">{{ t('gamedays.field.matches') }}</th>
               <!-- Officials -->
-              <th class="px-2 py-3 text-left text-xs font-medium text-header-500 uppercase">{{ t('gamedays.field.officiels') }}</th>
+              <th class="px-2 py-3 text-left text-xs font-medium text-header-600 uppercase">{{ t('gamedays.field.officiels') }}</th>
               <!-- Delete -->
               <th v-if="canEdit" class="w-10 px-2 py-3" />
             </tr>

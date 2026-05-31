@@ -329,7 +329,7 @@ async function handleSubmit() {
             class="w-full px-3 py-2 text-left text-sm text-header-900 hover:bg-primary-50 focus:bg-primary-100 focus:outline-none flex items-center gap-2"
             @click="selectClub(result)"
           >
-            <span class="font-mono text-xs text-header-500 bg-header-100 px-1.5 py-0.5 rounded">{{ result.code }}</span>
+            <span class="font-mono text-xs text-header-700 bg-header-100 px-1.5 py-0.5 rounded">{{ result.code }}</span>
             <span>{{ result.libelle }}</span>
           </button>
         </div>

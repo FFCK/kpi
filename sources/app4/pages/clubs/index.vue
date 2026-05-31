@@ -559,7 +559,7 @@ onBeforeUnmount(() => {
                 class="w-full px-3 py-2 text-left text-sm text-header-900 hover:bg-primary-50 focus:bg-primary-100 focus:outline-none flex items-center gap-2"
                 @click="selectClub(result)"
               >
-                <span class="font-mono text-xs text-header-500 bg-header-100 px-1.5 py-0.5 rounded">{{ result.code }}</span>
+                <span class="font-mono text-xs text-header-700 bg-header-100 px-1.5 py-0.5 rounded">{{ result.code }}</span>
                 <span>{{ result.libelle }}</span>
               </button>
             </div>
@@ -569,10 +569,10 @@ onBeforeUnmount(() => {
           <template v-if="selectedClub">
             <div class="mb-3 text-sm">
               <div class="flex items-center gap-2 mb-1">
-                <span class="font-mono text-xs text-header-500 bg-header-100 px-1.5 py-0.5 rounded">{{ selectedClub.code }}</span>
+                <span class="font-mono text-xs text-header-700 bg-header-100 px-1.5 py-0.5 rounded">{{ selectedClub.code }}</span>
                 <span class="font-semibold text-header-900">{{ selectedClub.libelle }}</span>
               </div>
-              <span v-if="selectedClub.libelleComiteDep" class="text-xs text-header-400">
+              <span v-if="selectedClub.libelleComiteDep" class="text-xs text-header-600">
                 {{ selectedClub.libelleComiteDep }}
               </span>
             </div>
@@ -692,7 +692,7 @@ onBeforeUnmount(() => {
                 >
                   <div class="flex items-center justify-between">
                     <span class="text-sm font-medium text-header-900 group-hover:text-primary-700">{{ team.libelle }}</span>
-                    <UIcon name="i-heroicons-chevron-right" class="w-4 h-4 text-header-300 group-hover:text-primary-500" />
+                    <UIcon name="i-heroicons-chevron-right" class="w-4 h-4 text-header-400 group-hover:text-primary-500" />
                   </div>
                   <div class="flex items-center gap-3 text-xs text-header-500 mt-0.5">
                     <span v-if="team.derniereSaison">{{ t('clubs.teams.last_season') }} : {{ team.derniereSaison }}</span>
@@ -742,7 +742,7 @@ onBeforeUnmount(() => {
               class="w-full px-3 py-2 text-left text-sm text-header-900 hover:bg-primary-50 focus:bg-primary-100 focus:outline-none flex items-center gap-2"
               @click="selectCR(cr)"
             >
-              <span class="font-mono text-xs text-header-500 bg-header-100 px-1.5 py-0.5 rounded">{{ cr.code }}</span>
+              <span class="font-mono text-xs text-header-700 bg-header-100 px-1.5 py-0.5 rounded">{{ cr.code }}</span>
               <span>{{ cr.libelle }}</span>
             </button>
           </div>
@@ -829,7 +829,7 @@ onBeforeUnmount(() => {
               class="w-full px-3 py-2 text-left text-sm text-header-900 hover:bg-primary-50 focus:bg-primary-100 focus:outline-none flex items-center gap-2"
               @click="selectCD(cd)"
             >
-              <span class="font-mono text-xs text-header-500 bg-header-100 px-1.5 py-0.5 rounded">{{ cd.code }}</span>
+              <span class="font-mono text-xs text-header-700 bg-header-100 px-1.5 py-0.5 rounded">{{ cd.code }}</span>
               <span>{{ cd.libelle }}</span>
             </button>
           </div>

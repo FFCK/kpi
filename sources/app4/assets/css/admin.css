@@ -2,6 +2,8 @@
 @import "@nuxt/ui";
 @import "./toast.css";
 
+/* Feed --ui-color-* in :root so Nuxt UI components (UButton, UInput, etc.) resolve our palette.
+   @theme below registers the same values as Tailwind tokens (bg-primary-*, text-header-*, etc.) */
 :root {
   --color-header: #20265b;
   --color-primary: #1e4385;
@@ -11,9 +13,96 @@
   --color-warning: #e9b410;
   --color-success: #209452;
   --color-danger: #c94a4c;
+
+  --ui-color-primary-50: oklch(0.970 0.018 260.93);
+  --ui-color-primary-100: oklch(0.940 0.042 260.93);
+  --ui-color-primary-200: oklch(0.880 0.077 260.93);
+  --ui-color-primary-300: oklch(0.810 0.101 260.93);
+  --ui-color-primary-400: oklch(0.710 0.113 260.93);
+  --ui-color-primary-500: oklch(0.540 0.116 260.93);
+  --ui-color-primary-600: oklch(0.480 0.109 260.93);
+  --ui-color-primary-700: oklch(0.420 0.100 260.93);
+  --ui-color-primary-800: oklch(0.380 0.089 260.93);
+  --ui-color-primary-900: oklch(0.330 0.080 260.93);
+  --ui-color-primary-950: oklch(0.280 0.071 260.93);
+
+  --ui-color-secondary-50: oklch(0.970 0.018 230);
+  --ui-color-secondary-100: oklch(0.940 0.042 230);
+  --ui-color-secondary-200: oklch(0.880 0.077 230);
+  --ui-color-secondary-300: oklch(0.810 0.101 230);
+  --ui-color-secondary-400: oklch(0.750 0.105 230);
+  --ui-color-secondary-500: oklch(0.680 0.100 230);
+  --ui-color-secondary-600: oklch(0.600 0.095 230);
+  --ui-color-secondary-700: oklch(0.520 0.085 230);
+  --ui-color-secondary-800: oklch(0.440 0.075 230);
+  --ui-color-secondary-900: oklch(0.380 0.065 230);
+  --ui-color-secondary-950: oklch(0.280 0.050 230);
+
+  --ui-color-success-50: oklch(0.970 0.021 152.75);
+  --ui-color-success-100: oklch(0.940 0.049 152.75);
+  --ui-color-success-200: oklch(0.880 0.092 152.75);
+  --ui-color-success-300: oklch(0.810 0.120 152.75);
+  --ui-color-success-400: oklch(0.710 0.134 152.75);
+  --ui-color-success-500: oklch(0.620 0.141 152.75);
+  --ui-color-success-600: oklch(0.540 0.138 152.75);
+  --ui-color-success-700: oklch(0.480 0.130 152.75);
+  --ui-color-success-800: oklch(0.420 0.118 152.75);
+  --ui-color-success-900: oklch(0.380 0.106 152.75);
+  --ui-color-success-950: oklch(0.280 0.085 152.75);
+
+  --ui-color-warning-50: oklch(0.970 0.024 86.80);
+  --ui-color-warning-100: oklch(0.940 0.056 86.80);
+  --ui-color-warning-200: oklch(0.880 0.104 86.80);
+  --ui-color-warning-300: oklch(0.810 0.136 86.80);
+  --ui-color-warning-400: oklch(0.710 0.152 86.80);
+  --ui-color-warning-500: oklch(0.620 0.161 86.80);
+  --ui-color-warning-600: oklch(0.540 0.157 86.80);
+  --ui-color-warning-700: oklch(0.480 0.148 86.80);
+  --ui-color-warning-800: oklch(0.420 0.135 86.80);
+  --ui-color-warning-900: oklch(0.380 0.120 86.80);
+  --ui-color-warning-950: oklch(0.280 0.096 86.80);
+
+  --ui-color-error-50: oklch(0.970 0.024 22.73);
+  --ui-color-error-100: oklch(0.940 0.057 22.73);
+  --ui-color-error-200: oklch(0.880 0.105 22.73);
+  --ui-color-error-300: oklch(0.810 0.138 22.73);
+  --ui-color-error-400: oklch(0.710 0.154 22.73);
+  --ui-color-error-500: oklch(0.620 0.162 22.73);
+  --ui-color-error-600: oklch(0.540 0.159 22.73);
+  --ui-color-error-700: oklch(0.480 0.149 22.73);
+  --ui-color-error-800: oklch(0.420 0.136 22.73);
+  --ui-color-error-900: oklch(0.380 0.121 22.73);
+  --ui-color-error-950: oklch(0.280 0.097 22.73);
+
+  --ui-color-info-50: oklch(0.970 0.018 240);
+  --ui-color-info-100: oklch(0.940 0.042 240);
+  --ui-color-info-200: oklch(0.880 0.077 240);
+  --ui-color-info-300: oklch(0.810 0.101 240);
+  --ui-color-info-400: oklch(0.710 0.113 240);
+  --ui-color-info-500: oklch(0.620 0.119 240);
+  --ui-color-info-600: oklch(0.540 0.116 240);
+  --ui-color-info-700: oklch(0.480 0.109 240);
+  --ui-color-info-800: oklch(0.420 0.100 240);
+  --ui-color-info-900: oklch(0.380 0.089 240);
+  --ui-color-info-950: oklch(0.280 0.071 240);
+
+  --ui-color-neutral-50: oklch(0.985 0 0);
+  --ui-color-neutral-100: oklch(0.970 0 0);
+  --ui-color-neutral-200: oklch(0.922 0 0);
+  --ui-color-neutral-300: oklch(0.870 0 0);
+  --ui-color-neutral-400: oklch(0.708 0 0);
+  --ui-color-neutral-500: oklch(0.556 0 0);
+  --ui-color-neutral-600: oklch(0.439 0 0);
+  --ui-color-neutral-700: oklch(0.371 0 0);
+  --ui-color-neutral-800: oklch(0.269 0 0);
+  --ui-color-neutral-900: oklch(0.205 0 0);
+  --ui-color-neutral-950: oklch(0.145 0 0);
 }
 
-@theme inline {
+/* Register Tailwind utility tokens (bg-header-*, text-primary-*, etc.).
+   These point to the --ui-color-* vars above so both Tailwind classes and
+   Nuxt UI components stay in sync with the same palette values. */
+@theme {
   /* Header - deep blue (#20265b) */
   --color-header-50: oklch(0.970 0.014 274.28);
   --color-header-100: oklch(0.940 0.033 274.28);
@@ -26,32 +115,6 @@
   --color-header-800: oklch(0.420 0.079 274.28);
   --color-header-900: oklch(0.380 0.071 274.28);
   --color-header-950: oklch(0.280 0.057 274.28);
-
-  /* Primary - blue (#1e4385) — used by Nuxt UI for UButton, UInput focus, etc. */
-  --color-primary-50: oklch(0.970 0.018 260.93);
-  --color-primary-100: oklch(0.940 0.042 260.93);
-  --color-primary-200: oklch(0.880 0.077 260.93);
-  --color-primary-300: oklch(0.810 0.101 260.93);
-  --color-primary-400: oklch(0.710 0.113 260.93);
-  --color-primary-500: oklch(0.540 0.116 260.93);
-  --color-primary-600: oklch(0.480 0.109 260.93);
-  --color-primary-700: oklch(0.420 0.100 260.93);
-  --color-primary-800: oklch(0.380 0.089 260.93);
-  --color-primary-900: oklch(0.330 0.080 260.93);
-  --color-primary-950: oklch(0.280 0.071 260.93);
-
-  /* Secondary - light blue (#69b9e6) */
-  --color-secondary-50: oklch(0.970 0.018 230);
-  --color-secondary-100: oklch(0.940 0.042 230);
-  --color-secondary-200: oklch(0.880 0.077 230);
-  --color-secondary-300: oklch(0.810 0.101 230);
-  --color-secondary-400: oklch(0.750 0.105 230);
-  --color-secondary-500: oklch(0.680 0.100 230);
-  --color-secondary-600: oklch(0.600 0.095 230);
-  --color-secondary-700: oklch(0.520 0.085 230);
-  --color-secondary-800: oklch(0.440 0.075 230);
-  --color-secondary-900: oklch(0.380 0.065 230);
-  --color-secondary-950: oklch(0.280 0.050 230);
 
   /* Light (#c6c7c7) */
   --color-light-50: oklch(0.970 0.000 197.14);
@@ -79,45 +142,6 @@
   --color-dark-900: oklch(0.380 0.003 106.69);
   --color-dark-950: oklch(0.280 0.002 106.69);
 
-  /* Warning - yellow (#e9b410) */
-  --color-warning-50: oklch(0.970 0.024 86.80);
-  --color-warning-100: oklch(0.940 0.056 86.80);
-  --color-warning-200: oklch(0.880 0.104 86.80);
-  --color-warning-300: oklch(0.810 0.136 86.80);
-  --color-warning-400: oklch(0.710 0.152 86.80);
-  --color-warning-500: oklch(0.620 0.161 86.80);
-  --color-warning-600: oklch(0.540 0.157 86.80);
-  --color-warning-700: oklch(0.480 0.148 86.80);
-  --color-warning-800: oklch(0.420 0.135 86.80);
-  --color-warning-900: oklch(0.380 0.120 86.80);
-  --color-warning-950: oklch(0.280 0.096 86.80);
-
-  /* Success - green (#209452) */
-  --color-success-50: oklch(0.970 0.021 152.75);
-  --color-success-100: oklch(0.940 0.049 152.75);
-  --color-success-200: oklch(0.880 0.092 152.75);
-  --color-success-300: oklch(0.810 0.120 152.75);
-  --color-success-400: oklch(0.710 0.134 152.75);
-  --color-success-500: oklch(0.620 0.141 152.75);
-  --color-success-600: oklch(0.540 0.138 152.75);
-  --color-success-700: oklch(0.480 0.130 152.75);
-  --color-success-800: oklch(0.420 0.118 152.75);
-  --color-success-900: oklch(0.380 0.106 152.75);
-  --color-success-950: oklch(0.280 0.085 152.75);
-
-  /* Error/Danger - red (#c94a4c) */
-  --color-error-50: oklch(0.970 0.024 22.73);
-  --color-error-100: oklch(0.940 0.057 22.73);
-  --color-error-200: oklch(0.880 0.105 22.73);
-  --color-error-300: oklch(0.810 0.138 22.73);
-  --color-error-400: oklch(0.710 0.154 22.73);
-  --color-error-500: oklch(0.620 0.162 22.73);
-  --color-error-600: oklch(0.540 0.159 22.73);
-  --color-error-700: oklch(0.480 0.149 22.73);
-  --color-error-800: oklch(0.420 0.136 22.73);
-  --color-error-900: oklch(0.380 0.121 22.73);
-  --color-error-950: oklch(0.280 0.097 22.73);
-
   /* Danger - alias of error for custom usage */
   --color-danger-50: oklch(0.970 0.024 22.73);
   --color-danger-100: oklch(0.940 0.057 22.73);
@@ -130,32 +154,6 @@
   --color-danger-800: oklch(0.420 0.136 22.73);
   --color-danger-900: oklch(0.380 0.121 22.73);
   --color-danger-950: oklch(0.280 0.097 22.73);
-
-  /* Info - blue tone */
-  --color-info-50: oklch(0.970 0.018 240);
-  --color-info-100: oklch(0.940 0.042 240);
-  --color-info-200: oklch(0.880 0.077 240);
-  --color-info-300: oklch(0.810 0.101 240);
-  --color-info-400: oklch(0.710 0.113 240);
-  --color-info-500: oklch(0.620 0.119 240);
-  --color-info-600: oklch(0.540 0.116 240);
-  --color-info-700: oklch(0.480 0.109 240);
-  --color-info-800: oklch(0.420 0.100 240);
-  --color-info-900: oklch(0.380 0.089 240);
-  --color-info-950: oklch(0.280 0.071 240);
-
-  /* Neutral - gray */
-  --color-neutral-50: oklch(0.985 0 0);
-  --color-neutral-100: oklch(0.970 0 0);
-  --color-neutral-200: oklch(0.922 0 0);
-  --color-neutral-300: oklch(0.870 0 0);
-  --color-neutral-400: oklch(0.708 0 0);
-  --color-neutral-500: oklch(0.556 0 0);
-  --color-neutral-600: oklch(0.439 0 0);
-  --color-neutral-700: oklch(0.371 0 0);
-  --color-neutral-800: oklch(0.269 0 0);
-  --color-neutral-900: oklch(0.205 0 0);
-  --color-neutral-950: oklch(0.145 0 0);
 }
 
 /* ===== Typography ===== */

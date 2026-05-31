@@ -59,10 +59,10 @@ const getScoreClass = (side: 'A' | 'B') => {
     <div class="flex items-center gap-1 mx-2 tabular-nums min-w-[40px] justify-center">
       <template v-if="hasScore">
         <span :class="getScoreClass('A')">{{ match.scoreA }}</span>
-        <span class="text-header-300">-</span>
+        <span class="text-header-500">-</span>
         <span :class="getScoreClass('B')">{{ match.scoreB }}</span>
       </template>
-      <span v-else class="text-header-300">vs</span>
+      <span v-else class="text-header-500">vs</span>
     </div>
 
     <!-- Team B -->

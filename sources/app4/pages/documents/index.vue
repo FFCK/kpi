@@ -303,7 +303,7 @@ onMounted(async () => {
           >
             <UIcon name="heroicons:document-duplicate" class="w-6 h-6 text-header-400" />
             {{ t('documents.matches.match_sheets') }}
-            <span class="text-xs text-header-400 ml-auto">{{ matchIds.length }} {{ t('documents.matches.matches_count') }}</span>
+            <span class="text-xs text-header-600 italic ml-auto">{{ matchIds.length }} {{ t('documents.matches.matches_count') }}</span>
           </a>
           <div
             v-else-if="loadingMatchIds"

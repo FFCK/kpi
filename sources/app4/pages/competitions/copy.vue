@@ -420,7 +420,7 @@ onMounted(async () => {
                 <UIcon
                   :name="schema.matchsEncodes ? 'i-heroicons-check-circle-solid' : 'i-heroicons-x-circle-solid'"
                   class="w-6 h-6"
-                  :class="schema.matchsEncodes ? 'text-success-500' : 'text-header-300'"
+                  :class="schema.matchsEncodes ? 'text-success-500' : 'text-header-400'"
                 />
               </td>
               <td class="px-3 py-2 text-center">

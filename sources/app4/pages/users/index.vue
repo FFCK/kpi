@@ -734,7 +734,7 @@ const profileOptions = computed(() => {
                   </button>
                   <span
                     v-else-if="canEdit"
-                    class="p-1.5 text-header-300 cursor-help"
+                    class="p-1.5 text-header-500 cursor-help"
                     :title="t('users.table.edit_not_allowed')"
                   >
                     <UIcon name="i-heroicons-information-circle" class="w-5 h-5" />

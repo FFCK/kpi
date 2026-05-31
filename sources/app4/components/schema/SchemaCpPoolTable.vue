@@ -105,7 +105,7 @@ const isHighlighted = (team: string) => {
 
     <!-- Empty rows -->
     <div v-else>
-      <div v-for="n in emptyRows" :key="n" class="py-0.5 px-1 text-header-300 border-b border-header-100 text-xs">
+      <div v-for="n in emptyRows" :key="n" class="py-0.5 px-1 text-header-400 border-b border-header-100 text-xs">
         —
       </div>
     </div>

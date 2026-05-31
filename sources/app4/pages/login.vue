@@ -101,6 +101,7 @@ const handleSubmit = async () => {
               v-model="form.username"
               type="text"
               variant="outline"
+              class="login-input"
               :placeholder="t('login.username_placeholder')"
               required
               autofocus
@@ -117,6 +118,7 @@ const handleSubmit = async () => {
               v-model="form.password"
               type="password"
               variant="outline"
+              class="login-input"
               :placeholder="t('login.password_placeholder')"
               required
             />
@@ -148,5 +150,9 @@ const handleSubmit = async () => {
 #username,
 #password {
   background-color: var(--color-primary-50) !important;
+}
+
+.login-input [data-slot="base"] {
+  --ui-border: var(--ui-color-primary-300);
 }
 </style>

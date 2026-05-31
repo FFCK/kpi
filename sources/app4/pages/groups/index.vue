@@ -494,7 +494,7 @@ const isLastInSection = (group: Group, sectionGroups: Group[]) => {
                     <span class="text-header-400">/</span>
                     <span class="text-header-500">{{ group.competitionCount }}</span>
                   </span>
-                  <span v-else class="text-header-300">0</span>
+                  <span v-else class="text-header-500">0</span>
                 </td>
 
                 <!-- Actions -->

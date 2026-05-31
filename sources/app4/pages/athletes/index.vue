@@ -391,11 +391,11 @@ onBeforeUnmount(() => {
                 @input="onClubSearchInput"
                 @focus="onClubSearchInput"
               >
-              <UIcon v-if="clubLoading" name="i-heroicons-arrow-path" class="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-header-400 animate-spin" />
+              <UIcon v-if="clubLoading" name="i-heroicons-arrow-path" class="absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 text-header-600 animate-spin" />
               <button
                 v-else-if="filters.clubCode"
                 type="button"
-                class="absolute right-2 top-1/2 -translate-y-1/2 text-header-400 hover:text-header-600"
+                class="absolute right-2 top-1/2 -translate-y-1/2 text-header-600 hover:text-header-700"
                 @click="clearClubFilter"
               >
                 <UIcon name="i-heroicons-x-mark" class="w-4 h-4" />
@@ -473,12 +473,12 @@ onBeforeUnmount(() => {
           @input="onSearchInput"
           @focus="onSearchInput"
         >
-        <UIcon name="i-heroicons-magnifying-glass" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-header-400" />
-        <UIcon v-if="searchLoading" name="i-heroicons-arrow-path" class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-header-400 animate-spin" />
+        <UIcon name="i-heroicons-magnifying-glass" class="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-header-600" />
+        <UIcon v-if="searchLoading" name="i-heroicons-arrow-path" class="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-header-600 animate-spin" />
         <button
           v-else-if="search"
           type="button"
-          class="absolute right-3 top-1/2 -translate-y-1/2 text-header-400 hover:text-header-600"
+          class="absolute right-3 top-1/2 -translate-y-1/2 text-header-600 hover:text-header-700"
           @click="clearSearch"
         >
           <UIcon name="i-heroicons-x-mark" class="w-5 h-5" />
@@ -496,7 +496,7 @@ onBeforeUnmount(() => {
           class="w-full px-4 py-2.5 text-left text-sm text-header-900 hover:bg-primary-50 focus:bg-primary-100 focus:outline-none flex items-center gap-3"
           @click="selectAthlete(result)"
         >
-          <span class="font-mono text-xs text-header-500 bg-header-100 px-1.5 py-0.5 rounded shrink-0">{{ result.matric }}</span>
+          <span class="font-mono text-xs text-header-700 bg-header-100 px-1.5 py-0.5 rounded shrink-0">{{ result.matric }}</span>
           <span class="font-medium">{{ formatNom(result.nom) }} {{ formatPrenom(result.prenom) }}</span>
           <span v-if="result.club" class="text-header-600 text-xs truncate">— {{ result.club }}</span>
         </button>
@@ -518,8 +518,8 @@ onBeforeUnmount(() => {
       v-else-if="!athlete"
       class="bg-white border border-header-200 rounded-lg p-12 text-center"
     >
-      <UIcon name="i-heroicons-user-group" class="w-12 h-12 text-header-300 mx-auto mb-4" />
-      <p class="text-header-500 text-sm">{{ t('athletes.no_athlete_selected') }}</p>
+      <UIcon name="i-heroicons-user-group" class="w-12 h-12 text-header-600 mx-auto mb-4" />
+      <p class="text-header-600 text-sm">{{ t('athletes.no_athlete_selected') }}</p>
     </div>
 
     <!-- ═══ Athlete Profile ═══ -->
@@ -531,8 +531,8 @@ onBeforeUnmount(() => {
             <h2 class="text-lg font-bold text-header-900">
               {{ t('athletes.licence') }}{{ athlete.matric }}
               <span class="ml-3">{{ formatNom(athlete.nom) }} {{ formatPrenom(athlete.prenom) }}</span>
-              <span class="text-header-500 font-normal ml-2">({{ athlete.sexe }})</span>
-              <span v-if="athlete.naissance" class="text-header-500 font-normal ml-2">
+              <span class="text-header-600 font-normal ml-2">({{ athlete.sexe }})</span>
+              <span v-if="athlete.naissance" class="text-header-600 font-normal ml-2">
                 {{ formatDate(athlete.naissance) }}
               </span>
             </h2>
@@ -556,10 +556,10 @@ onBeforeUnmount(() => {
               <div v-if="athlete.club.code" class="font-medium">
                 {{ athlete.club.code }} {{ athlete.club.libelle }}
               </div>
-              <div v-if="athlete.comiteDep.code" class="text-header-500 text-xs">
+              <div v-if="athlete.comiteDep.code" class="text-header-600 text-xs">
                 {{ athlete.comiteDep.code }} {{ athlete.comiteDep.libelle }}
               </div>
-              <div v-if="athlete.comiteReg.code" class="text-header-500 text-xs">
+              <div v-if="athlete.comiteReg.code" class="text-header-600 text-xs">
                 {{ athlete.comiteReg.code }} {{ athlete.comiteReg.libelle }}
               </div>
             </div>
@@ -570,15 +570,15 @@ onBeforeUnmount(() => {
             <h3 class="text-sm font-semibold text-header-700 mb-2">{{ t('athletes.pagaie.title') }}</h3>
             <div class="space-y-1 text-sm">
               <div>
-                <span class="text-header-500">{{ t('athletes.pagaie.eau_vive') }} :</span>
+                <span class="text-header-600">{{ t('athletes.pagaie.eau_vive') }} :</span>
                 {{ athlete.pagaie.eauVive || '-' }}
               </div>
               <div>
-                <span class="text-header-500">{{ t('athletes.pagaie.mer') }} :</span>
+                <span class="text-header-600">{{ t('athletes.pagaie.mer') }} :</span>
                 {{ athlete.pagaie.mer || '-' }}
               </div>
               <div>
-                <span class="text-header-500">{{ t('athletes.pagaie.eau_calme') }} :</span>
+                <span class="text-header-600">{{ t('athletes.pagaie.eau_calme') }} :</span>
                 {{ athlete.pagaie.eauCalme || '-' }}
               </div>
             </div>
@@ -589,14 +589,14 @@ onBeforeUnmount(() => {
             <h3 class="text-sm font-semibold text-header-700 mb-2">{{ t('athletes.certificats.title') }}</h3>
             <div class="space-y-1 text-sm">
               <div>
-                <span class="text-header-500">{{ t('athletes.certificats.aps') }} :</span>
-                <span :class="athlete.certificats.aps === 'OUI' ? 'text-success-500 font-medium' : 'text-danger-500'">
+                <span class="text-header-600">{{ t('athletes.certificats.aps') }} :</span>
+                <span :class="athlete.certificats.aps === 'OUI' ? 'text-success-600 font-medium' : 'text-danger-500'">
                   {{ athlete.certificats.aps || '-' }}
                 </span>
               </div>
               <div>
-                <span class="text-header-500">{{ t('athletes.certificats.ck') }} :</span>
-                <span :class="athlete.certificats.ck === 'OUI' ? 'text-success-500 font-medium' : 'text-danger-500'">
+                <span class="text-header-600">{{ t('athletes.certificats.ck') }} :</span>
+                <span :class="athlete.certificats.ck === 'OUI' ? 'text-success-600 font-medium' : 'text-danger-600'">
                   {{ athlete.certificats.ck || '-' }}
                 </span>
               </div>
@@ -607,7 +607,7 @@ onBeforeUnmount(() => {
           <div class="bg-header-50 rounded-lg p-4">
             <h3 class="text-sm font-semibold text-header-700 mb-2">{{ t('athletes.licence_bloc.title') }}</h3>
             <div class="space-y-1 text-sm">
-              <div v-if="athlete.icf" class="text-header-500 text-xs">
+              <div v-if="athlete.icf" class="text-header-600 text-xs">
                 {{ t('athletes.icf_number') }}{{ athlete.icf }}
               </div>
               <div v-if="athlete.typeLicence">
@@ -617,14 +617,14 @@ onBeforeUnmount(() => {
                 {{ t('athletes.club.last_season') }} : {{ athlete.origine || '-' }}
               </div>
               <div v-if="athlete.categorieAge">
-                <span class="text-header-500">{{ t('athletes.licence_bloc.categorie') }} :</span>
+                <span class="text-header-600">{{ t('athletes.licence_bloc.categorie') }} :</span>
                 {{ athlete.categorieAge.code }}
-                <span class="text-header-400 text-xs">({{ athlete.categorieAge.libelle }})</span>
+                <span class="text-header-600 text-xs">({{ athlete.categorieAge.libelle }})</span>
               </div>
               <div v-if="athlete.surclassement" class="mt-1 pt-1 border-t border-header-200">
-                <span class="text-header-500">{{ t('athletes.licence_bloc.surclassement') }} :</span>
+                <span class="text-header-600">{{ t('athletes.licence_bloc.surclassement') }} :</span>
                 <span class="font-medium">{{ athlete.surclassement.cat }}</span>
-                <span class="text-header-400 text-xs ml-1">({{ formatDate(athlete.surclassement.date) }})</span>
+                <span class="text-header-600 text-xs ml-1">({{ formatDate(athlete.surclassement.date) }})</span>
               </div>
             </div>
           </div>
@@ -634,20 +634,20 @@ onBeforeUnmount(() => {
             <h3 class="text-sm font-semibold text-header-700 mb-2">{{ t('athletes.arbitrage.title') }}</h3>
             <div v-if="athlete.arbitrage.qualification" class="space-y-1 text-sm">
               <div>
-                <span class="text-header-500">{{ t('athletes.arbitrage.niveau') }} :</span>
+                <span class="text-header-600">{{ t('athletes.arbitrage.niveau') }} :</span>
                 {{ t(`athletes.arbitrage.qualification.${athlete.arbitrage.qualification}`, athlete.arbitrage.qualification) }}
                 {{ athlete.arbitrage.niveau || '' }}
               </div>
               <div v-if="athlete.arbitrage.saison">
-                <span class="text-header-500">{{ t('athletes.arbitrage.saison') }} :</span>
+                <span class="text-header-600">{{ t('athletes.arbitrage.saison') }} :</span>
                 {{ athlete.arbitrage.saison }}
               </div>
               <div v-if="athlete.arbitrage.livret">
-                <span class="text-header-500">{{ t('athletes.arbitrage.livret') }} :</span>
+                <span class="text-header-600">{{ t('athletes.arbitrage.livret') }} :</span>
                 {{ athlete.arbitrage.livret }}
               </div>
             </div>
-            <p v-else class="text-sm text-header-400">-</p>
+            <p v-else class="text-sm text-header-600">-</p>
           </div>
         </div>
 
@@ -675,7 +675,7 @@ onBeforeUnmount(() => {
               class="py-2 px-1 text-sm font-medium border-b-2 transition-colors"
               :class="activeTab === 'presence'
                 ? 'border-primary-500 text-primary-600'
-                : 'border-transparent text-header-500 hover:text-header-700 hover:border-header-300'"
+                : 'border-transparent text-header-600 hover:text-header-700 hover:border-header-300'"
               @click="activeTab = 'presence'"
             >
               {{ t('athletes.participations.presence.title') }}
@@ -687,7 +687,7 @@ onBeforeUnmount(() => {
               class="py-2 px-1 text-sm font-medium border-b-2 transition-colors"
               :class="activeTab === 'officiels'
                 ? 'border-primary-500 text-primary-600'
-                : 'border-transparent text-header-500 hover:text-header-700 hover:border-header-300'"
+                : 'border-transparent text-header-600 hover:text-header-700 hover:border-header-300'"
               @click="activeTab = 'officiels'"
             >
               {{ t('athletes.participations.officiels.title') }}
@@ -699,7 +699,7 @@ onBeforeUnmount(() => {
               class="py-2 px-1 text-sm font-medium border-b-2 transition-colors"
               :class="activeTab === 'matchs'
                 ? 'border-primary-500 text-primary-600'
-                : 'border-transparent text-header-500 hover:text-header-700 hover:border-header-300'"
+                : 'border-transparent text-header-600 hover:text-header-700 hover:border-header-300'"
               @click="activeTab = 'matchs'"
             >
               {{ t('athletes.participations.matchs.title') }}
@@ -712,12 +712,12 @@ onBeforeUnmount(() => {
 
         <!-- Loading -->
         <div v-if="participationsLoading" class="flex items-center justify-center py-8">
-          <UIcon name="i-heroicons-arrow-path" class="w-6 h-6 text-header-400 animate-spin" />
+          <UIcon name="i-heroicons-arrow-path" class="w-6 h-6 text-header-600 animate-spin" />
         </div>
 
         <!-- ── Tab: Presence ── -->
         <div v-else-if="activeTab === 'presence'">
-          <div v-if="!participations?.presences.length" class="text-center py-8 text-sm text-header-400 italic">
+          <div v-if="!participations?.presences.length" class="text-center py-8 text-sm text-header-600 italic">
             {{ t('athletes.participations.presence.empty') }}
           </div>
           <div v-else class="overflow-x-auto">
@@ -737,7 +737,7 @@ onBeforeUnmount(() => {
                   <td class="px-3 py-2">{{ p.equipe }}</td>
                   <td class="px-3 py-2 text-center">{{ p.numero ?? '' }}</td>
                   <td class="px-3 py-2 text-center">{{ t(`athletes.roles.${p.capitaine}`, p.capitaine) }}</td>
-                  <td class="px-3 py-2 text-header-500">{{ p.categorie }}</td>
+                  <td class="px-3 py-2 text-header-600">{{ p.categorie }}</td>
                 </tr>
               </tbody>
             </table>
@@ -746,7 +746,7 @@ onBeforeUnmount(() => {
 
         <!-- ── Tab: Officiels ── -->
         <div v-else-if="activeTab === 'officiels'">
-          <div v-if="!participations?.officiels.length" class="text-center py-8 text-sm text-header-400 italic">
+          <div v-if="!participations?.officiels.length" class="text-center py-8 text-sm text-header-600 italic">
             {{ t('athletes.participations.officiels.empty') }}
           </div>
           <div v-else class="overflow-x-auto">
@@ -770,17 +770,17 @@ onBeforeUnmount(() => {
                   v-for="o in participations.officiels"
                   :key="o.matchId"
                   class="hover:bg-header-50"
-                  :class="{ 'italic text-header-400': !o.scoreValide }"
+                  :class="{ 'italic text-header-600': !o.scoreValide }"
                 >
                   <td class="px-3 py-2">{{ formatDateShort(o.date) }}</td>
                   <td class="px-3 py-2">{{ o.heure }}</td>
                   <td class="px-3 py-2 font-mono text-xs">{{ o.competition }}</td>
                   <td class="px-3 py-2 text-center">{{ o.matchNumero }}</td>
                   <td class="px-3 py-2 text-center">
-                    <UIcon v-if="o.arbitrePrincipal" name="i-heroicons-check-circle-solid" class="w-4 h-4 text-success-500 inline-block" />
+                    <UIcon v-if="o.arbitrePrincipal" name="i-heroicons-check-circle-solid" class="w-4 h-4 text-success-600 inline-block" />
                   </td>
                   <td class="px-3 py-2 text-center">
-                    <UIcon v-if="o.arbitreSecondaire" name="i-heroicons-check-circle-solid" class="w-4 h-4 text-success-500 inline-block" />
+                    <UIcon v-if="o.arbitreSecondaire" name="i-heroicons-check-circle-solid" class="w-4 h-4 text-success-600 inline-block" />
                   </td>
                   <td class="px-3 py-2 text-center">
                     <UIcon v-if="o.secretaire" name="i-heroicons-check-circle-solid" class="w-4 h-4 text-primary-600 inline-block" />
@@ -802,7 +802,7 @@ onBeforeUnmount(() => {
 
         <!-- ── Tab: Matchs ── -->
         <div v-else-if="activeTab === 'matchs'">
-          <div v-if="!participations?.matchs.length" class="text-center py-8 text-sm text-header-400 italic">
+          <div v-if="!participations?.matchs.length" class="text-center py-8 text-sm text-header-600 italic">
             {{ t('athletes.participations.matchs.empty') }}
           </div>
           <div v-else class="overflow-x-auto">
@@ -830,14 +830,14 @@ onBeforeUnmount(() => {
                   v-for="m in participations.matchs"
                   :key="m.matchId"
                   class="hover:bg-header-50"
-                  :class="{ 'italic text-header-400': !m.scoreValide }"
+                  :class="{ 'italic text-header-600': !m.scoreValide }"
                 >
                   <td class="px-2 py-2 whitespace-nowrap">{{ formatDateShort(m.date) }}</td>
                   <td class="px-2 py-2 font-mono text-xs">{{ m.competition }}</td>
                   <td class="px-2 py-2 text-center">{{ m.matchNumero }}</td>
                   <td class="px-2 py-2 whitespace-nowrap">
                     <span :class="{ 'font-bold': m.equipe === 'A' }">{{ m.equipeA }}</span>
-                    <span class="text-header-400 mx-1">-</span>
+                    <span class="text-header-600 mx-1">-</span>
                     <span :class="{ 'font-bold': m.equipe === 'B' }">{{ m.equipeB }}</span>
                   </td>
                   <td class="px-2 py-2 text-center whitespace-nowrap">

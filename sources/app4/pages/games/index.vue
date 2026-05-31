@@ -1615,41 +1615,41 @@ const statusBtnClass = (game: Game) => {
               <!-- Publication -->
               <th v-if="showPublicationColumn" class="w-8 px-1 py-2 text-center"><UIcon name="heroicons:eye" class="w-6 h-6" /></th>
               <!-- N° -->
-              <th class="w-10 px-1 py-2 text-center text-header-500 font-medium">{{ t('games.field.number') }}</th>
+              <th class="w-10 px-1 py-2 text-center text-header-600 font-medium">{{ t('games.field.number') }}</th>
               <!-- Actions -->
-              <th v-if="canEdit" class="w-10 px-1 py-2 text-center text-header-500 font-medium">{{ t('games.field.actions') }}</th>
+              <th v-if="canEdit" class="w-10 px-1 py-2 text-center text-header-600 font-medium">{{ t('games.field.actions') }}</th>
               <!-- Scoresheets -->
-              <th v-if="canEdit || canEditScores" class="w-10 px-1 py-2 text-center text-header-500 font-medium">{{ t('games.field.actions') }}</th>
+              <th v-if="canEdit || canEditScores" class="w-10 px-1 py-2 text-center text-header-600 font-medium">{{ t('games.field.actions') }}</th>
               <!-- Time -->
-              <th class="px-1 py-2 text-left text-header-500 font-medium">{{ t('games.field.date_time') }}</th>
+              <th class="px-1 py-2 text-left text-header-600 font-medium">{{ t('games.field.date_time') }}</th>
               <!-- Terrain -->
-              <th class="w-8 px-1 py-2 text-center text-header-500 font-medium">{{ t('games.field.terrain') }}</th>
+              <th class="w-8 px-1 py-2 text-center text-header-600 font-medium">{{ t('games.field.terrain') }}</th>
               <!-- Cat -->
-              <th class="px-1 py-2 text-left text-header-500 font-medium">{{ t('games.field.category') }}</th>
+              <th class="px-1 py-2 text-left text-header-600 font-medium">{{ t('games.field.category') }}</th>
               <!-- Phase (conditional) -->
-              <th v-if="phaseLibelle" class="px-1 py-2 text-left text-header-500 font-medium">{{ t('games.field.phase') }}</th>
+              <th v-if="phaseLibelle" class="px-1 py-2 text-left text-header-600 font-medium">{{ t('games.field.phase') }}</th>
               <!-- Type -->
-              <th class="w-8 px-1 py-2 text-center text-header-500 font-medium">{{ t('games.field.type') }}</th>
+              <th class="w-8 px-1 py-2 text-center text-header-600 font-medium">{{ t('games.field.type') }}</th>
               <!-- Code (conditional) -->
-              <th v-if="phaseLibelle" class="px-1 py-2 text-left text-header-500 font-medium">{{ t('games.field.code') }}</th>
+              <th v-if="phaseLibelle" class="px-1 py-2 text-left text-header-600 font-medium">{{ t('games.field.code') }}</th>
               <!-- Code (non-phaseLibelle) -->
-              <th v-if="!phaseLibelle" class="px-1 py-2 text-left text-header-500 font-medium">{{ t('games.field.code') }}</th>
+              <th v-if="!phaseLibelle" class="px-1 py-2 text-left text-header-600 font-medium">{{ t('games.field.code') }}</th>
               <!-- Lieu (non-phaseLibelle) -->
-              <th v-if="!phaseLibelle" class="px-1 py-2 text-left text-header-500 font-medium">{{ t('games.field.location') }}</th>
+              <th v-if="!phaseLibelle" class="px-1 py-2 text-left text-header-600 font-medium">{{ t('games.field.location') }}</th>
               <!-- Team A -->
-              <th class="px-1 py-2 text-right text-header-500 font-medium">{{ t('games.field.team_a') }}</th>
+              <th class="px-1 py-2 text-right text-header-600 font-medium">{{ t('games.field.team_a') }}</th>
               <!-- Score A -->
-              <th class="w-8 px-1 py-2 text-center text-header-500 font-medium">{{ t('games.field.score_a') }}</th>
+              <th class="w-8 px-1 py-2 text-center text-header-600 font-medium">{{ t('games.field.score_a') }}</th>
               <!-- Lock -->
-              <th class="w-10 px-1 py-2 text-center text-header-500 font-medium">{{ t('games.field.lock') }}</th>
+              <th class="w-10 px-1 py-2 text-center text-header-600 font-medium">{{ t('games.field.lock') }}</th>
               <!-- Score B -->
-              <th class="w-8 px-1 py-2 text-center text-header-500 font-medium">{{ t('games.field.score_b') }}</th>
+              <th class="w-8 px-1 py-2 text-center text-header-600 font-medium">{{ t('games.field.score_b') }}</th>
               <!-- Team B -->
-              <th class="px-1 py-2 text-left text-header-500 font-medium">{{ t('games.field.team_b') }}</th>
+              <th class="px-1 py-2 text-left text-header-600 font-medium">{{ t('games.field.team_b') }}</th>
               <!-- Referee 1 -->
-              <th class="px-1 py-2 text-left text-header-500 font-medium">{{ t('games.field.referee_1') }}</th>
+              <th class="px-1 py-2 text-left text-header-600 font-medium">{{ t('games.field.referee_1') }}</th>
               <!-- Referee 2 -->
-              <th class="px-1 py-2 text-left text-header-500 font-medium">{{ t('games.field.referee_2') }}</th>
+              <th class="px-1 py-2 text-left text-header-600 font-medium">{{ t('games.field.referee_2') }}</th>
               <!-- Printed -->
               <th v-if="showPrintedColumn" class="w-8 px-1 py-2 text-center"><UIcon name="heroicons:inbox-arrow-down" class="w-6 h-6" /></th>
               <!-- Delete -->
@@ -1771,7 +1771,7 @@ const statusBtnClass = (game: Game) => {
                   <span
                     v-else
                     :class="isGameEditable(g) ? 'editable-cell' : ''"
-                    class="text-header-500"
+                    class="text-header-600"
                     @click="startInlineEdit(g, 'Date_match')"
                   >{{ formatDateShort(g.dateMatch) }}</span>
                   <!-- Heure inline -->
@@ -2076,7 +2076,7 @@ const statusBtnClass = (game: Game) => {
                     class="truncate block"
                     :class="[
                       isGameEditable(g) ? 'editable-cell' : '',
-                      g.matricArbitrePrincipal === 0 ? 'text-header-400 italic' : 'text-header-600',
+                      g.matricArbitrePrincipal === 0 ? 'text-secondary-600 italic' : 'text-header-600',
                     ]"
                     :title="g.arbitrePrincipal"
                     @click="startRefereeEdit(g, 'principal')"
@@ -2090,7 +2090,7 @@ const statusBtnClass = (game: Game) => {
                   >({{ bracketLabels(g.libelle).refereePrincipal }})</span>
                   <span
                     v-else
-                    :class="isGameEditable(g) ? 'editable-cell text-header-300' : 'text-header-300'"
+                    :class="isGameEditable(g) ? 'editable-cell text-header-600' : 'text-header-600'"
                     @click="startRefereeEdit(g, 'principal')"
                   >-</span>
                 </template>
@@ -2115,7 +2115,7 @@ const statusBtnClass = (game: Game) => {
                     class="truncate block"
                     :class="[
                       isGameEditable(g) ? 'editable-cell' : '',
-                      g.matricArbitreSecondaire === 0 ? 'text-header-400 italic' : 'text-header-600',
+                      g.matricArbitreSecondaire === 0 ? 'text-secondary-600 italic' : 'text-header-600',
                     ]"
                     :title="g.arbitreSecondaire"
                     @click="startRefereeEdit(g, 'secondaire')"
@@ -2129,7 +2129,7 @@ const statusBtnClass = (game: Game) => {
                   >({{ bracketLabels(g.libelle).refereeSecondaire }})</span>
                   <span
                     v-else
-                    :class="isGameEditable(g) ? 'editable-cell text-header-300' : 'text-header-300'"
+                    :class="isGameEditable(g) ? 'editable-cell text-header-600' : 'text-header-600'"
                     @click="startRefereeEdit(g, 'secondaire')"
                   >-</span>
                 </template>
@@ -2288,7 +2288,7 @@ const statusBtnClass = (game: Game) => {
         <div class="space-y-2 text-sm">
           <!-- Date / Time / Terrain (inline editable) -->
           <div class="flex items-center gap-2">
-            <UIcon name="heroicons:calendar" class="w-5 h-5 text-header-400 shrink-0" />
+            <UIcon name="heroicons:calendar" class="w-5 h-5 text-header-600 shrink-0" />
             <!-- Date inline -->
             <template v-if="editingCell?.id === g.id && editingCell.field === 'Date_match'">
               <input
@@ -2302,6 +2302,7 @@ const statusBtnClass = (game: Game) => {
             </template>
             <span
               v-else
+              class="text-header-600"
               :class="isGameEditable(g) ? 'editable-cell' : ''"
               @click="startInlineEdit(g, 'Date_match')"
             >{{ formatDate(g.dateMatch) }}</span>
@@ -2425,7 +2426,7 @@ const statusBtnClass = (game: Game) => {
                 :class="g.type === 'C' ? 'text-primary-600' : 'text-orange-600'"
               />
             </button>
-            <span class="text-header-300">|</span>
+            <span class="text-header-400">|</span>
             <!-- <span class="text-header-500">{{ t('games.field.status') }}</span> -->
             <button
               v-if="isGameEditable(g)"
@@ -2441,10 +2442,10 @@ const statusBtnClass = (game: Game) => {
           </div>
 
           <div v-if="g.arbitrePrincipal || g.arbitreSecondaire || bracketLabels(g.libelle).refereePrincipal || bracketLabels(g.libelle).refereeSecondaire" class="text-xs text-header-500">
-            <span v-if="g.arbitrePrincipal" :class="{ 'italic text-header-400': g.matricArbitrePrincipal === 0 }">{{ g.arbitrePrincipal }}</span>
+            <span v-if="g.arbitrePrincipal" :class="{ 'italic text-header-600': g.matricArbitrePrincipal === 0 }">{{ g.arbitrePrincipal }}</span>
             <span v-else-if="bracketLabels(g.libelle).refereePrincipal" class="italic text-orange-400">({{ bracketLabels(g.libelle).refereePrincipal }})</span>
             <template v-if="g.arbitreSecondaire || bracketLabels(g.libelle).refereeSecondaire"> /
-              <span v-if="g.arbitreSecondaire" :class="{ 'italic text-header-400': g.matricArbitreSecondaire === 0 }">{{ g.arbitreSecondaire }}</span>
+              <span v-if="g.arbitreSecondaire" :class="{ 'italic text-header-600': g.matricArbitreSecondaire === 0 }">{{ g.arbitreSecondaire }}</span>
               <span v-else-if="bracketLabels(g.libelle).refereeSecondaire" class="italic text-orange-400">({{ bracketLabels(g.libelle).refereeSecondaire }})</span>
             </template>
           </div>

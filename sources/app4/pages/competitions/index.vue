@@ -763,46 +763,46 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
                       @change="section.competitions.forEach(c => { if (($event.target as HTMLInputElement).checked !== isSelected(c.code)) toggleSelect(c.code) })"
                     >
                   </th> -->
-                  <th class="px-3 py-2 text-center text-xs font-medium text-header-500 uppercase tracking-wider">
+                  <th class="px-3 py-2 text-center text-xs font-medium text-header-600 uppercase tracking-wider">
                     {{ t('competitions.columns.publication') }}
                   </th>
-                  <th class="px-3 py-2 text-left text-xs font-medium text-header-500 uppercase tracking-wider">
+                  <th class="px-3 py-2 text-left text-xs font-medium text-header-600 uppercase tracking-wider">
                     {{ t('competitions.columns.code') }}
                   </th>
-                  <th class="px-3 py-2 text-left text-xs font-medium text-header-500 uppercase tracking-wider">
+                  <th class="px-3 py-2 text-left text-xs font-medium text-header-600 uppercase tracking-wider">
                     {{ t('competitions.columns.edit') }}
                   </th>
-                  <th class="px-3 py-2 text-left text-xs font-medium text-header-500 uppercase tracking-wider">
+                  <th class="px-3 py-2 text-left text-xs font-medium text-header-600 uppercase tracking-wider">
                     {{ t('competitions.columns.libelle') }}
                   </th>
-                  <th class="px-3 py-2 text-left text-xs font-medium text-header-500 uppercase tracking-wider">
+                  <th class="px-3 py-2 text-left text-xs font-medium text-header-600 uppercase tracking-wider">
                     {{ t('competitions.columns.niveau') }}
                   </th>
-                  <th class="px-3 py-2 text-left text-xs font-medium text-header-500 uppercase tracking-wider">
+                  <th class="px-3 py-2 text-left text-xs font-medium text-header-600 uppercase tracking-wider">
                     {{ t('competitions.columns.groupe') }}
                   </th>
-                  <th class="px-3 py-2 text-left text-xs font-medium text-header-500 uppercase tracking-wider">
+                  <th class="px-3 py-2 text-left text-xs font-medium text-header-600 uppercase tracking-wider">
                     {{ t('competitions.columns.stage') }}
                   </th>
-                  <th class="px-3 py-2 text-left text-xs font-medium text-header-500 uppercase tracking-wider">
+                  <th class="px-3 py-2 text-left text-xs font-medium text-header-600 uppercase tracking-wider">
                     {{ t('competitions.columns.type') }}
                   </th>
-                  <th class="px-3 py-2 text-center text-xs font-medium text-header-500 uppercase tracking-wider">
+                  <th class="px-3 py-2 text-center text-xs font-medium text-header-600 uppercase tracking-wider">
                     {{ t('competitions.columns.statut') }}
                   </th>
-                  <th class="px-3 py-2 text-center text-xs font-medium text-header-500 uppercase tracking-wider">
+                  <th class="px-3 py-2 text-center text-xs font-medium text-header-600 uppercase tracking-wider">
                     {{ t('competitions.columns.equipes') }}
                   </th>
-                  <th class="px-3 py-2 text-center text-xs font-medium text-header-500 uppercase tracking-wider">
+                  <th class="px-3 py-2 text-center text-xs font-medium text-header-600 uppercase tracking-wider">
                     {{ t('competitions.columns.verrou') }}
                   </th>
-                  <th class="px-3 py-2 text-center text-xs font-medium text-header-500 uppercase tracking-wider">
+                  <th class="px-3 py-2 text-center text-xs font-medium text-header-600 uppercase tracking-wider">
                     {{ t('competitions.columns.journees') }}
                   </th>
-                  <th class="px-3 py-2 text-center text-xs font-medium text-header-500 uppercase tracking-wider">
+                  <th class="px-3 py-2 text-center text-xs font-medium text-header-600 uppercase tracking-wider">
                     {{ t('competitions.columns.matchs') }}
                   </th>
-                  <th class="px-3 py-2 text-right text-xs font-medium text-header-500 uppercase tracking-wider">
+                  <th class="px-3 py-2 text-right text-xs font-medium text-header-600 uppercase tracking-wider">
                     {{ t('competitions.columns.actions') }}
                   </th>
                 </tr>
@@ -897,12 +897,12 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
                   </td>
 
                   <!-- Tour -->
-                  <td class="px-3 py-1 text-sm text-header-500">
+                  <td class="px-3 py-1 text-sm text-header-600">
                     {{ competition.codeTour === 10 ? 'F' : competition.codeTour || '-' }}
                   </td>
 
                   <!-- Type -->
-                  <td class="px-3 py-1 text-sm text-header-500">
+                  <td class="px-3 py-1 text-sm text-header-600">
                     {{ competition.codeTypeclt }}
                   </td>
 

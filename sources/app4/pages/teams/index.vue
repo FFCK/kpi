@@ -1050,28 +1050,28 @@ const getLogoUrl = (team: CompetitionTeam) => {
                   <th v-if="canAddDelete" class="px-3 py-2">
                     <span class="sr-only">Select</span>
                   </th>
-                  <th v-if="showPoolDrawColumns" class="px-3 py-2 text-left text-xs font-medium text-header-500 uppercase">
+                  <th v-if="showPoolDrawColumns" class="px-3 py-2 text-left text-xs font-medium text-header-600 uppercase">
                     {{ t('teams_page.columns.poule') }}
                   </th>
-                  <th v-if="showPoolDrawColumns" class="px-3 py-2 text-left text-xs font-medium text-header-500 uppercase">
+                  <th v-if="showPoolDrawColumns" class="px-3 py-2 text-left text-xs font-medium text-header-600 uppercase">
                     {{ t('teams_page.columns.tirage') }}
                   </th>
-                  <th class="px-3 py-2 text-center text-xs font-medium text-header-500 uppercase">
+                  <th class="px-3 py-2 text-center text-xs font-medium text-header-600 uppercase">
                     {{ t('teams_page.columns.logo') }}
                   </th>
-                  <th class="px-3 py-2 text-left text-xs font-medium text-header-500 uppercase">
+                  <th class="px-3 py-2 text-left text-xs font-medium text-header-600 uppercase">
                     {{ t('teams_page.columns.equipe') }}
                   </th>
-                  <th class="px-3 py-2 text-center text-xs font-medium text-header-500 uppercase">
+                  <th class="px-3 py-2 text-center text-xs font-medium text-header-600 uppercase">
                     {{ t('teams_page.columns.club') }}
                   </th>
-                  <th class="px-3 py-2 text-center text-xs font-medium text-header-500 uppercase">
+                  <th class="px-3 py-2 text-center text-xs font-medium text-header-600 uppercase">
                     {{ t('teams_page.columns.joueurs') }}
                   </th>
-                  <th class="px-3 py-2 text-center text-xs font-medium text-header-500 uppercase">
+                  <th class="px-3 py-2 text-center text-xs font-medium text-header-600 uppercase">
                     {{ t('teams_page.columns.matchs') }}
                   </th>
-                  <th class="px-3 py-2 text-center text-xs font-medium text-header-500 uppercase">
+                  <th class="px-3 py-2 text-center text-xs font-medium text-header-600 uppercase">
                     {{ t('teams_page.columns.pdf') }}
                   </th>                </tr>
               </thead>
@@ -1203,7 +1203,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
                   </td>
 
                   <!-- Matches -->
-                  <td class="px-3 py-2 text-sm text-center text-header-500">
+                  <td class="px-3 py-2 text-sm text-center text-header-600">
                     {{ team.nbMatchs }}
                   </td>
                   <td class="px-3 py-2">

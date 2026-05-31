@@ -184,7 +184,7 @@ function formatEventLabel(event: { id: number; libelle: string; dateDebut: strin
                       >
                         {{ t('context.select_all') }}
                       </button>
-                      <span class="text-header-300">|</span>
+                      <span class="text-header-400">|</span>
                       <button
                         type="button"
                         class="text-xs text-primary-600 hover:text-primary-800 underline"

@@ -115,12 +115,13 @@ TODO :
 - ✅ Matomo sur app2 et app4
 - ✅ Teams : inverser les colonnes Games & Players
 - ✅ App2 : refresh automatique des données toutes les 5 minutes lorsque la page est active (pages games, charts, team) en plus du refresh manuel, ou lors de la réactivation de la page lorsque ça fait plus de 5 minutes que la page est inactive.
-- depuis la modification des couleurs dans draw progression en dev, je n'ai plus le bouton login sur app4, je suppose que c'est lié, à vérifier et corriger si c'est le cas.
+- depuis la modification des couleurs dans draw progression en dev, je n'ai plus le bouton login sur app4, même en prod, je suppose que c'est lié, à vérifier et corriger si c'est le cas.
 - ✅ Ajout de joueur, lors de la recherche d'un joueur, si aucune réponse ne convient, il faut pouvoir transférer la saisie du champ de recherche vers le champ de création du joueur pour éviter d'avoir à ressaisir les informations du joueur à créer.
 - ✅ dans la recherche, afficher également le numéro icf dans les résultats
 - ✅ dans la recherche du formulaire ajout de joueur, permettre optionnellement de filtrer par club.
 - vérifier le contraste des couleurs dans l'application app4.
-- ✅ Teams: Init titulaires action.
+- ⚠️ Teams: Init titulaires action : HS ! + Ajouter le décompte des matchs concernés.
+- Presence/team : bouton Init titulaires (profil <= 6)
 - ✅ changer le contexte de travail depuis les stats
 - FMV3 : départ du timeshoot manuel et pas en même temps que le chrono + Bouton Pause.
 - ✅ App2 : pas d'équipe non affectée (1st Group A, etc.) dans le dropdown team de la page Team
@@ -130,4 +131,7 @@ TODO :
 - TV : langue FR n'est pas prise en compte.
 - Feat: Jury d'appel : 3 représentants des athlètes.
 - Ouverture FMV2 et FMV3 depuis app4 : ouvrir dans une fenêtre identique si déjà ouverte.
+- Games : le filtre date, une fois actif sur une date, ne propose plus les autres dates dans le dropdown.
+- Classement calculé et publié, progression : dans l'ordre inverse.
+- Games : filtre Matchs non verrouillés : le décompte des matchs n'est pas mis à jour en fonction de ce filtre, il affiche le nombre total de matchs, pas le nombre de matchs non verrouillés. + remplacer Total par Filtré : X matchs (ou indiquer les deux si l'information est disponible.)
 - ⚠️

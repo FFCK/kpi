@@ -391,7 +391,7 @@ const confirmRename = async () => {
                   class="w-full px-3 py-2 text-left text-sm text-header-900 hover:bg-primary-50 focus:bg-primary-100 focus:outline-none flex items-center gap-2"
                   @click="selectClub(club)"
                 >
-                  <span class="font-mono text-xs text-header-500 bg-header-100 px-1.5 py-0.5 rounded">{{ club.numero }}</span>
+                  <span class="font-mono text-xs text-header-700 bg-header-100 px-1.5 py-0.5 rounded">{{ club.numero }}</span>
                   <span>{{ club.nom }}</span>
                 </button>
               </div>
