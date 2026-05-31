@@ -1405,6 +1405,7 @@
     "nb_games": "Games",
     "no_results": "No games found",
     "total": "Total: {count} game(s)",
+    "filtered": "Filtered: {filtered} / {total} game(s)",
     "search_placeholder": "Search games...",
     "round_n": "Round {n}",
     "bulk": {

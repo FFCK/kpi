@@ -131,7 +131,7 @@ TODO :
 - TV : langue FR n'est pas prise en compte.
 - Feat: Jury d'appel : 3 représentants des athlètes.
 - Ouverture FMV2 et FMV3 depuis app4 : ouvrir dans une fenêtre identique si déjà ouverte.
-- Games : le filtre date, une fois actif sur une date, ne propose plus les autres dates dans le dropdown.
+- ✅ Games : le filtre date, une fois actif sur une date, ne propose plus les autres dates dans le dropdown.
 - Classement calculé et publié, progression : dans l'ordre inverse.
-- Games : filtre Matchs non verrouillés : le décompte des matchs n'est pas mis à jour en fonction de ce filtre, il affiche le nombre total de matchs, pas le nombre de matchs non verrouillés. + remplacer Total par Filtré : X matchs (ou indiquer les deux si l'information est disponible.)
+- ✅ Games : filtre Matchs non verrouillés : le décompte des matchs n'est pas mis à jour en fonction de ce filtre, il affiche le nombre total de matchs, pas le nombre de matchs non verrouillés. + remplacer Total par Filtré : X matchs (ou indiquer les deux si l'information est disponible.)
 - ⚠️

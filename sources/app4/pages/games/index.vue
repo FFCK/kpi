@@ -218,7 +218,9 @@ const loadGames = async (keepSelection = false) => {
     total.value = response.total
     totalPages.value = response.totalPages
     phaseLibelle.value = response.phaseLibelle
-    availableDates.value = response.dates || []
+    if (!selectedDate.value) {
+      availableDates.value = response.dates || []
+    }
 
     if (keepSelection) {
       // After bulk action: keep only IDs that still exist in the reloaded data
@@ -1331,7 +1333,12 @@ const statusBtnClass = (game: Game) => {
       <template #left>
         <!-- Total count (when nothing selected) -->
         <span v-if="selectedIds.length === 0 && total > 0" class="text-sm text-header-600">
-          {{ t('games.total', { count: total }) }}
+          <template v-if="unlockedOnly">
+            {{ t('games.filtered', { filtered: filteredGames.length, total }) }}
+          </template>
+          <template v-else>
+            {{ t('games.total', { count: total }) }}
+          </template>
         </span>
 
         <!-- Bulk actions dropdown -->

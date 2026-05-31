@@ -1418,6 +1418,7 @@
     "nb_games": "Nb matchs",
     "no_results": "Aucun match trouvé",
     "total": "Total : {count} match(s)",
+    "filtered": "Filtré : {filtered} / {total} match(s)",
     "search_placeholder": "Rechercher un match...",
     "round_n": "Tour {n}",
     "bulk": {
