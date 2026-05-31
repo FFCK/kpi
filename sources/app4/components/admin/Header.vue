@@ -294,10 +294,23 @@ onMounted(() => {
       <div class="flex items-center justify-between h-16">
         <!-- Left: Logo -->
         <div class="flex items-center gap-4">
-          <NuxtLink to="/" class="flex items-center gap-2">
+          <NuxtLink to="/" class="relative flex items-center gap-2 pb-4">
             <img src="/img/logo_kp.png" width="30" height="30" alt="logo" class="inline-block align-middle" >
             <span class="text-xl font-bold text-primary-400">KPI</span>
             <span class="text-sm text-header-300">Admin</span>
+            <!-- Environment badge (hidden in production) -->
+            <span
+              v-if="runtimeConfig.public.appEnv !== 'production'"
+              :class="[
+                'absolute -bottom-0.5 right-0 -rotate-12 px-2 py-0.5 text-[10px] font-black uppercase tracking-widest rounded pointer-events-none select-none leading-none',
+                runtimeConfig.public.appEnv === 'preprod'
+                  ? 'bg-orange-500 text-white'
+                  : 'bg-yellow-400 text-yellow-900'
+              ]"
+              style="box-shadow: 0 1px 4px 0 #0004"
+            >
+              {{ runtimeConfig.public.appEnv === 'preprod' ? 'Préprod' : 'Dev' }}
+            </span>
           </NuxtLink>
           <!-- Online/Offline indicator -->
           <ClientOnly>
