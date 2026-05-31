@@ -138,6 +138,7 @@ TODO :
 - ⚠️ Ajouter un flag Dev / Préprod bien visible en dessous de Admin dans le header pour éviter les confusions et les erreurs de manipulation entre les différentes environnements.
 - Empêcher l'import d'événement en prod sans double confirmation, par exemple en demandant de saisir le nom de l'environnement pour confirmer l'import, ou en ajoutant une étape de validation supplémentaire dans le processus d'importation.
 - ⚠️
-- Affectation auto : ne fonctionne pas partiellement (si les équipes sont connues mais pas les arbitres, ou inversement, l'affectation ne se fait pas du tout, alors que ça devrait au moins affecter les éléments connus)
+- ✅ Affectation auto : ne fonctionne pas partiellement (si les équipes sont connues mais pas les arbitres, ou inversement, l'affectation ne se fait pas du tout, alors que ça devrait au moins affecter les éléments connus)
 - Modification en ligne des arbitres, permettre la saisie directe même en l'absence de valeur correspondante dans l'autocomplete.
+- Games : Action : imprimer un programme des matchs cochés uniquement
 - 

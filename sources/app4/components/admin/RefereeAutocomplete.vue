@@ -160,18 +160,17 @@ function handleBlur() {
     }
     isOpen.value = false
     results.value = []
-    if (props.compact) {
-      // In inline mode: blur = cancel (restore original value)
-      searchQuery.value = props.modelValue || ''
-      emit('cancel')
-    }
-    else {
-      // In form mode: blur = commit free text
-      const current = searchQuery.value.trim()
-      if (current !== props.modelValue) {
-        emit('update:modelValue', current)
-        emit('update:matric', 0)
+    // blur = commit free text in both modes
+    const current = searchQuery.value.trim()
+    if (current !== props.modelValue) {
+      emit('update:modelValue', current)
+      emit('update:matric', 0)
+      if (props.compact) {
+        emit('confirm')
       }
+    }
+    else if (props.compact) {
+      emit('cancel')
     }
   }, 200)
 }

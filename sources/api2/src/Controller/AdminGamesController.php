@@ -1363,7 +1363,7 @@ class AdminGamesController extends AbstractController
                 $this->connection->prepare(
                     "UPDATE kp_match
                      SET Id_equipeA = NULL, Id_equipeB = NULL,
-                         Arbitre_principal = '-1', Arbitre_secondaire = '-1',
+                         Arbitre_principal = NULL, Arbitre_secondaire = NULL,
                          Matric_arbitre_principal = 0, Matric_arbitre_secondaire = 0,
                          Code_uti = ?
                      WHERE Id = ?"
@@ -1414,6 +1414,7 @@ class AdminGamesController extends AbstractController
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
         $rows = $this->connection->prepare(
             "SELECT m.Id, m.Libelle, m.Id_equipeA, m.Id_equipeB,
+                    m.Arbitre_principal, m.Arbitre_secondaire,
                     m.Matric_arbitre_principal, m.Matric_arbitre_secondaire,
                     j.Code_competition, j.Code_saison, j.Phase
              FROM kp_match m
@@ -1448,11 +1449,11 @@ class AdminGamesController extends AbstractController
                 $hasError = false;
 
                 for ($j = 0; $j < 4; $j++) {
-                    // Skip referee slots if already nominatively assigned
-                    if ($j === 2 && (int) $row['Matric_arbitre_principal'] !== 0) {
+                    // Skip referee slots if already nominatively assigned or contain free text
+                    if ($j === 2 && ((int) $row['Matric_arbitre_principal'] !== 0 || trim((string) $row['Arbitre_principal']) !== '')) {
                         continue;
                     }
-                    if ($j === 3 && (int) $row['Matric_arbitre_secondaire'] !== 0) {
+                    if ($j === 3 && ((int) $row['Matric_arbitre_secondaire'] !== 0 || trim((string) $row['Arbitre_secondaire']) !== '')) {
                         continue;
                     }
 
@@ -1568,16 +1569,27 @@ class AdminGamesController extends AbstractController
                     }
                 }
 
-                if ($hasError) {
+                // Skip only if nothing at all could be resolved
+                $hasAnyResolved = $selectNum[0] !== null || $selectNum[1] !== null
+                    || $selectNom[2] !== '' || $selectNom[3] !== '';
+                if (!$hasAnyResolved) {
                     continue;
                 }
 
                 $oldEquipeA = (int) ($row['Id_equipeA'] ?? 0);
                 $oldEquipeB = (int) ($row['Id_equipeB'] ?? 0);
 
-                // Build UPDATE
-                $setClauses = ['Id_equipeA = ?', 'Id_equipeB = ?'];
-                $params = [$selectNum[0], $selectNum[1]];
+                // Build UPDATE — only include slots that were successfully resolved
+                $setClauses = [];
+                $params = [];
+                if ($selectNum[0] !== null) {
+                    $setClauses[] = 'Id_equipeA = ?';
+                    $params[] = $selectNum[0];
+                }
+                if ($selectNum[1] !== null) {
+                    $setClauses[] = 'Id_equipeB = ?';
+                    $params[] = $selectNum[1];
+                }
                 if ($selectNom[2] !== '') {
                     $setClauses[] = 'Arbitre_principal = ?';
                     $params[] = $selectNom[2];
