@@ -51,6 +51,13 @@ export interface BracketLabels {
   refereeSecondaire: string | null
 }
 
+export interface BracketRawCodes {
+  teamA: string | null
+  teamB: string | null
+  refereePrincipal: string | null
+  refereeSecondaire: string | null
+}
+
 /**
  * Parse a single bracket code (e.g. "T1", "V2", "1A") into a human-readable label.
  */
@@ -103,6 +110,23 @@ function parseBracketCode(code: string, isFr: boolean): string {
 }
 
 /**
+ * Extract the 4 raw bracket codes without translation (e.g. "1A", "V2", "T1").
+ */
+function extractRawCodes(libelle: string | null): BracketRawCodes {
+  const result: BracketRawCodes = { teamA: null, teamB: null, refereePrincipal: null, refereeSecondaire: null }
+  if (!libelle) return result
+  const bracketMatch = libelle.match(/\[([^\]]+)\]/)
+  if (!bracketMatch?.[1]) return result
+  const parts = bracketMatch[1].split(/[-/*,;]/)
+  const keys: (keyof BracketRawCodes)[] = ['teamA', 'teamB', 'refereePrincipal', 'refereeSecondaire']
+  for (let i = 0; i < 4; i++) {
+    const code = parts[i]?.trim()
+    if (code) result[keys[i]] = code
+  }
+  return result
+}
+
+/**
  * Parse all 4 positions from bracket notation.
  */
 function parseBracket(libelle: string | null, isFr: boolean): BracketLabels {
@@ -145,5 +169,9 @@ export function useBracketDisplay() {
     return parseBracket(libelle, locale.value === 'fr')
   }
 
-  return { bracketLabels }
+  function bracketRawCodes(libelle: string | null): BracketRawCodes {
+    return extractRawCodes(libelle)
+  }
+
+  return { bracketLabels, bracketRawCodes }
 }

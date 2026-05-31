@@ -121,12 +121,13 @@ TODO :
 - ✅ dans la recherche du formulaire ajout de joueur, permettre optionnellement de filtrer par club.
 - vérifier le contraste des couleurs dans l'application app4.
 - ⚠️ Teams: Init titulaires action : HS ! + Ajouter le décompte des matchs concernés.
-- Presence/team : bouton Init titulaires (profil <= 6)
+- ⚠️ Presence/team : bouton Init titulaires (profil <= 6)
 - ✅ changer le contexte de travail depuis les stats
 - FMV3 : départ du timeshoot manuel et pas en même temps que le chrono + Bouton Pause.
 - ✅ App2 : pas d'équipe non affectée (1st Group A, etc.) dans le dropdown team de la page Team
 - ✅ Activer Admin2 dans le menu legacy pour le profil 2
-- outils de contrôle de planification : pouvoir vérifier dans app4 l'enchainement des matchs et arbitrages
+- ✅ outils de contrôle de planification : pouvoir vérifier dans app4 l'enchainement des matchs et arbitrages
+- ✅ Ajouter les placeholders (Team A, Team B, 1st Group A, etc.) dans le contrôle de plannification pour les matchs non encore affectés, et les faire apparaître dans le dropdown de sélection d'équipe dans app4 pour éviter les confusions et faciliter la planification.) 
 - Scénarios TV : bouton Tester => Contrôle doit ouvrir le scénario dans une nouvelle fenêtre.
 - TV : langue FR n'est pas prise en compte.
 - Feat: Jury d'appel : 3 représentants des athlètes.
@@ -134,4 +135,9 @@ TODO :
 - ✅ Games : le filtre date, une fois actif sur une date, ne propose plus les autres dates dans le dropdown.
 - ✅ Classement calculé et publié, progression : dans l'ordre inverse.
 - ✅ Games : filtre Matchs non verrouillés : le décompte des matchs n'est pas mis à jour en fonction de ce filtre, il affiche le nombre total de matchs, pas le nombre de matchs non verrouillés. + remplacer Total par Filtré : X matchs (ou indiquer les deux si l'information est disponible.)
+- ⚠️ Ajouter un flag Dev / Préprod bien visible en dessous de Admin dans le header pour éviter les confusions et les erreurs de manipulation entre les différentes environnements.
+- Empêcher l'import d'événement en prod sans double confirmation, par exemple en demandant de saisir le nom de l'environnement pour confirmer l'import, ou en ajoutant une étape de validation supplémentaire dans le processus d'importation.
 - ⚠️
+- Affectation auto : ne fonctionne pas partiellement (si les équipes sont connues mais pas les arbitres, ou inversement, l'affectation ne se fait pas du tout, alors que ça devrait au moins affecter les éléments connus)
+- Modification en ligne des arbitres, permettre la saisie directe même en l'absence de valeur correspondante dans l'autocomplete.
+- 
