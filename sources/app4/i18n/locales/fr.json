@@ -1422,6 +1422,7 @@
     "scoresheet_online_v3": "Feuille de marque v3",
     "nb_games": "Nb matchs",
     "no_results": "Aucun match trouvé",
+    "select_context": "Sélectionnez un événement, un groupe ou une compétition",
     "total": "Total : {count} match(s)",
     "filtered": "Filtré : {filtered} / {total} match(s)",
     "search_placeholder": "Rechercher un match...",

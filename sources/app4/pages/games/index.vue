@@ -327,7 +327,12 @@ const filteredGames = computed(() => {
 
 // ─── Load data ───
 const loadGames = async (keepSelection = false) => {
-  if (!workContext.season) return
+  if (!workContext.season || !hasContextFilter.value) {
+    games.value = []
+    total.value = 0
+    totalPages.value = 0
+    return
+  }
 
   loading.value = true
   try {
@@ -395,7 +400,7 @@ const loadGames = async (keepSelection = false) => {
 
 
 const loadJournees = async () => {
-  if (!workContext.season) return
+  if (!workContext.season || !hasContextFilter.value) return
   try {
     const params: Record<string, string> = { season: workContext.season }
     // Competition filter (same logic as loadGames)
@@ -1485,7 +1490,7 @@ const statusBtnClass = (game: Game) => {
       v-model:search="searchQuery"
       :search-placeholder="t('games.search_placeholder')"
       :add-label="t('games.add')"
-      :show-add="canEdit"
+      :show-add="canEdit && hasContextFilter"
       :selected-count="selectedIds.length"
       @add="openAddModal"
     >
@@ -1645,7 +1650,7 @@ const statusBtnClass = (game: Game) => {
         </button>
 
         <!-- Documents dropdown (all games with current filters) -->
-        <div ref="documentsRef" class="relative">
+        <div v-if="hasContextFilter" ref="documentsRef" class="relative">
           <button
             class="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-header-700 bg-white border border-header-300 rounded-lg hover:bg-header-50"
             @click="documentsOpen = !documentsOpen"
@@ -1992,7 +1997,14 @@ const statusBtnClass = (game: Game) => {
                 {{ t('common.loading') }}
               </td>
             </tr>
-            <!-- Empty -->
+            <!-- Empty: no context selected -->
+            <tr v-else-if="!hasContextFilter">
+              <td :colspan="22" class="px-4 py-12 text-center text-header-400">
+                <UIcon name="heroicons:funnel" class="w-8 h-8 mx-auto mb-2 opacity-40" />
+                <div class="text-sm">{{ t('games.select_context') }}</div>
+              </td>
+            </tr>
+            <!-- Empty: no results -->
             <tr v-else-if="filteredGames.length === 0">
               <td :colspan="22" class="px-4 py-8 text-center text-header-500">
                 {{ t('games.no_results') }}
@@ -2511,7 +2523,7 @@ const statusBtnClass = (game: Game) => {
     </div>
 
     <!-- ═══════ MOBILE CARDS ═══════ -->
-    <AdminCardList class="lg:hidden" :loading="loading && games.length === 0" :empty="filteredGames.length === 0" :empty-text="t('games.no_results')">
+    <AdminCardList class="lg:hidden" :loading="loading && games.length === 0" :empty="filteredGames.length === 0" :empty-text="!hasContextFilter ? t('games.select_context') : t('games.no_results')">
       <div
         v-for="g in filteredGames"
         :key="g.id"

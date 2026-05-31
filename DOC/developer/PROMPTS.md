@@ -139,9 +139,9 @@ TODO :
 - Empêcher l'import d'événement en prod sans double confirmation, par exemple en demandant de saisir le nom de l'environnement pour confirmer l'import, ou en ajoutant une étape de validation supplémentaire dans le processus d'importation.
 - ⚠️
 - ✅ Affectation auto : ne fonctionne pas partiellement (si les équipes sont connues mais pas les arbitres, ou inversement, l'affectation ne se fait pas du tout, alors que ça devrait au moins affecter les éléments connus)
-- Modification en ligne des arbitres, permettre la saisie directe même en l'absence de valeur correspondante dans l'autocomplete.
+- ✅ Modification en ligne des arbitres, permettre la saisie directe même en l'absence de valeur correspondante dans l'autocomplete.
 - Games : Action : imprimer un programme des matchs cochés uniquement
 - Feuille de marque : Yc est devenu Pld.
-- Games : pas d'édition de planning ni de match tant qu'un événement ou une compétition n'est pas sélectionné (pas de match affiché : Sélectionnez un événement, un groupe ou une compétition pour afficher les matchs)
+- ✅ Games : pas d'édition de planning ni de match tant qu'un événement ou une compétition n'est pas sélectionné (pas de match affiché : Sélectionnez un événement, un groupe ou une compétition pour afficher les matchs)
 - QRcode événement comme nouvel affichage TV !
-- Evénements : bouton Editer à gauche, ajouter une colonne Nb journées/phases entre le bouton associer et le bouton supprimer
+- ✅ Evénements : bouton Editer à gauche, ajouter une colonne Nb journées/phases entre le bouton associer et le bouton supprimer

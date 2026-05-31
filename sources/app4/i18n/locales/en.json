@@ -1409,6 +1409,7 @@
     "scoresheet_online_v3": "Score sheet v3",
     "nb_games": "Games",
     "no_results": "No games found",
+    "select_context": "Select an event, a group or a competition",
     "total": "Total: {count} game(s)",
     "filtered": "Filtered: {filtered} / {total} game(s)",
     "search_placeholder": "Search games...",
