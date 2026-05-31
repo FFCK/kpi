@@ -28,6 +28,27 @@ export const useGames = () => {
 
   const games = computed(() => gameStore.games)
   const gamesCount = computed(() => gameStore.games.length)
+
+  // Teams and refs belonging to currently selected categories (or all if no category filter)
+  const teamsFilteredByCategories = computed(() => {
+    const allGames = gameStore.games
+    const base = fav_categories.value.length > 0
+      ? allGames.filter(g => fav_categories.value.includes(g.c_label))
+      : allGames
+
+    const filteredTeams = [
+      ...new Set(
+        base.map(x => (x.t_a_label && x.t_a_label[0] !== '¤' ? x.t_a_label : null))
+          .concat(base.map(x => (x.t_b_label && x.t_b_label[0] !== '¤' ? x.t_b_label : null)))
+      )
+    ].filter(Boolean).sort()
+
+    const filteredRefs = [
+      ...new Set(base.map(x => x.r_1_name).concat(base.map(x => x.r_2_name)))
+    ].filter(Boolean).sort()
+
+    return { teams: filteredTeams, refs: filteredRefs }
+  })
   const isGroupMode = computed(() => preferenceStore.preferences?.eventMode === 'group')
   const filteredGamesCount = computed(() => {
     if (!filteredGames.value || filteredGames.value.length === 0) return 0
@@ -518,6 +539,7 @@ export const useGames = () => {
     game_dates,
     teams,
     refs,
+    teamsFilteredByCategories,
     showRefs,
     showFlags,
     fav_categories,

@@ -3,14 +3,24 @@
     <AppSecondaryNav show-event-info>
       <template #left>
         <div class="flex items-center gap-1 sm:gap-2">
-          <label class="hidden sm:inline text-sm font-medium text-gray-700">{{ t('Teams.SelectTeam') }}:</label>
+          <button
+            @click="showFilters = !showFilters"
+            class="px-2 sm:px-3 py-1 border-2 rounded-md transition-colors flex items-center space-x-1 text-sm sm:text-base hover:bg-gray-100 cursor-pointer"
+            :style="hasActiveFilters ? 'background-color: #dbeafe; border: 2px solid #60a5fa; color: #1e40af;' : 'border: 2px solid #d1d5db;'"
+          >
+            <UIcon name="i-heroicons-funnel" class="h-4 w-4" />
+            <UIcon
+              :name="showFilters ? 'i-heroicons-chevron-up' : 'i-heroicons-chevron-down'"
+              class="h-4 w-4"
+            />
+          </button>
           <select
             v-model="selectedTeamModel"
             @change="onTeamChange"
             class="px-2 sm:px-3 py-1 text-sm sm:text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 min-w-40 sm:min-w-64 cursor-pointer"
           >
             <option value="">{{ t('Teams.PleaseSelectOne') }}</option>
-            <option v-for="team in availableTeams" :key="team" :value="team">
+            <option v-for="team in filteredAvailableTeams" :key="team" :value="team">
               {{ team }}
             </option>
           </select>
@@ -26,6 +36,37 @@
         </button>
       </template>
     </AppSecondaryNav>
+
+    <div v-if="showFilters" class="p-4 bg-gray-50">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label class="block text-sm font-medium text-gray-700">{{ t('Games.Categories') }}</label>
+            <button
+              v-if="fav_categories.length > 0"
+              @click="resetCategories"
+              class="flex items-center px-2 py-1 text-xs text-red-600 hover:text-red-800 hover:bg-red-50 rounded-md border border-red-200 hover:border-red-300 transition-colors cursor-pointer"
+              :title="t('Games.Reset')"
+            >
+              <UIcon name="i-heroicons-x-mark" class="h-3 w-3 mr-1" />
+              {{ t('Games.Reset') }}
+            </button>
+          </div>
+          <div class="max-h-32 overflow-y-auto border rounded-md p-3 bg-white space-y-2">
+            <div v-for="category in categories" :key="category" class="flex items-center">
+              <UCheckbox
+                :model-value="fav_categories.includes(category)"
+                @update:model-value="(checked) => toggleCategory(category, checked)"
+                :id="`teampage-cat-${category}`"
+              />
+              <label :for="`teampage-cat-${category}`" class="ml-2 text-sm text-gray-700 cursor-pointer">
+                {{ category }}
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div v-if="!selectedTeam || isLoading" class="p-4 text-center text-gray-500">
       <p v-if="isLoading">Chargement des données de l'équipe...</p>
@@ -366,8 +407,12 @@ const {
 
 const {
   chartData,
+  categories,
+  teamsFilteredByCategories,
+  fav_categories,
   loadCharts,
-  getFav: getChartsFav
+  getFav: getChartsFav,
+  changeFav
 } = useCharts()
 
 const selectedTeam = ref('')
@@ -375,6 +420,7 @@ const selectedTeamModel = ref('')
 const showRefreshButton = ref(false)
 const visibleButton = ref(true)
 const isLoading = ref(false)
+const showFilters = ref(false)
 const stats = ref(null)
 const groupStatsData = ref(null)
 
@@ -913,6 +959,29 @@ const tournamentRoundsByCategory = computed(() => {
 })
 
 const containerClasses = 'flex flex-wrap justify-center gap-4'
+
+const hasActiveFilters = computed(() => fav_categories.value.length > 0)
+
+const filteredAvailableTeams = computed(() => {
+  const base = teamsFilteredByCategories.value
+  if (base.length === 0) return availableTeams.value
+  return availableTeams.value.filter(team => base.includes(team))
+})
+
+const resetCategories = () => {
+  fav_categories.value = []
+  changeFav()
+}
+
+const toggleCategory = (category, checked) => {
+  if (checked) {
+    if (!fav_categories.value.includes(category)) fav_categories.value.push(category)
+  } else {
+    const index = fav_categories.value.indexOf(category)
+    if (index > -1) fav_categories.value.splice(index, 1)
+  }
+  changeFav()
+}
 
 // Helper functions
 const isWinner = (game, team) => {

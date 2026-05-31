@@ -204,6 +204,7 @@ const {
   game_dates,
   teams,
   refs,
+  teamsFilteredByCategories,
   showRefs,
   showFlags,
   fav_categories,
@@ -249,19 +250,17 @@ const hasActiveDateFilter = computed(() => {
 })
 
 const filteredTeams = computed(() => {
-  if (!teamSearchQuery.value) {
-    return teams.value
-  }
-  return teams.value.filter(item =>
+  const base = teamsFilteredByCategories.value.teams
+  if (!teamSearchQuery.value) return base
+  return base.filter(item =>
     item.toLowerCase().includes(teamSearchQuery.value.toLowerCase())
   )
 })
 
 const filteredRefs = computed(() => {
-  if (!teamSearchQuery.value) {
-    return refs.value
-  }
-  return refs.value.filter(item =>
+  const base = teamsFilteredByCategories.value.refs
+  if (!teamSearchQuery.value) return base
+  return base.filter(item =>
     item.toLowerCase().includes(teamSearchQuery.value.toLowerCase())
   )
 })

@@ -134,7 +134,7 @@ const {
   chartIndex,
   showFlags,
   categories,
-  teams,
+  teamsFilteredByCategories,
   fav_categories,
   fav_teams,
   loadCharts,
@@ -176,10 +176,9 @@ const hasActiveFilters = computed(() => {
 })
 
 const filteredTeams = computed(() => {
-  if (!teamSearchQuery.value) {
-    return teams.value
-  }
-  return teams.value.filter(team =>
+  const base = teamsFilteredByCategories.value
+  if (!teamSearchQuery.value) return base
+  return base.filter(team =>
     team.toLowerCase().includes(teamSearchQuery.value.toLowerCase())
   )
 })

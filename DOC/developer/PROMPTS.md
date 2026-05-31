@@ -145,3 +145,4 @@ TODO :
 - ✅ Games : pas d'édition de planning ni de match tant qu'un événement ou une compétition n'est pas sélectionné (pas de match affiché : Sélectionnez un événement, un groupe ou une compétition pour afficher les matchs)
 - QRcode événement comme nouvel affichage TV !
 - ✅ Evénements : bouton Editer à gauche, ajouter une colonne Nb journées/phases entre le bouton associer et le bouton supprimer
+- revoir l'articulation des pages ranking (bug export pdf public, etc.)

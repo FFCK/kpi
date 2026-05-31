@@ -21,6 +21,36 @@ export const useCharts = () => {
   const { getApi, showCacheToast } = useApi()
   const { isOnline, checkConnection } = useOnlineStatus()
 
+  // Teams belonging to currently selected categories (or all teams if no category filter)
+  const teamsFilteredByCategories = computed(() => {
+    if (!allChartData.value) return teams.value
+    if (fav_categories.value.length === 0) return teams.value
+
+    const filteredTeams = new Set()
+    allChartData.value.forEach(chart => {
+      const categoryLabel = chart.libelle || chart.code
+      if (!fav_categories.value.includes(categoryLabel)) return
+
+      if (chart.ranking) {
+        chart.ranking.forEach(team => { if (team.t_label) filteredTeams.add(team.t_label) })
+      }
+      if (chart.rounds) {
+        Object.values(chart.rounds).forEach(round => {
+          if (round.phases) {
+            Object.values(round.phases).forEach(phase => {
+              if (phase.teams) phase.teams.forEach(team => { if (team.t_label) filteredTeams.add(team.t_label) })
+              if (phase.games) phase.games.forEach(game => {
+                if (game.t_a_label) filteredTeams.add(game.t_a_label)
+                if (game.t_b_label) filteredTeams.add(game.t_b_label)
+              })
+            })
+          }
+        })
+      }
+    })
+    return Array.from(filteredTeams).sort()
+  })
+
   const filteredChartData = computed(() => {
     if (!allChartData.value) return null
 
@@ -266,6 +296,7 @@ export const useCharts = () => {
     showFlags,
     categories,
     teams,
+    teamsFilteredByCategories,
     fav_categories,
     fav_teams,
     isFromCache,
