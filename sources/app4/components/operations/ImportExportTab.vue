@@ -19,6 +19,8 @@ const importEventId = ref<number | null>(null)
 const importFile = ref<File | null>(null)
 const importFileInput = ref<HTMLInputElement | null>(null)
 const confirmImportModal = ref(false)
+const doubleConfirmModal = ref(false)
+const doubleConfirmInput = ref('')
 
 // Debounce timeout
 let searchTimeout: ReturnType<typeof setTimeout> | null = null
@@ -106,15 +108,26 @@ const clearImportFile = () => {
   }
 }
 
-// Open import modal
+// Open import modal (step 1)
 const openImportModal = () => {
   if (!importEventId.value || !importFile.value) return
   confirmImportModal.value = true
 }
 
-// Confirm import
+// Step 1 confirmed → open double-confirm modal (step 2)
+const onFirstConfirm = () => {
+  confirmImportModal.value = false
+  doubleConfirmInput.value = ''
+  doubleConfirmModal.value = true
+}
+
+const canDoubleConfirm = computed(() =>
+  doubleConfirmInput.value.trim() === String(importEventId.value)
+)
+
+// Confirm import (step 2)
 const confirmImport = async () => {
-  if (!importEventId.value || !importFile.value) return
+  if (!importEventId.value || !importFile.value || !canDoubleConfirm.value) return
 
   loading.value = true
   try {
@@ -129,7 +142,7 @@ const confirmImport = async () => {
       color: 'success',
       duration: 3000
     })
-    confirmImportModal.value = false
+    doubleConfirmModal.value = false
     clearImportFile()
     importEventId.value = null
   } catch {
@@ -283,18 +296,38 @@ const canImport = computed(() => importEventId.value !== null && importEventId.v
       </div>
     </section>
 
-    <!-- Confirm import modal -->
+    <!-- Confirm import modal (step 1) -->
     <AdminConfirmModal
       :open="confirmImportModal"
       :title="t('operations.import_export.confirm_import')"
       :message="t('operations.import_export.confirm_import_message')"
       :item-name="`${importFile?.name} => Événement ${importEventId}`"
+      :confirm-text="t('common.next')"
+      :cancel-text="t('common.cancel')"
+      :loading="false"
+      @close="confirmImportModal = false"
+      @confirm="onFirstConfirm"
+    />
+
+    <!-- Double-confirm import modal (step 2) -->
+    <AdminConfirmModal
+      :open="doubleConfirmModal"
+      :title="t('operations.import_export.double_confirm_title')"
+      :message="t('operations.import_export.double_confirm_message', { id: importEventId })"
       :confirm-text="t('operations.import_export.import_button')"
       :cancel-text="t('common.cancel')"
       :loading="loading"
-      @close="confirmImportModal = false"
+      :disabled-confirm="!canDoubleConfirm"
+      @close="doubleConfirmModal = false"
       @confirm="confirmImport"
-    />
+    >
+      <input
+        v-model="doubleConfirmInput"
+        type="text"
+        :placeholder="t('operations.import_export.double_confirm_placeholder')"
+        class="mt-4 w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-danger-500 font-mono text-center"
+      >
+    </AdminConfirmModal>
 
   </div>
 </template>

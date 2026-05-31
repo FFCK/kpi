@@ -9,6 +9,7 @@ interface Props {
   loading?: boolean
   danger?: boolean
   variant?: 'danger' | 'warning' | 'info'
+  disabledConfirm?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -19,7 +20,8 @@ const props = withDefaults(defineProps<Props>(), {
   cancelText: 'Annuler',
   loading: false,
   danger: true,
-  variant: undefined
+  variant: undefined,
+  disabledConfirm: false
 })
 
 const isDanger = computed(() => props.variant === 'danger' || (props.variant === undefined && props.danger))
@@ -88,7 +90,7 @@ const emit = defineEmits<{
               'px-4 py-2 text-white rounded-lg transition-colors disabled:opacity-50',
               buttonClass
             ]"
-            :disabled="loading"
+            :disabled="loading || disabledConfirm"
             @click="emit('confirm')"
           >
             <span v-if="loading" class="flex items-center gap-2">
