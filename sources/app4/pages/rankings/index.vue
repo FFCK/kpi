@@ -112,8 +112,8 @@ const isRankingDifferent = computed(() => {
     || competitionInfo.value.modeCalcul !== competitionInfo.value.modePublicationCalcul
 })
 
-// Phases sorted by niveau DESC (highest level first)
-const sortedPhases = computed(() => [...phases.value].sort((a, b) => b.niveau - a.niveau))
+// Phases sorted by niveau ASC (first round at top, final at bottom)
+const sortedPhases = computed(() => [...phases.value].sort((a, b) => a.niveau - b.niveau))
 
 // Legacy base URL
 const legacyBase = computed(() => config.public.legacyBaseUrl)
@@ -1010,7 +1010,7 @@ const editValueForField = (field: string, value: number): string => {
               </div>
             </div>
 
-            <!-- ── Phase Progression (CP only, sorted by niveau DESC) ── -->
+            <!-- ── Phase Progression (CP only, sorted by niveau ASC) ── -->
             <div v-if="effectiveType === 'CP' && sortedPhases.length > 0" class="mb-4 lg:flex-1 lg:min-w-0">
               <h3 class="text-sm font-semibold text-header-700 mb-2">{{ t('rankings.phases.title') }}</h3>
 
@@ -1494,7 +1494,7 @@ const editValueForField = (field: string, value: number): string => {
               </div>
             </div>
 
-            <!-- Published phases (CP only, read-only, sorted by niveau DESC) -->
+            <!-- Published phases (CP only, read-only, sorted by niveau ASC) -->
             <div v-if="effectiveType === 'CP' && sortedPhases.length > 0" class="mb-4 lg:flex-1 lg:min-w-0">
               <h3 class="text-sm font-semibold text-header-700 mb-2">{{ t('rankings.phases.title') }}</h3>
 
