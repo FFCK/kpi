@@ -119,9 +119,9 @@ TODO :
 - ✅ Ajout de joueur, lors de la recherche d'un joueur, si aucune réponse ne convient, il faut pouvoir transférer la saisie du champ de recherche vers le champ de création du joueur pour éviter d'avoir à ressaisir les informations du joueur à créer.
 - ✅ dans la recherche, afficher également le numéro icf dans les résultats
 - ✅ dans la recherche du formulaire ajout de joueur, permettre optionnellement de filtrer par club.
-- vérifier le contraste des couleurs dans l'application app4.
-- ⚠️ Teams: Init titulaires action : HS ! + Ajouter le décompte des matchs concernés.
-- ⚠️ Presence/team : bouton Init titulaires (profil <= 6)
+- ✅ vérifier le contraste des couleurs dans l'application app4.
+- ✅ Teams: Init titulaires action : HS ! + Ajouter le décompte des matchs concernés.
+- ✅ Presence/team : bouton Init titulaires (profil <= 6)
 - ✅ changer le contexte de travail depuis les stats
 - FMV3 : départ du timeshoot manuel et pas en même temps que le chrono + Bouton Pause.
 - ✅ App2 : pas d'équipe non affectée (1st Group A, etc.) dans le dropdown team de la page Team
@@ -141,4 +141,7 @@ TODO :
 - ✅ Affectation auto : ne fonctionne pas partiellement (si les équipes sont connues mais pas les arbitres, ou inversement, l'affectation ne se fait pas du tout, alors que ça devrait au moins affecter les éléments connus)
 - Modification en ligne des arbitres, permettre la saisie directe même en l'absence de valeur correspondante dans l'autocomplete.
 - Games : Action : imprimer un programme des matchs cochés uniquement
-- 
+- Feuille de marque : Yc est devenu Pld.
+- Games : pas d'édition de planning ni de match tant qu'un événement ou une compétition n'est pas sélectionné (pas de match affiché : Sélectionnez un événement, un groupe ou une compétition pour afficher les matchs)
+- QRcode événement comme nouvel affichage TV !
+- Evénements : bouton Editer à gauche, ajouter une colonne Nb journées/phases entre le bouton associer et le bouton supprimer

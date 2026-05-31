@@ -136,7 +136,7 @@ const teamSearchOpen = ref(false)
 const teamSearchRef = ref<HTMLDivElement | null>(null)
 const selectedTeam = ref('')
 const teamSearchInput = ref('')
-const restMinutes = ref(30)
+const restMinutes = ref(60)
 
 // ─── Legacy base URL ───
 const legacyBase = computed(() => useRuntimeConfig().public.legacyBaseUrl || 'https://kpi.localhost')
@@ -171,11 +171,16 @@ function getDefaultFormData(): GameFormData {
   }
 }
 
-// ─── Team search: extract team name from referee string "(ClubCode)" ───
-const extractRefereeTeam = (text: string | null): string => {
+// ─── Team search: extract team name from referee string ───
+// Nominative format: "NOM Prenom (ClubCode) ARB-N1" → extracts "ClubCode"
+// Team-only format: "RKV I" (no parentheses, matric=0) → returns the whole string trimmed
+const extractRefereeTeam = (text: string | null, matric?: number | null): string => {
   if (!text) return ''
   const m = text.match(/\(([^)]+)\)/)
-  return m ? m[1] : ''
+  if (m) return m[1]
+  // Free text with no parentheses: only treat as team code when non-nominative (matric absent or 0)
+  if (matric === undefined || matric === null || matric === 0) return text.trim()
+  return ''
 }
 
 // ─── Team/placeholder entity list from loaded games ───
@@ -196,6 +201,12 @@ const availableTeams = computed((): TeamEntity[] => {
     // Real teams
     if (g.equipeA) realTeams.set(g.equipeA, { code: g.equipeA, label: g.equipeA, isPlaceholder: false })
     if (g.equipeB) realTeams.set(g.equipeB, { code: g.equipeB, label: g.equipeB, isPlaceholder: false })
+
+    // Referee clubs from identified referees (e.g. "Nom (ClubCode)" or free-text team name)
+    const arbPrincipalTeam = extractRefereeTeam(g.arbitrePrincipal, g.matricArbitrePrincipal)
+    if (arbPrincipalTeam) realTeams.set(arbPrincipalTeam, { code: arbPrincipalTeam, label: arbPrincipalTeam, isPlaceholder: false })
+    const arbSecondaireTeam = extractRefereeTeam(g.arbitreSecondaire, g.matricArbitreSecondaire)
+    if (arbSecondaireTeam) realTeams.set(arbSecondaireTeam, { code: arbSecondaireTeam, label: arbSecondaireTeam, isPlaceholder: false })
 
     // Placeholders from bracket notation (only for unassigned slots)
     const raw = bracketRawCodes(g.libelle)
@@ -248,8 +259,8 @@ const gameInvolvesTeam = (g: Game, code: string): boolean => {
   if (!code) return true
   // Real team match
   if (g.equipeA === code || g.equipeB === code) return true
-  if (extractRefereeTeam(g.arbitrePrincipal) === code) return true
-  if (extractRefereeTeam(g.arbitreSecondaire) === code) return true
+  if (extractRefereeTeam(g.arbitrePrincipal, g.matricArbitrePrincipal) === code) return true
+  if (extractRefereeTeam(g.arbitreSecondaire, g.matricArbitreSecondaire) === code) return true
   // Placeholder match: compare raw bracket codes
   const raw = bracketRawCodes(g.libelle)
   if (!g.equipeA && raw.teamA === code) return true
@@ -1625,12 +1636,11 @@ const statusBtnClass = (game: Game) => {
         <!-- Conflict detection toolbar toggle -->
         <button
           class="flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg border"
-          :class="conflictBarOpen || selectedTeam ? 'text-primary-700 bg-primary-50 border-primary-400' : 'text-header-700 bg-white border-header-300 hover:bg-header-50'"
+          :class="conflictBarOpen || selectedTeam ? 'text-warning-700 bg-warning-50 border-warning-400' : 'text-header-700 bg-white border-header-300 hover:bg-header-50'"
           :title="t('games.conflict_toolbar_title')"
-          @click="conflictBarOpen = !conflictBarOpen"
+          @click="conflictBarOpen ? (conflictBarOpen = false, selectedTeam = '', teamSearchInput = '') : (conflictBarOpen = true)"
         >
-          <UIcon name="heroicons:shield-exclamation" class="w-5 h-5" :class="conflictBarOpen || selectedTeam ? 'text-primary-500' : 'text-header-500'" />
-          <span v-if="selectedTeamEntity" class="max-w-24 truncate text-xs" :class="selectedTeamEntity.isPlaceholder ? 'italic text-orange-600' : ''">{{ selectedTeamEntity.label }}</span>
+          <UIcon name="heroicons:shield-exclamation" class="w-5 h-5" :class="conflictBarOpen || selectedTeam ? 'text-warning-500' : 'text-header-500'" />
           <UIcon name="heroicons:chevron-down" class="w-4 h-4 transition-transform" :class="{ 'rotate-180': conflictBarOpen }" />
         </button>
 
@@ -1875,14 +1885,15 @@ const statusBtnClass = (game: Game) => {
       </div>
 
       <!-- Rest threshold -->
-      <div class="flex items-center gap-1.5 text-xs text-header-600">
+      <div class="flex items-center gap-1.5 text-xs text-header-600" :title="t('games.rest_threshold_tooltip')">
         <UIcon name="heroicons:clock" class="w-4 h-4 text-warning-500 shrink-0" />
-        <label class="whitespace-nowrap">{{ t('games.rest_threshold') }}</label>
+        <label class="whitespace-nowrap cursor-help">{{ t('games.rest_threshold') }}</label>
         <input
           v-model.number="restMinutes"
           type="number"
           min="1"
           max="240"
+          :title="t('games.rest_threshold_tooltip')"
           class="w-14 px-1.5 py-1 text-xs border border-header-300 rounded focus:ring-1 focus:ring-primary-400 focus:outline-none text-center"
         >
         <span>{{ t('games.rest_minutes') }}</span>
@@ -2219,8 +2230,7 @@ const statusBtnClass = (game: Game) => {
                 <template v-else>
                   <span
                     v-if="g.equipeA"
-                    class="text-header-900"
-                    :class="isGameEditable(g) ? 'editable-cell' : ''"
+                    :class="[isGameEditable(g) ? 'editable-cell' : '', selectedTeam && g.equipeA === selectedTeam ? 'bg-success-100 font-semibold' : 'text-header-900']"
                     @click="startTeamEdit(g, 'A')"
                   >{{ g.equipeA }}</span>
                   <span
@@ -2347,8 +2357,7 @@ const statusBtnClass = (game: Game) => {
                 <template v-else>
                   <span
                     v-if="g.equipeB"
-                    class="text-header-900"
-                    :class="isGameEditable(g) ? 'editable-cell' : ''"
+                    :class="[isGameEditable(g) ? 'editable-cell' : '', selectedTeam && g.equipeB === selectedTeam ? 'bg-success-50' : 'text-header-900']"
                     @click="startTeamEdit(g, 'B')"
                   >{{ g.equipeB }}</span>
                   <span
@@ -2395,7 +2404,7 @@ const statusBtnClass = (game: Game) => {
                     class="truncate block"
                     :class="[
                       isGameEditable(g) ? 'editable-cell' : '',
-                      g.matricArbitrePrincipal === 0 ? 'text-secondary-600 italic' : 'text-header-600',
+                      selectedTeam && extractRefereeTeam(g.arbitrePrincipal, g.matricArbitrePrincipal) === selectedTeam ? 'bg-success-50' : (g.matricArbitrePrincipal === 0 ? 'text-secondary-600 italic' : 'text-header-600'),
                     ]"
                     :title="g.arbitrePrincipal"
                     @click="startRefereeEdit(g, 'principal')"
@@ -2434,7 +2443,7 @@ const statusBtnClass = (game: Game) => {
                     class="truncate block"
                     :class="[
                       isGameEditable(g) ? 'editable-cell' : '',
-                      g.matricArbitreSecondaire === 0 ? 'text-secondary-600 italic' : 'text-header-600',
+                      selectedTeam && extractRefereeTeam(g.arbitreSecondaire, g.matricArbitreSecondaire) === selectedTeam ? 'bg-success-50' : (g.matricArbitreSecondaire === 0 ? 'text-secondary-600 italic' : 'text-header-600'),
                     ]"
                     :title="g.arbitreSecondaire"
                     @click="startRefereeEdit(g, 'secondaire')"
