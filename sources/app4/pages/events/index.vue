@@ -374,12 +374,33 @@ const formatDate = (date: string | null) => {
                 >
               </th>
 
+              <!-- Publication -->
+              <th class="px-4 py-3 text-center text-xs font-medium text-header-700 uppercase tracking-wider cursor-pointer hover:bg-header-100" @click="handleSort('Publication')">
+                <div class="flex items-center justify-center gap-1">
+                  {{ t('events.columns.publication') }}
+                  <UIcon :name="getSortIcon('Publication')" class="w-4 h-4" />
+                </div>
+              </th>
+
+              <!-- App -->
+              <th class="px-4 py-3 text-center text-xs font-medium text-header-700 uppercase tracking-wider cursor-pointer hover:bg-header-100" @click="handleSort('app')">
+                <div class="flex items-center justify-center gap-1">
+                  {{ t('events.columns.app') }}
+                  <UIcon :name="getSortIcon('app')" class="w-4 h-4" />
+                </div>
+              </th>
+
               <!-- ID -->
               <th class="px-4 py-3 text-left text-xs font-medium text-header-700 uppercase tracking-wider cursor-pointer hover:bg-header-100" @click="handleSort('Id')">
                 <div class="flex items-center gap-1">
                   {{ t('events.columns.id') }}
                   <UIcon :name="getSortIcon('Id')" />
                 </div>
+              </th>
+
+              <!-- Edit action -->
+              <th class="px-4 py-3 text-center text-xs font-medium text-header-700 uppercase tracking-wider w-12">
+                {{ t('common.edit') }}
               </th>
 
               <!-- Libelle -->
@@ -414,20 +435,14 @@ const formatDate = (date: string | null) => {
                 </div>
               </th>
 
-              <!-- Publication -->
-              <th class="px-4 py-3 text-center text-xs font-medium text-header-700 uppercase tracking-wider cursor-pointer hover:bg-header-100" @click="handleSort('Publication')">
-                <div class="flex items-center justify-center gap-1">
-                  {{ t('events.columns.publication') }}
-                  <UIcon :name="getSortIcon('Publication')" class="w-4 h-4" />
-                </div>
+              <!-- Associate -->
+              <th class="px-4 py-3 text-center text-xs font-medium text-header-700 uppercase tracking-wider w-12">
+                {{ t('events.columns.associate') }}
               </th>
 
-              <!-- App -->
-              <th class="px-4 py-3 text-center text-xs font-medium text-header-700 uppercase tracking-wider cursor-pointer hover:bg-header-100" @click="handleSort('app')">
-                <div class="flex items-center justify-center gap-1">
-                  {{ t('events.columns.app') }}
-                  <UIcon :name="getSortIcon('app')" class="w-4 h-4" />
-                </div>
+              <!-- Nb gamedays -->
+              <th class="px-4 py-3 text-center text-xs font-medium text-header-700 uppercase tracking-wider">
+                {{ t('events.columns.nb_gamedays') }}
               </th>
 
               <!-- Actions -->
@@ -440,7 +455,7 @@ const formatDate = (date: string | null) => {
           <tbody class="bg-white divide-y divide-header-200">
             <!-- Loading state -->
             <tr v-if="loading && events.length === 0">
-              <td :colspan="authStore.isSuperAdmin ? 9 : 8" class="px-4 py-8 text-center text-header-500">
+              <td :colspan="authStore.isSuperAdmin ? 12 : 11" class="px-4 py-8 text-center text-header-500">
                 <UIcon name="heroicons:arrow-path" class="w-6 h-6 animate-spin mx-auto mb-2" />
                 {{ t('common.loading') }}
               </td>
@@ -448,7 +463,7 @@ const formatDate = (date: string | null) => {
 
             <!-- Empty state -->
             <tr v-else-if="events.length === 0">
-              <td :colspan="authStore.isSuperAdmin ? 9 : 8" class="px-4 py-8 text-center text-header-500">
+              <td :colspan="authStore.isSuperAdmin ? 12 : 11" class="px-4 py-8 text-center text-header-500">
                 {{ t('events.empty') }}
               </td>
             </tr>
@@ -468,31 +483,6 @@ const formatDate = (date: string | null) => {
                   class="w-5 h-5 rounded border-header-300 text-primary-600 focus:ring-2 focus:ring-primary-500 cursor-pointer"
                   @change="toggleSelect(event.id)"
                 >
-              </td>
-
-              <!-- ID -->
-              <td class="px-4 py-3 text-sm text-header-900">
-                {{ event.id }}
-              </td>
-
-              <!-- Libelle -->
-              <td class="px-4 py-3 text-sm text-header-900 font-medium">
-                {{ event.libelle }}
-              </td>
-
-              <!-- Lieu -->
-              <td class="px-4 py-3 text-sm text-header-500">
-                {{ event.lieu || '-' }}
-              </td>
-
-              <!-- Date debut -->
-              <td class="px-4 py-3 text-sm text-header-500">
-                {{ formatDate(event.dateDebut) }}
-              </td>
-
-              <!-- Date fin -->
-              <td class="px-4 py-3 text-sm text-header-500">
-                {{ formatDate(event.dateFin) }}
               </td>
 
               <!-- Publication toggle -->
@@ -523,24 +513,62 @@ const formatDate = (date: string | null) => {
                 />
               </td>
 
-              <!-- Actions -->
+              <!-- ID -->
+              <td class="px-4 py-3 text-sm text-header-900">
+                {{ event.id }}
+              </td>
+
+              <!-- Edit -->
+              <td class="px-4 py-3 text-center">
+                <button
+                  class="p-1.5 text-primary-600"
+                  :title="t('common.edit')"
+                  @click="openEditModal(event)"
+                >
+                  <UIcon name="heroicons:pencil-solid" class="w-6 h-6" />
+                </button>
+              </td>
+
+              <!-- Libelle -->
+              <td class="px-4 py-3 text-sm text-header-900 font-medium">
+                {{ event.libelle }}
+              </td>
+
+              <!-- Lieu -->
+              <td class="px-4 py-3 text-sm text-header-500">
+                {{ event.lieu || '-' }}
+              </td>
+
+              <!-- Date debut -->
+              <td class="px-4 py-3 text-sm text-header-500">
+                {{ formatDate(event.dateDebut) }}
+              </td>
+
+              <!-- Date fin -->
+              <td class="px-4 py-3 text-sm text-header-500">
+                {{ formatDate(event.dateFin) }}
+              </td>
+
+              <!-- Associate -->
+              <td class="px-4 py-3 text-center">
+                <button
+                  v-if="authStore.profile <= 3"
+                  class="p-1.5 text-purple-600 hover:text-purple-800"
+                  :title="t('events.manage_gameday_associations')"
+                  @click="navigateTo(`/events/${event.id}/gamedays`)"
+                >
+                  <UIcon name="heroicons:link" class="w-6 h-6" />
+                </button>
+              </td>
+
+              <!-- Nb gamedays -->
+              <td class="px-4 py-3 text-center text-sm text-header-700">
+                {{ event.nbGamedays }}
+              </td>
+
+              <!-- Actions (delete) -->
               <td class="px-4 py-3">
                 <div class="flex items-center justify-end gap-1">
-                  <button
-                    class="p-1.5 text-primary-600"
-                    :title="t('common.edit')"
-                    @click="openEditModal(event)"
-                  >
-                    <UIcon name="heroicons:pencil-solid" class="w-6 h-6" />
-                  </button>
-                  <button
-                    v-if="authStore.profile <= 3"
-                    class="p-1.5 text-purple-600 hover:text-purple-800"
-                    :title="t('events.manage_gameday_associations')"
-                    @click="navigateTo(`/events/${event.id}/gamedays`)"
-                  >
-                    <UIcon name="heroicons:link" class="w-6 h-6" />
-                  </button>
                   <button
                     v-if="authStore.isSuperAdmin"
                     class="p-1.5 text-danger-600"

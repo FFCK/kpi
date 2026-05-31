@@ -84,6 +84,8 @@
       "date_fin": "Date fin",
       "publication": "Publié",
       "app": "App",
+      "associate": "Associer",
+      "nb_gamedays": "Journées/Phases",
       "actions": "Actions"
     },
     "form": {
@@ -1434,6 +1436,7 @@
     "team_prev": "Équipe précédente",
     "team_next": "Équipe suivante",
     "rest_threshold": "Repos mini.",
+    "rest_threshold_tooltip": "Intervalle entre débuts de matchs",
     "rest_minutes": "min",
     "round_n": "Tour {n}",
     "bulk": {

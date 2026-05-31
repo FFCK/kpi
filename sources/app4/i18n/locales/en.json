@@ -84,6 +84,8 @@
       "date_fin": "End date",
       "publication": "Published",
       "app": "App",
+      "associate": "Associate",
+      "nb_gamedays": "Gamedays/Phases",
       "actions": "Actions"
     },
     "form": {
@@ -1421,6 +1423,7 @@
     "team_prev": "Previous team",
     "team_next": "Next team",
     "rest_threshold": "Min. rest",
+    "rest_threshold_tooltip": "Interval between game start times",
     "rest_minutes": "min",
     "round_n": "Round {n}",
     "bulk": {

@@ -59,24 +59,27 @@ class AdminEventController extends AbstractController
         if (!empty($search)) {
             // Check if search is a numeric ID
             if (is_numeric($search)) {
-                $whereClause = "WHERE Id = ? OR Libelle LIKE ? OR Lieu LIKE ?";
+                $whereClause = "WHERE e.Id = ? OR e.Libelle LIKE ? OR e.Lieu LIKE ?";
                 $params = [(int) $search, "%$search%", "%$search%"];
             } else {
-                $whereClause = "WHERE Libelle LIKE ? OR Lieu LIKE ?";
+                $whereClause = "WHERE e.Libelle LIKE ? OR e.Lieu LIKE ?";
                 $params = ["%$search%", "%$search%"];
             }
         }
 
         // Count total
-        $countSql = "SELECT COUNT(*) as total FROM kp_evenement $whereClause";
+        $countSql = "SELECT COUNT(*) as total FROM kp_evenement e $whereClause";
         $stmt = $this->connection->prepare($countSql);
         $result = $stmt->executeQuery($params);
         $total = (int) $result->fetchOne();
 
         // Get events
-        $sql = "SELECT Id, Libelle, Lieu, Date_debut, Date_fin, Publication, app
-                FROM kp_evenement
+        $sql = "SELECT e.Id, e.Libelle, e.Lieu, e.Date_debut, e.Date_fin, e.Publication, e.app,
+                       COUNT(ej.Id_journee) AS nb_gamedays
+                FROM kp_evenement e
+                LEFT JOIN kp_evenement_journee ej ON ej.Id_evenement = e.Id
                 $whereClause
+                GROUP BY e.Id, e.Libelle, e.Lieu, e.Date_debut, e.Date_fin, e.Publication, e.app
                 ORDER BY $sortBy $sortOrder
                 LIMIT $limit OFFSET $offset";
 
@@ -94,6 +97,7 @@ class AdminEventController extends AbstractController
                 'dateFin' => $event['Date_fin'],
                 'publication' => $event['Publication'] === 'O',
                 'app' => $event['app'] === 'O',
+                'nbGamedays' => (int) $event['nb_gamedays'],
             ];
         }, $events);
 

@@ -68,6 +68,7 @@ export interface Event {
   dateFin: string | null
   publication: boolean
   app: boolean
+  nbGamedays: number
 }
 
 // Event form data (for create/update)
