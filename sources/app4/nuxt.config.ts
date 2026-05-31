@@ -9,6 +9,9 @@ const matomoUrl = process.env.MATOMO_URL ?? ''
 const matomoSiteId = process.env.MATOMO_SITE_ID ?? ''
 const matomoEnabled = process.env.MATOMO_ENABLED === 'true'
 
+// 'development' | 'preprod' | 'production'
+const appEnv = process.env.APP_ENV ?? (process.env.NODE_ENV === 'production' ? 'production' : 'development')
+
 export default defineNuxtConfig({
   ssr: false,
 
@@ -34,7 +37,8 @@ export default defineNuxtConfig({
       app2BaseUrl,
       matomoUrl,
       matomoSiteId,
-      matomoEnabled
+      matomoEnabled,
+      appEnv
     }
   },
 
