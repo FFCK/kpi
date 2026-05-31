@@ -1413,6 +1413,15 @@ const statusBtnClass = (game: Game) => {
     default: return 'bg-header-100 text-header-600 border-header-200'
   }
 }
+
+// ─── Scoresheet windows (FMV2/FMV3) ───
+// Réutilise la fenêtre existante si elle est déjà ouverte pour ce match
+const openScoresheet = (gameId: number, version: 2 | 3) => {
+  const url = version === 2
+    ? `${legacyBase.value}/admin/FeuilleMarque2.php?idMatch=${gameId}`
+    : `${legacyBase.value}/admin/FeuilleMarque3.php?idMatch=${gameId}`
+  window.open(url, `fmv${version}`)
+}
 </script>
 
 <template>
@@ -2083,16 +2092,16 @@ const statusBtnClass = (game: Game) => {
                     <br>
                     <span class="text-xs text-header-700">PDF</span>
                   </a>
-                  <a v-if="canEditScores && g.authorized" :href="`${legacyBase}/admin/FeuilleMarque2.php?idMatch=${g.id}`" target="_blank" :title="t('games.scoresheet_online_v2')" class="p-0.5 text-primary-400 hover:text-primary-600">
+                  <button v-if="canEditScores && g.authorized" :title="t('games.scoresheet_online_v2')" class="p-0.5 text-primary-400 hover:text-primary-600" @click.stop="openScoresheet(g.id, 2)">
                     <UIcon name="heroicons:device-tablet" class="w-6 h-6" />
                     <br>
                     <span class="text-xs text-header-700">V2</span>
-                  </a>
-                  <a v-if="canEditScores && g.authorized" :href="`${legacyBase}/admin/FeuilleMarque3.php?idMatch=${g.id}`" target="_blank" :title="t('games.scoresheet_online_v3')" class="p-0.5 text-primary-500 hover:text-primary-700">
+                  </button>
+                  <button v-if="canEditScores && g.authorized" :title="t('games.scoresheet_online_v3')" class="p-0.5 text-primary-500 hover:text-primary-700" @click.stop="openScoresheet(g.id, 3)">
                     <UIcon name="heroicons:device-tablet" class="w-6 h-6" />
                     <br>
                     <span class="text-xs text-header-700">V3</span>
-                  </a>
+                  </button>
                 </div>
               </td>
 
@@ -2806,14 +2815,14 @@ const statusBtnClass = (game: Game) => {
             <UIcon name="heroicons:document-text" class="w-4 h-4" />
             {{ t('games.scoresheet_pdf') }}
           </a>
-          <a v-if="canEdit && authStore.profile <= 6 && g.authorized" :href="`${legacyBase}/admin/FeuilleMarque2.php?idMatch=${g.id}`" target="_blank" class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-emerald-600 hover:text-emerald-800">
+          <button v-if="canEdit && authStore.profile <= 6 && g.authorized" class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-emerald-600 hover:text-emerald-800" @click="openScoresheet(g.id, 2)">
             <UIcon name="heroicons:device-tablet" class="w-4 h-4" />
             v2
-          </a>
-          <a v-if="canEdit && authStore.profile <= 2 && g.authorized" :href="`${legacyBase}/admin/FeuilleMarque3.php?idMatch=${g.id}`" target="_blank" class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-purple-600 hover:text-purple-800">
+          </button>
+          <button v-if="canEdit && authStore.profile <= 2 && g.authorized" class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-purple-600 hover:text-purple-800" @click="openScoresheet(g.id, 3)">
             <UIcon name="heroicons:device-tablet" class="w-4 h-4" />
             v3
-          </a>
+          </button>
           <AdminActionButton v-if="isDeletable(g)" variant="danger" icon="heroicons:trash" @click="openDeleteConfirm(g)">
             {{ t('common.delete') }}
           </AdminActionButton>
