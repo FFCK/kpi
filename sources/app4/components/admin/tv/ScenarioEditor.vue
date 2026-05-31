@@ -10,6 +10,9 @@ const { t } = useI18n()
 const api = useApi()
 const toast = useToast()
 
+const config = useRuntimeConfig()
+const backendBaseUrl = config.public.legacyBaseUrl as string
+
 const selectedScenario = ref(1)
 const scenes = ref<ScenarioScene[]>([])
 const loading = ref(false)
@@ -46,23 +49,8 @@ async function updateScenario() {
   finally { saving.value = false }
 }
 
-async function testScenario() {
-  // Activate the first scene of the scenario to trigger the rotation display
-  const firstScene = scenes.value[0]
-  if (!firstScene) return
-
-  try {
-    await api.post('/admin/tv/activate', {
-      voie: selectedScenario.value * 100,
-      url: firstScene.url || 'live/tv2.php?show=empty',
-    })
-    toast.add({
-      title: `${t('tv.scenario.title')} ${selectedScenario.value} activated`,
-      color: 'success',
-      duration: 3000,
-    })
-  }
-  catch { /* handled by useApi */ }
+function openControl() {
+  window.open(`${backendBaseUrl}/live/tv2.php?voie=${selectedScenario.value * 100}`, '_blank')
 }
 
 watch(selectedScenario, () => loadScenario())
@@ -146,10 +134,10 @@ onMounted(() => loadScenario())
 
       <button
         type="button"
-        class="px-4 py-2 text-sm font-medium text-header-700 bg-header-100 rounded-lg hover:bg-header-200 transition-colors"
-        @click="testScenario"
+        class="px-3 py-2 text-sm font-medium text-primary-700 bg-primary-50 rounded-lg hover:bg-primary-100 transition-colors"
+        @click="openControl"
       >
-        {{ t('tv.scenario.test') }}
+        {{ t('tv.actions.control') }}
       </button>
     </div>
   </div>

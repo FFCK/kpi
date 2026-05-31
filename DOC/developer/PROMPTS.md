@@ -132,16 +132,17 @@ TODO :
 - ✅ Games : pas d'édition de planning ni de match tant qu'un événement ou une compétition n'est pas sélectionné (pas de match affiché : Sélectionnez un événement, un groupe ou une compétition pour afficher les matchs)
 - ✅ Evénements : bouton Editer à gauche, ajouter une colonne Nb journées/phases entre le bouton associer et le bouton supprimer
 - ✅ revoir l'articulation des pages ranking (bug export pdf public, etc.)
-- Scénarios TV : bouton Tester => Contrôle doit ouvrir le scénario dans une nouvelle fenêtre.
-- TV : langue FR n'est pas prise en compte.
-- QRcode événement comme nouvel affichage TV !
-- Empêcher l'import d'événement en prod sans double confirmation, par exemple en demandant de saisir le nom de l'environnement pour confirmer l'import, ou en ajoutant une étape de validation supplémentaire dans le processus d'importation.
+- ✅ Scénarios TV : bouton Tester => Contrôle doit ouvrir le scénario dans une nouvelle fenêtre.
+- ✅ TV : langue FR n'est pas prise en compte.
+- ✅ QRcode événement comme nouvel affichage TV !
+- ✅ Empêcher l'import d'événement en prod sans double confirmation, en ajoutant une étape de validation supplémentaire dans le processus d'importation.
 - Feat: Jury d'appel : 3 représentants des athlètes.
 - Ouverture FMV2 et FMV3 depuis app4 : ouvrir dans une fenêtre identique si déjà ouverte.
 - FMV3 : départ du timeshoot manuel et pas en même temps que le chrono + Bouton Pause.
 - Games : Action : imprimer un programme des matchs cochés uniquement
 - Feuille de marque : Yc est devenu Pld.
 - Créer pages d'administration (profil 1) pour les comités départementaux / pays
-* Journées/Phases : autocomplete sur les officiels, etc...
+- Journées/Phases : autocomplete sur les officiels, etc...
+- Revoir le système des incrustations ?
 - api legacy encore utilisée ?
 - ⚠️

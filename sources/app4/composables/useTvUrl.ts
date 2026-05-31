@@ -102,34 +102,37 @@ export function useTvUrl() {
       // ── Frame pages ──
 
       case 'frame_terrains':
-        return `frame_terrains.php?event=${evt}&lang=en&Saison=${season}&Compet=${competition}&terrains=${pitchs}&filtreJour=${date}&Css=${css}`
+        return `frame_terrains.php?event=${evt}&lang=${lang}&Saison=${season}&Compet=${competition}&terrains=${pitchs}&filtreJour=${date}&Css=${css}`
 
       case 'frame_phases':
-        return `frame_phases.php?event=${evt}&lang=en&Saison=${season}&Compet=${competition}&Round=${round}&Css=${css}`
+        return `frame_phases.php?event=${evt}&lang=${lang}&Saison=${season}&Compet=${competition}&Round=${round}&Css=${css}`
 
       case 'frame_categories':
-        return `frame_categories.php?event=${evt}&lang=en&Saison=${season}&Compet=${competition}&terrains=${pitchs}&filtreJour=${date}&Css=${css}&start=${lnStart}&len=${lnLen}`
+        return `frame_categories.php?event=${evt}&lang=${lang}&Saison=${season}&Compet=${competition}&terrains=${pitchs}&filtreJour=${date}&Css=${css}&start=${lnStart}&len=${lnLen}`
 
       case 'frame_chart':
-        return `frame_chart.php?event=${evt}&lang=en&Saison=${season}&Compet=${competition}&Round=${round}&Css=${css}`
+        return `frame_chart.php?event=${evt}&lang=${lang}&Saison=${season}&Compet=${competition}&Round=${round}&Css=${css}`
 
       case 'frame_details':
-        return `frame_details.php?event=${evt}&lang=en&Saison=${season}&Compet=${competition}&Round=${round}&Css=${css}`
+        return `frame_details.php?event=${evt}&lang=${lang}&Saison=${season}&Compet=${competition}&Round=${round}&Css=${css}`
 
       case 'frame_team':
-        return `frame_team.php?event=${evt}&lang=en&Saison=${season}&Compet=${competition}&Team=${teamSelect}&Round=${round}&Css=${css}`
+        return `frame_team.php?event=${evt}&lang=${lang}&Saison=${season}&Compet=${competition}&Team=${teamSelect}&Round=${round}&Css=${css}`
 
       case 'frame_stats':
-        return `frame_stats.php?event=${evt}&lang=en&Saison=${season}&Compet=${competition}&Css=${css}`
+        return `frame_stats.php?event=${evt}&lang=${lang}&Saison=${season}&Compet=${competition}&Css=${css}`
 
       case 'frame_classement':
-        return `frame_classement.php?event=${evt}&lang=en&Saison=${season}&Compet=${competition}&Css=${css}`
+        return `frame_classement.php?event=${evt}&lang=${lang}&Saison=${season}&Compet=${competition}&Css=${css}`
 
       case 'frame_qr':
-        return `frame_qr.php?event=${evt}&lang=en&Saison=${season}&Compet=${competition}&Css=${css}`
+        return `frame_qr.php?event=${evt}&lang=${lang}&Saison=${season}&Compet=${competition}&Css=${css}`
+
+      case 'frame_qr_app2':
+        return `frame_qr_app2.php?event=${evt}&Css=${css}`
 
       case 'frame_matchs':
-        return `frame_matchs.php?event=${evt}&lang=en&Saison=${season}&Compet=${competition}&Team=${teamSelect}&Round=${round}&Css=${css}&navGroup=${navGroup ? '1' : '0'}`
+        return `frame_matchs.php?event=${evt}&lang=${lang}&Saison=${season}&Compet=${competition}&Team=${teamSelect}&Round=${round}&Css=${css}&navGroup=${navGroup ? '1' : '0'}`
 
       // ── API ──
 

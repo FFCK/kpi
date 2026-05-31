@@ -173,6 +173,7 @@ export const PRESENTATIONS: PresentationOption[] = [
   { value: 'frame_stats', label: 'Stats', group: 'screen', requiredParams: ['competition'] },
   { value: 'frame_classement', label: 'Ranking', group: 'screen', requiredParams: ['competition'] },
   { value: 'frame_qr', label: 'QrCodes', group: 'screen', requiredParams: ['competition'] },
+  { value: 'frame_qr_app2', label: 'QR App2', group: 'screen', requiredParams: [] },
 
   // Site/Mobile
   { value: 'frame_matchs', label: 'Games', group: 'web', requiredParams: ['competition', 'navGroup'] },
