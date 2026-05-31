@@ -826,12 +826,14 @@ class AdminPresenceController extends AbstractController
         }
 
         // Copy from kp_competition_equipe_joueur (excluding X and A statuses)
+        // Only include players whose Matric exists in kp_licence (FK constraint on kp_match_joueur)
         $sql = "REPLACE INTO kp_match_joueur (Id_match, Matric, Numero, Equipe, Capitaine)
-                SELECT ?, Matric, Numero, ?, Capitaine
-                FROM kp_competition_equipe_joueur
-                WHERE Id_equipe = ?
-                AND Capitaine <> 'X'
-                AND Capitaine <> 'A'";
+                SELECT ?, cej.Matric, cej.Numero, ?, cej.Capitaine
+                FROM kp_competition_equipe_joueur cej
+                INNER JOIN kp_licence l ON l.Matric = cej.Matric
+                WHERE cej.Id_equipe = ?
+                AND cej.Capitaine <> 'X'
+                AND cej.Capitaine <> 'A'";
 
         $this->connection->executeStatement($sql, [$matchId, $teamCode, $teamId]);
 

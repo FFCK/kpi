@@ -734,13 +734,18 @@ const confirmBulkDelete = async () => {
 const confirmInitStarters = async () => {
   specialOpLoading.value = true
   try {
-    await api.post('/admin/competition-teams/init-starters', {
+    const body: Record<string, unknown> = {
       season: workContext.season,
       competition: workContext.pageCompetitionCode
-    })
-    toast.add({ title: t('common.success'), description: t('teams_page.success_init_starters'), color: 'success', duration: 3000 })
+    }
+    if (selectedIds.value.length > 0) {
+      body.ids = selectedIds.value
+    }
+    const result = await api.post<{ count: number; matchCount: number }>('/admin/competition-teams/init-starters', body)
+    const desc = t('teams_page.success_init_starters_detail', { teams: result.count, matches: result.matchCount })
+    toast.add({ title: t('common.success'), description: desc, color: 'success', duration: 4000 })
     initStartersModalOpen.value = false
-    loadTeams() // Reload to update lock state
+    loadTeams()
   } catch (error: unknown) {
     toast.add({ title: t('common.error'), description: (error as { message?: string })?.message || t('teams_page.error_save'), color: 'error', duration: 3000 })
   } finally {
@@ -2010,7 +2015,7 @@ const getLogoUrl = (team: CompetitionTeam) => {
     <AdminConfirmModal
       :open="initStartersModalOpen"
       :title="t('teams_page.init_starters')"
-      :message="t('teams_page.confirm_init_starters')"
+      :message="selectedIds.length > 0 ? t('teams_page.confirm_init_starters_selected', { count: selectedIds.length }) : t('teams_page.confirm_init_starters')"
       :confirm-text="t('common.confirm')"
       :cancel-text="t('common.cancel')"
       :loading="specialOpLoading"

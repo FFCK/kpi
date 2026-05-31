@@ -972,6 +972,7 @@ class AdminTeamsController extends AbstractController
         $data = json_decode($request->getContent(), true);
         $season = $data['season'] ?? '';
         $competition = $data['competition'] ?? '';
+        $ids = $data['ids'] ?? null; // optional array of team IDs to restrict processing
 
         if (empty($season) || empty($competition)) {
             return $this->json(['message' => 'Season and competition are required'], Response::HTTP_BAD_REQUEST);
@@ -979,24 +980,37 @@ class AdminTeamsController extends AbstractController
 
         $this->connection->beginTransaction();
         try {
-            // Get all teams
-            $sql = "SELECT ce.Id
-                    FROM kp_competition_equipe ce
-                    WHERE ce.Code_compet = ? AND ce.Code_saison = ?";
-            $stmt = $this->connection->prepare($sql);
-            $result = $stmt->executeQuery([$competition, $season]);
+            // Get teams — filtered to provided IDs if given
+            if (!empty($ids) && is_array($ids)) {
+                $placeholders = implode(',', array_fill(0, count($ids), '?'));
+                $sql = "SELECT ce.Id
+                        FROM kp_competition_equipe ce
+                        WHERE ce.Code_compet = ? AND ce.Code_saison = ?
+                        AND ce.Id IN ($placeholders)";
+                $params = array_merge([$competition, $season], array_map('intval', $ids));
+                $stmt = $this->connection->prepare($sql);
+                $result = $stmt->executeQuery($params);
+            } else {
+                $sql = "SELECT ce.Id
+                        FROM kp_competition_equipe ce
+                        WHERE ce.Code_compet = ? AND ce.Code_saison = ?";
+                $stmt = $this->connection->prepare($sql);
+                $result = $stmt->executeQuery([$competition, $season]);
+            }
             $teams = $result->fetchAllAssociative();
 
             $teamsInitialized = 0;
+            $matchesInitialized = 0;
             foreach ($teams as $team) {
                 $teamId = (int) $team['Id'];
 
-                // Get all matches for this team
+                // Get all non-validated (unlocked) matches for this team
                 $sql = "SELECT m.Id, m.Id_equipeA, m.Id_equipeB
                         FROM kp_match m
                         INNER JOIN kp_journee j ON m.Id_journee = j.Id
                         WHERE (m.Id_equipeA = ? OR m.Id_equipeB = ?)
-                        AND j.Code_competition = ? AND j.Code_saison = ?";
+                        AND j.Code_competition = ? AND j.Code_saison = ?
+                        AND (m.Validation IS NULL OR m.Validation != 'O')";
                 $stmt = $this->connection->prepare($sql);
                 $result = $stmt->executeQuery([$teamId, $teamId, $competition, $season]);
                 $matches = $result->fetchAllAssociative();
@@ -1005,36 +1019,35 @@ class AdminTeamsController extends AbstractController
                     $isTeamA = (int) $match['Id_equipeA'] === $teamId;
                     $prefix = $isTeamA ? 'A' : 'B';
 
-                    // Skip if match already has players for this team
-                    $sql = "SELECT COUNT(*) FROM kp_match_joueur
-                            WHERE Id_match = ? AND Equipe = ?";
-                    $stmt = $this->connection->prepare($sql);
-                    $result = $stmt->executeQuery([$match['Id'], $prefix]);
-                    $existingPlayers = (int) $result->fetchOne();
-
-                    if ($existingPlayers > 0) {
-                        continue;
-                    }
+                    // Clear existing players for this team then re-insert from team composition
+                    $this->connection->executeStatement(
+                        "DELETE FROM kp_match_joueur WHERE Id_match = ? AND Equipe = ?",
+                        [$match['Id'], $prefix]
+                    );
 
                     // Copy active players only (exclude inactive X and referees A, matching legacy behaviour)
+                    // Only include players whose Matric exists in kp_licence (FK constraint on kp_match_joueur)
                     $sql = "INSERT INTO kp_match_joueur (Id_match, Equipe, Matric, Numero, Capitaine)
-                            SELECT ?, ?, Matric, Numero, Capitaine
-                            FROM kp_competition_equipe_joueur
-                            WHERE Id_equipe = ?
-                            AND Capitaine NOT IN ('X', 'A')";
+                            SELECT ?, ?, cej.Matric, cej.Numero, cej.Capitaine
+                            FROM kp_competition_equipe_joueur cej
+                            INNER JOIN kp_licence l ON l.Matric = cej.Matric
+                            WHERE cej.Id_equipe = ?
+                            AND cej.Capitaine NOT IN ('X', 'A')";
                     $stmt = $this->connection->prepare($sql);
                     $stmt->executeStatement([$match['Id'], $prefix, $teamId]);
+                    $matchesInitialized++;
                 }
 
                 $teamsInitialized++;
             }
 
             $this->connection->commit();
-            $this->logActionForCompetition('Init titulaires', $season, $competition, "$teamsInitialized équipe(s)");
+            $this->logActionForCompetition('Init titulaires', $season, $competition, "$teamsInitialized équipe(s), $matchesInitialized match(s)");
 
             return $this->json([
-                'message' => "Starters initialized for $teamsInitialized team(s).",
+                'message' => "Starters initialized for $teamsInitialized team(s), $matchesInitialized match(s).",
                 'count' => $teamsInitialized,
+                'matchCount' => $matchesInitialized,
             ]);
         } catch (\Exception $e) {
             $this->connection->rollBack();

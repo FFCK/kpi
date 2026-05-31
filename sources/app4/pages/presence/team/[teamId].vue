@@ -27,7 +27,30 @@ const { canEdit, canCopy } = usePresencePermissions(
 )
 const authStore = useAuthStore()
 const canOverride = computed(() => authStore.profile <= 2)
+const canInitStarters = computed(() => authStore.profile <= 6)
 
+// Init starters state
+const initStartersModalOpen = ref(false)
+const initStartersLoading = ref(false)
+
+const confirmInitStarters = async () => {
+  if (!presenceStore.team || !presenceStore.competition) return
+  initStartersLoading.value = true
+  try {
+    const result = await api.post<{ count: number; matchCount: number }>('/admin/competition-teams/init-starters', {
+      season: presenceStore.team.codeSaison,
+      competition: presenceStore.competition.code,
+      ids: [teamId.value]
+    })
+    const desc = t('teams_page.success_init_starters_detail', { teams: result.count, matches: result.matchCount })
+    toast.add({ title: t('common.success'), description: desc, color: 'success', duration: 4000 })
+    initStartersModalOpen.value = false
+  } catch (error: unknown) {
+    toast.add({ title: t('common.error'), description: (error as { message?: string })?.message || t('teams_page.error_save'), color: 'error', duration: 3000 })
+  } finally {
+    initStartersLoading.value = false
+  }
+}
 
 // Selection state
 const selectedPlayerIds = ref<number[]>([])
@@ -631,6 +654,16 @@ const pdfLinks = computed(() => {
       </template>
 
       <template #right>
+        <!-- Init starters button -->
+        <button
+          v-if="canInitStarters"
+          class="px-3 py-2 border border-header-300 text-header-700 rounded-lg hover:bg-header-50 transition-colors text-sm flex items-center gap-1"
+          @click="initStartersModalOpen = true"
+        >
+          <UIcon name="heroicons:user-group" class="w-5 h-5" />
+          {{ t('teams_page.init_starters') }}
+        </button>
+
         <!-- Copy from button -->
         <button
           v-if="canCopy"
@@ -1729,5 +1762,17 @@ const pdfLinks = computed(() => {
         </button>
       </div>
     </AdminModal>
+
+    <!-- Init Starters Confirmation Modal -->
+    <AdminConfirmModal
+      :open="initStartersModalOpen"
+      :title="t('teams_page.init_starters')"
+      :message="t('presence.confirm_init_starters_team')"
+      :confirm-text="t('common.confirm')"
+      :cancel-text="t('common.cancel')"
+      :loading="initStartersLoading"
+      @close="initStartersModalOpen = false"
+      @confirm="confirmInitStarters"
+    />
   </div>
 </template>

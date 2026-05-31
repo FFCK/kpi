@@ -8,10 +8,14 @@ use Doctrine\DBAL\Connection;
  * Event Export/Import Service
  *
  * Handles event data export to JSON and import from JSON.
- * Exports/imports 13 related tables: kp_evenement, kp_evenement_journee, kp_journee,
+ * Exports/imports 13 related tables + kp_licence_foreign: kp_evenement, kp_evenement_journee, kp_journee,
  * kp_competition, kp_competition_equipe, kp_competition_equipe_init, kp_competition_equipe_joueur,
  * kp_competition_equipe_journee, kp_competition_equipe_niveau, kp_match, kp_match_detail,
  * kp_match_joueur, kp_chrono.
+ * Also exports kp_licence_foreign: licence rows for players referenced in the event
+ * (team compositions, match rosters, match officials) who do not exist in kp_licence on the
+ * source system — typically foreign/international players created manually.
+ * On import these rows are upserted into kp_licence so FK constraints on kp_match_joueur are satisfied.
  *
  * Migrated from GestionOperations.php ExportEvt and ImportEvt.
  */
@@ -180,7 +184,129 @@ class EventExportImportService
             $export['kp_chrono'] = [];
         }
 
+        // Collect all Matric values referenced in this event that are missing from kp_licence.
+        // These are foreign/international players created manually (no French licence).
+        // They must be exported so the import can upsert them into kp_licence before inserting
+        // kp_match_joueur rows (which has a FK constraint on kp_licence.Matric).
+        $export['kp_licence_foreign'] = $this->exportForeignLicences($export);
+
         return $export;
+    }
+
+    /**
+     * Collect licence rows for players referenced in the event who are absent from kp_licence.
+     * Sources: kp_competition_equipe_joueur, kp_match_joueur, kp_match arbitre columns.
+     * Data is reconstructed from kp_competition_equipe_joueur (Nom, Prenom, Sexe) since these
+     * players have no kp_licence row on the source system either — we synthesise a minimal row.
+     */
+    private function exportForeignLicences(array $export): array
+    {
+        // Gather every Matric that appears in the event
+        $allMatrics = [];
+
+        foreach ($export['kp_competition_equipe_joueur'] as $row) {
+            $allMatrics[] = (int) $row['Matric'];
+        }
+        foreach ($export['kp_match_joueur'] as $row) {
+            $allMatrics[] = (int) $row['Matric'];
+        }
+        foreach ($export['kp_match'] as $row) {
+            if (!empty($row['Matric_arbitre_principal'])) {
+                $allMatrics[] = (int) $row['Matric_arbitre_principal'];
+            }
+            if (!empty($row['Matric_arbitre_secondaire'])) {
+                $allMatrics[] = (int) $row['Matric_arbitre_secondaire'];
+            }
+        }
+
+        $allMatrics = array_values(array_unique(array_filter($allMatrics)));
+
+        if (empty($allMatrics)) {
+            return [];
+        }
+
+        // Find which ones already exist in kp_licence
+        $placeholders = implode(',', array_fill(0, count($allMatrics), '?'));
+        $existing = $this->connection->fetchFirstColumn(
+            "SELECT Matric FROM kp_licence WHERE Matric IN ($placeholders)",
+            $allMatrics
+        );
+        $existingSet = array_flip(array_map('intval', $existing));
+
+        $foreignMatrics = array_values(array_filter($allMatrics, fn($m) => !isset($existingSet[$m])));
+
+        if (empty($foreignMatrics)) {
+            return [];
+        }
+
+        // Build minimal kp_licence rows from kp_competition_equipe_joueur data.
+        // Use the first occurrence of each Matric across all team compositions.
+        $foreignLicences = [];
+        $seen = [];
+        foreach ($export['kp_competition_equipe_joueur'] as $row) {
+            $matric = (int) $row['Matric'];
+            if (!in_array($matric, $foreignMatrics, true) || isset($seen[$matric])) {
+                continue;
+            }
+            $seen[$matric] = true;
+            $foreignLicences[] = [
+                'Matric'  => $matric,
+                'Origine' => 'ETRG',
+                'Nom'     => $row['Nom'] ?? '',
+                'Prenom'  => $row['Prenom'] ?? '',
+                'Sexe'    => $row['Sexe'] ?? null,
+                'Naissance'                => null,
+                'Club'                     => null,
+                'Numero_club'              => null,
+                'Comite_dept'              => null,
+                'Numero_comite_dept'       => null,
+                'Comite_reg'               => null,
+                'Numero_comite_reg'        => null,
+                'Etat'                     => null,
+                'Pagaie_EVI'               => null,
+                'Pagaie_MER'               => null,
+                'Pagaie_ECA'               => null,
+                'Date_certificat_CK'       => null,
+                'Date_certificat_APS'      => null,
+                'Reserve'                  => null,
+                'Etat_certificat_APS'      => null,
+                'Etat_certificat_CK'       => null,
+                'Type_licence'             => null,
+            ];
+        }
+
+        // Cover any foreign Matric that only appears in kp_match_joueur (not in team compo)
+        $remainingMatrics = array_diff($foreignMatrics, array_keys($seen));
+        if (!empty($remainingMatrics)) {
+            $placeholders2 = implode(',', array_fill(0, count($remainingMatrics), '?'));
+            $rows = $this->connection->fetchAllAssociative(
+                "SELECT Matric, Nom, Prenom, Sexe FROM kp_licence WHERE Matric IN ($placeholders2)",
+                $remainingMatrics
+            );
+            // These truly don't exist anywhere — add stub entries so FK is satisfied on import
+            $foundMatrics = array_column($rows, 'Matric');
+            foreach ($remainingMatrics as $matric) {
+                if (!in_array($matric, $foundMatrics) && !isset($seen[$matric])) {
+                    $foreignLicences[] = [
+                        'Matric'  => $matric,
+                        'Origine' => 'ETRG',
+                        'Nom'     => '',
+                        'Prenom'  => '',
+                        'Sexe'    => null,
+                        'Naissance' => null, 'Club' => null, 'Numero_club' => null,
+                        'Comite_dept' => null, 'Numero_comite_dept' => null,
+                        'Comite_reg' => null, 'Numero_comite_reg' => null,
+                        'Etat' => null, 'Pagaie_EVI' => null, 'Pagaie_MER' => null,
+                        'Pagaie_ECA' => null, 'Date_certificat_CK' => null,
+                        'Date_certificat_APS' => null, 'Reserve' => null,
+                        'Etat_certificat_APS' => null, 'Etat_certificat_CK' => null,
+                        'Type_licence' => null,
+                    ];
+                }
+            }
+        }
+
+        return $foreignLicences;
     }
 
     /**
@@ -233,6 +359,9 @@ class EventExportImportService
             // Import match details
             $this->importMatchDetails($data['kp_match_detail'], $matchIds);
 
+            // Upsert foreign licences before match players (FK constraint on kp_match_joueur)
+            $this->importForeignLicences($data['kp_licence_foreign'] ?? []);
+
             // Import match players
             $this->importMatchPlayers($data['kp_match_joueur'], $matchIds);
 
@@ -266,6 +395,7 @@ class EventExportImportService
             'kp_match_detail',
             'kp_match_joueur',
             'kp_chrono',
+            // kp_licence_foreign is optional for backwards-compat with older exports
         ];
 
         foreach ($requiredKeys as $key) {
@@ -878,6 +1008,59 @@ class EventExportImportService
         }
 
         return $matchIds;
+    }
+
+    /**
+     * Upsert foreign/international player licences into kp_licence.
+     * Uses INSERT ... ON DUPLICATE KEY UPDATE so existing rows (if the player was later
+     * imported via PCE) are not overwritten — only missing rows are created.
+     */
+    private function importForeignLicences(array $licences): void
+    {
+        foreach ($licences as $l) {
+            $sql = "INSERT INTO kp_licence (
+                        Matric, Origine, Nom, Prenom, Sexe, Naissance, Club, Numero_club,
+                        Comite_dept, Numero_comite_dept, Comite_reg, Numero_comite_reg,
+                        Etat, Pagaie_EVI, Pagaie_MER, Pagaie_ECA,
+                        Date_certificat_CK, Date_certificat_APS, Reserve,
+                        Etat_certificat_APS, Etat_certificat_CK, Type_licence
+                    ) VALUES (
+                        :Matric, :Origine, :Nom, :Prenom, :Sexe, :Naissance, :Club, :Numero_club,
+                        :Comite_dept, :Numero_comite_dept, :Comite_reg, :Numero_comite_reg,
+                        :Etat, :Pagaie_EVI, :Pagaie_MER, :Pagaie_ECA,
+                        :Date_certificat_CK, :Date_certificat_APS, :Reserve,
+                        :Etat_certificat_APS, :Etat_certificat_CK, :Type_licence
+                    )
+                    ON DUPLICATE KEY UPDATE
+                        Nom    = IF(Origine = 'ETRG', VALUES(Nom),    Nom),
+                        Prenom = IF(Origine = 'ETRG', VALUES(Prenom), Prenom),
+                        Sexe   = IF(Origine = 'ETRG', VALUES(Sexe),   Sexe)";
+
+            $this->connection->executeStatement($sql, [
+                'Matric'               => $l['Matric'],
+                'Origine'              => $l['Origine'] ?? 'ETRG',
+                'Nom'                  => $l['Nom'] ?? '',
+                'Prenom'               => $l['Prenom'] ?? '',
+                'Sexe'                 => $l['Sexe'] ?? null,
+                'Naissance'            => $l['Naissance'] ?? null,
+                'Club'                 => $l['Club'] ?? null,
+                'Numero_club'          => $l['Numero_club'] ?? null,
+                'Comite_dept'          => $l['Comite_dept'] ?? null,
+                'Numero_comite_dept'   => $l['Numero_comite_dept'] ?? null,
+                'Comite_reg'           => $l['Comite_reg'] ?? null,
+                'Numero_comite_reg'    => $l['Numero_comite_reg'] ?? null,
+                'Etat'                 => $l['Etat'] ?? null,
+                'Pagaie_EVI'           => $l['Pagaie_EVI'] ?? null,
+                'Pagaie_MER'           => $l['Pagaie_MER'] ?? null,
+                'Pagaie_ECA'           => $l['Pagaie_ECA'] ?? null,
+                'Date_certificat_CK'   => $l['Date_certificat_CK'] ?? null,
+                'Date_certificat_APS'  => $l['Date_certificat_APS'] ?? null,
+                'Reserve'              => $l['Reserve'] ?? null,
+                'Etat_certificat_APS'  => $l['Etat_certificat_APS'] ?? null,
+                'Etat_certificat_CK'   => $l['Etat_certificat_CK'] ?? null,
+                'Type_licence'         => $l['Type_licence'] ?? null,
+            ]);
+        }
     }
 
     /**
