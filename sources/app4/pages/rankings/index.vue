@@ -31,7 +31,7 @@ const rankingTypes = ref<RankingTypeOption[]>([])
 const ranking = ref<RankingTeam[]>([])
 const phases = ref<RankingPhase[]>([])
 
-// Active tab: 'computed' or 'published'
+// Active tab kept for non-admin users only (profile > 6)
 const activeTab = ref<'computed' | 'published'>(authStore.profile <= 6 ? 'computed' : 'published')
 
 // Selected ranking type (profil ≤ 3 can change it)
@@ -541,16 +541,16 @@ const pdfUrls = computed(() => {
   const urls: Record<string, { admin?: string; public?: string }> = {}
 
   if (type === 'CHPT') {
-    urls.general = { admin: `${base}/admin/FeuilleCltChpt.php?${qs}`, public: `${base}/admin/PdfCltChpt.php?${qs}` }
-    urls.detail = { admin: `${base}/admin/FeuilleCltChptDetail.php?${qs}`, public: `${base}/admin/PdfCltChptDetail.php?${qs}` }
-    urls.matches = { admin: `${base}/admin/FeuilleListeMatchs.php?${qs}`, public: `${base}/admin/PdfListeMatchs.php?${qs}` }
+    urls.general = { admin: `${base}/admin/FeuilleCltChpt.php?${qs}`, public: `${base}/PdfCltChpt.php?${qs}` }
+    urls.detail = { admin: `${base}/admin/FeuilleCltChptDetail.php?${qs}`, public: `${base}/PdfCltChptDetail.php?${qs}` }
+    urls.matches = { admin: `${base}/admin/FeuilleListeMatchs.php?${qs}`, public: `${base}/PdfListeMatchs.php?${qs}` }
   } else if (type === 'CP') {
-    urls.general = { admin: `${base}/admin/FeuilleCltNiveau.php?${qs}`, public: `${base}/admin/PdfCltNiveau.php?${qs}` }
-    urls.progress = { admin: `${base}/admin/FeuilleCltNiveauPhase.php?${qs}`, public: `${base}/admin/PdfCltNiveauPhase.php?${qs}` }
-    urls.detail = { admin: `${base}/admin/FeuilleCltNiveauDetail.php?${qs}`, public: `${base}/admin/PdfCltNiveauDetail.php?${qs}` }
-    urls.matches = { admin: `${base}/admin/FeuilleListeMatchs.php?${qs}`, public: `${base}/admin/PdfListeMatchs.php?${qs}` }
+    urls.general = { admin: `${base}/admin/FeuilleCltNiveau.php?${qs}`, public: `${base}/PdfCltNiveau.php?${qs}` }
+    urls.progress = { admin: `${base}/admin/FeuilleCltNiveauPhase.php?${qs}`, public: `${base}/PdfCltNiveauPhase.php?${qs}` }
+    urls.detail = { admin: `${base}/admin/FeuilleCltNiveauDetail.php?${qs}`, public: `${base}/PdfCltNiveauDetail.php?${qs}` }
+    urls.matches = { admin: `${base}/admin/FeuilleListeMatchs.php?${qs}`, public: `${base}/PdfListeMatchs.php?${qs}` }
   } else if (type === 'MULTI') {
-    urls.general = { admin: `${base}/admin/FeuilleCltMulti.php?${qs}`, public: `${base}/admin/PdfCltMulti.php?${qs}` }
+    urls.general = { admin: `${base}/admin/FeuilleCltMulti.php?${qs}`, public: `${base}/PdfCltMulti.php?${qs}` }
   }
 
   return urls
@@ -667,28 +667,24 @@ const editValueForField = (field: string, value: number): string => {
     </div>
 
     <template v-if="workContext.pageCompetitionCode && competitionInfo">
-      <!-- Tabs: blue for computed, green for published -->
-      <div class="mb-4 bg-white rounded-lg shadow">
-        <div class="flex border-b border-header-200">
-          <button
-            v-if="canViewComputed"
-            class="flex-1 px-4 py-3 text-sm font-medium text-center transition-colors"
-            :class="activeTab === 'computed' ? 'text-white bg-primary-700 border-b-2 border-primary-700' : 'text-primary-600 bg-primary-100 hover:bg-primary-200'"
-            @click="activeTab = 'computed'"
-          >
-            {{ t('rankings.tabs.computed') }}
-          </button>
-          <button
-            class="flex-1 px-4 py-3 text-sm font-medium text-center transition-colors"
-            :class="activeTab === 'published' ? 'text-white bg-success-700 border-b-2 border-success-700' : 'text-success-500 bg-success-100 hover:bg-success-200'"
-            @click="activeTab = 'published'"
-          >
-            {{ t('rankings.tabs.published') }}
-          </button>
-        </div>
+      <!-- Two-column layout for admins (stacked on mobile, side-by-side on desktop) -->
+      <div v-if="canViewComputed" class="mb-4 flex flex-col lg:flex-row gap-4 lg:items-start">
 
-        <!-- ═══ COMPUTED TAB ═══ -->
-        <div v-if="activeTab === 'computed' && canViewComputed" class="p-4">
+        <!-- ═══ LEFT: COMPUTED COLUMN ═══ -->
+        <div id="computed-ranking" class="flex-1 min-w-0 bg-white rounded-lg shadow">
+          <!-- Column header -->
+          <div class="px-4 py-3 bg-primary-700 rounded-t-lg flex items-center justify-between gap-2">
+            <span class="text-sm font-medium text-white">{{ t('rankings.tabs.computed') }}</span>
+            <a
+              v-if="competitionInfo.datePublication"
+              href="#published-ranking"
+              class="lg:hidden text-xs text-primary-200 hover:text-white flex items-center gap-1"
+            >
+              {{ t('rankings.tabs.published') }}
+              <UIcon name="heroicons:arrow-down" class="w-3 h-3" />
+            </a>
+          </div>
+          <div class="p-4">
           <!-- Compute info + Toolbar on same line -->
           <div class="mb-4 flex flex-wrap items-center gap-3">
             <!-- LEFT: Compute info -->
@@ -770,9 +766,10 @@ const editValueForField = (field: string, value: number): string => {
           </div>
 
           <template v-else>
-            <div class="lg:flex lg:gap-4 lg:items-start">
+            <div class="flex flex-col">
+            <!-- ── Phase Progression first in CP, general ranking second ── -->
             <!-- ── General Ranking Table ── -->
-            <div class="mb-4" :class="effectiveType === 'CP' && sortedPhases.length > 0 ? 'lg:flex-1 lg:min-w-0' : 'w-full'">
+            <div class="mb-4 w-full" :class="effectiveType === 'CP' ? 'order-2' : 'order-1'">
               <h3 class="text-sm font-semibold text-header-700 mb-2">{{ t('rankings.pdf.general') }}</h3>
 
               <!-- Desktop table -->
@@ -1011,7 +1008,7 @@ const editValueForField = (field: string, value: number): string => {
             </div>
 
             <!-- ── Phase Progression (CP only, sorted by niveau ASC) ── -->
-            <div v-if="effectiveType === 'CP' && sortedPhases.length > 0" class="mb-4 lg:flex-1 lg:min-w-0">
+            <div v-if="effectiveType === 'CP' && sortedPhases.length > 0" class="mb-4 w-full order-1">
               <h3 class="text-sm font-semibold text-header-700 mb-2">{{ t('rankings.phases.title') }}</h3>
 
               <div v-for="phase in sortedPhases" :key="phase.idJournee" class="mb-4 border border-header-200 rounded-lg overflow-hidden">
@@ -1259,11 +1256,24 @@ const editValueForField = (field: string, value: number): string => {
             </div><!-- /lg:flex -->
           </template>
         </div>
+        </div><!-- /computed column -->
 
-        <!-- ═══ PUBLISHED TAB ═══ -->
-        <div v-if="activeTab === 'published'" class="p-4">
+        <!-- ═══ RIGHT: PUBLISHED COLUMN ═══ -->
+        <div id="published-ranking" class="flex-1 min-w-0 bg-white rounded-lg shadow">
+          <!-- Column header -->
+          <div class="px-4 py-3 bg-success-700 rounded-t-lg flex items-center justify-between gap-2">
+            <span class="text-sm font-medium text-white">{{ t('rankings.tabs.published') }}</span>
+            <a
+              href="#computed-ranking"
+              class="lg:hidden text-xs text-success-200 hover:text-white flex items-center gap-1"
+            >
+              <UIcon name="heroicons:arrow-up" class="w-3 h-3" />
+              {{ t('rankings.tabs.computed') }}
+            </a>
+          </div>
+          <div class="p-4">
           <!-- Publication info + Toolbar on same line -->
-          <div v-if="canViewComputed" class="mb-4 flex flex-wrap items-center gap-3">
+          <div class="mb-4 flex flex-wrap items-center gap-3">
             <!-- LEFT: Publication info -->
             <div class="p-3 bg-header-50 rounded-lg">
               <template v-if="competitionInfo.datePublication">
@@ -1331,9 +1341,9 @@ const editValueForField = (field: string, value: number): string => {
           <!-- Published ranking content -->
           <template v-if="competitionInfo.datePublication && ranking.length > 0">
 
-            <div class="lg:flex lg:gap-4 lg:items-start">
+            <div class="flex flex-col">
             <!-- Published general ranking table -->
-            <div class="mb-4" :class="effectiveType === 'CP' && sortedPhases.length > 0 ? 'lg:flex-1 lg:min-w-0' : 'w-full'">
+            <div class="mb-4 w-full" :class="effectiveType === 'CP' ? 'order-2' : 'order-1'">
               <h3 class="text-sm font-semibold text-header-700 mb-2">{{ t('rankings.pdf.general') }}</h3>
 
               <!-- Desktop table -->
@@ -1495,7 +1505,7 @@ const editValueForField = (field: string, value: number): string => {
             </div>
 
             <!-- Published phases (CP only, read-only, sorted by niveau ASC) -->
-            <div v-if="effectiveType === 'CP' && sortedPhases.length > 0" class="mb-4 lg:flex-1 lg:min-w-0">
+            <div v-if="effectiveType === 'CP' && sortedPhases.length > 0" class="mb-4 w-full order-1">
               <h3 class="text-sm font-semibold text-header-700 mb-2">{{ t('rankings.phases.title') }}</h3>
 
               <div v-for="phase in sortedPhases" :key="phase.idJournee" class="mb-4 border border-header-200 rounded-lg overflow-hidden">
@@ -1606,6 +1616,113 @@ const editValueForField = (field: string, value: number): string => {
             {{ t('rankings.publish.not_published') }}
           </div>
         </div>
+        </div><!-- /published column -->
+      </div><!-- /two-column layout -->
+
+      <!-- Single published view for non-admin users -->
+      <div v-else class="mb-4 bg-white rounded-lg shadow">
+        <div class="px-4 py-3 bg-success-700 rounded-t-lg">
+          <span class="text-sm font-medium text-white">{{ t('rankings.tabs.published') }}</span>
+        </div>
+        <div class="p-4">
+          <template v-if="competitionInfo.datePublication && ranking.length > 0">
+            <div class="lg:flex lg:gap-4 lg:items-start">
+              <div class="mb-4" :class="effectiveType === 'CP' && sortedPhases.length > 0 ? 'lg:flex-1 lg:min-w-0' : 'w-full'">
+                <div class="hidden lg:block overflow-x-auto rounded-lg">
+                  <table class="min-w-full divide-y divide-header-200 bg-success-100">
+                    <thead>
+                      <tr class="bg-success-200">
+                        <th class="px-2 py-2"/>
+                        <th/>
+                        <th class="px-2 py-2 text-center text-xs font-medium text-header-500 uppercase">{{ t('rankings.table.rank') }}</th>
+                        <th class="px-2 py-2 text-left text-xs font-medium text-header-500 uppercase">{{ t('rankings.table.team') }}</th>
+                        <template v-if="effectiveType === 'CHPT'">
+                          <th class="px-2 py-2 text-center text-xs font-medium text-header-500 uppercase">{{ t('rankings.table.pts') }}</th>
+                          <th class="px-2 py-2 text-center text-xs font-medium text-header-500 uppercase">{{ t('rankings.table.j') }}</th>
+                          <th class="px-2 py-2 text-center text-xs font-medium text-header-500 uppercase">{{ t('rankings.table.g') }}</th>
+                          <th class="px-2 py-2 text-center text-xs font-medium text-header-500 uppercase">{{ t('rankings.table.n') }}</th>
+                          <th class="px-2 py-2 text-center text-xs font-medium text-header-500 uppercase">{{ t('rankings.table.p') }}</th>
+                          <th class="px-2 py-2 text-center text-xs font-medium text-header-500 uppercase">{{ t('rankings.table.f') }}</th>
+                          <th class="px-2 py-2 text-center text-xs font-medium text-header-500 uppercase">{{ t('rankings.table.plus') }}</th>
+                          <th class="px-2 py-2 text-center text-xs font-medium text-header-500 uppercase">{{ t('rankings.table.minus') }}</th>
+                          <th class="px-2 py-2 text-center text-xs font-medium text-header-500 uppercase">{{ t('rankings.table.diff') }}</th>
+                        </template>
+                        <template v-else-if="effectiveType === 'CP'">
+                          <th class="px-2 py-2 text-center text-xs font-medium text-header-500 uppercase">{{ t('rankings.table.j') }}</th>
+                        </template>
+                        <template v-else-if="effectiveType === 'MULTI'">
+                          <th class="px-2 py-2 text-center text-xs font-medium text-header-500 uppercase">{{ t('rankings.table.pts') }}</th>
+                          <th class="px-2 py-2 text-center text-xs font-medium text-header-500 uppercase">{{ t('rankings.table.j') }}</th>
+                        </template>
+                      </tr>
+                    </thead>
+                    <tbody class="divide-y divide-header-200">
+                      <tr v-for="(team, idx) in ranking" :key="team.id" class="hover:bg-header-50">
+                        <td class="px-2 py-1.5">
+                          <img v-if="getLogoUrl(team)" :src="getLogoUrl(team)!" :alt="team.codeClub" class="w-8 h-8 object-contain" @error="($event.target as HTMLImageElement).style.display = 'none'">
+                        </td>
+                        <td class="px-2 py-1.5 text-center text-sm">
+                          <span v-if="getQualifiedStatus(idx, ranking.length) === 'qualified'" class="text-success-500 text-xs">▲</span>
+                          <span v-else-if="getQualifiedStatus(idx, ranking.length) === 'eliminated'" class="text-danger-600 text-xs">▼</span>
+                        </td>
+                        <td class="px-2 py-1.5 text-center text-sm">{{ effectiveType === 'CP' ? team.cltNiveauPubli : team.cltPubli }}</td>
+                        <td class="px-2 py-1.5 text-sm font-medium text-header-900">{{ team.libelle }}</td>
+                        <template v-if="effectiveType === 'CHPT'">
+                          <td class="px-2 py-1.5 text-center text-sm">{{ displayPts(team.ptsPubli) }}</td>
+                          <td class="px-2 py-1.5 text-center text-sm">{{ team.jPubli }}</td>
+                          <td class="px-2 py-1.5 text-center text-sm">{{ team.gPubli }}</td>
+                          <td class="px-2 py-1.5 text-center text-sm">{{ team.nPubli }}</td>
+                          <td class="px-2 py-1.5 text-center text-sm">{{ team.pPubli }}</td>
+                          <td class="px-2 py-1.5 text-center text-sm">{{ team.fPubli }}</td>
+                          <td class="px-2 py-1.5 text-center text-sm">{{ team.plusPubli }}</td>
+                          <td class="px-2 py-1.5 text-center text-sm">{{ team.moinsPubli }}</td>
+                          <td class="px-2 py-1.5 text-center text-sm">{{ team.diffPubli }}</td>
+                        </template>
+                        <template v-else-if="effectiveType === 'CP'">
+                          <td class="px-2 py-1.5 text-center text-sm">{{ team.jPubli }}</td>
+                        </template>
+                        <template v-else-if="effectiveType === 'MULTI'">
+                          <td class="px-2 py-1.5 text-center text-sm">{{ displayPts(team.ptsPubli) }}</td>
+                          <td class="px-2 py-1.5 text-center text-sm">{{ team.jPubli }}</td>
+                        </template>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div class="lg:hidden divide-y divide-header-200">
+                  <div v-for="(team, idx) in ranking" :key="team.id" class="p-3">
+                    <div class="flex items-start gap-2">
+                      <img v-if="getLogoUrl(team)" :src="getLogoUrl(team)!" :alt="team.codeClub" class="w-8 h-8 object-contain mt-0.5" @error="($event.target as HTMLImageElement).style.display = 'none'">
+                      <span v-if="getQualifiedStatus(idx, ranking.length) === 'qualified'" class="text-success-500 text-xs mt-0.5">▲</span>
+                      <span v-else-if="getQualifiedStatus(idx, ranking.length) === 'eliminated'" class="text-danger-600 text-xs mt-0.5">▼</span>
+                      <div class="flex-1 min-w-0">
+                        <div class="font-medium text-header-900">{{ team.libelle }}</div>
+                        <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-header-500 mt-1">
+                          <span>{{ t('rankings.table.rank') }}: {{ effectiveType === 'CP' ? team.cltNiveauPubli : team.cltPubli }}</span>
+                          <template v-if="effectiveType === 'CHPT'">
+                            <span>{{ t('rankings.table.pts') }}: {{ displayPts(team.ptsPubli) }}</span>
+                            <span>{{ t('rankings.table.j') }}: {{ team.jPubli }}</span>
+                            <span>{{ t('rankings.table.diff') }}: {{ team.diffPubli }}</span>
+                          </template>
+                          <template v-else-if="effectiveType === 'CP'">
+                            <span>{{ t('rankings.table.j') }}: {{ team.jPubli }}</span>
+                          </template>
+                          <template v-else-if="effectiveType === 'MULTI'">
+                            <span>{{ t('rankings.table.pts') }}: {{ displayPts(team.ptsPubli) }}</span>
+                            <span>{{ t('rankings.table.j') }}: {{ team.jPubli }}</span>
+                          </template>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </template>
+          <div v-else-if="!competitionInfo?.datePublication" class="p-8 text-center text-header-500">
+            {{ t('rankings.publish.not_published') }}
+          </div>
+        </div>
       </div>
 
     </template>
@@ -1693,7 +1810,7 @@ const editValueForField = (field: string, value: number): string => {
         :style="pdfDropdownStyle"
       >
         <div class="px-4 py-1.5 text-xs text-header-400 font-medium select-none">
-          {{ activeTab === 'computed' ? t('rankings.pdf.computed_label') : t('rankings.pdf.published_label') }}
+          {{ pdfDropdownMode === 'admin' ? t('rankings.pdf.computed_label') : t('rankings.pdf.published_label') }}
         </div>
         <a
           v-if="pdfDropdownMode === 'admin' ? pdfUrls.general?.admin : pdfUrls.general?.public"
@@ -1703,7 +1820,7 @@ const editValueForField = (field: string, value: number): string => {
           @click="pdfDropdownOpen = false"
         >
           <UIcon name="heroicons:document-text" class="w-4 h-4 text-header-400" />
-          {{ activeTab === 'computed' ? t('rankings.pdf.provisional') : t('rankings.pdf.general') }}
+          {{ pdfDropdownMode === 'admin' ? t('rankings.pdf.provisional') : t('rankings.pdf.general') }}
         </a>
         <a
           v-if="pdfDropdownMode === 'admin' ? pdfUrls.progress?.admin : pdfUrls.progress?.public"

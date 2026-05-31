@@ -64,17 +64,15 @@ TODO :
 * ✅ Compétitions : formulaire de création/modification : manque sélection des images (logo, bandeau, sponsor)
 * ✅ Uniformisation header des pages de gestion de compétition
 * ✅ Synthèse d'une compétition (mise en page des logos, décomptes...)
-* Numéro de version dans app2 et app4
-* Verrouillage des présences : vérifier les dates de verrouillage et déverrouillage
-* ⚠️ Matchs : saisie arbitres ? (inline + formulaire)
+* ✅ Numéro de version dans app2 et app4
+* ✅ Verrouillage des présences : vérifier les dates de verrouillage et déverrouillage
+* ✅ Matchs : saisie arbitres ? (inline + formulaire)
 * ✅ gamesday et games : manque toast de confirmation lors d'une modification en ligne.
-* Journées/Phases : autocomplete sur les officiels, etc...
-* ⚠️ Schéma de progression /gamedays/schema : imprimabe en pdf
+* ✅ Schéma de progression /gamedays/schema : imprimabe en pdf
 * ✅ Page/Rubrique TV (Tv control panel)
 * ✅ Recherche/Copie système de jeu : Spécifié dans DOC/specs/PAGE_COPIE_COMPETITION.md
-* Journées/Phases : 
-  * copier les officiels et les paramètres du calendrier public depuis une phase sur toutes les autres phases de la compétition (type CP) (depuis le formulaire ? depuis une action sur la liste ? )
-  * Générer la feuille de jury d'appel à partir des officiels de la compétition, avec possibilité de modifier les données avant impression
+* ✅ Journées/Phases : copier les officiels et les paramètres du calendrier public depuis une phase sur toutes les autres phases de la compétition (type CP) (depuis le formulaire ? depuis une action sur la liste ? )
+* ✅ Journées/Phases : Générer la feuille de jury d'appel à partir des officiels de la compétition, avec possibilité de modifier les données avant impression
 * ✅ App2 : masquer la progression pout les compétitions en attente. 
 * ✅ dans opérations : pouvoir déclencher les cron d'import PCE et de verrou présences manuellement, en plus de leur exécution automatique programmée.
 - Reproduire les pdf en stateless ?
@@ -102,20 +100,18 @@ TODO :
 - ✅ games : changement de focus avec la tabulation : date -> heure -> terrain -> code match
 - ✅ bouton Recharger (à gauche de Documents) pour recharger les données du match dans l'odre choisi après des modifications en ligne (date, heure, terrain, code match)
 - ✅ page clubs, j'ai un 404 sur certains clubs, peut-être lié au fait qu'ils ne sont pas localisés ?
-- "Faire confiance à cet appareil" ? (trouver une solution pour conserver la session active sur app4 sans avoir à se reconnecter à chaque fois, tout en assurant la sécurité de l'application)
-- ⚠️ Import/Export événements en json : vérifier la prise en compte des dernières migrations de la structure des données depuis la création de cette fonctionnalité.
+- ✅ "Faire confiance à cet appareil" ? (trouver une solution pour conserver la session active sur app4 sans avoir à se reconnecter à chaque fois, tout en assurant la sécurité de l'application)
+- ✅ Import/Export événements en json : vérifier la prise en compte des dernières migrations de la structure des données depuis la création de cette fonctionnalité.
 - ✅ Contexte de travail : à la sélection d'un périmètre, ouvrir le select correspondant.
-- Créer pages d'administration (profil 1) pour les comités départementaux / pays
 - ✅ PdfListeMatchs4TerrainsEn2.php?S=2026&tz=Europe%2FParis&idEvenement=239 je voudrais une version avec 5 terrains (au lieu de 4)
 - ✅ Import PCE : manquant dans Opérations, doit être exécutable par cron
 - ✅ Verrou présences : manquant dans Opérations, doit être exécutable par cron
 - ✅ Vérifier l'envoi de mail des cron et autres alertes (antispam de Hostinger ?)
-- ⚠️ Manque actions Affect Auto et Annul Auto dans la gestion des matchs
-- api legacy encore utilisée ?
+- ✅ Manque actions Affect Auto et Annul Auto dans la gestion des matchs
 - ✅ Matomo sur app2 et app4
 - ✅ Teams : inverser les colonnes Games & Players
 - ✅ App2 : refresh automatique des données toutes les 5 minutes lorsque la page est active (pages games, charts, team) en plus du refresh manuel, ou lors de la réactivation de la page lorsque ça fait plus de 5 minutes que la page est inactive.
-- depuis la modification des couleurs dans draw progression en dev, je n'ai plus le bouton login sur app4, même en prod, je suppose que c'est lié, à vérifier et corriger si c'est le cas.
+- ✅ depuis la modification des couleurs dans draw progression en dev, je n'ai plus le bouton login sur app4, même en prod, je suppose que c'est lié, à vérifier et corriger si c'est le cas.
 - ✅ Ajout de joueur, lors de la recherche d'un joueur, si aucune réponse ne convient, il faut pouvoir transférer la saisie du champ de recherche vers le champ de création du joueur pour éviter d'avoir à ressaisir les informations du joueur à créer.
 - ✅ dans la recherche, afficher également le numéro icf dans les résultats
 - ✅ dans la recherche du formulaire ajout de joueur, permettre optionnellement de filtrer par club.
@@ -123,26 +119,29 @@ TODO :
 - ✅ Teams: Init titulaires action : HS ! + Ajouter le décompte des matchs concernés.
 - ✅ Presence/team : bouton Init titulaires (profil <= 6)
 - ✅ changer le contexte de travail depuis les stats
-- FMV3 : départ du timeshoot manuel et pas en même temps que le chrono + Bouton Pause.
 - ✅ App2 : pas d'équipe non affectée (1st Group A, etc.) dans le dropdown team de la page Team
 - ✅ Activer Admin2 dans le menu legacy pour le profil 2
 - ✅ outils de contrôle de planification : pouvoir vérifier dans app4 l'enchainement des matchs et arbitrages
 - ✅ Ajouter les placeholders (Team A, Team B, 1st Group A, etc.) dans le contrôle de plannification pour les matchs non encore affectés, et les faire apparaître dans le dropdown de sélection d'équipe dans app4 pour éviter les confusions et faciliter la planification.) 
-- Scénarios TV : bouton Tester => Contrôle doit ouvrir le scénario dans une nouvelle fenêtre.
-- TV : langue FR n'est pas prise en compte.
-- Feat: Jury d'appel : 3 représentants des athlètes.
-- Ouverture FMV2 et FMV3 depuis app4 : ouvrir dans une fenêtre identique si déjà ouverte.
 - ✅ Games : le filtre date, une fois actif sur une date, ne propose plus les autres dates dans le dropdown.
 - ✅ Classement calculé et publié, progression : dans l'ordre inverse.
 - ✅ Games : filtre Matchs non verrouillés : le décompte des matchs n'est pas mis à jour en fonction de ce filtre, il affiche le nombre total de matchs, pas le nombre de matchs non verrouillés. + remplacer Total par Filtré : X matchs (ou indiquer les deux si l'information est disponible.)
-- ⚠️ Ajouter un flag Dev / Préprod bien visible en dessous de Admin dans le header pour éviter les confusions et les erreurs de manipulation entre les différentes environnements.
-- Empêcher l'import d'événement en prod sans double confirmation, par exemple en demandant de saisir le nom de l'environnement pour confirmer l'import, ou en ajoutant une étape de validation supplémentaire dans le processus d'importation.
-- ⚠️
+- ✅ Ajouter un flag Dev / Préprod bien visible en dessous de Admin dans le header pour éviter les confusions et les erreurs de manipulation entre les différentes environnements.
 - ✅ Affectation auto : ne fonctionne pas partiellement (si les équipes sont connues mais pas les arbitres, ou inversement, l'affectation ne se fait pas du tout, alors que ça devrait au moins affecter les éléments connus)
 - ✅ Modification en ligne des arbitres, permettre la saisie directe même en l'absence de valeur correspondante dans l'autocomplete.
+- ✅ Games : pas d'édition de planning ni de match tant qu'un événement ou une compétition n'est pas sélectionné (pas de match affiché : Sélectionnez un événement, un groupe ou une compétition pour afficher les matchs)
+- ✅ Evénements : bouton Editer à gauche, ajouter une colonne Nb journées/phases entre le bouton associer et le bouton supprimer
+- ✅ revoir l'articulation des pages ranking (bug export pdf public, etc.)
+- Scénarios TV : bouton Tester => Contrôle doit ouvrir le scénario dans une nouvelle fenêtre.
+- TV : langue FR n'est pas prise en compte.
+- QRcode événement comme nouvel affichage TV !
+- Empêcher l'import d'événement en prod sans double confirmation, par exemple en demandant de saisir le nom de l'environnement pour confirmer l'import, ou en ajoutant une étape de validation supplémentaire dans le processus d'importation.
+- Feat: Jury d'appel : 3 représentants des athlètes.
+- Ouverture FMV2 et FMV3 depuis app4 : ouvrir dans une fenêtre identique si déjà ouverte.
+- FMV3 : départ du timeshoot manuel et pas en même temps que le chrono + Bouton Pause.
 - Games : Action : imprimer un programme des matchs cochés uniquement
 - Feuille de marque : Yc est devenu Pld.
-- ✅ Games : pas d'édition de planning ni de match tant qu'un événement ou une compétition n'est pas sélectionné (pas de match affiché : Sélectionnez un événement, un groupe ou une compétition pour afficher les matchs)
-- QRcode événement comme nouvel affichage TV !
-- ✅ Evénements : bouton Editer à gauche, ajouter une colonne Nb journées/phases entre le bouton associer et le bouton supprimer
-- revoir l'articulation des pages ranking (bug export pdf public, etc.)
+- Créer pages d'administration (profil 1) pour les comités départementaux / pays
+* Journées/Phases : autocomplete sur les officiels, etc...
+- api legacy encore utilisée ?
+- ⚠️
