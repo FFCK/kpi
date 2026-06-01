@@ -818,11 +818,11 @@ class FeuilleMatch extends MyPage
 
             $pdf->SetFont('Arial', '', 8);
             $pdf->SetFillColor(170, 255, 170);
-            $pdf->Cell(5, 5, $lang['V'], 1, 0, 'C', 1);
+            $pdf->Cell(5, 5, $lang['C_V'], 1, 0, 'C', 1);
             $pdf->SetFillColor(255, 255, 170);
-            $pdf->Cell(5, 5, $lang['J'], 1, 0, 'C', 1);
+            $pdf->Cell(5, 5, $lang['C_J'], 1, 0, 'C', 1);
             $pdf->SetFillColor(255, 170, 170);
-            $pdf->Cell(5, 5, $lang['R'], 1, 0, 'C', 1);
+            $pdf->Cell(5, 5, $lang['C_R'], 1, 0, 'C', 1);
             $pdf->Cell(36, 5, $lang['Num'] . " (" . $lang['Motif_carton'] . ")", 1, 0, 'C');
             $pdf->Cell(6, 5, $lang['But'], 1, 0, 'C');
             $pdf->Cell(1, 5, "", 0, 0, 'C');
@@ -831,11 +831,11 @@ class FeuilleMatch extends MyPage
             $pdf->Cell(6, 5, $lang['But'], 1, 0, 'C');
             $pdf->Cell(36, 5, $lang['Num'] . " (" . $lang['Motif_carton'] . ")", 1, 0, 'C');
             $pdf->SetFillColor(170, 255, 170);
-            $pdf->Cell(5, 5, $lang['V'], 1, 0, 'C', 1);
+            $pdf->Cell(5, 5, $lang['C_V'], 1, 0, 'C', 1);
             $pdf->SetFillColor(255, 255, 170);
-            $pdf->Cell(5, 5, $lang['J'], 1, 0, 'C', 1);
+            $pdf->Cell(5, 5, $lang['C_J'], 1, 0, 'C', 1);
             $pdf->SetFillColor(255, 170, 170);
-            $pdf->Cell(5, 5, $lang['R'], 1, 1, 'C', 1);
+            $pdf->Cell(5, 5, $lang['C_R'], 1, 1, 'C', 1);
 
             for ($i = 0; $i < 26; $i++) {
                 $pdf->SetFillColor(170, 255, 170);
