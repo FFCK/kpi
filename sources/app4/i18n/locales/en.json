@@ -2329,6 +2329,11 @@
       "shotclock": "Shot clock"
     },
     "scoreboard": "Scoreboard",
-    "locked": "Match locked — read only"
+    "locked": "Match locked — read only",
+    "field": "Field",
+    "history": "Event history",
+    "not_found": "Match not found",
+    "select_player_first": "Select a player first",
+    "no_access": "Restricted access (experimentation phase)"
   }
 }

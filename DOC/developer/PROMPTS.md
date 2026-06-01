@@ -144,6 +144,9 @@ TODO :
 - Games : Action : imprimer un programme des matchs cochés uniquement
 - Créer pages d'administration (profil 1) pour les comités départementaux / pays
 - Journées/Phases : autocomplete sur les officiels, etc...
+- Reprise de compo d'une compétition ou d'une saison à l'autre : reprendre les noms et prénoms depuis la base des licenciés.
+- Prévoir la mise à jour des identités des joueurs dans les compo ou les matchs depuis la base des licenciés.
 - Revoir le système des incrustations ?
 - api legacy encore utilisée ?
+- Stat participation à 50% des matchs de la saison régulière (déjà existant ?).
 - ⚠️

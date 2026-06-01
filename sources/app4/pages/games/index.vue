@@ -145,6 +145,9 @@ const tzParam = encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZ
 // ─── Permissions ───
 const canEdit = computed(() => authStore.profile <= 6)
 const canEditScores = computed(() => authStore.profile <= 6 || authStore.profile === 9)
+// Scoring console (new in-app match console). Experimentation phase: profile <= 2 only.
+// V2/V3 links are kept alongside until the Scoring feature is validated. See DOC/specs/PAGE_SCORING.md.
+const canScoring = computed(() => authStore.profile <= 2)
 const canLock = computed(() => authStore.profile <= 6)
 const canSelect = computed(() => authStore.profile <= 6)
 const showPublicationColumn = computed(() => authStore.profile !== 7)
@@ -1422,6 +1425,9 @@ const openScoresheet = (gameId: number, version: 2 | 3) => {
     : `${legacyBase.value}/admin/FeuilleMarque3.php?idMatch=${gameId}`
   window.open(url, `fmv${version}`)
 }
+
+// ─── Scoring console (new in-app match console) ───
+const openScoring = (gameId: number) => navigateTo(`/games/${gameId}/scoring`)
 </script>
 
 <template>
@@ -2101,6 +2107,11 @@ const openScoresheet = (gameId: number, version: 2 | 3) => {
                     <UIcon name="heroicons:device-tablet" class="w-6 h-6" />
                     <br>
                     <span class="text-xs text-header-700">V3</span>
+                  </button>
+                  <button v-if="canScoring && g.authorized" :title="t('scoring.link_title')" class="p-0.5 text-emerald-500 hover:text-emerald-700" @click.stop="openScoring(g.id)">
+                    <UIcon name="heroicons:bolt" class="w-6 h-6" />
+                    <br>
+                    <span class="text-xs text-header-700">{{ t('scoring.link') }}</span>
                   </button>
                 </div>
               </td>
@@ -2822,6 +2833,10 @@ const openScoresheet = (gameId: number, version: 2 | 3) => {
           <button v-if="canEdit && authStore.profile <= 2 && g.authorized" class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-purple-600 hover:text-purple-800" @click="openScoresheet(g.id, 3)">
             <UIcon name="heroicons:device-tablet" class="w-4 h-4" />
             v3
+          </button>
+          <button v-if="canScoring && g.authorized" class="inline-flex items-center gap-1 px-2 py-1 text-xs font-medium text-emerald-600 hover:text-emerald-800" @click="openScoring(g.id)">
+            <UIcon name="heroicons:bolt" class="w-4 h-4" />
+            {{ t('scoring.link') }}
           </button>
           <AdminActionButton v-if="isDeletable(g)" variant="danger" icon="heroicons:trash" @click="openDeleteConfirm(g)">
             {{ t('common.delete') }}

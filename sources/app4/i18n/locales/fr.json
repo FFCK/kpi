@@ -2342,6 +2342,11 @@
       "shotclock": "Time-shoot"
     },
     "scoreboard": "Tableau d'affichage",
-    "locked": "Match verrouillé — lecture seule"
+    "locked": "Match verrouillé — lecture seule",
+    "field": "Terrain",
+    "history": "Historique des événements",
+    "not_found": "Match introuvable",
+    "select_player_first": "Sélectionnez d'abord un joueur",
+    "no_access": "Accès réservé (phase d'expérimentation)"
   }
 }
