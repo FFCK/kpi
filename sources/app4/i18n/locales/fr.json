@@ -2310,5 +2310,38 @@
     "errors": {
       "missing_fields": "Événement, date et heure sont obligatoires"
     }
+  },
+  "scoring": {
+    "title": "Scoring",
+    "link": "Scoring",
+    "link_title": "Scoring en ligne",
+    "hardware": "Scoring matériel",
+    "status": {
+      "ATT": "En attente",
+      "ON": "En cours",
+      "END": "Terminé"
+    },
+    "period": {
+      "M1": "1ère mi-temps",
+      "M2": "2ème mi-temps",
+      "P1": "Prolongation 1",
+      "P2": "Prolongation 2",
+      "TB": "Tir au but"
+    },
+    "event": {
+      "goal": "But",
+      "card_green": "Carton vert",
+      "card_yellow": "Carton jaune",
+      "card_red": "Carton rouge",
+      "card_red_def": "Carton rouge définitif"
+    },
+    "timer": {
+      "start": "Démarrer",
+      "pause": "Pause",
+      "reset": "Réinitialiser",
+      "shotclock": "Time-shoot"
+    },
+    "scoreboard": "Tableau d'affichage",
+    "locked": "Match verrouillé — lecture seule"
   }
 }

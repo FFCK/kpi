@@ -2297,5 +2297,38 @@
     "errors": {
       "missing_fields": "Event, date and time are required"
     }
+  },
+  "scoring": {
+    "title": "Scoring",
+    "link": "Scoring",
+    "link_title": "Online scoring",
+    "hardware": "Hardware scoring",
+    "status": {
+      "ATT": "Pending",
+      "ON": "Live",
+      "END": "Finished"
+    },
+    "period": {
+      "M1": "1st half",
+      "M2": "2nd half",
+      "P1": "Overtime 1",
+      "P2": "Overtime 2",
+      "TB": "Penalty shootout"
+    },
+    "event": {
+      "goal": "Goal",
+      "card_green": "Green card",
+      "card_yellow": "Yellow card",
+      "card_red": "Red card",
+      "card_red_def": "Red card (final)"
+    },
+    "timer": {
+      "start": "Start",
+      "pause": "Pause",
+      "reset": "Reset",
+      "shotclock": "Shot clock"
+    },
+    "scoreboard": "Scoreboard",
+    "locked": "Match locked — read only"
   }
 }
