@@ -35,10 +35,33 @@ const selected = ref<{ team: TeamSide; player: ScoringPlayer } | null>(null)
 const match = computed(() => scoringStore.match)
 const loading = computed(() => scoringStore.loading)
 
+// ─── Game clock (easytimer) ───
+const { display: clockDisplay, gameTime, elapsed, isRunning, setPeriod: timerSetPeriod, start: timerStart, stop: timerStop, reset: timerReset, restoreFromServer } =
+  useTimer({
+    onTargetReached: () => {
+      // Buzzer at period end; persist the stop server-side
+      void scoringStore.setTimer('stop', { startTime: elapsed.value, runTime: 0, maxTime: scoringStore.currentPeriodDuration })
+    }
+  })
+
 onMounted(async () => {
   if (!canView.value) return
   try {
     await scoringStore.load(matchId.value)
+    // Restore the clock from kp_chrono if a state was persisted, else start fresh.
+    const state = await scoringStore.loadTimerState()
+    if (state && state.action) {
+      restoreFromServer({
+        action: state.action,
+        maxTime: state.maxTime || scoringStore.currentPeriodDuration,
+        // We persist the elapsed seconds in start_time (see store.setTimer)
+        elapsed: state.startTime ?? 0,
+        startTimeServer: state.startTimeServer ?? undefined,
+        nowServer: state.nowServer
+      })
+    } else {
+      timerSetPeriod(scoringStore.currentPeriodDuration)
+    }
   } catch {
     // useApi already shows a toast
   }
@@ -48,8 +71,6 @@ const selectPlayer = (team: TeamSide, player: ScoringPlayer) => {
   if (!canScore.value) return
   selected.value = { team, player }
 }
-
-const currentGameTime = () => '00:00' // Phase 2: live timer value
 
 const addEvent = async (code: ScoringEventCode) => {
   if (!canScore.value || !match.value) return
@@ -61,7 +82,7 @@ const addEvent = async (code: ScoringEventCode) => {
   const event: ScoringEvent = {
     code,
     period: (match.value.periode ?? 'M1') as Period,
-    tpsJeu: currentGameTime(),
+    tpsJeu: gameTime.value, // current game clock
     team,
     player: String(player.matric),
     number: player.numero,
@@ -73,12 +94,31 @@ const addEvent = async (code: ScoringEventCode) => {
   } catch { /* toast handled */ }
 }
 
-const setPeriod = (p: Period) => { if (canScore.value) scoringStore.setPeriod(p) }
+const setPeriod = (p: Period) => {
+  if (!canScore.value) return
+  scoringStore.setPeriod(p)
+  // Reconfigure the clock to the new period duration (fresh countdown)
+  timerSetPeriod(scoringStore.periodDurations[p])
+}
 const setStatus = (s: MatchStatus) => { if (canScore.value) scoringStore.setStatus(s) }
 
+// ─── Timer controls (UI + server persistence to kp_chrono) ───
 const timer = (action: 'run' | 'stop' | 'RAZ') => {
   if (!canScore.value) return
-  scoringStore.setTimer(action, { startTime: 0, runTime: scoringStore.currentPeriodDuration, maxTime: scoringStore.currentPeriodDuration })
+  const maxTime = scoringStore.currentPeriodDuration
+  if (action === 'run') {
+    timerStart()
+  } else if (action === 'stop') {
+    timerStop()
+  } else {
+    timerReset()
+  }
+  // Persist: elapsed seconds in the current period + period duration
+  void scoringStore.setTimer(action, {
+    startTime: action === 'RAZ' ? 0 : elapsed.value,
+    runTime: 0,
+    maxTime
+  })
 }
 
 const toggleLock = async () => {
@@ -132,6 +172,16 @@ const toggleLock = async () => {
         </div>
         <div class="text-left flex-1">
           <div class="font-semibold">{{ match.equipeB }}</div>
+        </div>
+      </div>
+
+      <!-- Game clock -->
+      <div class="flex items-center justify-center">
+        <div
+          class="text-5xl font-mono font-bold tabular-nums px-6 py-2 rounded-lg"
+          :class="isRunning ? 'text-success-600' : 'text-header-700'"
+        >
+          {{ clockDisplay }}
         </div>
       </div>
 

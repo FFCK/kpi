@@ -145,9 +145,13 @@ const tzParam = encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZ
 // ─── Permissions ───
 const canEdit = computed(() => authStore.profile <= 6)
 const canEditScores = computed(() => authStore.profile <= 6 || authStore.profile === 9)
-// Scoring console (new in-app match console). Experimentation phase: profile <= 2 only.
-// V2/V3 links are kept alongside until the Scoring feature is validated. See DOC/specs/PAGE_SCORING.md.
-const canScoring = computed(() => authStore.profile <= 2)
+// Scoring console (new in-app match console).
+// DEV-ONLY restriction: during development the Scoring button is visible to a single
+// user (login 42054). Remove SCORING_DEV_USER and revert to `authStore.profile <= 2`
+// once the feature opens to the bureau. See DOC/specs/PAGE_SCORING.md.
+// V2/V3 links are kept alongside until the Scoring feature is validated.
+const SCORING_DEV_USER = '42054'
+const canScoring = computed(() => authStore.user?.id === SCORING_DEV_USER && authStore.profile <= 2)
 const canLock = computed(() => authStore.profile <= 6)
 const canSelect = computed(() => authStore.profile <= 6)
 const showPublicationColumn = computed(() => authStore.profile !== 7)
@@ -1427,7 +1431,13 @@ const openScoresheet = (gameId: number, version: 2 | 3) => {
 }
 
 // ─── Scoring console (new in-app match console) ───
-const openScoring = (gameId: number) => navigateTo(`/games/${gameId}/scoring`)
+// Open in a new tab. router.resolve() prepends the app base path (/admin2),
+// so the new tab targets the correct URL. Reuse a per-match tab name to avoid duplicates.
+// (reuses the `router` already declared above)
+const openScoring = (gameId: number) => {
+  const { href } = router.resolve(`/games/${gameId}/scoring`)
+  window.open(href, `scoring_${gameId}`)
+}
 </script>
 
 <template>

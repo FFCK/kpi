@@ -163,6 +163,11 @@ Port de `app3/stores/matchStore.ts`, en :
 
 - Nouveau `composables/useScoringPermissions.ts`, miroir de `usePresencePermissions`,
   signature `(isLocked: Ref<boolean>)`.
+- **Restriction DEV-ONLY (en cours de développement)** : le bouton « Scoring » dans /games
+  n'est visible que pour **le seul login `42054`** (constante `SCORING_DEV_USER` dans
+  `pages/games/index.vue` : `canScoring = authStore.user?.id === '42054' && profile <= 2`).
+  C'est un **masquage UI uniquement** (choix assumé : pas de restriction par login côté serveur).
+  À retirer pour revenir à `profile <= 2` quand la fonctionnalité s'ouvre au bureau.
 - **Accès restreint au profil ≤ 2 pour l'instant** (phase d'expérimentation : réservé aux
   admins/bureau, pas encore ouvert au profil 9 « Table de marque »). Cohérent avec le bouton V3
   existant déjà gaté `profile <= 2` dans la vue carte. Seuils :
@@ -329,10 +334,40 @@ artefacts `.*-RANDOM`. À garder en tête si d'autres installs échouent.
 autres routes protégées) ; ESLint OK sur tous les fichiers Scoring ; aucune erreur dans les
 logs du dev server.
 
+**Chrono temps réel ✅ (terminé) :**
+
+| Fichier | Détail |
+|---|---|
+| `composables/useTimer.ts` | **Créé.** Wrapper Vue réactif autour d'easytimer.js. Countdown du temps de jeu, précision `secondTenths`. Expose `display` (MM:SS.d), `gameTime` (MM:SS, pour horodater les événements), `elapsed`, `isRunning`, et `setPeriod` / `start` / `stop` / `reset` / `restoreFromServer`. Buzzer/stop auto sur `targetAchieved`. |
+| `src/Controller/ScoringController.php` | **Ajout** `GET /admin/scoring/gameTimer/{matchId}` : renvoie l'état persisté de `kp_chrono` (action, start_time, start_time_server, run_time, max_time) + `nowServer` (heure serveur en s % 86400) pour le calcul de restauration. |
+| `stores/scoringStore.ts` | **Ajout** `loadTimerState()`. `setTimer` persiste `startTime = elapsed` (secondes écoulées dans la période) + `maxTime`. |
+| `pages/games/[id]/scoring.vue` | Affichage live du chrono (vert si running) ; `onMounted` appelle `loadTimerState()` → `restoreFromServer()` si un état existe, sinon `setPeriod()` ; les événements sont horodatés via `gameTime` ; changement de période reconfigure le countdown. |
+
+**Modèle de chrono retenu** (plus simple que l'encodage fm3) : `max_time` = durée période,
+`start_time` = secondes écoulées au dernier run/stop, `start_time_server` = heure serveur du
+dernier run. Restauration : si `action='run'`, `realElapsed = elapsed + (nowServer − startTimeServer)`
+(gère le passage de minuit).
+
+**Vérifié** (test DB de bout en bout, match #127) : état `run` inséré (elapsed=120s, démarré
+il y a 30s, période 600s) → lecture `kp_chrono` correcte → calcul de restauration
+`realElapsed = 150s`, **remaining = 450s → 07:30**. État de test nettoyé. Bug corrigé au
+passage : mauvais namespace `IsGranted` (`Bundle\SecurityBundle` → `Component\Security\Http`,
+signalé par l'IDE).
+
+**Scoping par mandat ✅ (terminé) :**
+
+`ScoringController` — méthode privée `assertMatchAuthorized(int $matchId)` (miroir de
+`AdminGamesController::assertJourneeAuthorized`) : résout la journée du match et vérifie
+`User::getAllowedJournees()` (null = accès total ; sinon la journée doit être dans la liste du
+mandat actif, déjà résolu depuis `X-Active-Mandate` par la couche auth). Appelée en tête de
+**tous** les endpoints : gameParam, gameEvent, playerStatus, gameTimer (GET+PUT), stats
+(via `$data->game`). Retourne 404 si match inconnu, 403 si hors périmètre.
+
+**Vérifié** : `PUT/GET /admin/scoring/...` sans token → **401** (auth JWT avant scoping). Le
+scoping 403 ne s'évalue que pour un utilisateur authentifié hors de son périmètre.
+
 **Reste à faire en Phase 1** (avant de clore le MVP) :
-- Chrono visuel temps réel côté UI (easytimer.js) — actuellement `tpsJeu` figé à `00:00`.
-- Scoping par mandat dans `ScoringController` (restreindre aux matchs du mandat actif via
-  `allowedJournees`, comme `AdminGamesController`).
-- Test fonctionnel complet authentifié (profil ≤ 2) : saisie réelle + vérification base
-  (`kp_match`, `kp_match_detail`, `kp_chrono`) + restauration du chrono au rechargement.
+- Test fonctionnel complet **authentifié** (profil ≤ 2) via l'UI : saisie réelle + vérification
+  base + restauration visuelle du chrono au rechargement + vérif 403 hors mandat.
 - Motifs de cartons (modal) et statut joueur (capitaine/coach) depuis la console.
+- Shotclock (time-shoot) + diffusion broadcast → relève de la Phase 2.

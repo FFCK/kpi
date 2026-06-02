@@ -149,4 +149,6 @@ TODO :
 - Revoir le système des incrustations ?
 - api legacy encore utilisée ?
 - Stat participation à 50% des matchs de la saison régulière (déjà existant ?).
+- Verrouillage compets : vérouiller un jour plus tôt, et plus tôt dans la nuit.
+- clubs/team/<teamId> : ajouter le code compétition entre la saison et la compétition, le classement final (CHPT ou CP ou MULTI) de l'équipe à la place de la colonne Equipe.
 - ⚠️

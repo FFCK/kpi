@@ -2,12 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Attributes as OA;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\SecurityBundle\Attribute\IsGranted;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 /**
@@ -29,6 +31,34 @@ class ScoringController extends AbstractController
     public function __construct(
         private EntityManagerInterface $entityManager
     ) {
+    }
+
+    /**
+     * Returns a 403/404 JsonResponse if the current mandate is not allowed to score this match,
+     * else null. Scope = the match's journée must be within the user's allowed journées
+     * (X-Active-Mandate is already resolved into the User by the auth layer). Mirrors
+     * AdminGamesController::assertJourneeAuthorized.
+     */
+    private function assertMatchAuthorized(int $matchId): ?JsonResponse
+    {
+        $conn = $this->entityManager->getConnection();
+        $journeeId = $conn->fetchOne(
+            "SELECT Id_journee FROM kp_match WHERE Id = ?",
+            [$matchId]
+        );
+
+        if ($journeeId === false) {
+            return new JsonResponse(['error' => 'Match not found'], Response::HTTP_NOT_FOUND);
+        }
+
+        /** @var User|null $user */
+        $user = $this->getUser();
+        $allowed = $user?->getAllowedJournees();
+        if ($allowed !== null && !in_array((int) $journeeId, $allowed, true)) {
+            return new JsonResponse(['error' => 'Access denied for this match'], Response::HTTP_FORBIDDEN);
+        }
+
+        return null;
     }
 
     #[Route('/gameParam/{matchId}', name: 'game_param', methods: ['PUT'])]
@@ -58,6 +88,8 @@ class ScoringController extends AbstractController
     )]
     public function putGameParam(int $matchId, Request $request): JsonResponse
     {
+        if ($err = $this->assertMatchAuthorized($matchId)) return $err;
+
         $data = json_decode($request->getContent());
 
         if (!in_array($data->param ?? '', ['Statut', 'Periode', 'ScoreA', 'ScoreB', 'ScoreDetailA', 'ScoreDetailB', 'Heure_fin'])) {
@@ -91,6 +123,8 @@ class ScoringController extends AbstractController
     )]
     public function putGameEvent(int $matchId, Request $request): JsonResponse
     {
+        if ($err = $this->assertMatchAuthorized($matchId)) return $err;
+
         $data = json_decode($request->getContent());
         $conn = $this->entityManager->getConnection();
 
@@ -142,6 +176,8 @@ class ScoringController extends AbstractController
     )]
     public function putPlayerStatus(int $matchId, Request $request): JsonResponse
     {
+        if ($err = $this->assertMatchAuthorized($matchId)) return $err;
+
         $data = json_decode($request->getContent());
         $conn = $this->entityManager->getConnection();
 
@@ -169,6 +205,43 @@ class ScoringController extends AbstractController
         return new JsonResponse(['error' => 'Invalid parameters'], 400);
     }
 
+    #[Route('/gameTimer/{matchId}', name: 'game_timer_get', methods: ['GET'])]
+    #[OA\Get(
+        path: '/admin/scoring/gameTimer/{matchId}',
+        summary: 'Read persisted timer state (for clock restore on reload)',
+        tags: ['6. Scoring'],
+        responses: [
+            new OA\Response(response: 200, description: 'Timer state (null action if none)')
+        ]
+    )]
+    public function getGameTimer(int $matchId): JsonResponse
+    {
+        if ($err = $this->assertMatchAuthorized($matchId)) return $err;
+
+        $conn = $this->entityManager->getConnection();
+        $row = $conn->fetchAssociative(
+            "SELECT `action`, start_time, start_time_server, run_time, max_time
+             FROM kp_chrono WHERE IdMatch = ?",
+            [$matchId]
+        );
+
+        // Server time in seconds since midnight (same basis as start_time_server)
+        $nowServer = time() % 86400;
+
+        if (!$row) {
+            return new JsonResponse(['action' => null, 'nowServer' => $nowServer]);
+        }
+
+        return new JsonResponse([
+            'action' => $row['action'],
+            'startTime' => (int) $row['start_time'],
+            'startTimeServer' => $row['start_time_server'] !== null ? (int) $row['start_time_server'] : null,
+            'runTime' => (int) $row['run_time'],
+            'maxTime' => (int) $row['max_time'],
+            'nowServer' => $nowServer,
+        ]);
+    }
+
     #[Route('/gameTimer/{matchId}', name: 'game_timer', methods: ['PUT'])]
     #[OA\Put(
         path: '/admin/scoring/gameTimer/{matchId}',
@@ -182,6 +255,8 @@ class ScoringController extends AbstractController
     )]
     public function putGameTimer(int $matchId, Request $request): JsonResponse
     {
+        if ($err = $this->assertMatchAuthorized($matchId)) return $err;
+
         $data = json_decode($request->getContent());
         $conn = $this->entityManager->getConnection();
 
@@ -233,11 +308,14 @@ class ScoringController extends AbstractController
     public function putStats(Request $request): JsonResponse
     {
         $data = json_decode($request->getContent());
-        $conn = $this->entityManager->getConnection();
 
         if (!in_array($data->action ?? '', ['pass', 'possession', 'kickoff', 'kickoff-ko', 'shot-in', 'shot-out', 'shot-stop'])) {
             return new JsonResponse(['error' => 'Invalid action'], 401);
         }
+
+        if ($err = $this->assertMatchAuthorized((int) ($data->game ?? 0))) return $err;
+
+        $conn = $this->entityManager->getConnection();
 
         $sql = "SELECT COUNT(Id) FROM kp_match WHERE Id = ? AND Validation != 'O'";
         $count = $conn->fetchOne($sql, [$data->game]);

@@ -214,6 +214,20 @@ export const useScoringStore = defineStore('scoring', {
       }
     },
 
+    /** Read the persisted timer state (for clock restore on reload) */
+    async loadTimerState(apiInstance?: ReturnType<typeof useApi>) {
+      if (!this.match) return null
+      const api = apiInstance ?? useApi()
+      return api.get<{
+        action: 'run' | 'stop' | null
+        startTime?: number
+        startTimeServer?: number | null
+        runTime?: number
+        maxTime?: number
+        nowServer: number
+      }>(`/admin/scoring/gameTimer/${this.match.id}`)
+    },
+
     /** Control the match timer (run/stop/RAZ) — persisted to kp_chrono */
     async setTimer(
       action: 'run' | 'stop' | 'RAZ',

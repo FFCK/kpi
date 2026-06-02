@@ -47,7 +47,17 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
 
   devServer: {
+    host: '0.0.0.0',
     port: 3004
+  },
+
+  // Pre-bundle CJS deps at startup so they are not discovered late (which forces a
+  // dep re-optimization + full reload and can leave the browser requesting a stale
+  // chunk hash). easytimer.js is UMD/CJS and used by the Scoring console.
+  vite: {
+    optimizeDeps: {
+      include: ['easytimer.js']
+    }
   },
 
   modules: [
