@@ -1134,35 +1134,41 @@ class AdminGamesController extends AbstractController
         }
 
         $data = json_decode($request->getContent(), true);
-        $ids = array_filter(array_map('intval', $data['ids'] ?? []), fn($id) => $id > 0);
+        // Preserve the received order: it reflects the user's on-screen sort and
+        // determines the sequence the new numbers are assigned in.
+        $orderedIds = array_values(array_filter(array_map('intval', $data['ids'] ?? []), fn($id) => $id > 0));
         $startNumber = (int) ($data['startNumber'] ?? 1);
 
-        if (empty($ids)) {
+        if (empty($orderedIds)) {
             return $this->json(['message' => 'No IDs provided'], Response::HTTP_BAD_REQUEST);
         }
 
-        $ids = $this->filterAuthorizedMatchIds(array_values($ids), $user);
-        if (empty($ids)) {
+        $authorized = $this->filterAuthorizedMatchIds($orderedIds, $user);
+        if (empty($authorized)) {
             return $this->json(['message' => 'No authorized games in selection'], Response::HTTP_FORBIDDEN);
         }
 
-        // Fetch matches in current order
-        $placeholders = implode(',', array_fill(0, count($ids), '?'));
-        $rows = $this->connection->prepare(
-            "SELECT Id FROM kp_match WHERE Id IN ($placeholders) AND Validation != 'O' ORDER BY Numero_ordre ASC, Id ASC"
-        )->executeQuery($ids)->fetchAllAssociative();
+        // Keep only renumberable matches (authorized + not validated), while
+        // preserving the user's order from $orderedIds.
+        $placeholders = implode(',', array_fill(0, count($authorized), '?'));
+        $eligible = $this->connection->prepare(
+            "SELECT Id FROM kp_match WHERE Id IN ($placeholders) AND Validation != 'O'"
+        )->executeQuery($authorized)->fetchFirstColumn();
+        $eligibleSet = array_flip(array_map('intval', $eligible));
+
+        $orderedIds = array_values(array_filter($orderedIds, fn($id) => isset($eligibleSet[$id])));
 
         $num = $startNumber;
-        foreach ($rows as $row) {
+        foreach ($orderedIds as $id) {
             $this->connection->prepare(
                 "UPDATE kp_match SET Numero_ordre = ?, Code_uti = ? WHERE Id = ?"
-            )->executeStatement([$num, $user?->getUserIdentifier(), (int) $row['Id']]);
+            )->executeStatement([$num, $user?->getUserIdentifier(), $id]);
             $num++;
         }
 
-        $this->logActionForSeason('Renumérotation masse', null, count($rows) . " match(s) à partir de $startNumber");
+        $this->logActionForSeason('Renumérotation masse', null, count($orderedIds) . " match(s) à partir de $startNumber");
 
-        return $this->json(['updated' => count($rows)]);
+        return $this->json(['updated' => count($orderedIds)]);
     }
 
     /**
@@ -1221,16 +1227,18 @@ class AdminGamesController extends AbstractController
         }
 
         $data = json_decode($request->getContent(), true);
-        $ids = array_filter(array_map('intval', $data['ids'] ?? []), fn($id) => $id > 0);
+        // Preserve the received order: it reflects the user's on-screen sort and
+        // determines the sequence the incremented times are assigned in.
+        $orderedIds = array_values(array_filter(array_map('intval', $data['ids'] ?? []), fn($id) => $id > 0));
         $startTime = $data['startTime'] ?? '10:00';
         $interval = (int) ($data['interval'] ?? 40);
 
-        if (empty($ids)) {
+        if (empty($orderedIds)) {
             return $this->json(['message' => 'No IDs provided'], Response::HTTP_BAD_REQUEST);
         }
 
-        $ids = $this->filterAuthorizedMatchIds(array_values($ids), $user);
-        if (empty($ids)) {
+        $authorized = $this->filterAuthorizedMatchIds($orderedIds, $user);
+        if (empty($authorized)) {
             return $this->json(['message' => 'No authorized games in selection'], Response::HTTP_FORBIDDEN);
         }
 
@@ -1238,21 +1246,25 @@ class AdminGamesController extends AbstractController
         $parts = explode(':', $startTime);
         $currentMinutes = ((int) ($parts[0] ?? 10)) * 60 + ((int) ($parts[1] ?? 0));
 
-        // Fetch matches in order (unlocked only)
-        $placeholders = implode(',', array_fill(0, count($ids), '?'));
-        $rows = $this->connection->prepare(
-            "SELECT Id FROM kp_match WHERE Id IN ($placeholders) AND Validation != 'O' ORDER BY Numero_ordre ASC, Id ASC"
-        )->executeQuery($ids)->fetchAllAssociative();
+        // Keep only eligible matches (authorized + not validated), preserving the
+        // user's order from $orderedIds.
+        $placeholders = implode(',', array_fill(0, count($authorized), '?'));
+        $eligible = $this->connection->prepare(
+            "SELECT Id FROM kp_match WHERE Id IN ($placeholders) AND Validation != 'O'"
+        )->executeQuery($authorized)->fetchFirstColumn();
+        $eligibleSet = array_flip(array_map('intval', $eligible));
+
+        $orderedIds = array_values(array_filter($orderedIds, fn($id) => isset($eligibleSet[$id])));
 
         $updated = 0;
-        foreach ($rows as $row) {
+        foreach ($orderedIds as $id) {
             $hours = intdiv($currentMinutes, 60);
             $mins = $currentMinutes % 60;
             $timeStr = sprintf('%02d:%02d', $hours, $mins);
 
             $this->connection->prepare(
                 "UPDATE kp_match SET Heure_match = ?, Code_uti = ? WHERE Id = ?"
-            )->executeStatement([$timeStr, $user?->getUserIdentifier(), (int) $row['Id']]);
+            )->executeStatement([$timeStr, $user?->getUserIdentifier(), $id]);
 
             $currentMinutes += $interval;
             $updated++;
