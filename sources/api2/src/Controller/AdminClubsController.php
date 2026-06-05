@@ -328,7 +328,8 @@ class AdminClubsController extends AbstractController
         }
 
         $sqlCompets = "SELECT ce.Code_compet, ce.Code_saison, ce.Libelle AS libelleEquipe,
-                              comp.Libelle AS libelleCompet
+                              ce.Clt_publi AS cltPubli, ce.CltNiveau_publi AS cltNiveauPubli,
+                              comp.Libelle AS libelleCompet, comp.Code_typeclt AS codeTypeclt
                        FROM kp_competition_equipe ce
                        LEFT JOIN kp_competition comp ON comp.Code = ce.Code_compet AND comp.Code_saison = ce.Code_saison
                        WHERE ce.Numero = ?
@@ -345,12 +346,22 @@ class AdminClubsController extends AbstractController
             'color1' => $row['color1'] ?? '',
             'color2' => $row['color2'] ?? '',
             'colortext' => $row['colortext'] ?? '',
-            'competitions' => array_map(fn(array $r) => [
-                'codeCompet' => $r['Code_compet'],
-                'codeSaison' => $r['Code_saison'],
-                'libelleEquipe' => $r['libelleEquipe'] ?? '',
-                'libelleCompet' => $r['libelleCompet'] ?? '',
-            ], $compets),
+            'competitions' => array_map(function (array $r): array {
+                $type = $r['codeTypeclt'] ?: 'CHPT';
+                // Public final ranking source depends on competition type:
+                // CP uses the level ranking (CltNiveau_publi), CHPT/MULTI use Clt_publi.
+                $rawClt = $type === 'CP' ? ($r['cltNiveauPubli'] ?? null) : ($r['cltPubli'] ?? null);
+                $clt = $rawClt !== null && (int) $rawClt > 0 ? (int) $rawClt : null;
+
+                return [
+                    'codeCompet' => $r['Code_compet'],
+                    'codeSaison' => $r['Code_saison'],
+                    'libelleEquipe' => $r['libelleEquipe'] ?? '',
+                    'libelleCompet' => $r['libelleCompet'] ?? '',
+                    'codeTypeclt' => $type,
+                    'classementFinal' => $clt,
+                ];
+            }, $compets),
         ]);
     }
 

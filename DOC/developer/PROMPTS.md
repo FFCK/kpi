@@ -146,22 +146,22 @@ TODO :
 - ✅ Copie compétition : ne pas reprendre les informations laissées vides,
 - Copie compétition : proposer de reprende les informations d'une journée existante dans la compétition cible ?
 - Pré-remplir certaines valeurs dans le formulaire de création.
-- Matchs : ajouter un match : "journée/phase -tous-" pas possible.
-- Matchs : permettre la saisie directe ou la modification directe en oubliant un ou deux crochets (détection d'un encodage malgré l'absence de crochets)
+- ✅ Matchs : ajouter un match : "journée/phase -tous-" pas possible.
+- ✅ Matchs : permettre la saisie directe ou la modification directe en oubliant un ou deux crochets (détection d'un encodage malgré l'absence de crochets)
 - Games : Action : imprimer un programme des matchs cochés uniquement,
-- Games : Action : "changer de phase/journée"
+- ✅ Games : Action : "changer de phase/journée"
 - Reprise de compo d'une compétition ou d'une saison à l'autre : reprendre les noms et prénoms depuis la base des licenciés.
 - Prévoir la mise à jour des identités des joueurs dans les compo ou les matchs depuis la base des licenciés.
 - Revoir le système des incrustations ?
 - api legacy encore utilisée ?
 - Stat participation à 50% des matchs de la saison régulière (déjà existant ?).
-- Verrouillage compets : vérouiller un jour plus tôt, et plus tôt dans la nuit.
-- clubs/team/<teamId> : ajouter le code compétition entre la saison et la compétition, le classement final (CHPT ou CP ou MULTI) de l'équipe à la place de la colonne Equipe.
+- Verrouillage compets : vérouiller plus tôt dans la nuit.
+- ✅ clubs/team/<teamId> : ajouter le code compétition entre la saison et la compétition, le classement final (CHPT ou CP ou MULTI) de l'équipe à la place de la colonne Equipe.
 - Contexte de travail : s'il n'y a qu'une seule compétition sélectionnée, activer cette compétition dans le filtre.
 - QRCode App Evt : s'assurer que ça fonctionne aussi pour les groupes.
 - Création compte, initialisation du mdp : manque l'information de l'identifiant de connexion dans l'email de création de compte. Permettre la connexion à partir de l'adresse email ?
-- Competitions : Ajout de compétition : ajouter au contexte si c'est le même groupe ou la même section, ou encore ajouter à la sélection de compétitions dans le contexte.
-- Competitions : ajouter la colonne Categorie (champs catégorie/libellé court)
+- ✅ Competitions : Ajout de compétition : ajouter au contexte si c'est le même groupe ou la même section, ou encore ajouter à la sélection de compétitions dans le contexte.
+- ✅ Competitions : ajouter la colonne Categorie (champs catégorie/libellé court)
 - ⚠️
 
 Scoring:

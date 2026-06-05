@@ -1575,8 +1575,10 @@
       "colors": "Colors",
       "competitions": "Competitions",
       "season": "Season",
+      "code": "Code",
       "competition": "Competition",
       "team_name": "Team name",
+      "final_ranking": "Final ranking",
       "no_competitions": "No competition participation",
       "back_to_club": "Back to club"
     }

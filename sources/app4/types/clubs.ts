@@ -63,4 +63,6 @@ export interface TeamCompetition {
   codeSaison: string
   libelleEquipe: string
   libelleCompet: string
+  codeTypeclt: string
+  classementFinal: number | null
 }

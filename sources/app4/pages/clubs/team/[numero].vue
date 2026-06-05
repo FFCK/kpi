@@ -111,8 +111,9 @@ onMounted(() => {
             <thead>
               <tr class="border-b border-header-200">
                 <th class="text-left py-2 px-3 font-medium text-header-700">{{ t('clubs.teams.season') }}</th>
+                <th class="text-left py-2 px-3 font-medium text-header-700">{{ t('clubs.teams.code') }}</th>
                 <th class="text-left py-2 px-3 font-medium text-header-700">{{ t('clubs.teams.competition') }}</th>
-                <th class="text-left py-2 px-3 font-medium text-header-700">{{ t('clubs.teams.team_name') }}</th>
+                <th class="text-left py-2 px-3 font-medium text-header-700">{{ t('clubs.teams.final_ranking') }}</th>
               </tr>
             </thead>
             <tbody>
@@ -123,8 +124,16 @@ onMounted(() => {
                 class="border-b border-header-100"
               >
                 <td class="py-2 px-3 font-mono text-xs text-header-500">{{ comp.codeSaison }}</td>
-                <td class="py-2 px-3 text-header-900">{{ comp.libelleCompet || comp.codeCompet }}</td>
-                <td class="py-2 px-3 text-header-600">{{ comp.libelleEquipe }}</td>
+                <td class="py-2 px-3 font-mono text-xs text-header-500">{{ comp.codeCompet }}</td>
+                <td class="py-2 px-3 text-header-900">
+                  <span class="align-middle">{{ comp.libelleCompet || comp.codeCompet }}</span>
+                  <span
+                    class="ml-2 inline-block px-1.5 py-0.5 rounded text-[10px] font-medium bg-header-100 text-header-600 align-middle"
+                  >{{ comp.codeTypeclt }}</span>
+                </td>
+                <td class="py-2 px-3 font-semibold text-header-900">
+                  {{ comp.classementFinal !== null ? comp.classementFinal : '—' }}
+                </td>
               </tr>
             </tbody>
           </table>
