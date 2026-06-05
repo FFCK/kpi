@@ -13,6 +13,7 @@ const toast = useToast()
 const workContext = useWorkContextStore()
 const authStore = useAuthStore()
 const { bracketLabels, bracketRawCodes } = useBracketDisplay()
+// normalizeBracketCoding is auto-imported from useBracketDisplay.ts (Nuxt composables)
 
 // ─── LocalStorage filter persistence ───
 const FILTERS_STORAGE_KEY = 'app4_games_filters'
@@ -702,7 +703,8 @@ const startInlineEdit = (game: Game, field: string) => {
 const saveInlineEdit = async () => {
   if (!editingCell.value) return
   const { id, field } = editingCell.value
-  const value = editingValue.value
+  // Auto-repair coding: add missing brackets when the label is a bare encoding.
+  const value = field === 'Libelle' ? normalizeBracketCoding(editingValue.value) : editingValue.value
 
   editingCell.value = null
 
@@ -748,7 +750,8 @@ const handleInlineKeydown = (e: KeyboardEvent) => {
       saveInlineEdit()
       return
     }
-    const value = editingValue.value
+    // Auto-repair coding: add missing brackets when the label is a bare encoding.
+    const value = field === 'Libelle' ? normalizeBracketCoding(editingValue.value) : editingValue.value
     const originalValue = editingOriginalValue.value
     editingCell.value = null
 
@@ -1005,6 +1008,8 @@ const validateForm = (): boolean => {
 
 const saveGame = async (): Promise<boolean> => {
   formSaving.value = true
+  // Auto-repair coding: add missing brackets when the label is a bare encoding.
+  formData.value.libelle = normalizeBracketCoding(formData.value.libelle)
   try {
     if (editingGame.value) {
       await api.put(`/admin/games/${editingGame.value.id}`, formData.value)
@@ -2891,7 +2896,7 @@ const openScoring = (gameId: number) => {
             class="w-full px-3 py-2 border border-header-300 rounded-lg"
             @change="onFormJourneeChange"
           >
-            <option :value="null">-- {{ t('games.all_journees') }} --</option>
+            <option :value="null" disabled>-- {{ t('games.select_journee_placeholder') }} --</option>
             <option v-for="j in journees" :key="j.id" :value="j.id">{{ journeeLabel(j) }}</option>
           </select>
         </div>

@@ -156,6 +156,62 @@ function parseBracket(libelle: string | null, isFr: boolean): BracketLabels {
 }
 
 /**
+ * Tokens that compose a valid bracket encoding once split on separators.
+ * Accepts both letter-first codes (T1, D2, V3, G1, W4, P2, L5) and
+ * number-first group ranks (1A, 12B). Case-insensitive on input; the caller
+ * uppercases before storing.
+ */
+const BRACKET_TOKEN_RE = /^(?:[TDVGWPL]\d+|\d+[A-Z]+)$/i
+const BRACKET_SEPARATORS_RE = /[-/*,;]/
+
+/**
+ * Decide whether a free-text label *is* a bracket encoding that happens to be
+ * missing its surrounding `[ ]`. We only treat the whole string as an encoding
+ * when every separator-delimited token looks like a bracket code, so plain
+ * labels (e.g. "Finale", "Match amical") are left untouched.
+ */
+function looksLikeBareEncoding(text: string): boolean {
+  const tokens = text.split(BRACKET_SEPARATORS_RE).map(p => p.trim()).filter(Boolean)
+  if (tokens.length === 0) return false
+  return tokens.every(tok => BRACKET_TOKEN_RE.test(tok))
+}
+
+/**
+ * Normalise the coding stored in a match label so it always ends up wrapped in
+ * a single, balanced `[ ]` pair.
+ *
+ * Handles three user mistakes:
+ *  - missing both brackets:  `1A-1B`      → `[1A-1B]`
+ *  - missing the opening one: `1A-1B]`    → `[1A-1B]`
+ *  - missing the closing one: `[1A-1B`    → `[1A-1B]`
+ *
+ * A label that already has a balanced bracket, or that is plain free text
+ * (not an encoding), is returned unchanged (trimmed).
+ */
+export function normalizeBracketCoding(raw: string | null | undefined): string {
+  const text = (raw ?? '').trim()
+  if (!text) return ''
+
+  const hasOpen = text.includes('[')
+  const hasClose = text.includes(']')
+
+  // Already has a complete, balanced bracket → leave as-is.
+  if (hasOpen && hasClose) return text
+
+  // Exactly one bracket present: the inner content is whatever sits next to it.
+  // Add the missing bracket only when the content reads like an encoding.
+  if (hasOpen !== hasClose) {
+    const inner = text.replace(/[[\]]/g, '').trim()
+    if (looksLikeBareEncoding(inner)) return `[${inner}]`
+    return text
+  }
+
+  // No brackets at all: wrap when the whole label is a bare encoding.
+  if (looksLikeBareEncoding(text)) return `[${text}]`
+  return text
+}
+
+/**
  * Composable that provides bracket parsing functions bound to the current locale.
  */
 export function useBracketDisplay() {
