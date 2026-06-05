@@ -1326,6 +1326,7 @@
     "officials_jury": "Jury d'appel",
     "officials_print": "Imprimer feuille d'instances",
     "no_results": "Aucune journée trouvée",
+    "select_context": "Sélectionnez un événement, un groupe ou une compétition",
     "total": "Total : {count} journée(s)",
     "months": {
       "1": "Janvier",
@@ -2105,6 +2106,7 @@
       "phases": "Phases",
       "commonValues": "Valeurs communes (appliquées à toutes les journées/phases)",
       "commonValuesHelp": "Laisser vide pour reprendre les valeurs individuelles de chaque journée",
+      "commonValuesHelpCp": "Un champ laissé vide restera vide dans la compétition cible",
       "publicParams": "Paramètres calendrier public",
       "dateDebut": "Date début",
       "dateFin": "Date fin",

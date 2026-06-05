@@ -366,6 +366,9 @@ class AdminCompetitionCopyController extends AbstractController
         $organisateur = $data['organisateur'] ?? null;
         $delegue = $data['delegue'] ?? null;
         $initPremierTour = (bool) ($data['initPremierTour'] ?? false);
+        // When true (CP / tournament competitions), an empty form field stays empty
+        // in the destination instead of falling back to each journee's individual value.
+        $emptyMeansEmpty = (bool) ($data['emptyMeansEmpty'] ?? false);
 
         // Get origin journees ordered by Id
         $journeeSql = "SELECT Id, Phase, Niveau, Etape, Nbequipes, `Type`,
@@ -413,6 +416,14 @@ class AdminCompetitionCopyController extends AbstractController
             }
         }
 
+        // Resolve a field value:
+        //  - $emptyMeansEmpty (CP): use the form value as-is; empty stays empty.
+        //  - otherwise: use form value if provided, else fall back to origin journee value.
+        $resolve = static fn (?string $formValue, ?string $originValue): ?string =>
+            ($formValue !== null && $formValue !== '')
+                ? $formValue
+                : ($emptyMeansEmpty ? null : ($originValue ?: null));
+
         $this->connection->beginTransaction();
         try {
             $journeesCreated = 0;
@@ -424,18 +435,17 @@ class AdminCompetitionCopyController extends AbstractController
                     "SELECT COALESCE(MAX(Id), 0) + 1 FROM kp_journee WHERE Id < 19000001"
                 )->fetchOne();
 
-                // Resolve field values: use form value if provided, else origin value
-                $jDateDebut = ($dateDebut !== null && $dateDebut !== '') ? $dateDebut : ($j['Date_debut'] ?: null);
-                $jDateFin = ($dateFin !== null && $dateFin !== '') ? $dateFin : ($j['Date_fin'] ?: null);
-                $jNom = ($nom !== null && $nom !== '') ? $nom : ($j['Nom'] ?: null);
-                $jLibelle = ($libelle !== null && $libelle !== '') ? $libelle : ($j['Libelle'] ?: null);
-                $jLieu = ($lieu !== null && $lieu !== '') ? $lieu : ($j['Lieu'] ?: null);
-                $jPlanEau = ($planEau !== null && $planEau !== '') ? $planEau : ($j['Plan_eau'] ?: null);
-                $jDepartement = ($departement !== null && $departement !== '') ? $departement : ($j['Departement'] ?: null);
-                $jRespInsc = ($responsableInsc !== null && $responsableInsc !== '') ? $responsableInsc : ($j['Responsable_insc'] ?: null);
-                $jRespR1 = ($responsableR1 !== null && $responsableR1 !== '') ? $responsableR1 : ($j['Responsable_R1'] ?: null);
-                $jOrganisateur = ($organisateur !== null && $organisateur !== '') ? $organisateur : ($j['Organisateur'] ?: null);
-                $jDelegue = ($delegue !== null && $delegue !== '') ? $delegue : ($j['Delegue'] ?: null);
+                $jDateDebut = $resolve($dateDebut, $j['Date_debut']);
+                $jDateFin = $resolve($dateFin, $j['Date_fin']);
+                $jNom = $resolve($nom, $j['Nom']);
+                $jLibelle = $resolve($libelle, $j['Libelle']);
+                $jLieu = $resolve($lieu, $j['Lieu']);
+                $jPlanEau = $resolve($planEau, $j['Plan_eau']);
+                $jDepartement = $resolve($departement, $j['Departement']);
+                $jRespInsc = $resolve($responsableInsc, $j['Responsable_insc']);
+                $jRespR1 = $resolve($responsableR1, $j['Responsable_R1']);
+                $jOrganisateur = $resolve($organisateur, $j['Organisateur']);
+                $jDelegue = $resolve($delegue, $j['Delegue']);
 
                 // Insert new journee
                 $insertSql = "INSERT INTO kp_journee

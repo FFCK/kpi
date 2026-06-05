@@ -144,7 +144,12 @@ function getDefaultFormData(): GamedayFormData {
 
 // ─── Load data ───
 const loadGamedays = async () => {
-  if (!workContext.season) return
+  if (!workContext.season || !hasContextFilter.value) {
+    gamedays.value = []
+    total.value = 0
+    totalPages.value = 0
+    return
+  }
 
   loading.value = true
   try {
@@ -734,7 +739,7 @@ const printJurySheet = (gamedayId: number) => {
       v-model:search="searchQuery"
       :search-placeholder="t('gamedays.search_placeholder')"
       :add-label="t('gamedays.add')"
-      :show-add="canEdit"
+      :show-add="canEdit && hasContextFilter"
       :selected-count="selectedIds.length"
       @add="openAddModal"
     >
@@ -795,6 +800,15 @@ const printJurySheet = (gamedayId: number) => {
         </div>
       </template>
       <template #before-search>
+        <!-- Refresh button -->
+        <button
+          class="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-header-700 bg-white border border-header-300 rounded-lg hover:bg-header-50"
+          :title="t('common.refresh')"
+          @click="loadGamedays"
+        >
+          <UIcon name="heroicons:arrow-path" class="w-5 h-5 text-header-500" />
+        </button>
+
         <!-- Schema link (only when a CP competition is selected) -->
         <button
           v-if="showCPColumns"
@@ -861,7 +875,14 @@ const printJurySheet = (gamedayId: number) => {
                 {{ t('common.loading') }}
               </td>
             </tr>
-            <!-- Empty -->
+            <!-- Empty: no context selected -->
+            <tr v-else-if="!hasContextFilter">
+              <td :colspan="canSelect ? 17 : 16" class="px-4 py-12 text-center text-header-400">
+                <UIcon name="heroicons:funnel" class="w-8 h-8 mx-auto mb-2 opacity-40" />
+                <div class="text-sm">{{ t('gamedays.select_context') }}</div>
+              </td>
+            </tr>
+            <!-- Empty: no results -->
             <tr v-else-if="gamedays.length === 0">
               <td :colspan="canSelect ? 17 : 16" class="px-4 py-8 text-center text-header-500">
                 {{ t('gamedays.no_results') }}
@@ -1159,7 +1180,7 @@ const printJurySheet = (gamedayId: number) => {
     </div>
 
     <!-- Mobile Cards -->
-    <AdminCardList class="lg:hidden" :loading="loading && gamedays.length === 0" :empty="gamedays.length === 0" :empty-text="t('gamedays.no_results')">
+    <AdminCardList class="lg:hidden" :loading="loading && gamedays.length === 0" :empty="gamedays.length === 0" :empty-text="hasContextFilter ? t('gamedays.no_results') : t('gamedays.select_context')">
       <AdminCard
         v-for="g in gamedays"
         :key="g.id"

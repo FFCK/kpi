@@ -73,6 +73,10 @@ const selectedDestCompetition = computed<CompetitionOption | null>(() => {
   return null
 })
 
+// For CP (tournament) destinations, an empty form field stays empty in the target
+// instead of falling back to each journee's individual value.
+const isCpDestination = computed(() => selectedDestCompetition.value?.codeTypeclt === 'CP')
+
 // --- Search ---
 const doSearch = async () => {
   if (!searchNbEquipes.value || searchNbEquipes.value <= 0) return
@@ -260,6 +264,7 @@ const doCopy = async () => {
       organisateur: copyOrganisateur.value || null,
       delegue: copyDelegue.value || null,
       initPremierTour: copyInitPremierTour.value,
+      emptyMeansEmpty: isCpDestination.value,
     })
 
     toast.add({
@@ -588,9 +593,13 @@ onMounted(async () => {
         <!-- Common values -->
         <div class="border border-header-200 rounded-lg p-4">
           <h3 class="text-sm font-semibold text-header-700 mb-1">{{ t('competitionCopy.copy.commonValues') }}</h3>
-          <p class="text-xs text-header-500 mb-4 flex items-center gap-1">
+          <p v-if="!isCpDestination" class="text-xs text-header-500 mb-4 flex items-center gap-1">
             <UIcon name="i-heroicons-information-circle" class="w-4 h-4 shrink-0" />
             {{ t('competitionCopy.copy.commonValuesHelp') }}
+          </p>
+          <p v-else class="text-xs text-header-500 mb-4 flex items-center gap-1">
+            <UIcon name="i-heroicons-information-circle" class="w-4 h-4 shrink-0" />
+            {{ t('competitionCopy.copy.commonValuesHelpCp') }}
           </p>
 
           <!-- Public params -->
@@ -606,11 +615,20 @@ onMounted(async () => {
             </div>
             <div>
               <label class="block text-xs text-header-500 mb-1">{{ t('competitionCopy.copy.lieu') }}</label>
-              <input v-model="copyLieu" type="text" class="w-full px-3 py-1.5 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500">
+              <AdminTextAutocomplete
+                :model-value="copyLieu"
+                api-url="/admin/gamedays/autocomplete/communes"
+                label-field="label"
+                detail-field="detail"
+                :placeholder="t('competitionCopy.copy.lieu')"
+                :maxlength="40"
+                @update:model-value="copyLieu = $event"
+                @select="(item: any) => { if (item.departement) copyDepartement = item.departement }"
+              />
             </div>
             <div>
               <label class="block text-xs text-header-500 mb-1">{{ t('competitionCopy.copy.departement') }}</label>
-              <input v-model="copyDepartement" type="text" class="w-full px-3 py-1.5 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500">
+              <input v-model="copyDepartement" type="text" maxlength="3" class="w-full px-3 py-1.5 border border-header-300 rounded-lg text-sm uppercase focus:ring-2 focus:ring-primary-500">
             </div>
             <div class="sm:col-span-2">
               <label class="block text-xs text-header-500 mb-1">{{ t('competitionCopy.copy.nom') }}</label>
@@ -627,19 +645,39 @@ onMounted(async () => {
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label class="block text-xs text-header-500 mb-1">{{ t('competitionCopy.copy.organisateur') }}</label>
-              <input v-model="copyOrganisateur" type="text" class="w-full px-3 py-1.5 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500">
+              <AdminTextAutocomplete
+                :model-value="copyOrganisateur"
+                api-url="/admin/clubs/search-all"
+                label-field="libelle"
+                detail-field="code"
+                :placeholder="t('competitionCopy.copy.organisateur')"
+                :maxlength="40"
+                @update:model-value="copyOrganisateur = $event"
+              />
             </div>
             <div>
               <label class="block text-xs text-header-500 mb-1">{{ t('competitionCopy.copy.responsableR1') }}</label>
-              <input v-model="copyRespR1" type="text" class="w-full px-3 py-1.5 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500">
+              <AdminAthleteAutocomplete
+                :model-value="copyRespR1"
+                :placeholder="t('competitionCopy.copy.responsableR1')"
+                @update:model-value="copyRespR1 = $event"
+              />
             </div>
             <div>
               <label class="block text-xs text-header-500 mb-1">{{ t('competitionCopy.copy.responsableInsc') }}</label>
-              <input v-model="copyRespInsc" type="text" class="w-full px-3 py-1.5 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500">
+              <AdminAthleteAutocomplete
+                :model-value="copyRespInsc"
+                :placeholder="t('competitionCopy.copy.responsableInsc')"
+                @update:model-value="copyRespInsc = $event"
+              />
             </div>
             <div>
               <label class="block text-xs text-header-500 mb-1">{{ t('competitionCopy.copy.delegue') }}</label>
-              <input v-model="copyDelegue" type="text" class="w-full px-3 py-1.5 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500">
+              <AdminAthleteAutocomplete
+                :model-value="copyDelegue"
+                :placeholder="t('competitionCopy.copy.delegue')"
+                @update:model-value="copyDelegue = $event"
+              />
             </div>
           </div>
         </div>

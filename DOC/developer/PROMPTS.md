@@ -139,11 +139,17 @@ TODO :
 - ✅ Ouverture FMV2 et FMV3 depuis app4 : ouvrir dans une fenêtre identique si déjà ouverte.
 - ✅ Feuille de marque : Yc est devenu Pld.
 - Feat: Jury d'appel : 3 représentants des athlètes.
-- Scoring : gestion du chrono, timeshoot, scoreboard, shotclock, websocket optionnels (pas utile s'il s'agit d'une saisie après match)
-- Scoring : départ du timeshoot manuel et pas en même temps que le chrono + Bouton Pause. touches de raccourcis paramétrables pour le départ/reprise et la pause du timeshoot, et pour le départ/reprise du chrono. Par défaut : espace pour le départ/stop du chrono, entrée pour le départ/reprise du timeshoot et 0 pour la pause du timeshoot.
-- Games : Action : imprimer un programme des matchs cochés uniquement
 - Créer pages d'administration (profil 1) pour les comités départementaux / pays
-- Journées/Phases : autocomplete sur les officiels, etc...
+- ✅ Journées/Phases : autocomplete sur les officiels, etc... mais permettre saisie libre.
+- ✅ Journées/Phases : Obliger la sélection d'un événement, d'un groupe ou d'une compétition, comme sur la page Matchs.
+- ✅ Journées/phases : bouton refresh
+- ✅ Copie compétition : ne pas reprendre les informations laissées vides,
+- Copie compétition : proposer de reprende les informations d'une journée existante dans la compétition cible ?
+- Pré-remplir certaines valeurs dans le formulaire de création.
+- Matchs : ajouter un match : "journée/phase -tous-" pas possible.
+- Matchs : permettre la saisie directe ou la modification directe en oubliant un ou deux crochets (détection d'un encodage malgré l'absence de crochets)
+- Games : Action : imprimer un programme des matchs cochés uniquement,
+- Games : Action : "changer de phase/journée"
 - Reprise de compo d'une compétition ou d'une saison à l'autre : reprendre les noms et prénoms depuis la base des licenciés.
 - Prévoir la mise à jour des identités des joueurs dans les compo ou les matchs depuis la base des licenciés.
 - Revoir le système des incrustations ?
@@ -151,4 +157,19 @@ TODO :
 - Stat participation à 50% des matchs de la saison régulière (déjà existant ?).
 - Verrouillage compets : vérouiller un jour plus tôt, et plus tôt dans la nuit.
 - clubs/team/<teamId> : ajouter le code compétition entre la saison et la compétition, le classement final (CHPT ou CP ou MULTI) de l'équipe à la place de la colonne Equipe.
+- Contexte de travail : s'il n'y a qu'une seule compétition sélectionnée, activer cette compétition dans le filtre.
+- QRCode App Evt : s'assurer que ça fonctionne aussi pour les groupes.
+- Création compte, initialisation du mdp : manque l'information de l'identifiant de connexion dans l'email de création de compte. Permettre la connexion à partir de l'adresse email ?
+- Competitions : Ajout de compétition : ajouter au contexte si c'est le même groupe ou la même section, ou encore ajouter à la sélection de compétitions dans le contexte.
+- Competitions : ajouter la colonne Categorie (champs catégorie/libellé court)
 - ⚠️
+
+Scoring:
+- durées des périodes, des temps morts, des prolongations, etc... paramétrables dans la compétition
+- gestion du chrono, timeshoot, scoreboard, shotclock, websocket optionnels (pas utile s'il s'agit d'une saisie après match)
+- départ du timeshoot manuel et pas en même temps que le chrono + Bouton Pause. touches de raccourcis paramétrables pour le départ/stop du chrono, pour le départ/reprise du timeshoot et pour la pause du timeshoot. Par défaut : espace pour le départ/stop du chrono, entrée pour le départ/reprise du timeshoot et 0 pour la pause du timeshoot.
+- autocomplete sur les officiels
+- gérer autant de prolongations que nécessaire (actuellement limité à 2))
+
+- Scoring : gestion du chrono, timeshoot, scoreboard, shotclock, websocket optionnels (pas utile s'il s'agit d'une saisie après match)
+- Scoring : départ du timeshoot manuel et pas en même temps que le chrono + Bouton Pause. touches de raccourcis paramétrables pour le départ/reprise et la pause du timeshoot, et pour le départ/reprise du chrono. Par défaut : espace pour le départ/stop du chrono, entrée pour le départ/reprise du timeshoot et 0 pour la pause du timeshoot.

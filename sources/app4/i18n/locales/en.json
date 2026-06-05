@@ -1313,6 +1313,7 @@
     "officials_jury": "Appeal jury",
     "officials_print": "Print instances sheet",
     "no_results": "No gamedays found",
+    "select_context": "Select an event, a group or a competition",
     "total": "Total: {count} gameday(s)",
     "months": {
       "1": "January",
@@ -2092,6 +2093,7 @@
       "phases": "Phases",
       "commonValues": "Common values (applied to all gamedays/phases)",
       "commonValuesHelp": "Leave empty to keep individual values from each gameday",
+      "commonValuesHelpCp": "A field left empty will stay empty in the destination competition",
       "publicParams": "Public calendar parameters",
       "dateDebut": "Start date",
       "dateFin": "End date",
