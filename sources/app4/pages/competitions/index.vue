@@ -453,14 +453,25 @@ const saveCompetition = async () => {
       const createdCode = formData.value.code
       await api.post('/admin/competitions', { ...formData.value, season: workContext.season })
 
-      // Reload work context to include new competition
+      // Reload work context so the new competition is known
       await workContext.loadSeasonData(api)
 
-      // If in selection mode, add the new competition to selection
-      if (workContext.selectionType === 'selection' && !workContext.selectedCompetitionCodes.includes(createdCode)) {
-        workContext.selectedCompetitionCodes.push(createdCode)
+      // Integrate the new competition into the active context, according to scope:
+      // - 'selection': explicitly add the new code to the selected competitions
+      // - 'group'/'section'/'all': recompute — the new competition is auto-included
+      //   only if it belongs to the active group/section (or always, for 'all')
+      if (workContext.selectionType === 'selection') {
+        if (!workContext.selectedCompetitionCodes.includes(createdCode)) {
+          workContext.selectedCompetitionCodes.push(createdCode)
+          workContext.saveToStorage()
+        }
         workContext.computeCompetitionCodes()
-        workContext.saveToStorage()
+      } else if (
+        workContext.selectionType === 'group'
+        || workContext.selectionType === 'section'
+        || workContext.selectionType === 'all'
+      ) {
+        workContext.computeCompetitionCodes()
       }
 
       toast.add({
@@ -782,6 +793,9 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
                     {{ t('competitions.columns.groupe') }}
                   </th>
                   <th class="px-3 py-2 text-left text-xs font-medium text-header-600 uppercase tracking-wider">
+                    {{ t('competitions.columns.categorie') }}
+                  </th>
+                  <th class="px-3 py-2 text-left text-xs font-medium text-header-600 uppercase tracking-wider">
                     {{ t('competitions.columns.stage') }}
                   </th>
                   <th class="px-3 py-2 text-left text-xs font-medium text-header-600 uppercase tracking-wider">
@@ -894,6 +908,11 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
                     >
                       {{ competition.codeRef || '-' }}
                     </button>
+                  </td>
+
+                  <!-- Categorie (Soustitre2) -->
+                  <td class="px-3 py-1 text-sm text-header-600">
+                    {{ competition.soustitre2 || '-' }}
                   </td>
 
                   <!-- Tour -->
@@ -1078,6 +1097,7 @@ const isMultiType = computed(() => formData.value.codeTypeclt === 'MULTI')
               <div class="flex flex-wrap gap-2 text-sm text-header-500">
                 <span>{{ competition.codeTypeclt }}</span>
                 <span v-if="competition.codeRef">| {{ competition.codeRef }}</span>
+                <span v-if="competition.soustitre2">| {{ competition.soustitre2 }}</span>
                 <span>| {{ competition.nbEquipes }} {{ t('competitions.columns.equipes') }}</span>
                 <span>| {{ competition.nbJournees }} {{ competition.codeTypeclt === 'CP' ? t('competitions.columns.phases') : t('competitions.columns.journees') }}</span>
                 <span>| {{ competition.nbMatchs }} {{ t('competitions.columns.matchs') }}</span>

@@ -746,7 +746,8 @@
       "matchs": "Matchs",
       "actions": "Actions",
       "edit": "Edit.",
-      "stage": "Etape"
+      "stage": "Etape",
+      "categorie": "Catégorie"
     },
     "search_previous_placeholder": "Rechercher une compétition des saisons précédentes",
     "min_2_chars": "Tapez au moins 2 caractères pour rechercher",
@@ -1354,6 +1355,7 @@
     "delete_error_score": "Ce match a un score. Suppression impossible.",
     "confirm_status_change": "Confirmez-vous le changement de statut ?",
     "select_journee": "Sélectionnez une journée / une phase !",
+    "select_journee_placeholder": "Sélectionnez une phase / journée",
     "date_empty": "La date est obligatoire !",
     "time_invalid": "L'heure n'est pas au format HH:MM. Continuer quand même ?",
     "referee_unidentified": "Arbitre non identifié",
@@ -1457,7 +1459,7 @@
       "toggle_printed": "Imprimé",
       "auto_assign": "Affectation automatique",
       "cancel_assign": "Annuler l'affectation",
-      "change_journee": "Changer de Journée",
+      "change_journee": "Changer de phase/journée",
       "change_journee_title": "Changer de Journée / Phase / Poule",
       "change_journee_label": "Nouvelle journée",
       "renumber": "Renuméroter",

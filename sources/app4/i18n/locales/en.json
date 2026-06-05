@@ -743,7 +743,8 @@
       "matchs": "Games",
       "actions": "Actions",
       "edit": "Edit.",
-      "stage": "Stage"
+      "stage": "Stage",
+      "categorie": "Category"
     },
     "form": {
       "add_title": "Add competition",
@@ -1341,6 +1342,7 @@
     "delete_error_score": "This game has a score. Cannot delete.",
     "confirm_status_change": "Confirm status change?",
     "select_journee": "Select a gameday / phase!",
+    "select_journee_placeholder": "Select a phase / gameday",
     "date_empty": "Date is required!",
     "time_invalid": "Time is not in HH:MM format. Continue anyway?",
     "referee_unidentified": "Unidentified referee",
@@ -1444,7 +1446,7 @@
       "toggle_printed": "Printed",
       "auto_assign": "Auto-assign",
       "cancel_assign": "Cancel assignment",
-      "change_journee": "Change Gameday",
+      "change_journee": "Change phase/gameday",
       "change_journee_title": "Change Gameday / Phase / Pool",
       "change_journee_label": "New gameday",
       "renumber": "Renumber",
