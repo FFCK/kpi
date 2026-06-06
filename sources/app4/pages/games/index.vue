@@ -94,6 +94,7 @@ const bulkIncrementTimeOpen = ref(false)
 const bulkChangeGroupOpen = ref(false)
 const bulkAutoAssignConfirmOpen = ref(false)
 const bulkCancelAssignConfirmOpen = ref(false)
+const bulkDuplicateConfirmOpen = ref(false)
 
 // Bulk action form data
 const bulkJourneeId = ref<number | null>(null)
@@ -1036,6 +1037,25 @@ const submitForm = async () => {
   }
 }
 
+// Save the currently-edited game as a brand-new match (create from the form data,
+// leaving the original untouched). Only offered when editing an existing game.
+const saveAsNewGame = async () => {
+  if (!validateForm()) return
+  formSaving.value = true
+  // Auto-repair coding: add missing brackets when the label is a bare encoding.
+  formData.value.libelle = normalizeBracketCoding(formData.value.libelle)
+  try {
+    await api.post('/admin/games', formData.value)
+    toast.add({ title: t('common.success'), description: t('games.added'), color: 'success' })
+    formModalOpen.value = false
+    await loadGames()
+  } catch (error: unknown) {
+    formError.value = (error as { message?: string })?.message || t('common.error')
+  } finally {
+    formSaving.value = false
+  }
+}
+
 const submitFormAndAdd = async () => {
   if (!validateForm()) return
   const snapshot = { ...formData.value }
@@ -1330,6 +1350,24 @@ const confirmBulkCancelAssign = async () => {
     const response = await api.post<{ updated: number }>('/admin/games/bulk/cancel-assign', { ids: selectedIds.value })
     toast.add({ title: t('common.success'), description: t('games.bulk_assign_cancelled', { count: response.updated }), color: 'success' })
     bulkCancelAssignConfirmOpen.value = false
+    await loadGames(true)
+  } catch {
+    // Error already shown
+  } finally {
+    formSaving.value = false
+  }
+}
+
+// ─── Bulk Duplicate ───
+// Order matters: the duplicates are created in the on-screen order (filteredGames),
+// so the backend can keep Numero_ordre sequencing consistent.
+const confirmBulkDuplicate = async () => {
+  formSaving.value = true
+  try {
+    const orderedIds = filteredGames.value.filter(g => selectedIds.value.includes(g.id)).map(g => g.id)
+    const response = await api.post<{ created: number }>('/admin/games/bulk/duplicate', { ids: orderedIds })
+    toast.add({ title: t('common.success'), description: t('games.bulk_duplicated', { count: response.created }), color: 'success' })
+    bulkDuplicateConfirmOpen.value = false
     await loadGames(true)
   } catch {
     // Error already shown
@@ -1633,6 +1671,13 @@ const openScoring = (gameId: number) => {
             >
               <UIcon name="heroicons:arrow-path" class="w-5 h-5 text-amber-600" />
               {{ t('games.bulk.change_group') }}
+            </button>
+            <button
+              class="w-full flex items-center gap-2 px-4 py-2 text-sm text-header-700 hover:bg-header-50"
+              @click="bulkDuplicateConfirmOpen = true; bulkActionsOpen = false"
+            >
+              <UIcon name="heroicons:document-duplicate" class="w-5 h-5 text-cyan-600" />
+              {{ t('games.bulk.duplicate') }}
             </button>
 
             <!-- ── Documents section ── -->
@@ -3045,6 +3090,15 @@ const openScoring = (gameId: number) => {
             {{ formSaving ? t('common.loading') : t('games.save_and_add') }}
           </button>
           <button
+            v-if="editingGame"
+            type="button"
+            class="px-4 py-2 text-sm font-medium text-cyan-700 bg-cyan-50 border border-cyan-300 rounded-lg hover:bg-cyan-100 disabled:opacity-50"
+            :disabled="formSaving"
+            @click="saveAsNewGame"
+          >
+            {{ formSaving ? t('common.loading') : t('games.save_as_new') }}
+          </button>
+          <button
             type="submit"
             class="px-4 py-2 text-sm font-medium text-white bg-primary-600 rounded-lg hover:bg-primary-700 disabled:opacity-50"
             :disabled="formSaving"
@@ -3338,6 +3392,16 @@ const openScoring = (gameId: number) => {
       variant="warning"
       @close="bulkCancelAssignConfirmOpen = false"
       @confirm="confirmBulkCancelAssign"
+    />
+
+    <!-- ═══════ BULK DUPLICATE CONFIRM ═══════ -->
+    <AdminConfirmModal
+      :open="bulkDuplicateConfirmOpen"
+      :title="t('games.bulk.duplicate')"
+      :message="t('games.bulk_duplicate_confirm', { count: selectedIds.length })"
+      :loading="formSaving"
+      @close="bulkDuplicateConfirmOpen = false"
+      @confirm="confirmBulkDuplicate"
     />
 
     <!-- Scroll to top -->

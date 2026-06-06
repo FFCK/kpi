@@ -1463,6 +1463,7 @@
       "change_group_title": "Change group code in labels",
       "old_group": "Group to replace",
       "new_group": "With",
+      "duplicate": "Duplicate",
       "match_sheets": "Score sheets (PDF)"
     },
     "documents": {
@@ -1486,6 +1487,7 @@
     "added": "Game created.",
     "save_and_add": "Save and add",
     "save_and_close": "Save and close",
+    "save_as_new": "Save as a new game",
     "updated": "Game updated.",
     "deleted": "Game deleted.",
     "bulk_published": "{count} game(s) modified.",
@@ -1507,7 +1509,9 @@
     "bulk_auto_assign_confirm": "Run auto-assignment for {count} selected game(s)?",
     "bulk_auto_assigned": "{count} game(s) auto-assigned.",
     "bulk_cancel_assign_confirm": "Clear teams and referees for {count} selected game(s)?",
-    "bulk_assign_cancelled": "Assignment cancelled for {count} game(s)."
+    "bulk_assign_cancelled": "Assignment cancelled for {count} game(s).",
+    "bulk_duplicate_confirm": "Duplicate {count} selected game(s)? Copies will be unlocked, unpublished and have no score.",
+    "bulk_duplicated": "{count} game(s) duplicated."
   },
   "clubs": {
     "title": "Clubs Management",

@@ -1643,6 +1643,111 @@ class AdminGamesController extends AbstractController
     }
 
     /**
+     * Bulk duplicate matches.
+     *
+     * Each selected match is copied into a new match within the same journée.
+     * Copied fields: schedule (date/time/terrain), type, libellé,
+     * teams, coefficients, referees. Reset on the copy: numéro d'ordre (left
+     * empty so the new games stand out and can be renumbered deliberately),
+     * score, validation (unlocked), publication (unpublished), statut (ATT),
+     * imprimé. Match players, events and chrono are NOT copied.
+     */
+    #[Route('/bulk/duplicate', name: 'admin_games_bulk_duplicate', methods: ['POST'])]
+    #[IsGranted('ROLE_ORGANIZER')]
+    public function bulkDuplicate(Request $request): JsonResponse
+    {
+        /** @var User|null $user */
+        $user = $this->getUser();
+        if ($user && $user->getNiveau() > 6) {
+            return $this->json(['message' => 'Insufficient permissions'], Response::HTTP_FORBIDDEN);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        // Preserve the received order so the duplicates keep the on-screen order.
+        $orderedIds = array_values(array_filter(array_map('intval', $data['ids'] ?? []), fn($id) => $id > 0));
+
+        if (empty($orderedIds)) {
+            return $this->json(['message' => 'No IDs provided'], Response::HTTP_BAD_REQUEST);
+        }
+
+        $authorized = $this->filterAuthorizedMatchIds($orderedIds, $user);
+        if (empty($authorized)) {
+            return $this->json(['message' => 'No authorized games in selection'], Response::HTTP_FORBIDDEN);
+        }
+        $authorizedSet = array_flip($authorized);
+        // Keep only authorized ids, in the user's order.
+        $orderedIds = array_values(array_filter($orderedIds, fn($id) => isset($authorizedSet[$id])));
+
+        $placeholders = implode(',', array_fill(0, count($orderedIds), '?'));
+        $rows = $this->connection->prepare(
+            "SELECT m.Id, m.Id_journee, m.Date_match, m.Heure_match, m.Numero_ordre, m.Terrain,
+                    m.Type, m.Libelle, m.Id_equipeA, m.Id_equipeB, m.CoeffA, m.CoeffB,
+                    m.Arbitre_principal, m.Matric_arbitre_principal,
+                    m.Arbitre_secondaire, m.Matric_arbitre_secondaire,
+                    j.Code_competition, j.Code_saison
+             FROM kp_match m
+             JOIN kp_journee j ON m.Id_journee = j.Id
+             WHERE m.Id IN ($placeholders)"
+        )->executeQuery($orderedIds)->fetchAllAssociative();
+
+        // Index rows by Id to iterate in the user's order.
+        $rowsById = [];
+        foreach ($rows as $row) {
+            $rowsById[(int) $row['Id']] = $row;
+        }
+
+        $nextId = (int) $this->connection->executeQuery("SELECT COALESCE(MAX(Id), 0) + 1 FROM kp_match")->fetchOne();
+        $createdIds = [];
+
+        $this->connection->beginTransaction();
+        try {
+            foreach ($orderedIds as $sourceId) {
+                if (!isset($rowsById[$sourceId])) continue;
+                $row = $rowsById[$sourceId];
+
+                $insertData = [
+                    'Id' => $nextId,
+                    'Id_journee' => (int) $row['Id_journee'],
+                    'Date_match' => $row['Date_match'],
+                    'Heure_match' => $row['Heure_match'],
+                    // Left empty on purpose: makes freshly-duplicated games easy to
+                    // spot and lets the user renumber them deliberately afterwards.
+                    'Numero_ordre' => null,
+                    'Terrain' => $row['Terrain'],
+                    'Type' => in_array($row['Type'], ['C', 'E']) ? $row['Type'] : 'C',
+                    'Libelle' => $row['Libelle'],
+                    'Id_equipeA' => $row['Id_equipeA'] !== null ? (int) $row['Id_equipeA'] : null,
+                    'Id_equipeB' => $row['Id_equipeB'] !== null ? (int) $row['Id_equipeB'] : null,
+                    'CoeffA' => $row['CoeffA'] ?? '1',
+                    'CoeffB' => $row['CoeffB'] ?? '1',
+                    'Arbitre_principal' => $row['Arbitre_principal'],
+                    'Matric_arbitre_principal' => (int) ($row['Matric_arbitre_principal'] ?? 0),
+                    'Arbitre_secondaire' => $row['Arbitre_secondaire'],
+                    'Matric_arbitre_secondaire' => (int) ($row['Matric_arbitre_secondaire'] ?? 0),
+                    'Publication' => 'N',
+                    'Validation' => 'N',
+                    'Statut' => 'ATT',
+                    'Imprime' => 'N',
+                    'Code_uti' => $user?->getUserIdentifier(),
+                ];
+
+                $this->connection->insert('kp_match', $insertData);
+
+                $this->logActionForMatch('Duplication match', $row['Code_saison'], $row['Code_competition'], (int) $row['Id_journee'], $nextId, "depuis match $sourceId");
+
+                $createdIds[] = $nextId;
+                $nextId++;
+            }
+            $this->connection->commit();
+        } catch (\Exception $e) {
+            $this->connection->rollBack();
+            return $this->json(['message' => 'Database error: ' . $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return $this->json(['created' => count($createdIds), 'ids' => $createdIds], Response::HTTP_CREATED);
+    }
+
+    /**
      * Get teams for a journee (for team select dropdowns)
      */
     #[Route('/teams', name: 'admin_games_teams', methods: ['GET'])]

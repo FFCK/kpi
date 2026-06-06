@@ -1476,6 +1476,7 @@
       "change_group_title": "Modifier un groupe dans les codes",
       "old_group": "Groupe à remplacer",
       "new_group": "Par",
+      "duplicate": "Dupliquer",
       "match_sheets": "Feuilles de marque (PDF)"
     },
     "documents": {
@@ -1499,6 +1500,7 @@
     "added": "Match créé.",
     "save_and_add": "Enregistrer et ajouter",
     "save_and_close": "Enregistrer et fermer",
+    "save_as_new": "Enregistrer comme nouveau match",
     "updated": "Match modifié.",
     "deleted": "Match supprimé.",
     "bulk_published": "{count} match(s) modifié(s).",
@@ -1520,7 +1522,9 @@
     "bulk_auto_assign_confirm": "Lancer l'affectation automatique pour {count} match(s) sélectionné(s) ?",
     "bulk_auto_assigned": "{count} match(s) affecté(s) automatiquement.",
     "bulk_cancel_assign_confirm": "Vider équipes et arbitres de {count} match(s) sélectionné(s) ?",
-    "bulk_assign_cancelled": "Affectation annulée pour {count} match(s)."
+    "bulk_assign_cancelled": "Affectation annulée pour {count} match(s).",
+    "bulk_duplicate_confirm": "Dupliquer les {count} match(s) sélectionné(s) ? Les copies seront non verrouillées, non publiées et sans score.",
+    "bulk_duplicated": "{count} match(s) dupliqué(s)."
   },
   "clubs": {
     "title": "Gestion des Clubs",
