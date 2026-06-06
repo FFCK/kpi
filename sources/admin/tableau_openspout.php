@@ -25,15 +25,26 @@ if ($isEn) {
 }
 
 $myBdd = new MyBdd();
-$listMatch = utyGetSession('listMatch', '');
-$listMatch = utyGetGet('listMatch', $listMatch);
+
+// Filtres explicites en URL (priment sur le listMatch en session)
+$laCompet = utyGetGet('Compet', '');
+$idEvenement = utyGetGet('idEvenement', '');
+$codeSaison = utyGetGet('S', '');
+$hasUrlFilters = ($laCompet != '' || ($idEvenement != '' && $idEvenement > 0) || $codeSaison != '');
+
+// listMatch : URL prioritaire, puis session — sauf si des filtres URL sont fournis
+$listMatchUrl = utyGetGet('listMatch', '');
+if ($listMatchUrl !== '') {
+	$listMatch = $listMatchUrl;
+} elseif ($hasUrlFilters) {
+	$listMatch = ''; // forcer la résolution depuis les filtres URL ci-dessous
+} else {
+	$listMatch = utyGetSession('listMatch', '');
+}
 
 // Si pas de listMatch, résoudre les IDs depuis les filtres Compet/idEvenement/S
 if (empty($listMatch)) {
-	$laCompet = utyGetGet('Compet', '');
-	$idEvenement = utyGetGet('idEvenement', '');
-	$codeSaison = utyGetGet('S', '');
-	if ($laCompet != '' || $idEvenement != '' || $codeSaison != '') {
+	if ($hasUrlFilters) {
 		if ($codeSaison == '') {
 			$codeSaison = $myBdd->GetActiveSaison();
 		}
@@ -192,6 +203,105 @@ try {
 		], $rowStyle);
 		$writer->addRow($dataRow);
 	}
+
+	// ─────────────────────────────────────────────────────────────────────
+	// Deuxième feuille : grille de planification (drag & drop des matchs)
+	//   - À gauche : colonne horaires + 6 colonnes terrains (vides, pour y
+	//     glisser les matchs lors de la planification)
+	//   - À droite : un bloc par Code_competition (chaque match dans une
+	//     cellule, colorée comme la première feuille) à faire glisser
+	// ─────────────────────────────────────────────────────────────────────
+	$planSheet = $writer->addNewSheetAndMakeItCurrent();
+	$planSheet->setName($isEn ? 'Planning' : 'Planification');
+
+	$nbTerrains = 6;
+	$gapCols = 1; // colonne vide entre la grille et les blocs matchs
+
+	// Regrouper les matchs par compétition (en conservant l'ordre Numero_ordre)
+	$matchsParCompet = [];
+	foreach ($arrayMatchs as $match) {
+		$code = $match['Code_competition'] ?? '';
+		$matchsParCompet[$code][] = $match;
+	}
+
+	// Horaires distincts triés (issus des matchs) pour la colonne de gauche
+	$horaires = [];
+	foreach ($arrayMatchs as $match) {
+		$h = $match['Heure_match'] ?? '';
+		if ($h !== '' && !in_array($h, $horaires, true)) {
+			$horaires[] = $h;
+		}
+	}
+	sort($horaires);
+
+	// Style d'en-tête (gras, fond gris clair)
+	$planHeaderStyle = (new Style())->setFontBold()->setBackgroundColor('E0E0E0');
+
+	// Pré-construire la liste des cellules-match par colonne de compétition
+	$blocCols = []; // index 0..n -> tableau de cellules [valeur, code couleur]
+	foreach ($matchsParCompet as $code => $matchs) {
+		$col = [];
+		foreach ($matchs as $match) {
+			$txt = trim(
+				($match['Numero_ordre'] ?? '') . ' - '
+				. ($match['Code_competition'] ?? '') . ' '
+				. ($match['Phase'] ?? '') . ' '
+				. ($match['Libelle'] ?? '')
+			);
+			$col[] = ['text' => $txt, 'color' => $competitionColorMap[$code] ?? null];
+		}
+		$blocCols[] = $col;
+	}
+
+	// Ligne d'en-tête : Heure | Terrain 1..6 | (vide) | (codes compétition)
+	$headerCells = [$isEn ? 'Time' : 'Heure'];
+	for ($i = 1; $i <= $nbTerrains; $i++) {
+		$headerCells[] = ($isEn ? 'Pitch ' : 'Terrain ') . $i;
+	}
+	for ($i = 0; $i < $gapCols; $i++) {
+		$headerCells[] = '';
+	}
+	foreach (array_keys($matchsParCompet) as $code) {
+		$headerCells[] = $code;
+	}
+	$writer->addRow(Row::fromValues($headerCells, $planHeaderStyle));
+
+	// Nombre de lignes de données = max(horaires, plus longue colonne de matchs)
+	$maxBloc = 0;
+	foreach ($blocCols as $col) {
+		$maxBloc = max($maxBloc, count($col));
+	}
+	$nbLignes = max(count($horaires), $maxBloc);
+
+	for ($r = 0; $r < $nbLignes; $r++) {
+		// Partie gauche : horaire + terrains vides
+		$cells = [];
+		$cells[] = $horaires[$r] ?? '';
+		for ($i = 0; $i < $nbTerrains; $i++) {
+			$cells[] = '';
+		}
+		for ($i = 0; $i < $gapCols; $i++) {
+			$cells[] = '';
+		}
+		// Partie droite : une cellule-match par colonne de compétition
+		// (style appliqué par cellule via Cell::fromValue)
+		$rowCells = [];
+		foreach ($cells as $v) {
+			$rowCells[] = \OpenSpout\Common\Entity\Cell::fromValue($v);
+		}
+		foreach ($blocCols as $col) {
+			if (isset($col[$r])) {
+				$cellStyle = $col[$r]['color'] !== null
+					? (new Style())->setBackgroundColor($col[$r]['color'])
+					: null;
+				$rowCells[] = \OpenSpout\Common\Entity\Cell::fromValue($col[$r]['text'], $cellStyle);
+			} else {
+				$rowCells[] = \OpenSpout\Common\Entity\Cell::fromValue('');
+			}
+		}
+		$writer->addRow(new Row($rowCells, null));
+	}
+
 	$writer->close();
 	if (!file_exists($temp_file)) {
 		exit("Erreur : Fichier non créé.");
