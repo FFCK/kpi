@@ -497,6 +497,8 @@ app4_generate_dev: ## Génère l'application Nuxt (app4 admin) en mode statique 
 	@echo "App4 generated and nginx restarted!"
 
 app4_generate_preprod: ## Génère l'application Nuxt (app4 admin) en mode statique pour pré-production (utilise container temporaire)
+	@echo "Restauration du package-lock.json versionné (annule toute dérive locale)..."
+	git checkout -- sources/app4/package-lock.json
 	@echo "Building app4 for pre-production using temporary Node.js container..."
 	docker run --rm -v "$(CURDIR)/sources/app4:/app" -w /app node:22-alpine sh -c "npm ci && npx nuxt generate"
 	@echo "Restarting nginx to remount volume..."
@@ -504,6 +506,8 @@ app4_generate_preprod: ## Génère l'application Nuxt (app4 admin) en mode stati
 	@echo "App4 generated and nginx restarted!"
 
 app4_generate_prod: ## Génère l'application Nuxt (app4 admin) en mode statique pour production (utilise container temporaire)
+	@echo "Restauration du package-lock.json versionné (annule toute dérive locale)..."
+	git checkout -- sources/app4/package-lock.json
 	@echo "Building app4 for production using temporary Node.js container..."
 	docker run --rm -v "$(CURDIR)/sources/app4:/app" -w /app node:22-alpine sh -c "npm ci && npx nuxt generate"
 	@echo "Restarting nginx to remount volume..."
@@ -805,6 +809,18 @@ wordpress_restore: ## Restaure WordPress depuis /tmp/wordpress_backup (usage int
 		echo "Erreur: /tmp/wordpress_backup n'existe pas"; \
 		exit 1; \
 	fi
+
+
+## GIT - PULL
+# Restaure les package-lock.json versionnés (annule toute dérive locale due à npm
+# install/ci lancé directement sur le checkout) avant de tirer les changements.
+# Évite l'erreur "Vos modifications locales seraient écrasées par la fusion".
+pull: ## git pull en restaurant d'abord les package-lock.json versionnés
+	@echo "Restauration des package-lock.json versionnés..."
+	@git ls-files -z '*package-lock.json' | \
+		xargs -0 --no-run-if-empty git checkout --
+	@echo "git pull..."
+	git pull
 
 
 ## GIT - IMAGES LOCALES
