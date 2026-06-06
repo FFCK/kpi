@@ -41,12 +41,16 @@ class NotificationService
     /**
      * Send a password reset email to a user.
      */
-    public function sendPasswordReset(string $toEmail, string $token, bool $includeDocLink, string $complementaryMessage): void
+    public function sendPasswordReset(string $toEmail, string $token, bool $includeDocLink, string $complementaryMessage, string $loginCode = ''): void
     {
         $resetUrl = rtrim($this->app4Url, '/') . '/reset-password?token=' . $token;
 
         $body = "Bonjour,\n\n";
         $body .= "Votre compte KPI a été créé ou mis à jour.\n\n";
+        if ($loginCode !== '') {
+            $body .= "Votre identifiant de connexion : " . $loginCode . "\n";
+            $body .= "(vous pouvez aussi vous connecter avec votre adresse email)\n\n";
+        }
         $body .= "Pour définir votre mot de passe, cliquez sur le lien ci-dessous (valable 48h) :\n";
         $body .= $resetUrl . "\n\n";
 

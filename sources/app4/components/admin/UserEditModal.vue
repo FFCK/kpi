@@ -66,6 +66,23 @@ const form = reactive({
   complementaryMessage: '',
 })
 
+// Virtual user (no federal licence): admin types name/firstname instead of
+// picking an athlete. The backend creates a kp_licence row (Matric >= 2000000).
+const noLicence = ref(false)
+const newLicence = reactive({ nom: '', prenom: '', sexe: 'M' as 'M' | 'F' })
+
+function toggleNoLicence() {
+  noLicence.value = !noLicence.value
+  // Clear whatever the other mode populated
+  form.code = ''
+  form.identite = ''
+  licenceQuery.value = ''
+  showLicenceDropdown.value = false
+  newLicence.nom = ''
+  newLicence.prenom = ''
+  newLicence.sexe = 'M'
+}
+
 const submitting = ref(false)
 const formError = ref('')
 
@@ -140,6 +157,10 @@ watch(() => props.open, async (isOpen) => {
 })
 
 function resetForm() {
+  noLicence.value = false
+  newLicence.nom = ''
+  newLicence.prenom = ''
+  newLicence.sexe = 'M'
   form.code = ''
   form.identite = ''
   form.mail = ''
@@ -483,7 +504,13 @@ async function handleSubmit() {
   formError.value = ''
 
   // Validation
-  if (!form.code.trim()) {
+  const creatingLicence = !isEditing.value && noLicence.value
+  if (creatingLicence) {
+    if (!newLicence.nom.trim() || !newLicence.prenom.trim()) {
+      formError.value = t('users.modal.virtual_name_required')
+      return
+    }
+  } else if (!form.code.trim()) {
     formError.value = t('users.modal.licence') + ' is required'
     return
   }
@@ -521,6 +548,14 @@ async function handleSubmit() {
   const payload = {
     code: form.code.trim(),
     identite: form.identite.trim(),
+    ...(creatingLicence
+      ? {
+          createLicence: true,
+          nom: newLicence.nom.trim(),
+          prenom: newLicence.prenom.trim(),
+          sexe: newLicence.sexe,
+        }
+      : {}),
     mail: form.mail.trim(),
     tel: form.tel.trim(),
     fonction: form.fonction.trim(),
@@ -626,8 +661,16 @@ onBeforeUnmount(() => {
         {{ t('users.modal.mandates_only_notice') }}
       </div>
 
-      <!-- Licence autocomplete (create mode only) -->
-      <div v-if="!isEditing" ref="licenceDropdownRef" class="relative">
+      <!-- No-licence toggle (create mode only) -->
+      <div v-if="!isEditing" class="flex items-center justify-end">
+        <label class="flex items-center gap-2 text-sm cursor-pointer text-header-700">
+          <input type="checkbox" :checked="noLicence" @change="toggleNoLicence">
+          {{ t('users.modal.no_licence') }}
+        </label>
+      </div>
+
+      <!-- Licence autocomplete (create mode, licence search) -->
+      <div v-if="!isEditing && !noLicence" ref="licenceDropdownRef" class="relative">
         <label class="block text-sm font-medium text-header-700 mb-1">{{ t('users.modal.search_licence') }}</label>
         <div class="relative">
           <input
@@ -651,8 +694,44 @@ onBeforeUnmount(() => {
         </div>
       </div>
 
-      <!-- Licence + Identity row -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <!-- Virtual user: name / firstname / sexe (create mode, no licence) -->
+      <div v-if="!isEditing && noLicence" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div>
+          <label class="block text-sm font-medium text-header-700 mb-1">
+            {{ t('users.modal.virtual_lastname') }} <span class="text-danger-500">*</span>
+          </label>
+          <input
+            v-model="newLicence.nom"
+            type="text"
+            maxlength="30"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+          >
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-header-700 mb-1">
+            {{ t('users.modal.virtual_firstname') }} <span class="text-danger-500">*</span>
+          </label>
+          <input
+            v-model="newLicence.prenom"
+            type="text"
+            maxlength="30"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+          >
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-header-700 mb-1">{{ t('users.modal.virtual_sexe') }}</label>
+          <select
+            v-model="newLicence.sexe"
+            class="w-full px-3 py-2 border border-header-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+          >
+            <option value="M">M</option>
+            <option value="F">F</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Licence + Identity row (hidden when creating a virtual user) -->
+      <div v-if="!(!isEditing && noLicence)" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label class="block text-sm font-medium text-header-700 mb-1">
             {{ t('users.modal.licence') }} <span v-if="!mandatesOnly" class="text-danger-500">*</span>

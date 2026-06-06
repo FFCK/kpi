@@ -288,6 +288,24 @@ class AdminUsersController extends AbstractController
         $includeDocLink = (bool) ($data['includeDocLink'] ?? false);
         $complementaryMessage = trim($data['complementaryMessage'] ?? '');
 
+        // Virtual user: no federal licence. We create a non-federal kp_licence
+        // row (Matric >= 2000000) on the fly and use its Matric as the user code.
+        $createLicence = (bool) ($data['createLicence'] ?? false);
+        $newLicenceMatric = null;
+        if ($createLicence) {
+            $nom = mb_substr(mb_strtoupper(trim($data['nom'] ?? '')), 0, 30);
+            $prenom = mb_substr(mb_strtoupper(trim($data['prenom'] ?? '')), 0, 30);
+            $sexe = in_array($data['sexe'] ?? '', ['M', 'F'], true) ? $data['sexe'] : 'M';
+            if (empty($nom) || empty($prenom)) {
+                return $this->json(['error' => true, 'message' => 'Nom et prénom sont requis', 'code' => 'INVALID_DATA'], Response::HTTP_BAD_REQUEST);
+            }
+            // Generate the next non-federal Matric (>= 2000000)
+            $maxMatric = $this->connection->fetchOne('SELECT MAX(Matric) FROM kp_licence WHERE Matric >= 2000000');
+            $newLicenceMatric = max(2000000, ((int) ($maxMatric ?? 1999999)) + 1);
+            $code = (string) $newLicenceMatric;
+            $identite = trim($nom . ' ' . $prenom);
+        }
+
         // Validation
         if (empty($code)) {
             return $this->json(['error' => true, 'message' => 'User code is required', 'code' => 'INVALID_DATA'], Response::HTTP_BAD_REQUEST);
@@ -317,6 +335,23 @@ class AdminUsersController extends AbstractController
             return $this->json(['error' => true, 'message' => 'User code already exists', 'code' => 'CODE_EXISTS'], Response::HTTP_CONFLICT);
         }
 
+        // Create the backing non-federal licence row when requested
+        if ($createLicence && $newLicenceMatric !== null) {
+            $this->connection->insert('kp_licence', [
+                'Matric' => $newLicenceMatric,
+                'Origine' => '',
+                'Nom' => $nom,
+                'Prenom' => $prenom,
+                'Sexe' => $sexe,
+                'Etat' => 'Actif',
+                'Pagaie_ECA' => '',
+                'Pagaie_EVI' => '',
+                'Pagaie_MER' => '',
+                'Etat_certificat_CK' => 'NON',
+                'Etat_certificat_APS' => 'NON',
+            ]);
+        }
+
         // Generate random bcrypt password (user will use reset link)
         $randomPassword = bin2hex(random_bytes(16));
         $hashedPassword = password_hash($randomPassword, PASSWORD_BCRYPT);
@@ -344,7 +379,7 @@ class AdminUsersController extends AbstractController
                 'INSERT INTO kp_user_token (user, token, generated_at) VALUES (?, ?, NOW())',
                 [$code, $token]
             );
-            $this->notificationService->sendPasswordReset($mail, $token, $includeDocLink, $complementaryMessage);
+            $this->notificationService->sendPasswordReset($mail, $token, $includeDocLink, $complementaryMessage, $code);
         }
 
         return $this->json([
@@ -970,7 +1005,7 @@ class AdminUsersController extends AbstractController
         $includeDocLink = (bool) ($data['includeDocLink'] ?? false);
         $complementaryMessage = trim($data['complementaryMessage'] ?? '');
 
-        $this->notificationService->sendPasswordReset($existing['Mail'], $token, $includeDocLink, $complementaryMessage);
+        $this->notificationService->sendPasswordReset($existing['Mail'], $token, $includeDocLink, $complementaryMessage, $code);
 
         $this->logActionForSeason(
             'Reset mot de passe',

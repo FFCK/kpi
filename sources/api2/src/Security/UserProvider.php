@@ -21,18 +21,26 @@ class UserProvider implements UserProviderInterface
 
     public function loadUserByIdentifier(string $identifier): UserInterface
     {
-        $sql = "SELECT u.Code, u.Pwd, u.Niveau,
-                       u.Filtre_competition, u.Filtre_saison,
-                       u.Filtre_journee, u.Id_Evenement,
-                       u.Limitation_equipe_club,
-                       l.Nom, l.Prenom, l.Numero_club
-                FROM kp_user u
-                LEFT JOIN kp_licence l ON u.Code = l.Matric
-                WHERE u.Code = ?";
+        $select = "SELECT u.Code, u.Pwd, u.Niveau,
+                          u.Filtre_competition, u.Filtre_saison,
+                          u.Filtre_journee, u.Id_Evenement,
+                          u.Limitation_equipe_club,
+                          l.Nom, l.Prenom, l.Numero_club
+                   FROM kp_user u
+                   LEFT JOIN kp_licence l ON u.Code = l.Matric";
 
-        $stmt = $this->connection->prepare($sql);
-        $result = $stmt->executeQuery([$identifier]);
-        $row = $result->fetchAssociative();
+        // Login by email, but only when it resolves to exactly one account.
+        // The Mail column is not unique (e.g. shared test accounts), so an
+        // ambiguous match must fall through to a strict code lookup rather than
+        // logging the user into an arbitrary account.
+        if (str_contains($identifier, '@')) {
+            $rows = $this->connection->fetchAllAssociative($select . ' WHERE u.Mail = ?', [$identifier]);
+            if (count($rows) === 1) {
+                return $this->createUserFromRow($rows[0]);
+            }
+        }
+
+        $row = $this->connection->fetchAssociative($select . ' WHERE u.Code = ?', [$identifier]);
 
         if (!$row) {
             throw new UserNotFoundException(sprintf('User "%s" not found.', $identifier));

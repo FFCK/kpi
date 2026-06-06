@@ -159,11 +159,12 @@ TODO :
 - ✅ clubs/team/<teamId> : ajouter le code compétition entre la saison et la compétition, le classement final (CHPT ou CP ou MULTI) de l'équipe à la place de la colonne Equipe.
 - Contexte de travail : s'il n'y a qu'une seule compétition sélectionnée, activer cette compétition dans le filtre.
 - QRCode App Evt : s'assurer que ça fonctionne aussi pour les groupes.
-- Création compte, initialisation du mdp : manque l'information de l'identifiant de connexion dans l'email de création de compte. Permettre la connexion à partir de l'adresse email ?
+- ✅ Création compte, initialisation du mdp : manque l'information de l'identifiant de connexion dans l'email de création de compte. Permettre la connexion à partir de l'adresse email ?
 - ✅ Competitions : Ajout de compétition : ajouter au contexte si c'est le même groupe ou la même section, ou encore ajouter à la sélection de compétitions dans le contexte.
 - ✅ Competitions : ajouter la colonne Categorie (champs catégorie/libellé court)
 - ✅ games : Actions : duppliquer un ou plusieurs matchs
 - games : export ods sur x terrains
+- pdf diagramme : problème de mise en page.
 - Fonction planification des matchs : définir les règles de planification (ex : pas de matchs consécutifs pour une même équipe, intervalle matchs, heures début et fin de journée, nombre de terrains, repos avant et après un match, un arbitrage, intervalle avant les matchs du tour suivant pour permettre les calculs et affectations d'équipes, intervalle spécifique pour certains matchs, demi, finales, etc...) et les implémenter dans la fonctionnalité de planification automatique des matchs.
 - ⚠️
 
