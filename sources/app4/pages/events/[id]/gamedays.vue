@@ -16,6 +16,9 @@ const route = useRoute()
 
 const eventId = computed(() => parseInt(route.params.id as string, 10))
 
+// Max competitions allowed for bulk "link all" (perfs + ergonomics)
+const MAX_BULK_COMPETITIONS = 6
+
 // ─── Event header ───
 const event = ref<Event | null>(null)
 const eventLoading = ref(false)
@@ -37,7 +40,7 @@ const filterCompetitions = ref<string[]>([])
 const filterState = ref<'all' | 'linked' | 'unlinked'>('all')
 const search = ref('')
 const page = ref(1)
-const limit = ref(25)
+const limit = ref(50)
 
 // ─── Debounced search ───
 let searchTimeout: ReturnType<typeof setTimeout> | null = null
@@ -59,6 +62,22 @@ const filteredCandidates = computed(() => {
   if (filterState.value === 'unlinked') return candidates.value.filter(g => !associatedIds.value.has(g.id))
   return candidates.value
 })
+
+// Bulk "link all" is available once 1..MAX competitions are selected
+const bulkEnabled = computed(() =>
+  filterCompetitions.value.length >= 1
+  && filterCompetitions.value.length <= MAX_BULK_COMPETITIONS,
+)
+
+// Candidates currently displayed that are not yet associated
+const unlinkedDisplayed = computed(() =>
+  filteredCandidates.value.filter(g => !associatedIds.value.has(g.id)),
+)
+
+// Candidates currently displayed that are already associated
+const linkedDisplayed = computed(() =>
+  filteredCandidates.value.filter(g => associatedIds.value.has(g.id)),
+)
 
 const stateOptions = computed(() => [
   { value: 'all', label: t('events.association.filter_state_all') },
@@ -130,6 +149,13 @@ const loadCandidates = async () => {
 }
 
 // ─── Watchers ───
+// Default pagination to "all" once the competition filter is narrowed to 1..MAX
+// (avoids paging through gamedays/phases). Reset to a paged default otherwise.
+watch(bulkEnabled, (enabled, wasEnabled) => {
+  if (enabled === wasEnabled) return
+  limit.value = enabled ? 0 : 50
+})
+
 watch([filterCompetitions, debouncedSearch, limit, filterState], () => {
   page.value = 1
   loadCandidates()
@@ -166,6 +192,45 @@ const toggleAssociation = async (g: Gameday) => {
     toggling.value.delete(g.id)
   }
 }
+
+// ─── Bulk link / unlink all displayed candidates ───
+const bulkRunning = ref(false)
+
+const runBulk = async (targets: Gameday[], action: 'link' | 'unlink') => {
+  if (bulkRunning.value || targets.length === 0) return
+  bulkRunning.value = true
+  let done = 0
+  try {
+    for (const g of targets) {
+      try {
+        if (action === 'link') {
+          await api.put(`/admin/gamedays/${g.id}/event/${eventId.value}`)
+          associatedIds.value.add(g.id)
+        } else {
+          await api.del(`/admin/gamedays/${g.id}/event/${eventId.value}`)
+          associatedIds.value.delete(g.id)
+        }
+        done++
+      } catch {
+        // Skip individual failures; error shown by api composable
+      }
+    }
+    // Trigger reactivity once
+    associatedIds.value = new Set(associatedIds.value)
+    if (done > 0) {
+      toast.add({
+        title: t('common.success'),
+        description: t(`events.association.${action}_all_done`, done),
+        color: 'success',
+      })
+    }
+  } finally {
+    bulkRunning.value = false
+  }
+}
+
+const linkAll = () => runBulk(unlinkedDisplayed.value.slice(), 'link')
+const unlinkAll = () => runBulk(linkedDisplayed.value.slice(), 'unlink')
 
 // ─── Format date ───
 const formatDate = (date: string | null): string => {
@@ -279,6 +344,38 @@ onMounted(async () => {
 
       <!-- Competition multi-select -->
       <AdminCompetitionMultiSelect v-model="filterCompetitions" />
+
+      <!-- Bulk link / unlink all (1..MAX competitions selected) -->
+      <div v-if="bulkEnabled" class="flex flex-wrap items-center gap-3 pt-1">
+        <button
+          type="button"
+          :disabled="bulkRunning || unlinkedDisplayed.length === 0"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-purple-600 text-white hover:bg-purple-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          @click="linkAll"
+        >
+          <UIcon
+            :name="bulkRunning ? 'heroicons:arrow-path' : 'heroicons:link'"
+            class="w-4 h-4"
+            :class="{ 'animate-spin': bulkRunning }"
+          />
+          {{ t('events.association.link_all') }}
+          <span v-if="unlinkedDisplayed.length > 0" class="opacity-80">({{ unlinkedDisplayed.length }})</span>
+        </button>
+        <button
+          type="button"
+          :disabled="bulkRunning || linkedDisplayed.length === 0"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-danger-50 text-danger-700 hover:bg-danger-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+          @click="unlinkAll"
+        >
+          <UIcon
+            :name="bulkRunning ? 'heroicons:arrow-path' : 'heroicons:link-slash'"
+            class="w-4 h-4"
+            :class="{ 'animate-spin': bulkRunning }"
+          />
+          {{ t('events.association.unlink_all') }}
+          <span v-if="linkedDisplayed.length > 0" class="opacity-80">({{ linkedDisplayed.length }})</span>
+        </button>
+      </div>
     </div>
 
     <!-- Desktop table -->
@@ -368,6 +465,7 @@ onMounted(async () => {
         :total="total"
         :total-pages="totalPages"
         :showing-text="t('gamedays.total', { count: total })"
+        show-all
       />
     </div>
 
@@ -441,6 +539,7 @@ onMounted(async () => {
         :total="total"
         :total-pages="totalPages"
         :showing-text="t('gamedays.total', { count: total })"
+        show-all
         class="mt-4 rounded-lg shadow"
       />
     </AdminCardList>

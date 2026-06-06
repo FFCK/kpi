@@ -136,7 +136,12 @@
       "linked": "Journée associée à l'événement.",
       "unlinked": "Journée dissociée de l'événement.",
       "event_not_found": "Événement introuvable.",
-      "no_candidates": "Aucune journée candidate pour les filtres sélectionnés."
+      "no_candidates": "Aucune journée candidate pour les filtres sélectionnés.",
+      "link_all": "Tout associer",
+      "link_all_done": "{count} journée associée | {count} journées associées",
+      "link_all_hint": "Sélectionnez entre 1 et {max} compétitions pour associer en masse.",
+      "unlink_all": "Tout désassocier",
+      "unlink_all_done": "{count} journée dissociée | {count} journées dissociées"
     }
   },
   "groups": {

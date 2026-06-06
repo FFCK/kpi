@@ -136,7 +136,12 @@
       "linked": "Gameday linked to event.",
       "unlinked": "Gameday unlinked from event.",
       "event_not_found": "Event not found.",
-      "no_candidates": "No candidate gameday for the selected filters."
+      "no_candidates": "No candidate gameday for the selected filters.",
+      "link_all": "Link all",
+      "link_all_done": "{count} gameday associated | {count} gamedays associated",
+      "link_all_hint": "Select between 1 and {max} competitions to link in bulk.",
+      "unlink_all": "Unlink all",
+      "unlink_all_done": "{count} gameday unlinked | {count} gamedays unlinked"
     }
   },
   "groups": {
