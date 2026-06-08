@@ -219,6 +219,7 @@
     "delete": "Supprimer",
     "delete_selected": "Supprimer la sélection",
     "edit": "Modifier",
+    "view": "Consulter",
     "add": "Ajouter",
     "search": "Rechercher",
     "loading": "Chargement...",
@@ -761,6 +762,7 @@
     "form": {
       "add_title": "Ajouter une compétition",
       "edit_title": "Modifier la compétition",
+      "view_title": "Consulter la compétition",
       "creation_mode": "Mode de création",
       "new_competition": "Nouvelle compétition",
       "from_previous_season": "Depuis une saison précédente",
@@ -2368,5 +2370,9 @@
     "not_found": "Match introuvable",
     "select_player_first": "Sélectionnez d'abord un joueur",
     "no_access": "Accès réservé (phase d'expérimentation)"
+  },
+  "competition": {
+    "ended_title": "Compétition terminée — lecture seule",
+    "ended_description": "Cette compétition est clôturée. Aucune modification n'est possible."
   }
 }

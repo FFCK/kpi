@@ -52,6 +52,7 @@ export interface ScoringMatch {
   idEquipeB: number | null
   equipeB: string | null
   codeCompetition: string | null
+  competitionStatut: 'ATT' | 'ON' | 'END'
   phase: string | null
 }
 

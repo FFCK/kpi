@@ -218,6 +218,8 @@
     "delete": "Delete",
     "delete_selected": "Delete selection",
     "edit": "Edit",
+    "view": "View",
+    "close": "Close",
     "add": "Add",
     "search": "Search",
     "loading": "Loading...",
@@ -754,6 +756,7 @@
     "form": {
       "add_title": "Add competition",
       "edit_title": "Edit competition",
+      "view_title": "View competition",
       "code": "Code",
       "code_placeholder": "e.g. N1H",
       "code_hint": "Code must be unique for the season",
@@ -2355,5 +2358,9 @@
     "not_found": "Match not found",
     "select_player_first": "Select a player first",
     "no_access": "Restricted access (experimentation phase)"
+  },
+  "competition": {
+    "ended_title": "Competition ended — read only",
+    "ended_description": "This competition is closed. No modifications are allowed."
   }
 }

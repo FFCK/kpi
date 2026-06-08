@@ -176,7 +176,7 @@ class AdminGamesController extends AbstractController
                        m.Arbitre_secondaire, m.Matric_arbitre_secondaire,
                        j.Code_competition, j.Phase, j.Niveau, j.Etape, j.Lieu,
                        j.Libelle AS LibelleJournee,
-                       c.Soustitre2, c.Code_typeclt,
+                       c.Soustitre2, c.Code_typeclt, c.Statut AS CompetitionStatut,
                        cea.Libelle AS equipeA,
                        ceb.Libelle AS equipeB
                 FROM kp_match m
@@ -243,6 +243,7 @@ class AdminGamesController extends AbstractController
                 'arbitreSecondaire' => $row['Arbitre_secondaire'],
                 'matricArbitreSecondaire' => (int) ($row['Matric_arbitre_secondaire'] ?? 0),
                 'codeCompetition' => $row['Code_competition'],
+                'competitionStatut' => $row['CompetitionStatut'] ?? 'ATT',
                 'phase' => $row['Phase'],
                 'niveau' => $row['Niveau'] !== null ? (int) $row['Niveau'] : null,
                 'etape' => (int) $row['Etape'],
@@ -272,7 +273,7 @@ class AdminGamesController extends AbstractController
     {
         $sql = "SELECT m.*, j.Code_competition, j.Phase, j.Niveau, j.Etape, j.Lieu,
                        j.Libelle AS LibelleJournee, j.Code_saison, j.Type AS JourneeType,
-                       c.Soustitre2, c.Code_typeclt,
+                       c.Soustitre2, c.Code_typeclt, c.Statut AS CompetitionStatut,
                        cea.Libelle AS equipeA, ceb.Libelle AS equipeB
                 FROM kp_match m
                 INNER JOIN kp_journee j ON m.Id_journee = j.Id
@@ -315,6 +316,7 @@ class AdminGamesController extends AbstractController
             'arbitreSecondaire' => $row['Arbitre_secondaire'],
             'matricArbitreSecondaire' => (int) ($row['Matric_arbitre_secondaire'] ?? 0),
             'codeCompetition' => $row['Code_competition'],
+            'competitionStatut' => $row['CompetitionStatut'] ?? 'ATT',
             'phase' => $row['Phase'],
             'niveau' => $row['Niveau'] !== null ? (int) $row['Niveau'] : null,
             'etape' => (int) $row['Etape'],

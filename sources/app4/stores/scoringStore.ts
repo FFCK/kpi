@@ -70,6 +70,9 @@ export const useScoringStore = defineStore('scoring', {
     /** Locked when the match is validated (Validation === 'O') */
     isLocked: (state): boolean => state.match?.validation === 'O',
 
+    /** Competition is ended — no modifications allowed */
+    isCompetitionEnded: (state): boolean => state.match?.competitionStatut === 'END',
+
     /** Duration (seconds) of the currently selected period */
     currentPeriodDuration: (state): number => {
       const p = state.match?.periode as Period | null | undefined

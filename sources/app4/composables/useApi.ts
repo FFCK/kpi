@@ -197,7 +197,19 @@ export const useApi = () => {
 
         // Handle 403 - forbidden
         if (errorType === ErrorType.HTTP_403) {
-          showErrorToast(ErrorType.HTTP_403)
+          let body: { message?: string } = {}
+          try { body = await response.clone().json() } catch { /* ignore */ }
+          if (body.message === 'Competition is ended') {
+            toast.add({
+              title: t('competition.ended_title'),
+              description: t('competition.ended_description'),
+              icon: 'i-heroicons-lock-closed',
+              color: 'warning',
+              duration: 4000
+            })
+          } else {
+            showErrorToast(ErrorType.HTTP_403)
+          }
           throw new Error('Access denied')
         }
 

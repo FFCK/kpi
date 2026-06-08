@@ -552,9 +552,15 @@ const formatDateShort = (date: string | null) => {
 // ─── Row state helpers ───
 const isLocked = (game: Game) => game.validation === 'O'
 const hasScore = (game: Game) => !!(game.scoreA || game.scoreB)
-const isGameEditable = (game: Game) => canEdit.value && !isLocked(game) && game.authorized
-const isScoreEditable = (game: Game) => canEditScores.value && !isLocked(game) && game.authorized
+const isCompetitionEnded = (game: Game) => game.competitionStatut === 'END'
+const isGameEditable = (game: Game) => canEdit.value && !isLocked(game) && !isCompetitionEnded(game) && game.authorized
+const isScoreEditable = (game: Game) => canEditScores.value && !isLocked(game) && !isCompetitionEnded(game) && game.authorized
 const isDeletable = (game: Game) => isGameEditable(game) && !hasScore(game)
+
+// True when ALL loaded games belong to ended competitions (single-competition filter case)
+const isAllCompetitionsEnded = computed(() =>
+  games.value.length > 0 && games.value.every(g => g.competitionStatut === 'END')
+)
 
 // IDs sélectionnés mais non verrouillés — utilisés par les bulk actions de modification
 const unlockedSelectedIds = computed(() =>
@@ -1553,12 +1559,22 @@ const openScoring = (gameId: number) => {
       </template>
     </AdminPageHeader>
 
+    <!-- Competition ended banner -->
+    <UAlert
+      v-if="isAllCompetitionsEnded"
+      icon="i-heroicons-lock-closed"
+      color="warning"
+      variant="soft"
+      :title="t('competition.ended_title')"
+      :description="t('competition.ended_description')"
+    />
+
     <!-- ═══════ TOOLBAR ═══════ -->
     <AdminToolbar
       v-model:search="searchQuery"
       :search-placeholder="t('games.search_placeholder')"
       :add-label="t('games.add')"
-      :show-add="canEdit && hasContextFilter"
+      :show-add="canEdit && hasContextFilter && !isAllCompetitionsEnded"
       :selected-count="selectedIds.length"
       @add="openAddModal"
     >

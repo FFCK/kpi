@@ -14,9 +14,10 @@ const scoringStore = useScoringStore()
 const matchId = computed(() => parseInt(route.params.id as string))
 
 // Permissions (experimentation phase: profile <= 2)
-const { canView, canScore, canValidate } = useScoringPermissions(
+const { canView, canScore: canScoreBase, canValidate } = useScoringPermissions(
   computed(() => scoringStore.isLocked)
 )
+const canScore = computed(() => canScoreBase.value && !scoringStore.isCompetitionEnded)
 
 // Periods available depend on match type (C = no overtime unless needed)
 const periods: Period[] = ['M1', 'M2', 'P1', 'P2', 'TB']
@@ -140,6 +141,16 @@ const toggleLock = async () => {
     </div>
 
     <div v-else-if="match" class="space-y-4">
+      <!-- Competition ended banner -->
+      <UAlert
+        v-if="scoringStore.isCompetitionEnded"
+        icon="i-heroicons-lock-closed"
+        color="warning"
+        variant="soft"
+        :title="t('competition.ended_title')"
+        :description="t('competition.ended_description')"
+      />
+
       <!-- Header -->
       <div class="flex items-center justify-between">
         <div>

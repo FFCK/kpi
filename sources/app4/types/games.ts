@@ -28,6 +28,7 @@ export interface Game {
   arbitreSecondaire: string | null
   matricArbitreSecondaire: number
   codeCompetition: string
+  competitionStatut: 'ATT' | 'ON' | 'END'
   phase: string | null
   niveau: number | null
   etape: number
