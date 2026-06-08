@@ -482,6 +482,9 @@ class AdminCompetitionsController extends AbstractController
         $multiCompetitions = isset($data['multiCompetitions']) && is_array($data['multiCompetitions']) ? json_encode($data['multiCompetitions']) : null;
         $rankingStructureType = $data['rankingStructureType'] ?? 'team';
         $commentairesCompet = trim($data['commentairesCompet'] ?? '');
+        $bandeauLink = trim($data['bandeauLink'] ?? '');
+        $logoLink = trim($data['logoLink'] ?? '');
+        $sponsorLink = trim($data['sponsorLink'] ?? '');
 
         // Insert competition
         $sql = "INSERT INTO kp_competition
@@ -490,11 +493,12 @@ class AdminCompetitionsController extends AbstractController
                  En_actif, Titre_actif, Bandeau_actif, Logo_actif, Sponsor_actif, Kpi_ffck_actif,
                  Code_ref, GroupOrder, Code_typeclt, points_grid, multi_competitions, ranking_structure_type,
                  Code_tour, Qualifies, Elimines, Points, goalaverage, Statut, Publication, Verrou, commentairesCompet)
-                VALUES (?, ?, ?, ?, ?, ?, ?, '', '', '', '', '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'N', '', ?)";
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, '', '', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'N', '', ?)";
 
         $stmt = $this->connection->prepare($sql);
         $stmt->executeStatement([
             $code, $season, $codeNiveau, $libelle, $soustitre, $soustitre2, $web,
+            $bandeauLink, $logoLink, $sponsorLink,
             $enActif, $titreActif, $bandeauActif, $logoActif, $sponsorActif, $kpiFfckActif,
             $codeRef, $groupOrder, $codeTypeclt, $pointsGrid, $multiCompetitions, $rankingStructureType,
             $codeTour, $qualifies, $elimines, $points, $goalaverage, $statut, $commentairesCompet
