@@ -21,9 +21,32 @@ const season = computed(() => (route.query.season as string) || '')
 const loading = ref(false)
 const data = ref<SchemaResponse | null>(null)
 
-// Display toggles
-const showMatchCount = ref(true)
-const showTimeSlots = ref(true)
+// Display toggles (persisted in localStorage)
+const PREFS_KEY = 'schema-prefs'
+function loadPref(key: string, fallback: boolean): boolean {
+  try {
+    const raw = localStorage.getItem(PREFS_KEY)
+    if (!raw) return fallback
+    const parsed = JSON.parse(raw)
+    return typeof parsed[key] === 'boolean' ? parsed[key] : fallback
+  }
+  catch { return fallback }
+}
+function savePref(key: string, value: boolean) {
+  try {
+    const raw = localStorage.getItem(PREFS_KEY)
+    const parsed = raw ? JSON.parse(raw) : {}
+    parsed[key] = value
+    localStorage.setItem(PREFS_KEY, JSON.stringify(parsed))
+  }
+  catch { /* ignore */ }
+}
+
+const showMatchCount = ref(loadPref('showMatchCount', true))
+const showTimeSlots = ref(loadPref('showTimeSlots', true))
+
+watch(showMatchCount, v => savePref('showMatchCount', v))
+watch(showTimeSlots, v => savePref('showTimeSlots', v))
 
 // Image visibility (hidden on 404)
 const showBandeau = ref(true)
