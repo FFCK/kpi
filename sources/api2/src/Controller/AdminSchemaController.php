@@ -19,7 +19,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
  * Migrated from GestionSchema.php
  */
 #[Route('/admin/schema')]
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted('ROLE_DIVISION')]
 #[OA\Tag(name: '31. App4 - Schema')]
 class AdminSchemaController extends AbstractController
 {

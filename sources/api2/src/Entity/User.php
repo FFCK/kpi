@@ -266,15 +266,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // Map profile levels to granular roles
         // Hierarchy is handled by security.yaml role_hierarchy
         $roles[] = match (true) {
-            $this->niveau <= 1 => 'ROLE_SUPER_ADMIN',
-            $this->niveau <= 2 => 'ROLE_ADMIN',
-            $this->niveau <= 3 => 'ROLE_DIVISION',
-            $this->niveau <= 4 => 'ROLE_COMPETITION',
-            $this->niveau <= 5 => 'ROLE_DELEGATE',
-            $this->niveau <= 6 => 'ROLE_ORGANIZER',
-            $this->niveau <= 7 => 'ROLE_TEAM',
-            $this->niveau <= 8 => 'ROLE_VIEWER',
-            $this->niveau <= 9 => 'ROLE_SCORER',
+            $this->getEffectiveNiveau() <= 1 => 'ROLE_SUPER_ADMIN',
+            $this->getEffectiveNiveau() <= 2 => 'ROLE_ADMIN',
+            $this->getEffectiveNiveau() <= 3 => 'ROLE_DIVISION',
+            $this->getEffectiveNiveau() <= 4 => 'ROLE_COMPETITION',
+            $this->getEffectiveNiveau() <= 5 => 'ROLE_DELEGATE',
+            $this->getEffectiveNiveau() <= 6 => 'ROLE_ORGANIZER',
+            $this->getEffectiveNiveau() <= 7 => 'ROLE_TEAM',
+            $this->getEffectiveNiveau() <= 8 => 'ROLE_VIEWER',
+            $this->getEffectiveNiveau() <= 9 => 'ROLE_SCORER',
             default => 'ROLE_USER',
         };
 
@@ -297,7 +297,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             'id' => $this->code,
             'name' => $this->nom,
             'firstname' => $this->prenom,
-            'profile' => $this->niveau,
+            'profile' => $this->getEffectiveNiveau(),
             'filters' => [
                 'seasons' => $this->getAllowedSeasons(),
                 'competitions' => $this->getAllowedCompetitions(),
