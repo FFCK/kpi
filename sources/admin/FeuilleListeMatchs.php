@@ -191,20 +191,20 @@ class FeuilleListeMatchs extends MyPage
         // Bandeau
         if (($arrayCompetition['Bandeau_actif'] ?? '') == 'O' && isset($visuels['bandeau'])) {
             if (is_file($visuels['bandeau'])) {
-                $img = redimImage($visuels['bandeau'], 262, 10, 20, 'C');
+                $img = redimImage($visuels['bandeau'], 297, 10, 20, 'C');
                 $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
             }
         } elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O' && ($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
             $pdf->Image('../img/CNAKPI_small.jpg', 40, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
             if (is_file($visuels['logo'])) {
-                $img = redimImage($visuels['logo'], 262, 10, 20, 'R');
+                $img = redimImage($visuels['logo'], 297, 10, 20, 'R');
                 $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
             }
         } elseif (($arrayCompetition['Kpi_ffck_actif'] ?? '') == 'O') {
             $pdf->Image('../img/CNAKPI_small.jpg', 125, 10, 0, 20, 'jpg', "https://www.kayak-polo.info");
         } elseif (($arrayCompetition['Logo_actif'] ?? '') == 'O' && isset($visuels['logo'])) {
             if (is_file($visuels['logo'])) {
-                $img = redimImage($visuels['logo'], 262, 10, 20, 'C');
+                $img = redimImage($visuels['logo'], 297, 10, 20, 'C');
                 $pdf->Image($img['image'], $img['positionX'], 8, 0, $img['newHauteur']);
             }
         }
