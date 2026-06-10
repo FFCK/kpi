@@ -224,15 +224,26 @@ try {
 		$matchsParCompet[$code][] = $match;
 	}
 
-	// Horaires distincts triés (issus des matchs) pour la colonne de gauche
-	$horaires = [];
+	// Créneaux distincts (date + heure) triés chronologiquement
+	$creneaux = []; // tableau de ['date' => ..., 'heure' => ...]
+	$creneauxSeen = [];
 	foreach ($arrayMatchs as $match) {
+		$d = $match['Date_match'] ?? ''; // déjà converti en FR (dd/mm/yyyy)
 		$h = $match['Heure_match'] ?? '';
-		if ($h !== '' && !in_array($h, $horaires, true)) {
-			$horaires[] = $h;
+		if ($h === '') continue;
+		$key = $d . '|' . $h;
+		if (!isset($creneauxSeen[$key])) {
+			$creneauxSeen[$key] = true;
+			// Reconvertir en YYYY-MM-DD pour le tri, puis stocker tel quel
+			$dateSort = $d !== ''
+				? implode('-', array_reverse(explode('/', $d)))
+				: '0000-00-00';
+			$creneaux[] = ['date' => $d, 'heure' => $h, 'sort' => $dateSort . ' ' . $h];
 		}
 	}
-	sort($horaires);
+	usort($creneaux, fn($a, $b) => strcmp($a['sort'], $b['sort']));
+	// Garder $horaires pour compatibilité onglet 2 (liste des heures dans l'ordre)
+	$horaires = array_values(array_unique(array_column($creneaux, 'heure')));
 
 	// Style d'en-tête (gras, fond gris clair)
 	$planHeaderStyle = (new Style())->setFontBold()->setBackgroundColor('E0E0E0');
@@ -253,8 +264,8 @@ try {
 		$blocCols[] = $col;
 	}
 
-	// Ligne d'en-tête : Heure | Terrain 1..6 | (vide) | (codes compétition)
-	$headerCells = [$isEn ? 'Time' : 'Heure'];
+	// Ligne d'en-tête : Date | Heure | Terrain 1..6 | (vide) | (codes compétition)
+	$headerCells = [$isEn ? 'Date' : 'Date', $isEn ? 'Time' : 'Heure'];
 	for ($i = 1; $i <= $nbTerrains; $i++) {
 		$headerCells[] = ($isEn ? 'Pitch ' : 'Terrain ') . $i;
 	}
@@ -266,17 +277,18 @@ try {
 	}
 	$writer->addRow(Row::fromValues($headerCells, $planHeaderStyle));
 
-	// Nombre de lignes de données = max(horaires, plus longue colonne de matchs)
+	// Nombre de lignes de données = max(créneaux, plus longue colonne de matchs)
 	$maxBloc = 0;
 	foreach ($blocCols as $col) {
 		$maxBloc = max($maxBloc, count($col));
 	}
-	$nbLignes = max(count($horaires), $maxBloc);
+	$nbLignes = max(count($creneaux), $maxBloc);
 
 	for ($r = 0; $r < $nbLignes; $r++) {
-		// Partie gauche : horaire + terrains vides
+		// Partie gauche : date + horaire + terrains vides
 		$cells = [];
-		$cells[] = $horaires[$r] ?? '';
+		$cells[] = $creneaux[$r]['date'] ?? '';
+		$cells[] = $creneaux[$r]['heure'] ?? '';
 		for ($i = 0; $i < $nbTerrains; $i++) {
 			$cells[] = '';
 		}
@@ -295,6 +307,71 @@ try {
 					? (new Style())->setBackgroundColor($col[$r]['color'])
 					: null;
 				$rowCells[] = \OpenSpout\Common\Entity\Cell::fromValue($col[$r]['text'], $cellStyle);
+			} else {
+				$rowCells[] = \OpenSpout\Common\Entity\Cell::fromValue('');
+			}
+		}
+		$writer->addRow(new Row($rowCells, null));
+	}
+
+	// ─────────────────────────────────────────────────────────────────────
+	// Troisième feuille : grille de planification avec matchs placés
+	//   - Colonnes : Heure | Terrain 1..N (dynamique)
+	//   - Chaque match est placé à la ligne de son Heure_match et dans la
+	//     colonne de son Terrain (même texte et couleur que l'onglet 2)
+	// ─────────────────────────────────────────────────────────────────────
+	$schedSheet = $writer->addNewSheetAndMakeItCurrent();
+	$schedSheet->setName($isEn ? 'Schedule' : 'Programme');
+
+	// Terrains distincts triés
+	$terrains = [];
+	foreach ($arrayMatchs as $match) {
+		$t = $match['Terrain'] ?? '';
+		if ($t !== '' && !in_array($t, $terrains, true)) {
+			$terrains[] = $t;
+		}
+	}
+	sort($terrains, SORT_NATURAL);
+
+	// Index par (date, heure, terrain) → [text, color]
+	$schedGrid = [];
+	foreach ($arrayMatchs as $match) {
+		$d = $match['Date_match'] ?? '';
+		$h = $match['Heure_match'] ?? '';
+		$t = $match['Terrain'] ?? '';
+		if ($h === '' || $t === '') continue;
+		$code = $match['Code_competition'] ?? '';
+		$txt = trim(
+			($match['Numero_ordre'] ?? '') . ' - '
+			. ($match['Code_competition'] ?? '') . ' '
+			. ($match['Phase'] ?? '') . ' '
+			. ($match['Libelle'] ?? '')
+		);
+		$schedGrid[$d][$h][$t] = ['text' => $txt, 'color' => $competitionColorMap[$code] ?? null];
+	}
+
+	// En-tête : Date | Heure | Terrain 1..N
+	$schedHeaderCells = [$isEn ? 'Date' : 'Date', $isEn ? 'Time' : 'Heure'];
+	foreach ($terrains as $t) {
+		$schedHeaderCells[] = ($isEn ? 'Pitch ' : 'Terrain ') . $t;
+	}
+	$writer->addRow(Row::fromValues($schedHeaderCells, $planHeaderStyle));
+
+	// Lignes de données — $creneaux est déjà trié par date puis heure
+	foreach ($creneaux as $creneau) {
+		$d = $creneau['date'];
+		$h = $creneau['heure'];
+		$rowCells = [
+			\OpenSpout\Common\Entity\Cell::fromValue($d),
+			\OpenSpout\Common\Entity\Cell::fromValue($h),
+		];
+		foreach ($terrains as $t) {
+			if (isset($schedGrid[$d][$h][$t])) {
+				$entry = $schedGrid[$d][$h][$t];
+				$cellStyle = $entry['color'] !== null
+					? (new Style())->setBackgroundColor($entry['color'])
+					: null;
+				$rowCells[] = \OpenSpout\Common\Entity\Cell::fromValue($entry['text'], $cellStyle);
 			} else {
 				$rowCells[] = \OpenSpout\Common\Entity\Cell::fromValue('');
 			}

@@ -170,9 +170,14 @@ TODO :
 - Affichage schéma de compétition en erreur de droits pour un vrai profil 3 (sans mandat) !
 - ✅ Schéma de compétition : mémoriser l'état des cases à cocher pour l'utilisateur.
 - Fonction planification des matchs : définir les règles de planification (ex : pas de matchs consécutifs pour une même équipe, intervalle matchs, heures début et fin de journée, nombre de terrains, repos avant et après un match, un arbitrage, intervalle avant les matchs du tour suivant pour permettre les calculs et affectations d'équipes, intervalle spécifique pour certains matchs, demi, finales, etc...) et les implémenter dans la fonctionnalité de planification automatique des matchs.
-- Schéma de compétition : pouvoir changer de compétition sur la page.
-- Création / modification saison.
-- ajouter un système de notation (5 étoiles) sur les systèmes de jeu des compétitions pour savoir lesquelles utiliser ou éviter (limité à notre propre usage).
+- Schéma de compétition : pouvoir changer de compétition sur la page ?
+- ✅ Création / modification saison.
+- ajouter un système de notation (5 étoiles) sur les systèmes de jeu des compétitions pour savoir lesquelles utiliser ou éviter (limité à notre propre usage) ?
+- Contrôle de planification : min-width: 200px; sur le bloc avec le nom d'équipe, et la croix alignée à droite de ce bloc,
+- ✅ ods planification : nouvel onglet avec les matchs déjà placés.
+- ✅ Menu admin2 : liens public dans un dropdown, avec un séparatif, pour réduire la largeur du menu sur PC.
+- Impression que sur Safari, les polices de caractère utilisées sont plus grosses.
+- ✅ clubs/team/<id> ajouter la dernière photo d'équipe
 - ⚠️
 
 Scoring:
