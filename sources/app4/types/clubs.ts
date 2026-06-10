@@ -55,6 +55,8 @@ export interface TeamDetail {
   color1: string
   color2: string
   colortext: string
+  latestPhoto: string | null
+  latestPhotoSaison: string | null
   competitions: TeamCompetition[]
 }
 

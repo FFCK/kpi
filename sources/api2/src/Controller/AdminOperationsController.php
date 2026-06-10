@@ -89,6 +89,45 @@ class AdminOperationsController extends AbstractController
     }
 
     /**
+     * Update a season
+     */
+    #[Route('/seasons/{code}', name: 'admin_operations_seasons_update', methods: ['PUT'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function updateSeason(string $code, Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $natDebut = $data['natDebut'] ?? null;
+        $natFin = $data['natFin'] ?? null;
+        $interDebut = $data['interDebut'] ?? null;
+        $interFin = $data['interFin'] ?? null;
+
+        try {
+            $this->seasonService->updateSeason($code, $natDebut, $natFin, $interDebut, $interFin);
+            $this->logActionForEvent('Modification Saison', null, $code);
+            return $this->json(['message' => 'Season updated successfully', 'code' => $code]);
+        } catch (\Exception $e) {
+            return $this->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Delete a season
+     */
+    #[Route('/seasons/{code}', name: 'admin_operations_seasons_delete', methods: ['DELETE'])]
+    #[IsGranted('ROLE_ADMIN')]
+    public function deleteSeason(string $code): JsonResponse
+    {
+        try {
+            $this->seasonService->deleteSeason($code);
+            $this->logActionForEvent('Suppression Saison', null, $code);
+            return $this->json(['message' => 'Season deleted successfully', 'code' => $code]);
+        } catch (\Exception $e) {
+            return $this->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
      * Activate a season
      */
     #[Route('/seasons/{code}/activate', name: 'admin_operations_seasons_activate', methods: ['PATCH'])]
@@ -198,6 +237,9 @@ class AdminOperationsController extends AbstractController
             $params['numeroClub'] = $request->request->get('numeroClub', '');
         } elseif ($imageType === 'logo_nation') {
             $params['codeNation'] = $request->request->get('codeNation', '');
+        } elseif ($imageType === 'photo_equipe') {
+            $params['numeroEquipe'] = $request->request->get('numeroEquipe', '');
+            $params['saison'] = $request->request->get('saison', '');
         }
 
         try {
@@ -223,13 +265,15 @@ class AdminOperationsController extends AbstractController
     {
         $imageType = $request->query->get('imageType', '');
         $search = $request->query->get('q', '');
+        $page = max(1, (int) $request->query->get('page', 1));
+        $limit = max(1, min(200, (int) $request->query->get('limit', 50)));
 
         if (empty($imageType)) {
             return $this->json(['message' => 'imageType is required'], Response::HTTP_BAD_REQUEST);
         }
 
         try {
-            $images = $this->imageService->listImagesForType($imageType, $search);
+            $images = $this->imageService->listImagesForType($imageType, $search, $page, $limit);
             return $this->json($images);
         } catch (\Exception $e) {
             return $this->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
@@ -264,12 +308,45 @@ class AdminOperationsController extends AbstractController
             $params['numeroClub'] = $data['numeroClub'] ?? '';
         } elseif ($imageType === 'logo_nation') {
             $params['codeNation'] = $data['codeNation'] ?? '';
+        } elseif ($imageType === 'photo_equipe') {
+            $params['numeroEquipe'] = $data['numeroEquipe'] ?? '';
+            $params['saison'] = $data['saison'] ?? '';
         }
 
         try {
             $result = $this->imageService->importImageFromUrl($imageType, $url, $params);
             $this->logActionForEvent('Import URL Image', null, $result['filename'] . ' from ' . $url);
             return $this->json($result);
+        } catch (\Exception $e) {
+            return $this->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
+        }
+    }
+
+    /**
+     * Delete an image (refused if still referenced in a competition)
+     */
+    #[Route('/images/delete', name: 'admin_operations_images_delete', methods: ['DELETE'])]
+    public function deleteImage(Request $request): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        $imageType = $data['imageType'] ?? '';
+        $filename  = $data['filename']  ?? '';
+
+        if (empty($imageType) || empty($filename)) {
+            return $this->json(['message' => 'Image type and filename are required'], Response::HTTP_BAD_REQUEST);
+        }
+
+        try {
+            $result = $this->imageService->deleteImage($imageType, $filename, $this->connection);
+            if (!$result['deleted']) {
+                return $this->json([
+                    'code'   => 'FILE_IN_USE',
+                    'usedBy' => $result['usedBy'],
+                ], Response::HTTP_CONFLICT);
+            }
+            $this->logActionForEvent('Delete Image', null, $filename);
+            return $this->json(['message' => 'Image deleted successfully']);
         } catch (\Exception $e) {
             return $this->json(['message' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         }

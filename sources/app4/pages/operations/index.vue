@@ -22,7 +22,7 @@ const tabs = computed(() => [
   { id: 'images' as OperationsTab, label: t('operations.tabs.images'), icon: 'i-heroicons-photo' },
   { id: 'players' as OperationsTab, label: t('operations.tabs.players'), icon: 'i-heroicons-users' },
   { id: 'teams' as OperationsTab, label: t('operations.tabs.teams'), icon: 'i-heroicons-user-group' },
-  { id: 'codes' as OperationsTab, label: t('operations.tabs.codes'), icon: 'i-heroicons-code-bracket' },
+  { id: 'codes' as OperationsTab, label: t('operations.tabs.codes'), icon: 'i-heroicons-trophy' },
   { id: 'import-export' as OperationsTab, label: t('operations.tabs.import_export'), icon: 'i-heroicons-arrow-down-tray' },
   { id: 'seasons' as OperationsTab, label: t('operations.tabs.seasons'), icon: 'i-heroicons-calendar-days' },
   { id: 'system' as OperationsTab, label: t('operations.tabs.system'), icon: 'i-heroicons-cog-6-tooth' }

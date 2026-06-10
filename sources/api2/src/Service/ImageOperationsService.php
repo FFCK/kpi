@@ -71,6 +71,17 @@ class ImageOperationsService
             'label' => 'Logo nation',
             'formatHint' => 'PNG uniquement, max 200x200px',
         ],
+        'photo_equipe' => [
+            'prefix' => '',
+            'extension' => '-team.jpg',
+            'mimeTypes' => ['image/jpeg', 'image/jpg'],
+            'maxWidth' => 1920,
+            'maxHeight' => 1080,
+            'destination' => '/img/KIP/teams/',
+            'nameFields' => ['numeroEquipe', 'saison'],
+            'label' => 'Photo équipe',
+            'formatHint' => 'JPG uniquement, max 1920x1080px',
+        ],
     ];
 
     private string $documentRoot;
@@ -311,7 +322,7 @@ class ImageOperationsService
     /**
      * List images for a given type, with optional prefix filter
      */
-    public function listImagesForType(string $imageType, string $search = ''): array
+    public function listImagesForType(string $imageType, string $search = '', int $page = 1, int $limit = 50): array
     {
         if (!isset($this->imageConfig[$imageType])) {
             throw new \Exception('Invalid image type');
@@ -321,11 +332,10 @@ class ImageOperationsService
         $directory = $this->documentRoot . $config['destination'];
 
         if (!is_dir($directory)) {
-            return [];
+            return ['total' => 0, 'items' => []];
         }
 
         $prefix = $config['prefix'];
-        // Determine allowed extensions for this type
         $allowedExts = [];
         if (isset($config['extensionByMime'])) {
             foreach ($config['extensionByMime'] as $ext) {
@@ -371,7 +381,11 @@ class ImageOperationsService
 
         usort($images, fn($a, $b) => strcmp($a['filename'], $b['filename']));
 
-        return $images;
+        $total = count($images);
+        $offset = ($page - 1) * $limit;
+        $items = array_slice($images, $offset, $limit);
+
+        return ['total' => $total, 'items' => $items];
     }
 
     /**
@@ -520,6 +534,63 @@ class ImageOperationsService
                 unlink($tmpPath);
             }
         }
+    }
+
+    /**
+     * Delete an image file after checking it is not referenced in the database.
+     *
+     * For competition images (logo, bandeau, sponsor) the columns LogoLink / BandeauLink / SponsorLink
+     * in kp_competition store just the filename — we refuse the delete when at least one row references it.
+     * Club and nation images are identified only by naming convention so no DB check is possible.
+     *
+     * Returns an array with 'usedBy' key listing competitions that reference the file (empty = safe to delete).
+     */
+    public function deleteImage(string $imageType, string $filename, \Doctrine\DBAL\Connection $connection): array
+    {
+        if (!isset($this->imageConfig[$imageType])) {
+            throw new \Exception('Invalid image type');
+        }
+
+        $config = $this->imageConfig[$imageType];
+        $directory = $this->documentRoot . $config['destination'];
+        $filePath = $directory . $filename;
+
+        // Security: ensure the resolved path stays inside the destination directory
+        $realDir = realpath($directory);
+        $realFile = realpath($filePath);
+        if ($realDir === false || $realFile === false || !str_starts_with($realFile, $realDir . DIRECTORY_SEPARATOR)) {
+            throw new \Exception('Invalid filename');
+        }
+
+        if (!file_exists($filePath)) {
+            throw new \Exception("File '$filename' does not exist");
+        }
+
+        // Check usage in DB for competition image types
+        $columnMap = [
+            'logo_competition'    => 'LogoLink',
+            'bandeau_competition' => 'BandeauLink',
+            'sponsor_competition' => 'SponsorLink',
+        ];
+
+        if (isset($columnMap[$imageType])) {
+            $col = $columnMap[$imageType];
+            $stmt = $connection->prepare(
+                "SELECT Code, Code_saison FROM kp_competition WHERE $col = ? LIMIT 10"
+            );
+            $result = $stmt->executeQuery([$filename]);
+            $rows = $result->fetchAllAssociative();
+            if (!empty($rows)) {
+                $usedBy = array_map(fn($r) => $r['Code'] . ' (' . $r['Code_saison'] . ')', $rows);
+                return ['deleted' => false, 'usedBy' => $usedBy];
+            }
+        }
+
+        if (!unlink($filePath)) {
+            throw new \Exception('Cannot delete file');
+        }
+
+        return ['deleted' => true, 'usedBy' => []];
     }
 
     /**

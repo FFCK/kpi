@@ -5,6 +5,9 @@ const { t } = useI18n()
 const api = useApi()
 const toast = useToast()
 
+// Internal tab navigation
+const activeSubTab = ref('export')
+
 // State
 const loading = ref(false)
 const events = ref<OperationsEvent[]>([])
@@ -170,13 +173,32 @@ const canImport = computed(() => importEventId.value !== null && importEventId.v
 </script>
 
 <template>
-  <div class="space-y-8">
-    <!-- Export section -->
-    <section>
-      <h2 class="text-lg font-semibold text-header-900 mb-4">
-        {{ t('operations.import_export.export_title') }}
-      </h2>
+  <div class="space-y-6">
+    <!-- Internal sub-tab navigation -->
+    <div class="border-b border-header-200">
+      <nav class="-mb-px flex space-x-1 overflow-x-auto" aria-label="Import/Export tabs">
+        <button
+          v-for="tab in [
+            { id: 'export', label: t('operations.import_export.export_title'), icon: 'i-heroicons-arrow-down-tray' },
+            { id: 'import', label: t('operations.import_export.import_title'), icon: 'i-heroicons-arrow-up-tray' },
+          ]"
+          :key="tab.id"
+          :class="[
+            activeSubTab === tab.id
+              ? 'border-primary-500 text-primary-600 bg-primary-50'
+              : 'border-transparent text-header-500 hover:text-header-700 hover:border-header-300',
+            'whitespace-nowrap py-2 px-4 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors rounded-t'
+          ]"
+          @click="activeSubTab = tab.id"
+        >
+          <UIcon :name="tab.icon" class="w-4 h-4" />
+          {{ tab.label }}
+        </button>
+      </nav>
+    </div>
 
+    <!-- Export section -->
+    <section v-if="activeSubTab === 'export'">
       <div class="max-w-xl space-y-4">
         <div class="relative">
           <label class="block text-sm font-medium text-header-700 mb-1">
@@ -231,11 +253,7 @@ const canImport = computed(() => importEventId.value !== null && importEventId.v
     </section>
 
     <!-- Import section -->
-    <section>
-      <h2 class="text-lg font-semibold text-header-900 mb-4">
-        {{ t('operations.import_export.import_title') }}
-      </h2>
-
+    <section v-if="activeSubTab === 'import'">
       <div class="bg-warning-50 border border-warning-200 rounded-lg p-4 mb-4">
         <div class="flex items-start gap-3">
           <UIcon name="i-heroicons-exclamation-triangle" class="w-5 h-5 text-warning-600 mt-0.5 shrink-0" />

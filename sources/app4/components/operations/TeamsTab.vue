@@ -5,6 +5,9 @@ const { t } = useI18n()
 const api = useApi()
 const toast = useToast()
 
+// Internal tab navigation
+const activeSubTab = ref('rename')
+
 // State
 const loading = ref(false)
 
@@ -319,13 +322,34 @@ const confirmMove = async () => {
 </script>
 
 <template>
-  <div class="space-y-8">
-    <!-- Rename team -->
-    <section>
-      <h2 class="text-lg font-semibold text-header-900 mb-4">
-        {{ t('operations.teams.rename') }}
-      </h2>
+  <div class="space-y-6">
+    <!-- Internal sub-tab navigation -->
+    <div class="border-b border-header-200">
+      <nav class="-mb-px flex space-x-1 overflow-x-auto" aria-label="Teams tabs">
+        <button
+          v-for="tab in [
+            { id: 'rename', label: t('operations.teams.rename'), icon: 'i-heroicons-pencil' },
+            { id: 'merge', label: t('operations.teams.merge'), icon: 'i-heroicons-arrows-right-left' },
+            { id: 'move', label: t('operations.teams.move'), icon: 'i-heroicons-arrow-right-circle' },
+            { id: 'locks', label: t('operations.import_export.locks_title'), icon: 'i-heroicons-lock-closed' },
+          ]"
+          :key="tab.id"
+          :class="[
+            activeSubTab === tab.id
+              ? 'border-primary-500 text-primary-600 bg-primary-50'
+              : 'border-transparent text-header-500 hover:text-header-700 hover:border-header-300',
+            'whitespace-nowrap py-2 px-4 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors rounded-t'
+          ]"
+          @click="activeSubTab = tab.id"
+        >
+          <UIcon :name="tab.icon" class="w-4 h-4" />
+          {{ tab.label }}
+        </button>
+      </nav>
+    </div>
 
+    <!-- Rename team -->
+    <section v-if="activeSubTab === 'rename'">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Team search -->
         <div class="relative">
@@ -381,11 +405,7 @@ const confirmMove = async () => {
     </section>
 
     <!-- Merge teams -->
-    <section>
-      <h2 class="text-lg font-semibold text-header-900 mb-4">
-        {{ t('operations.teams.merge') }}
-      </h2>
-
+    <section v-if="activeSubTab === 'merge'">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Source team -->
         <div class="relative">
@@ -458,11 +478,7 @@ const confirmMove = async () => {
     </section>
 
     <!-- Move team -->
-    <section>
-      <h2 class="text-lg font-semibold text-header-900 mb-4">
-        {{ t('operations.teams.move') }}
-      </h2>
-
+    <section v-if="activeSubTab === 'move'">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Team search -->
         <div class="relative">
@@ -535,10 +551,7 @@ const confirmMove = async () => {
     </section>
 
     <!-- Competition locks -->
-    <section>
-      <h2 class="text-lg font-semibold text-header-900 mb-2">
-        {{ t('operations.import_export.locks_title') }}
-      </h2>
+    <section v-if="activeSubTab === 'locks'">
       <p class="text-sm text-header-600 mb-4">
         {{ t('operations.import_export.locks_description') }}
       </p>

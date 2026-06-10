@@ -9,6 +9,8 @@ definePageMeta({
 const { t } = useI18n()
 const api = useApi()
 const route = useRoute()
+const config = useRuntimeConfig()
+const legacyBaseUrl = config.public.legacyBaseUrl as string
 
 const numero = computed(() => Number(route.params.numero))
 const team = ref<TeamDetail | null>(null)
@@ -51,12 +53,13 @@ onMounted(() => {
 
     <template v-else-if="team">
       <!-- Header -->
-      <div class="bg-white border border-header-200 rounded-lg p-5 mb-4">
-        <h1 class="text-2xl font-bold text-header-900 mb-2">
-          {{ team.libelle }}
-        </h1>
+      <div class="bg-white border border-header-200 rounded-lg p-5 mb-4 flex items-start gap-5">
+        <div class="flex-1 min-w-0">
+          <h1 class="text-2xl font-bold text-header-900 mb-2">
+            {{ team.libelle }}
+          </h1>
 
-        <div class="flex flex-wrap items-center gap-4 text-sm text-header-600">
+          <div class="flex flex-wrap items-center gap-4 text-sm text-header-600">
           <!-- Club -->
           <div class="flex items-center gap-1.5">
             <UIcon name="i-heroicons-building-office-2" class="w-4 h-4 text-header-400" />
@@ -90,6 +93,19 @@ onMounted(() => {
               A
             </span>
           </div>
+          </div>
+        </div>
+
+        <!-- Team photo -->
+        <div v-if="team.latestPhoto" class="relative shrink-0">
+          <img
+            :src="`${legacyBaseUrl}/img/KIP/teams/${team.latestPhoto}`"
+            :alt="team.libelle"
+            class="h-32 w-48 object-cover rounded-lg border border-header-200"
+          >
+          <span class="absolute bottom-1.5 right-1.5 bg-black/60 text-white text-xs font-medium px-1.5 py-0.5 rounded">
+            {{ team.latestPhotoSaison }}
+          </span>
         </div>
       </div>
 

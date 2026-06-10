@@ -337,6 +337,26 @@ class AdminClubsController extends AbstractController
 
         $compets = $this->connection->fetchAllAssociative($sqlCompets, [$numero]);
 
+        // Find the most recent team photo from /img/KIP/teams/
+        $teamsDir = ($_SERVER['DOCUMENT_ROOT'] ?? dirname(__DIR__, 4)) . '/img/KIP/teams/';
+        $latestPhoto = null;
+        $latestSaison = null;
+        if (is_dir($teamsDir)) {
+            $prefix = $numero . '-';
+            $suffix = '-team.jpg';
+            foreach (scandir($teamsDir) as $file) {
+                if (!str_starts_with($file, $prefix) || !str_ends_with($file, $suffix)) {
+                    continue;
+                }
+                // Extract saison from "{numero}-{saison}-team.jpg"
+                $inner = substr($file, strlen($prefix), -strlen($suffix));
+                if ($latestSaison === null || strcmp($inner, $latestSaison) > 0) {
+                    $latestSaison = $inner;
+                    $latestPhoto = $file;
+                }
+            }
+        }
+
         return $this->json([
             'numero' => (int) $row['Numero'],
             'libelle' => $row['Libelle'],
@@ -346,6 +366,8 @@ class AdminClubsController extends AbstractController
             'color1' => $row['color1'] ?? '',
             'color2' => $row['color2'] ?? '',
             'colortext' => $row['colortext'] ?? '',
+            'latestPhoto' => $latestPhoto,
+            'latestPhotoSaison' => $latestSaison,
             'competitions' => array_map(function (array $r): array {
                 $type = $r['codeTypeclt'] ?: 'CHPT';
                 // Public final ranking source depends on competition type:

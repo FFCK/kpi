@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import type { OperationsSeason, OperationsCompetition, CopyRcResult, CopyCompetitionsResult } from '~/types/operations'
+import type { OperationsSeason } from '~/types/operations'
 
 const { t } = useI18n()
 const api = useApi()
 const toast = useToast()
 
+// Internal tab navigation
+const activeSubTab = ref<'list' | 'add'>('list')
+
 // State
 const loading = ref(false)
 const seasons = ref<OperationsSeason[]>([])
-const competitions = ref<OperationsCompetition[]>([])
 
 // Form state - Add season
 const newSeasonCode = ref('')
@@ -17,19 +19,21 @@ const newSeasonNatFin = ref('')
 const newSeasonInterDebut = ref('')
 const newSeasonInterFin = ref('')
 
-// Form state - Copy RC
-const copyRcSource = ref('')
-const copyRcTarget = ref('')
-
-// Form state - Copy competitions
-const copyCompSource = ref('')
-const copyCompTarget = ref('')
-const selectedCompetitions = ref<string[]>([])
-const copyMatches = ref(false)
-
-// Modal state
+// Modal state - Activate
 const confirmActivateModal = ref(false)
 const seasonToActivate = ref<OperationsSeason | null>(null)
+
+// Modal state - Edit
+const editModal = ref(false)
+const seasonToEdit = ref<OperationsSeason | null>(null)
+const editNatDebut = ref('')
+const editNatFin = ref('')
+const editInterDebut = ref('')
+const editInterFin = ref('')
+
+// Modal state - Delete
+const confirmDeleteModal = ref(false)
+const seasonToDelete = ref<OperationsSeason | null>(null)
 
 // Load seasons
 const loadSeasons = async () => {
@@ -47,27 +51,6 @@ const loadSeasons = async () => {
     loading.value = false
   }
 }
-
-// Load competitions for source season
-const loadCompetitions = async () => {
-  if (!copyCompSource.value) {
-    competitions.value = []
-    return
-  }
-  try {
-    competitions.value = await api.get<OperationsCompetition[]>(
-      `/admin/operations/seasons/${copyCompSource.value}/competitions`
-    )
-  } catch {
-    competitions.value = []
-  }
-}
-
-// Watch for source season change
-watch(copyCompSource, () => {
-  selectedCompetitions.value = []
-  loadCompetitions()
-})
 
 // Add season
 const addSeason = async () => {
@@ -98,6 +81,48 @@ const addSeason = async () => {
     toast.add({
       title: t('common.error'),
       description: t('operations.seasons.error_add'),
+      color: 'error',
+      duration: 3000
+    })
+  } finally {
+    loading.value = false
+  }
+}
+
+// Edit season
+const openEditModal = (season: OperationsSeason) => {
+  seasonToEdit.value = season
+  editNatDebut.value = season.natDebut ? season.natDebut.substring(0, 10) : ''
+  editNatFin.value = season.natFin ? season.natFin.substring(0, 10) : ''
+  editInterDebut.value = season.interDebut ? season.interDebut.substring(0, 10) : ''
+  editInterFin.value = season.interFin ? season.interFin.substring(0, 10) : ''
+  editModal.value = true
+}
+
+const confirmEdit = async () => {
+  if (!seasonToEdit.value) return
+
+  loading.value = true
+  try {
+    await api.put(`/admin/operations/seasons/${seasonToEdit.value.code}`, {
+      natDebut: editNatDebut.value || null,
+      natFin: editNatFin.value || null,
+      interDebut: editInterDebut.value || null,
+      interFin: editInterFin.value || null
+    })
+    toast.add({
+      title: t('common.success'),
+      description: t('operations.seasons.success_edit'),
+      color: 'success',
+      duration: 3000
+    })
+    editModal.value = false
+    seasonToEdit.value = null
+    loadSeasons()
+  } catch {
+    toast.add({
+      title: t('common.error'),
+      description: t('operations.seasons.error_edit'),
       color: 'error',
       duration: 3000
     })
@@ -139,78 +164,38 @@ const confirmActivate = async () => {
   }
 }
 
-// Copy RC
-const copyRc = async () => {
-  if (!copyRcSource.value || !copyRcTarget.value) return
+// Delete season
+const openDeleteModal = (season: OperationsSeason) => {
+  seasonToDelete.value = season
+  confirmDeleteModal.value = true
+}
+
+const confirmDelete = async () => {
+  if (!seasonToDelete.value) return
 
   loading.value = true
   try {
-    const result = await api.post<CopyRcResult>('/admin/operations/seasons/copy-rc', {
-      sourceCode: copyRcSource.value,
-      targetCode: copyRcTarget.value
-    })
+    await api.del(`/admin/operations/seasons/${seasonToDelete.value.code}`)
     toast.add({
       title: t('common.success'),
-      description: t('operations.seasons.success_copy_rc', { copied: result.copied, skipped: result.skipped }),
+      description: t('operations.seasons.success_delete'),
       color: 'success',
       duration: 3000
     })
-    copyRcSource.value = ''
-    copyRcTarget.value = ''
-  } catch {
+    confirmDeleteModal.value = false
+    seasonToDelete.value = null
+    loadSeasons()
+  } catch (err: unknown) {
+    const message = (err as { data?: { message?: string } })?.data?.message
     toast.add({
       title: t('common.error'),
-      description: t('operations.seasons.error_copy_rc'),
+      description: message || t('operations.seasons.error_delete'),
       color: 'error',
-      duration: 3000
+      duration: 5000
     })
   } finally {
     loading.value = false
   }
-}
-
-// Copy competitions
-const copyCompetitions = async () => {
-  if (!copyCompSource.value || !copyCompTarget.value || selectedCompetitions.value.length === 0) return
-
-  loading.value = true
-  try {
-    const result = await api.post<CopyCompetitionsResult>('/admin/operations/seasons/copy-competitions', {
-      sourceCode: copyCompSource.value,
-      targetCode: copyCompTarget.value,
-      competitionCodes: selectedCompetitions.value,
-      copyMatches: copyMatches.value
-    })
-    toast.add({
-      title: t('common.success'),
-      description: t('operations.seasons.success_copy_competitions', { copied: result.copied }),
-      color: 'success',
-      duration: 3000
-    })
-    copyCompSource.value = ''
-    copyCompTarget.value = ''
-    selectedCompetitions.value = []
-    copyMatches.value = false
-    competitions.value = []
-  } catch {
-    toast.add({
-      title: t('common.error'),
-      description: t('operations.seasons.error_copy_competitions'),
-      color: 'error',
-      duration: 3000
-    })
-  } finally {
-    loading.value = false
-  }
-}
-
-// Select/deselect all competitions
-const selectAllCompetitions = () => {
-  selectedCompetitions.value = competitions.value.map(c => c.code)
-}
-
-const deselectAllCompetitions = () => {
-  selectedCompetitions.value = []
 }
 
 // Format date
@@ -226,13 +211,32 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="space-y-8">
-    <!-- Season list -->
-    <section>
-      <h2 class="text-lg font-semibold text-header-900 mb-4">
-        {{ t('operations.seasons.list') }}
-      </h2>
+  <div class="space-y-6">
+    <!-- Internal sub-tab navigation -->
+    <div class="border-b border-header-200">
+      <nav class="-mb-px flex space-x-1 overflow-x-auto" aria-label="Season tabs">
+        <button
+          v-for="tab in [
+            { id: 'list', label: t('operations.seasons.list'), icon: 'i-heroicons-list-bullet' },
+            { id: 'add', label: t('operations.seasons.add'), icon: 'i-heroicons-plus-circle' },
+          ]"
+          :key="tab.id"
+          :class="[
+            activeSubTab === tab.id
+              ? 'border-primary-500 text-primary-600 bg-primary-50'
+              : 'border-transparent text-header-500 hover:text-header-700 hover:border-header-300',
+            'whitespace-nowrap py-2 px-4 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors rounded-t'
+          ]"
+          @click="activeSubTab = tab.id as 'list' | 'add'"
+        >
+          <UIcon :name="tab.icon" class="w-4 h-4" />
+          {{ tab.label }}
+        </button>
+      </nav>
+    </div>
 
+    <!-- Season list -->
+    <section v-if="activeSubTab === 'list'">
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-header-200">
           <thead class="bg-header-50">
@@ -240,8 +244,14 @@ onMounted(() => {
               <th class="px-4 py-3 text-left text-xs font-medium text-header-500 uppercase">
                 {{ t('operations.seasons.code') }}
               </th>
+              <th class="px-4 py-3 text-center text-xs font-medium text-header-500 uppercase">
+                {{ t('common.edit') }}
+              </th>
               <th class="px-4 py-3 text-left text-xs font-medium text-header-500 uppercase">
                 {{ t('operations.seasons.status') }}
+              </th>
+              <th class="px-4 py-3 text-center text-xs font-medium text-header-500 uppercase">
+                {{ t('operations.seasons.activate') }}
               </th>
               <th class="px-4 py-3 text-left text-xs font-medium text-header-500 uppercase">
                 {{ t('operations.seasons.nat_start') }}
@@ -262,7 +272,7 @@ onMounted(() => {
           </thead>
           <tbody class="bg-white divide-y divide-header-200">
             <tr v-if="loading && seasons.length === 0">
-              <td colspan="7" class="px-4 py-8 text-center text-header-500">
+              <td colspan="9" class="px-4 py-8 text-center text-header-500">
                 <UIcon name="i-heroicons-arrow-path" class="w-6 h-6 animate-spin mx-auto mb-2" />
                 {{ t('common.loading') }}
               </td>
@@ -270,6 +280,15 @@ onMounted(() => {
             <tr v-for="season in seasons" :key="season.code" :class="{ 'bg-success-200': season.active }">
               <td class="px-4 py-3 text-sm font-medium text-header-900">
                 {{ season.code }}
+              </td>
+              <td class="px-4 py-3 text-center">
+                <button
+                  :title="t('common.edit')"
+                  class="p-1 text-header-500 hover:text-header-900 rounded"
+                  @click="openEditModal(season)"
+                >
+                  <UIcon name="i-heroicons-pencil-square" class="w-5 h-5" />
+                </button>
               </td>
               <td class="px-4 py-3 text-sm">
                 <span
@@ -281,6 +300,16 @@ onMounted(() => {
                   {{ season.active ? t('operations.seasons.active') : t('operations.seasons.inactive') }}
                 </span>
               </td>
+              <td class="px-4 py-3 text-center">
+                <button
+                  v-if="!season.active"
+                  :title="t('operations.seasons.activate')"
+                  class="p-1 text-primary-500 hover:text-primary-700 rounded"
+                  @click="openActivateModal(season)"
+                >
+                  <UIcon name="i-heroicons-check-circle" class="w-5 h-5" />
+                </button>
+              </td>
               <td class="px-4 py-3 text-sm text-header-500">{{ formatDate(season.natDebut) }}</td>
               <td class="px-4 py-3 text-sm text-header-500">{{ formatDate(season.natFin) }}</td>
               <td class="px-4 py-3 text-sm text-header-500">{{ formatDate(season.interDebut) }}</td>
@@ -288,10 +317,11 @@ onMounted(() => {
               <td class="px-4 py-3 text-right">
                 <button
                   v-if="!season.active"
-                  class="text-sm text-primary-600 hover:text-primary-800"
-                  @click="openActivateModal(season)"
+                  :title="t('common.delete')"
+                  class="p-1 text-error-500 hover:text-error-700 rounded"
+                  @click="openDeleteModal(season)"
                 >
-                  {{ t('operations.seasons.activate') }}
+                  <UIcon name="i-heroicons-trash" class="w-5 h-5" />
                 </button>
               </td>
             </tr>
@@ -301,10 +331,7 @@ onMounted(() => {
     </section>
 
     <!-- Add season -->
-    <section>
-      <h2 class="text-lg font-semibold text-header-900 mb-4">
-        {{ t('operations.seasons.add') }}
-      </h2>
+    <section v-if="activeSubTab === 'add'">
 
       <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4">
         <div>
@@ -370,157 +397,73 @@ onMounted(() => {
       </div>
     </section>
 
-    <!-- Copy RC -->
-    <section>
-      <h2 class="text-lg font-semibold text-header-900 mb-4">
-        {{ t('operations.seasons.copy_rc') }}
-      </h2>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
-        <div>
-          <label class="block text-sm font-medium text-header-700 mb-1">
-            {{ t('operations.seasons.source_season') }}
-          </label>
-          <select
-            v-model="copyRcSource"
-            class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-          >
-            <option value="">--</option>
-            <option v-for="season in seasons" :key="season.code" :value="season.code">
-              {{ season.code }} {{ season.active ? '(active)' : '' }}
-            </option>
-          </select>
-        </div>
-        <div>
-          <label class="block text-sm font-medium text-header-700 mb-1">
-            {{ t('operations.seasons.target_season') }}
-          </label>
-          <select
-            v-model="copyRcTarget"
-            class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-          >
-            <option value="">--</option>
-            <option
-              v-for="season in seasons"
-              :key="season.code"
-              :value="season.code"
-              :disabled="season.code === copyRcSource"
-            >
-              {{ season.code }} {{ season.active ? '(active)' : '' }}
-            </option>
-          </select>
-        </div>
-        <div>
-          <button
-            :disabled="!copyRcSource || !copyRcTarget || loading"
-            class="w-full px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
-            @click="copyRc"
-          >
-            {{ t('operations.seasons.copy_rc_button') }}
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- Copy competitions -->
-    <section>
-      <h2 class="text-lg font-semibold text-header-900 mb-4">
-        {{ t('operations.seasons.copy_competitions') }}
-      </h2>
-
-      <div class="space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-header-700 mb-1">
-              {{ t('operations.seasons.source_season') }}
-            </label>
-            <select
-              v-model="copyCompSource"
-              class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-            >
-              <option value="">--</option>
-              <option v-for="season in seasons" :key="season.code" :value="season.code">
-                {{ season.code }} {{ season.active ? '(active)' : '' }}
-              </option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-header-700 mb-1">
-              {{ t('operations.seasons.target_season') }}
-            </label>
-            <select
-              v-model="copyCompTarget"
-              class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-            >
-              <option value="">--</option>
-              <option
-                v-for="season in seasons"
-                :key="season.code"
-                :value="season.code"
-                :disabled="season.code === copyCompSource"
+    <!-- Edit season modal -->
+    <UModal v-model:open="editModal">
+      <template #content>
+        <div class="p-6 space-y-4">
+          <h3 class="text-lg font-semibold text-header-900">
+            {{ t('operations.seasons.edit') }} — {{ seasonToEdit?.code }}
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-header-700 mb-1">
+                {{ t('operations.seasons.nat_start') }}
+              </label>
+              <input
+                v-model="editNatDebut"
+                type="date"
+                class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
               >
-                {{ season.code }} {{ season.active ? '(active)' : '' }}
-              </option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Competitions selection -->
-        <div v-if="competitions.length > 0">
-          <div class="flex items-center justify-between mb-2">
-            <label class="block text-sm font-medium text-header-700">
-              {{ t('operations.seasons.select_competitions') }}
-            </label>
-            <div class="flex gap-2">
-              <button class="text-sm text-primary-600 hover:underline" @click="selectAllCompetitions">
-                {{ t('stats.params.select_all') }}
-              </button>
-              <button class="text-sm text-header-600 hover:underline" @click="deselectAllCompetitions">
-                {{ t('stats.params.deselect_all') }}
-              </button>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-header-700 mb-1">
+                {{ t('operations.seasons.nat_end') }}
+              </label>
+              <input
+                v-model="editNatFin"
+                type="date"
+                class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              >
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-header-700 mb-1">
+                {{ t('operations.seasons.inter_start') }}
+              </label>
+              <input
+                v-model="editInterDebut"
+                type="date"
+                class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              >
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-header-700 mb-1">
+                {{ t('operations.seasons.inter_end') }}
+              </label>
+              <input
+                v-model="editInterFin"
+                type="date"
+                class="w-full px-3 py-2 border border-header-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+              >
             </div>
           </div>
-          <div class="max-h-48 overflow-y-auto border border-header-200 rounded-lg p-2 space-y-1">
-            <label
-              v-for="comp in competitions"
-              :key="comp.code"
-              class="flex items-center gap-2 p-2 hover:bg-header-50 rounded cursor-pointer"
+          <div class="flex justify-end gap-3 pt-2">
+            <button
+              class="px-4 py-2 text-sm border border-header-300 rounded-lg hover:bg-header-50"
+              @click="editModal = false"
             >
-              <input
-                v-model="selectedCompetitions"
-                type="checkbox"
-                :value="comp.code"
-                class="w-4 h-4 rounded border-header-300 text-primary-600 focus:ring-primary-500"
-              >
-              <span class="text-sm">{{ comp.code }} - {{ comp.libelle }}</span>
-            </label>
+              {{ t('common.cancel') }}
+            </button>
+            <button
+              :disabled="loading"
+              class="px-4 py-2 text-sm bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              @click="confirmEdit"
+            >
+              {{ t('common.save') }}
+            </button>
           </div>
         </div>
-
-        <!-- Copy matches option -->
-        <div v-if="selectedCompetitions.length > 0">
-          <label class="flex items-center gap-2">
-            <input
-              v-model="copyMatches"
-              type="checkbox"
-              class="w-4 h-4 rounded border-header-300 text-primary-600 focus:ring-primary-500"
-            >
-            <span class="text-sm text-header-700">{{ t('operations.seasons.copy_matches') }}</span>
-          </label>
-        </div>
-
-        <button
-          :disabled="!copyCompSource || !copyCompTarget || selectedCompetitions.length === 0 || loading"
-          class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed"
-          @click="copyCompetitions"
-        >
-          {{ t('operations.seasons.copy_competitions_button') }}
-          <span v-if="selectedCompetitions.length > 0" class="ml-1">
-            ({{ selectedCompetitions.length }})
-          </span>
-        </button>
-      </div>
-    </section>
+      </template>
+    </UModal>
 
     <!-- Confirm activate modal -->
     <AdminConfirmModal
@@ -533,6 +476,20 @@ onMounted(() => {
       :loading="loading"
       @close="confirmActivateModal = false"
       @confirm="confirmActivate"
+    />
+
+    <!-- Confirm delete modal -->
+    <AdminConfirmModal
+      :open="confirmDeleteModal"
+      :title="t('operations.seasons.confirm_delete')"
+      :message="t('operations.seasons.confirm_delete_message')"
+      :item-name="seasonToDelete?.code"
+      :confirm-text="t('common.delete')"
+      :cancel-text="t('common.cancel')"
+      :loading="loading"
+      variant="danger"
+      @close="confirmDeleteModal = false"
+      @confirm="confirmDelete"
     />
   </div>
 </template>

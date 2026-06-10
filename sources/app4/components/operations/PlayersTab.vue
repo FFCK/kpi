@@ -5,6 +5,9 @@ const { t } = useI18n()
 const api = useApi()
 const toast = useToast()
 
+// Internal tab navigation
+const activeSubTab = ref('manual_merge')
+
 // State
 const loading = ref(false)
 const searchSource = ref('')
@@ -206,13 +209,33 @@ const onClickOutside = () => {
 </script>
 
 <template>
-  <div class="space-y-8" @click.self="onClickOutside">
-    <!-- Manual merge -->
-    <section>
-      <h2 class="text-lg font-semibold text-header-900 mb-4">
-        {{ t('operations.players.manual_merge') }}
-      </h2>
+  <div class="space-y-6" @click.self="onClickOutside">
+    <!-- Internal sub-tab navigation -->
+    <div class="border-b border-header-200">
+      <nav class="-mb-px flex space-x-1 overflow-x-auto" aria-label="Players tabs">
+        <button
+          v-for="tab in [
+            { id: 'manual_merge', label: t('operations.players.manual_merge'), icon: 'i-heroicons-arrows-right-left' },
+            { id: 'auto_merge', label: t('operations.players.auto_merge'), icon: 'i-heroicons-sparkles' },
+            { id: 'pce', label: t('operations.import_export.pce_title'), icon: 'i-heroicons-arrow-down-tray' },
+          ]"
+          :key="tab.id"
+          :class="[
+            activeSubTab === tab.id
+              ? 'border-primary-500 text-primary-600 bg-primary-50'
+              : 'border-transparent text-header-500 hover:text-header-700 hover:border-header-300',
+            'whitespace-nowrap py-2 px-4 border-b-2 font-medium text-sm flex items-center gap-2 transition-colors rounded-t'
+          ]"
+          @click="activeSubTab = tab.id"
+        >
+          <UIcon :name="tab.icon" class="w-4 h-4" />
+          {{ tab.label }}
+        </button>
+      </nav>
+    </div>
 
+    <!-- Manual merge -->
+    <section v-if="activeSubTab === 'manual_merge'">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <!-- Source player -->
         <div class="relative">
@@ -308,11 +331,7 @@ const onClickOutside = () => {
     </section>
 
     <!-- Auto merge -->
-    <section>
-      <h2 class="text-lg font-semibold text-header-900 mb-4">
-        {{ t('operations.players.auto_merge') }}
-      </h2>
-
+    <section v-if="activeSubTab === 'auto_merge'">
       <div class="bg-warning-50 border border-warning-200 rounded-lg p-4">
         <div class="flex items-start gap-3">
           <UIcon name="i-heroicons-exclamation-triangle" class="w-5 h-5 text-warning-600 mt-0.5 shrink-0" />
@@ -332,10 +351,7 @@ const onClickOutside = () => {
     </section>
 
     <!-- PCE import -->
-    <section>
-      <h2 class="text-lg font-semibold text-header-900 mb-2">
-        {{ t('operations.import_export.pce_title') }}
-      </h2>
+    <section v-if="activeSubTab === 'pce'">
       <p class="text-sm text-header-600 mb-4">
         {{ t('operations.import_export.pce_description') }}
       </p>

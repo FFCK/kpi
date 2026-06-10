@@ -74,6 +74,51 @@ class SeasonOperationsService
     }
 
     /**
+     * Update a season's date fields
+     */
+    public function updateSeason(string $code, ?string $natDebut, ?string $natFin, ?string $interDebut, ?string $interFin): void
+    {
+        $sql = "SELECT COUNT(*) FROM kp_saison WHERE Code = ?";
+        $stmt = $this->connection->prepare($sql);
+        $result = $stmt->executeQuery([$code]);
+
+        if ((int) $result->fetchOne() === 0) {
+            throw new \Exception("Season $code not found");
+        }
+
+        $sql = "UPDATE kp_saison SET Nat_debut = ?, Nat_fin = ?, Inter_debut = ?, Inter_fin = ? WHERE Code = ?";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->executeStatement([$natDebut, $natFin, $interDebut, $interFin, $code]);
+    }
+
+    /**
+     * Delete a season
+     */
+    public function deleteSeason(string $code): void
+    {
+        $sql = "SELECT COUNT(*) FROM kp_saison WHERE Code = ?";
+        $stmt = $this->connection->prepare($sql);
+        $result = $stmt->executeQuery([$code]);
+
+        if ((int) $result->fetchOne() === 0) {
+            throw new \Exception("Season $code not found");
+        }
+
+        $sql = "SELECT Etat FROM kp_saison WHERE Code = ?";
+        $stmt = $this->connection->prepare($sql);
+        $result = $stmt->executeQuery([$code]);
+        $etat = $result->fetchOne();
+
+        if ($etat === 'A') {
+            throw new \Exception("Cannot delete the active season");
+        }
+
+        $sql = "DELETE FROM kp_saison WHERE Code = ?";
+        $stmt = $this->connection->prepare($sql);
+        $stmt->executeStatement([$code]);
+    }
+
+    /**
      * Activate a season (deactivates all others)
      */
     public function activateSeason(string $code): void

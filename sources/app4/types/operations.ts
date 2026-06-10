@@ -63,6 +63,7 @@ export type ImageType =
   | 'sponsor_competition'
   | 'logo_club'
   | 'logo_nation'
+  | 'photo_equipe'
 
 // Image upload params
 export interface ImageUploadParams {
