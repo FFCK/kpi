@@ -264,6 +264,10 @@ const toggleDropdown = (label: string) => {
   openDropdown.value = openDropdown.value === label ? null : label
 }
 
+// Public links dropdown (right side)
+const publicMenuOpen = ref(false)
+const publicMenuRef = ref<HTMLElement | null>(null)
+
 // Mobile accordion
 const mobileExpanded = ref<string | null>(null)
 const toggleMobileExpanded = (label: string) => {
@@ -278,6 +282,9 @@ onMounted(() => {
     }
     if (navRef.value && !navRef.value.contains(event.target as Node)) {
       openDropdown.value = null
+    }
+    if (publicMenuRef.value && !publicMenuRef.value.contains(event.target as Node)) {
+      publicMenuOpen.value = false
     }
   }
   document.addEventListener('click', handleClickOutside)
@@ -329,27 +336,6 @@ onMounted(() => {
 
         <!-- Center: Horizontal menu (desktop only) -->
         <nav ref="navRef" class="hidden lg:flex items-center space-x-1">
-          <!-- Section: Public -->
-          <a
-            :href="runtimeConfig.public.legacyBaseUrl"
-            target="_blank"
-            class="flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium transition-colors
-              text-success-300 hover:text-light-50 hover:bg-success-800
-            "
-          >
-            <UIcon name="heroicons:arrow-top-right-on-square" class="w-4 h-4" />
-            <span>KPI Public</span>
-          </a>
-          <a
-            :href="runtimeConfig.public.app2BaseUrl"
-            target="_blank"
-            class="flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium transition-colors
-              text-success-300 hover:text-light-50 hover:bg-success-800
-            "
-          >
-            <UIcon name="heroicons:arrow-top-right-on-square" class="w-4 h-4" />
-            <span>KPI App</span>
-          </a>
           <!-- Section: Competition Management -->
           <template v-for="item in competitionMenuItems" :key="item.label">
             <NuxtLink
@@ -419,6 +405,63 @@ onMounted(() => {
                     <span>{{ item.label }}</span>
                   </NuxtLink>
                 </template>
+              </div>
+            </Transition>
+          </div>
+
+          <!-- Separator before public links -->
+          <div class="h-6 w-px bg-header-700 mx-2" />
+
+          <!-- Public links dropdown -->
+          <div ref="publicMenuRef" class="relative">
+            <button
+              :class="[
+                'flex items-center gap-1 px-3 py-2 rounded-md text-sm font-medium transition-colors',
+                publicMenuOpen
+                  ? 'text-success-200 bg-success-900'
+                  : 'text-success-300 hover:text-light-50 hover:bg-success-900'
+              ]"
+              @click="publicMenuOpen = !publicMenuOpen"
+            >
+              <UIcon name="heroicons:arrow-top-right-on-square" class="w-4 h-4" />
+              <span>KPI</span>
+              <UIcon
+                name="heroicons:chevron-down"
+                class="w-3 h-3 transition-transform"
+                :class="{ 'rotate-180': publicMenuOpen }"
+              />
+            </button>
+            <Transition
+              enter-active-class="transition ease-out duration-100"
+              enter-from-class="transform opacity-0 scale-95"
+              enter-to-class="transform opacity-100 scale-100"
+              leave-active-class="transition ease-in duration-75"
+              leave-from-class="transform opacity-100 scale-100"
+              leave-to-class="transform opacity-0 scale-95"
+            >
+              <div
+                v-if="publicMenuOpen"
+                class="absolute right-0 mt-1 w-44 bg-header-950 rounded-lg shadow-lg border border-header-700 py-1 z-50"
+              >
+                <a
+                  :href="runtimeConfig.public.legacyBaseUrl"
+                  target="_blank"
+                  class="flex items-center gap-2 px-4 py-2 text-sm text-success-300 hover:bg-header-800 hover:text-success-100 transition-colors"
+                  @click="publicMenuOpen = false"
+                >
+                  <UIcon name="heroicons:arrow-top-right-on-square" class="w-4 h-4" />
+                  <span>KPI Public</span>
+                </a>
+                <div class="border-t border-header-700 my-1" />
+                <a
+                  :href="runtimeConfig.public.app2BaseUrl"
+                  target="_blank"
+                  class="flex items-center gap-2 px-4 py-2 text-sm text-success-300 hover:bg-header-800 hover:text-success-100 transition-colors"
+                  @click="publicMenuOpen = false"
+                >
+                  <UIcon name="heroicons:arrow-top-right-on-square" class="w-4 h-4" />
+                  <span>KPI App</span>
+                </a>
               </div>
             </Transition>
           </div>
