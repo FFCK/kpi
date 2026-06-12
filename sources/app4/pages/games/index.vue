@@ -1885,20 +1885,22 @@ const openScoring = (gameId: number) => {
         <!-- Team dropdown -->
         <div ref="teamSearchRef" class="relative">
           <button
-            class="flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg border"
+            class="flex items-center justify-between gap-1.5 px-3 py-2 text-sm font-medium rounded-lg border min-w-[200px]"
             :class="selectedTeam ? 'text-primary-700 bg-primary-50 border-primary-400' : 'text-header-700 bg-white border-header-300 hover:bg-header-50'"
             @click="teamSearchOpen = !teamSearchOpen"
           >
-            <UIcon
-              :name="selectedTeamEntity?.isPlaceholder ? 'heroicons:clock' : 'heroicons:user-group'"
-              class="w-5 h-5 shrink-0"
-              :class="selectedTeam ? (selectedTeamEntity?.isPlaceholder ? 'text-orange-400' : 'text-primary-500') : 'text-header-500'"
-            />
-            <span
-              class="max-w-36 truncate"
-              :class="selectedTeamEntity?.isPlaceholder ? 'italic text-orange-600' : ''"
-            >{{ selectedTeamEntity?.label || t('games.filter_team') }}</span>
-            <button v-if="selectedTeam" class="ml-0.5 text-primary-400 hover:text-primary-700" :title="t('common.all')" @click.stop="selectedTeam = ''; teamSearchInput = ''">
+            <span class="flex items-center gap-1.5 min-w-0">
+              <UIcon
+                :name="selectedTeamEntity?.isPlaceholder ? 'heroicons:clock' : 'heroicons:user-group'"
+                class="w-5 h-5 shrink-0"
+                :class="selectedTeam ? (selectedTeamEntity?.isPlaceholder ? 'text-orange-400' : 'text-primary-500') : 'text-header-500'"
+              />
+              <span
+                class="truncate"
+                :class="selectedTeamEntity?.isPlaceholder ? 'italic text-orange-600' : ''"
+              >{{ selectedTeamEntity?.label || t('games.filter_team') }}</span>
+            </span>
+            <button v-if="selectedTeam" class="ml-0.5 shrink-0 text-primary-400 hover:text-primary-700" :title="t('common.all')" @click.stop="selectedTeam = ''; teamSearchInput = ''">
               <UIcon name="heroicons:x-mark" class="w-4 h-4" />
             </button>
             <UIcon v-else name="heroicons:chevron-down" class="w-4 h-4 transition-transform" :class="{ 'rotate-180': teamSearchOpen }" />
