@@ -154,6 +154,11 @@ const adminMenuGroups = computed<MenuGroup[]>(() => {
       icon: 'heroicons:identification',
       label: t('menu.rc')
     })
+    referentials.push({
+      to: '/referees-pool',
+      icon: 'heroicons:flag',
+      label: t('menu.referees_pool')
+    })
   }
   if (referentials.length > 0) {
     groups.push({
@@ -295,7 +300,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <header class="sticky top-0 z-30 bg-header-950 text-header-50 border-b border-header-800 shadow-lg">
+  <header
+    class="sticky top-0 z-30 bg-header-950 text-header-50 shadow-lg"
+    :class="runtimeConfig.public.appEnv !== 'production'
+      ? 'border-b-4 border-yellow-400'
+      : 'border-b border-header-800'"
+  >
     <!-- Top bar -->
     <div class="px-4 lg:px-6">
       <div class="flex items-center justify-between h-16">

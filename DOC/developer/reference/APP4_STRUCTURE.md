@@ -128,6 +128,7 @@ sources/app4/
 │   │   ├── index.vue                  # Classements (/rankings)
 │   │   └── initial.vue                # Classement initial (/rankings/initial)
 │   ├── rc/index.vue                   # Responsables de compétition (/rc)
+│   ├── referees-pool/index.vue        # Pool Arbitres (/referees-pool)
 │   ├── stats/
 │   │   ├── index.vue                  # Statistiques (/stats)
 │   │   └── [type]/[saison]/[competition].vue  # Stats détaillées
@@ -563,6 +564,7 @@ Pour les menus déroulants à l'intérieur de conteneurs `overflow-hidden` (tabl
 | Détail équipe club | `/clubs/team/:numero` | Implémentée |
 | Utilisateurs | `/users` | Implémentée (CRUD, mandats, reset password) |
 | Responsables compétition | `/rc` | Implémentée |
+| Pool Arbitres | `/referees-pool` | Implémentée (référentiel global, CRUD groupes + arbitres, profil ≤ 2) |
 | Présence (équipe) | `/presence/team/:teamId` | Implémentée |
 | Présence (match) | `/presence/match/:matchId/team/:teamCode` | Implémentée |
 | Contrôle TV | `/tv` | Implémentée (canaux, présentations, scénarios, labels) |

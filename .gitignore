@@ -181,3 +181,10 @@ sources/img/KIP/players_2022/
 docker/nginxlogs/access.log
 docker/nginxlogs/error.log
 sources/app4/.env
+
+# Playwright MCP artifacts (console logs, page snapshots) — never versioned
+.playwright-mcp/
+
+# Playwright test screenshots — keep the folder, ignore generated images
+sources/app4/tests/playwright/screenshots/*
+!sources/app4/tests/playwright/screenshots/.gitkeep
