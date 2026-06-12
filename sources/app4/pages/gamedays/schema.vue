@@ -293,6 +293,12 @@ onMounted(async () => {
     margin: 10mm 10mm;
   }
 
+  /* Force background colors to print */
+  #schema-print-area * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
   /* Hide everything, reveal only the print zone */
   body * {
     visibility: hidden;

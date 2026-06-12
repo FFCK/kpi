@@ -164,7 +164,7 @@ TODO :
 - ✅ Competitions : ajouter la colonne Categorie (champs catégorie/libellé court)
 - ✅ games : Actions : duppliquer un ou plusieurs matchs
 - ✅ games : export ods sur x terrains
-- pdf diagramme : problème de mise en page.
+- ✅ pdf diagramme : problème de mise en page.
 - ✅ event/(id)/gamedays : à partir du moment où au moins une compétition est sélectionnée et maximum 6 (pour éviter les problèmes de performance et d'ergonomie liés à l'affichage de trop de compétitions) : bouton "tout cocher/associer", et pagination par défaut à "tous" (au lieu de 50 par page) pour éviter d'avoir à faire plusieurs pages lorsque les compétitions ont beaucoup de journées/phases.
 - ✅ Publication impossible si compétition END : ok mais rien ne doit être modifiable dans ce cas.
 - ✅ Affichage schéma de compétition en erreur de droits pour un vrai profil 3 (sans mandat) !
@@ -173,7 +173,7 @@ TODO :
 - Schéma de compétition : pouvoir changer de compétition sur la page ?
 - ✅ Création / modification saison.
 - ajouter un système de notation (5 étoiles) sur les systèmes de jeu des compétitions pour savoir lesquelles utiliser ou éviter (limité à notre propre usage) ?
-- Contrôle de planification : min-width: 200px; sur le bloc avec le nom d'équipe, et la croix alignée à droite de ce bloc,
+- ✅ Contrôle de planification : min-width: 200px; sur le bloc avec le nom d'équipe, et la croix alignée à droite de ce bloc,
 - ✅ ods planification : nouvel onglet avec les matchs déjà placés.
 - ✅ Menu admin2 : liens public dans un dropdown, avec un séparatif, pour réduire la largeur du menu sur PC.
 - ✅ Impression que sur Safari, les polices de caractère utilisées sont plus grosses.
